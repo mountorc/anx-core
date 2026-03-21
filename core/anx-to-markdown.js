@@ -31,6 +31,71 @@ export async function anxToMarkdown(anxContent) {
 }
 
 /**
+ * 生成唯一的cardKey
+ * @returns {string} - 唯一的cardKey
+ */
+function generateCardKey() {
+  return 'card_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+}
+
+/**
+ * 将ANX格式内容转换为节点结构
+ * @param {Object} anxContent - ANX格式的内容
+ * @returns {Object} - 包含config、data、logs和nodes属性的对象结构
+ */
+export function anxToNodes(anxContent) {
+  const result = {
+    cardKey: generateCardKey(),
+    config: {},
+    data: { "value": {} },
+    logs: [],
+    nodes: []
+  };
+
+  if (!anxContent || typeof anxContent !== 'object') {
+    return result;
+  }
+
+  // 设置config
+  if (anxContent.kind) {
+    result.config = { ...anxContent }; // 复制整个ANX Config到config
+  }
+
+  // 设置data
+  if (anxContent.value) {
+    result.data.value = anxContent.value;
+  }
+
+  // 处理子组件
+  if (anxContent.kinds && Array.isArray(anxContent.kinds)) {
+    result.nodes = anxContent.kinds.map(child => {
+      const childNode = {
+        cardKey: generateCardKey(),
+        config: { ...child }, // 复制整个子组件对象到config
+        data: { "value": child.value || {} },
+        logs: [],
+        nodes: []
+      };
+
+      // 处理子组件的子组件
+      if (child.kinds && Array.isArray(child.kinds)) {
+        childNode.nodes = child.kinds.map(grandchild => ({
+          cardKey: generateCardKey(),
+          config: { ...grandchild }, // 复制整个孙子组件对象到config
+          data: { "value": grandchild.value || {} },
+          logs: [],
+          nodes: []
+        }));
+      }
+
+      return childNode;
+    });
+  }
+
+  return result;
+}
+
+/**
  * 转换单个ANX组件为Markdown
  * @param {Object} component - ANX组件
  * @returns {Promise<string>} - 转换后的Markdown内容

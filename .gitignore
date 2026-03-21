@@ -1,2 +1,8 @@
 # test 文件夹不上传到 github
 test/
+
+# 忽略 node_modules 文件夹
+node_modules/
+
+# 忽略前端 node_modules 文件夹
+frontend/node_modules/

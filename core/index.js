@@ -3,4 +3,4 @@
  */
 
 // 导出ANX转Markdown功能
-export { anxToMarkdown } from './anx-to-markdown.js';
+export { anxToMarkdown, anxToNodes } from './anx-to-markdown.js';
