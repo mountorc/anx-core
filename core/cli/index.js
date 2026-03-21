@@ -4,6 +4,7 @@
  */
 
 import { parseArgs } from './cli.js';
+import commandsData from './commands.json' assert { type: 'json' };
 
 /**
  * ANX CLI 命令执行器
@@ -21,6 +22,14 @@ class AnxCLI {
    */
   registerComponent(cardKey, component) {
     this.components.set(cardKey, component);
+  }
+
+  /**
+   * 获取 CLI 命令集
+   * @returns {Object} - 命令集数据
+   */
+  getCommands() {
+    return commandsData;
   }
 
   /**

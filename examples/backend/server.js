@@ -3,8 +3,8 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 
-// Import the anxToMarkdown and anxToNodes functions from the core module
-const { anxToMarkdown, anxToNodes } = require('../../core/index.js');
+// Import the anxToMarkdown, anxToNodes functions and anxCLI from the core module
+const { anxToMarkdown, anxToNodes, anxCLI } = require('../../core/index.js');
 
 const app = express();
 const PORT = 7887;
@@ -159,6 +159,17 @@ app.get('/docs-public/docs', (req, res) => {
   } catch (error) {
     console.error('Error getting doc content:', error);
     res.status(404).json({ error: 'Doc not found' });
+  }
+});
+
+// API endpoint for getting CLI commands list
+app.get('/cli/commands', (req, res) => {
+  try {
+    const commands = anxCLI.getCommands();
+    res.json(commands);
+  } catch (error) {
+    console.error('Error getting CLI commands:', error);
+    res.status(500).json({ error: 'Failed to get CLI commands' });
   }
 });
 

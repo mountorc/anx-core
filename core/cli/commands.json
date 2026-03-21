@@ -1,0 +1,255 @@
+{
+  "commands": [
+    {
+      "category": "Query Commands",
+      "commands": [
+        {
+          "name": "get_config",
+          "description": "Get component configuration; read structure only, not values",
+          "usage": "anx <cardKey> get_config",
+          "example": "anx user-profile get_config"
+        },
+        {
+          "name": "get_form",
+          "description": "Get form overall data; only valid for form components",
+          "usage": "anx <cardKey> get_form",
+          "example": "anx login-form get_form"
+        },
+        {
+          "name": "get_node",
+          "description": "Get complete node information (structure + values + state)",
+          "usage": "anx <cardKey> get_node",
+          "example": "anx dashboard get_node"
+        },
+        {
+          "name": "get_children",
+          "description": "Get list of child component cardKeys",
+          "usage": "anx <cardKey> get_children",
+          "example": "anx form-container get_children"
+        },
+        {
+          "name": "get_options",
+          "description": "Get optional configuration items for dropdown/radio/checkbox",
+          "usage": "anx <cardKey> get_options",
+          "example": "anx country-select get_options"
+        },
+        {
+          "name": "get_value",
+          "description": "Get current component value; universal",
+          "usage": "anx <cardKey> get_value",
+          "example": "anx username-input get_value"
+        },
+        {
+          "name": "get_state",
+          "description": "Get state: disabled/hidden/checked/expanded, etc.",
+          "usage": "anx <cardKey> get_state",
+          "example": "anx submit-button get_state"
+        },
+        {
+          "name": "get_validate",
+          "description": "Get validation result: success/failure/error message",
+          "usage": "anx <cardKey> get_validate",
+          "example": "anx email-input get_validate"
+        }
+      ]
+    },
+    {
+      "category": "Input and Assignment Commands",
+      "commands": [
+        {
+          "name": "input",
+          "description": "Append input character by character; keep focus, can be called continuously",
+          "usage": "anx <cardKey> input <content>",
+          "example": "anx search-input input hello"
+        },
+        {
+          "name": "fill",
+          "description": "Fill input box at once; overwrite existing content",
+          "usage": "anx <cardKey> fill <content>",
+          "example": "anx username-input fill john_doe"
+        },
+        {
+          "name": "set",
+          "description": "Universal assignment; applicable to all component state settings",
+          "usage": "anx <cardKey> set <value>",
+          "example": "anx age-input set 25"
+        },
+        {
+          "name": "set_form",
+          "description": "Form batch assignment; only valid for form components",
+          "usage": "anx <cardKey> set_form <JSON>",
+          "example": "anx registration-form set_form '{\"username\": \"john\", \"email\": \"john@example.com\"}'"
+        },
+        {
+          "name": "clear",
+          "description": "Clear content/value; do not reset to default value",
+          "usage": "anx <cardKey> clear",
+          "example": "anx search-input clear"
+        },
+        {
+          "name": "reset",
+          "description": "Reset to initial default value; and clear validation status",
+          "usage": "anx <cardKey> reset",
+          "example": "anx form-container reset"
+        }
+      ]
+    },
+    {
+      "category": "Selection Commands",
+      "commands": [
+        {
+          "name": "select",
+          "description": "Single selection/dropdown select an item; triggers option change",
+          "usage": "anx <cardKey> select <value>",
+          "example": "anx country-select select \"United States\""
+        },
+        {
+          "name": "add_option",
+          "description": "Multi-select mode: add an item",
+          "usage": "anx <cardKey> add_option <value>",
+          "example": "anx interests-select add_option \"Programming\""
+        },
+        {
+          "name": "remove_option",
+          "description": "Multi-select mode: remove an item",
+          "usage": "anx <cardKey> remove_option <value>",
+          "example": "anx interests-select remove_option \"Gaming\""
+        },
+        {
+          "name": "check",
+          "description": "Check; checkbox/switch universal",
+          "usage": "anx <cardKey> check",
+          "example": "anx terms-checkbox check"
+        },
+        {
+          "name": "uncheck",
+          "description": "Uncheck",
+          "usage": "anx <cardKey> uncheck",
+          "example": "anx newsletter-checkbox uncheck"
+        }
+      ]
+    },
+    {
+      "category": "Interaction Event Commands",
+      "commands": [
+        {
+          "name": "tap",
+          "description": "Universal tap/click; cross-platform unified replacement for click",
+          "usage": "anx <cardKey> tap",
+          "example": "anx submit-button tap"
+        },
+        {
+          "name": "double_tap",
+          "description": "Double tap/double click",
+          "usage": "anx <cardKey> double_tap",
+          "example": "anx image-viewer double_tap"
+        },
+        {
+          "name": "long_press",
+          "description": "Long press/long press trigger",
+          "usage": "anx <cardKey> long_press",
+          "example": "anx file-item long_press"
+        },
+        {
+          "name": "submit",
+          "description": "Submit form; automatically triggers validation",
+          "usage": "anx <cardKey> submit",
+          "example": "anx login-form submit"
+        },
+        {
+          "name": "cancel",
+          "description": "Cancel/close popup/drawer/step",
+          "usage": "anx <cardKey> cancel",
+          "example": "anx popup-dialog cancel"
+        },
+        {
+          "name": "confirm",
+          "description": "Confirm operation; popup confirmation/step confirmation",
+          "usage": "anx <cardKey> confirm",
+          "example": "anx delete-confirm confirm"
+        }
+      ]
+    },
+    {
+      "category": "Display Control Commands",
+      "commands": [
+        {
+          "name": "expand",
+          "description": "Expand component (collapse panel/dropdown panel)",
+          "usage": "anx <cardKey> expand",
+          "example": "anx settings-panel expand"
+        },
+        {
+          "name": "collapse",
+          "description": "Collapse component",
+          "usage": "anx <cardKey> collapse",
+          "example": "anx settings-panel collapse"
+        },
+        {
+          "name": "show",
+          "description": "Show component",
+          "usage": "anx <cardKey> show",
+          "example": "anx error-message show"
+        },
+        {
+          "name": "hide",
+          "description": "Hide component",
+          "usage": "anx <cardKey> hide",
+          "example": "anx error-message hide"
+        }
+      ]
+    },
+    {
+      "category": "Page Navigation Commands",
+      "commands": [
+        {
+          "name": "goto",
+          "description": "Navigate to the page/route",
+          "usage": "anx <cardKey> goto",
+          "example": "anx dashboard-link goto"
+        },
+        {
+          "name": "back",
+          "description": "Return to previous page; usually used for page/nav components",
+          "usage": "anx <cardKey> back",
+          "example": "anx nav-bar back"
+        },
+        {
+          "name": "reload",
+          "description": "Reload/refresh current content",
+          "usage": "anx <cardKey> reload",
+          "example": "anx data-grid reload"
+        },
+        {
+          "name": "scroll_to",
+          "description": "Scroll to the component position; and center display",
+          "usage": "anx <cardKey> scroll_to",
+          "example": "anx footer scroll_to"
+        }
+      ]
+    },
+    {
+      "category": "State Control Commands",
+      "commands": [
+        {
+          "name": "enable",
+          "description": "Enable component; remove disabled state",
+          "usage": "anx <cardKey> enable",
+          "example": "anx submit-button enable"
+        },
+        {
+          "name": "disable",
+          "description": "Disable component; cannot interact",
+          "usage": "anx <cardKey> disable",
+          "example": "anx submit-button disable"
+        },
+        {
+          "name": "validate",
+          "description": "Manually trigger validation; do not submit",
+          "usage": "anx <cardKey> validate",
+          "example": "anx email-input validate"
+        }
+      ]
+    }
+  ]
+}

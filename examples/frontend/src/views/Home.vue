@@ -21,6 +21,32 @@
               @keyup.enter="executeCliCommand"
             />
             <button @click="executeCliCommand">Execute</button>
+            <button @click="showCommandsList">Commands</button>
+          </div>
+          <!-- Commands list modal -->
+          <div class="modal" v-if="showCommandsModal">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3>CLI Commands List</h3>
+                <button @click="showCommandsModal = false" class="close-btn">×</button>
+              </div>
+              <div class="modal-body">
+                <div v-for="category in cliCommands" :key="category.category" class="command-category">
+                  <h4>{{ category.category }}</h4>
+                  <ul class="command-list">
+                    <li v-for="command in category.commands" :key="command.name" class="command-item">
+                      <div class="command-name">{{ command.name }}</div>
+                      <div class="command-description">{{ command.description }}</div>
+                      <div class="command-usage">{{ command.usage }}</div>
+                      <div class="command-example">{{ command.example }}</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button @click="showCommandsModal = false">Close</button>
+              </div>
+            </div>
           </div>
           <div class="cli-output" v-if="cliOutput">
             <h4>Output:</h4>
@@ -60,7 +86,9 @@ export default {
       rawMarkdownOutput: '',
       jsonStructure: '',
       cliCommand: '',
-      cliOutput: ''
+      cliOutput: '',
+      showCommandsModal: false,
+      cliCommands: []
     }
   },
   mounted() {
@@ -219,6 +247,18 @@ export default {
       } catch (error) {
         console.error('Error executing CLI command:', error);
         this.cliOutput = 'Error executing CLI command. Please check your input.';
+      }
+    },
+    async showCommandsList() {
+      try {
+        // 获取CLI命令集
+        const response = await fetch('/api/cli/commands');
+        const data = await response.json();
+        this.cliCommands = data.commands;
+        this.showCommandsModal = true;
+      } catch (error) {
+        console.error('Error fetching CLI commands:', error);
+        alert('Failed to load CLI commands. Please try again.');
       }
     }
   }
@@ -424,5 +464,151 @@ export default {
   .cli-input-container button {
     width: 100%;
   }
+  
+  .modal-content {
+    width: 90%;
+    max-height: 90vh;
+  }
+}
+
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  background-color: #f5f5f5;
+  border-radius: 8px 8px 0 0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.command-category {
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.command-category h4 {
+  background-color: #f9f9f9;
+  padding: 10px 15px;
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+}
+
+.command-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.command-item {
+  padding: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.command-item:last-child {
+  border-bottom: none;
+}
+
+.command-name {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.command-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.command-usage {
+  font-size: 13px;
+  color: #888;
+  background-color: #f9f9f9;
+  padding: 5px 10px;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  font-family: monospace;
+}
+
+.command-example {
+  font-size: 13px;
+  color: #888;
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.modal-footer {
+  padding: 15px;
+  border-top: 1px solid #ddd;
+  background-color: #f5f5f5;
+  border-radius: 0 0 8px 8px;
+  text-align: right;
+}
+
+.modal-footer button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.modal-footer button:hover {
+  background-color: #45a049;
 }
 </style>
