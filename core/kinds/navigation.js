@@ -7,7 +7,7 @@
  * @param {Object} component - Navigation组件
  * @returns {string} - 转换后的Markdown内容
  */
-export function convertNavigationToMarkdown(component) {
+function convertNavigationToMarkdown(component) {
   const { title, items } = component;
   let content = '';
 
@@ -27,3 +27,7 @@ export function convertNavigationToMarkdown(component) {
 
   return content;
 }
+
+module.exports = {
+  convertNavigationToMarkdown
+};

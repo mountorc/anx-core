@@ -2,14 +2,14 @@
  * 处理Box组件的ANX配置
  */
 
-import { parseTemplateForMarkdown } from '../anx-to-markdown.js';
+const { parseTemplateForMarkdown } = require('../utils/template.js');
 
 /**
  * 转换Box组件为Markdown
  * @param {Object} component - Box组件
  * @returns {Promise<string>} - 转换后的Markdown内容
  */
-export async function convertBoxToMarkdown(component) {
+async function convertBoxToMarkdown(component) {
   const { title, data, html, template } = component;
   let content = '';
 
@@ -31,3 +31,7 @@ export async function convertBoxToMarkdown(component) {
 
   return content;
 }
+
+module.exports = {
+  convertBoxToMarkdown
+};

@@ -7,7 +7,7 @@
  * 解析命令行参数
  * @returns {Object} - 解析后的参数对象
  */
-export function parseArgs() {
+function parseArgs() {
   const args = process.argv.slice(2);
   const parsedArgs = {};
   
@@ -45,7 +45,7 @@ export function parseArgs() {
  * @param {Object} options - 执行选项
  * @returns {Promise<string>} - 命令执行结果
  */
-export async function executeCommand(command, options = {}) {
+async function executeCommand(command, options = {}) {
   const { spawn } = require('child_process');
   
   return new Promise((resolve, reject) => {
@@ -85,7 +85,7 @@ export async function executeCommand(command, options = {}) {
  * 显示帮助信息
  * @param {Object} options - 帮助选项
  */
-export function showHelp(options = {}) {
+function showHelp(options = {}) {
   const { name = 'CLI Tool', version = '1.0.0', description = '', commands = [] } = options;
   
   console.log(`${name} v${version}`);
@@ -107,6 +107,14 @@ export function showHelp(options = {}) {
  * 显示版本信息
  * @param {string} version - 版本号
  */
-export function showVersion(version) {
+function showVersion(version) {
   console.log(`v${version}`);
 }
+
+// 导出所有功能
+module.exports = {
+  parseArgs,
+  executeCommand,
+  showHelp,
+  showVersion
+};

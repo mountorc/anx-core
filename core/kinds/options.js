@@ -2,14 +2,14 @@
  * 处理Options组件的ANX配置
  */
 
-import { fetchDataset } from '../utils/dataset.js';
+const { fetchDataset } = require('../utils/dataset.js');
 
 /**
  * 转换Options组件为Markdown
  * @param {Object} component - Options组件
  * @returns {Promise<string>} - 转换后的Markdown内容
  */
-export async function convertOptionsToMarkdown(component) {
+async function convertOptionsToMarkdown(component) {
   const { title, options, value, multiple, nick, optionsSet } = component;
   let content = '';
 
@@ -75,3 +75,7 @@ function getPropertyValue(obj, path) {
 
   return value;
 }
+
+module.exports = {
+  convertOptionsToMarkdown
+};

@@ -3,8 +3,8 @@
  * 实现 ANX 命令行接口
  */
 
-import { parseArgs } from './cli.js';
-import commandsData from './commands.json' assert { type: 'json' };
+const { parseArgs } = require('./cli.js');
+const commandsData = require('./commands.json');
 
 /**
  * ANX CLI 命令执行器
@@ -600,7 +600,11 @@ class AnxCLI {
 }
 
 // 导出 ANX CLI 实例
-export const anxCLI = new AnxCLI();
+const anxCLI = new AnxCLI();
 
-// 导出 CLI 类
-export default AnxCLI;
+// 导出所有功能
+module.exports = {
+  AnxCLI,
+  anxCLI,
+  parseArgs
+};

@@ -3,15 +3,16 @@
  * @param {Object} anxContent - ANX格式的内容
  * @returns {Promise<string>} - 转换后的Markdown格式内容
  */
-import { fetchDataset } from './utils/dataset.js';
-import { 
+const { fetchDataset } = require('./utils/dataset.js');
+const { parseTemplateForMarkdown } = require('./utils/template.js');
+const { 
   convertBoxToMarkdown, 
   convertBoardToMarkdown, 
   convertFormToMarkdown, 
   convertOptionsToMarkdown, 
   convertNavigationToMarkdown 
-} from './kinds/index.js';
-export async function anxToMarkdown(anxContent) {
+} = require('./kinds/index.js');
+async function anxToMarkdown(anxContent) {
   if (!anxContent || typeof anxContent !== 'object') {
     return '';
   }
@@ -43,7 +44,7 @@ function generateCardKey() {
  * @param {Object} anxContent - ANX格式的内容
  * @returns {Object} - 包含config、data、logs和nodes属性的对象结构
  */
-export function anxToNodes(anxContent) {
+function anxToNodes(anxContent) {
   const result = {
     cardKey: generateCardKey(),
     config: {},
@@ -226,59 +227,10 @@ function convertCheckboxToMarkdown(component) {
   return content;
 }
 
-/**
- * 获取对象的属性值
- * @param {Object} obj - 目标对象
- * @param {string} path - 属性路径，如 "user.name"
- * @returns {*} - 属性值
- */
-function getPropertyValue(obj, path) {
-  if (!obj || typeof obj !== 'object') return undefined;
 
-  const keys = path.split('.');
-  let value = obj;
 
-  for (const key of keys) {
-    if (value[key] === undefined) {
-      return undefined;
-    }
-    value = value[key];
-  }
-
-  return value;
-}
-
-/**
- * 解析模板，替换变量（适用于Markdown）
- * @param {string} templateContent - 模板内容
- * @param {Object} data - 数据对象
- * @returns {string} - 解析后的模板
- */
-export function parseTemplateForMarkdown(templateContent, data) {
-  if (!templateContent) return '';
-
-  let parsedTemplate = templateContent;
-
-  // 替换双大括号变量
-  const doubleBracesRegex = /\{\{([^{}]+)\}\}/g;
-  parsedTemplate = parsedTemplate.replace(doubleBracesRegex, (match, variable) => {
-    const value = getPropertyValue(data, variable.trim());
-    return value !== undefined ? value : match;
-  });
-
-  // 替换美元大括号变量
-  const dollarBracesRegex = /\$\{([^{}]+)\}/g;
-  parsedTemplate = parsedTemplate.replace(dollarBracesRegex, (match, variable) => {
-    const value = getPropertyValue(data, variable.trim());
-    return value !== undefined ? value : match;
-  });
-
-  // 替换单大括号变量
-  const singleBracesRegex = /\{([^{}]+)\}/g;
-  parsedTemplate = parsedTemplate.replace(singleBracesRegex, (match, variable) => {
-    const value = getPropertyValue(data, variable.trim());
-    return value !== undefined ? value : match;
-  });
-
-  return parsedTemplate;
-}
+// 导出所有功能
+module.exports = {
+  anxToMarkdown,
+  anxToNodes
+};
