@@ -244,6 +244,9 @@ export default {
         const result = await response.json();
         // 格式化输出，显示cardKey、action和result
         this.cliOutput = `cardKey: ${result.cardKey}\naction: ${result.action}\nresult: ${JSON.stringify(result.result, null, 2)}`;
+        
+        // 重新获取节点结构以更新显示
+        await this.convertAnxToMarkdown();
       } catch (error) {
         console.error('Error executing CLI command:', error);
         this.cliOutput = 'Error executing CLI command. Please check your input.';
@@ -268,7 +271,7 @@ export default {
 <style scoped>
 .converter-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 95%;
   margin: 0 auto;
 }
 

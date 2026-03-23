@@ -11,6 +11,8 @@ const PORT = 7887;
 
 // 存储cardKey及其对应的config信息
 const cardStorage = new Map();
+// 存储完整的节点结构
+const nodeStorage = new Map();
 
 // Middleware
 app.use(cors());
@@ -31,7 +33,7 @@ app.post('/convert', async (req, res) => {
   }
 });
 
-// 递归存储所有节点的cardKey和config
+// 递归存储所有节点的cardKey和config，以及完整的节点结构
 function storeCardNodes(nodes) {
   if (!Array.isArray(nodes)) return;
   
@@ -39,6 +41,7 @@ function storeCardNodes(nodes) {
     // 存储当前节点
     if (node.cardKey && node.config) {
       cardStorage.set(node.cardKey, node.config);
+      nodeStorage.set(node.cardKey, node); // 存储完整的节点结构
     }
     // 递归存储子节点
     if (node.nodes && node.nodes.length > 0) {
@@ -58,6 +61,7 @@ app.post('/convert-to-nodes', (req, res) => {
     // 存储根节点
     if (nodesStructure.cardKey && nodesStructure.config) {
       cardStorage.set(nodesStructure.cardKey, nodesStructure.config);
+      nodeStorage.set(nodesStructure.cardKey, nodesStructure); // 存储完整的根节点结构
     }
     
     // 存储子节点
@@ -101,6 +105,83 @@ app.post('/execute-cli', (req, res) => {
           result = `No config found for cardKey: ${cardKey}`;
         }
         break;
+      case 'get_node':
+        // 从存储中获取cardKey对应的完整节点结构
+        const node = nodeStorage.get(cardKey);
+        if (node) {
+          result = node; // 直接返回完整的节点结构
+        } else {
+          result = `No node found for cardKey: ${cardKey}`;
+        }
+        break;
+      case 'set_form':
+        // 从存储中获取cardKey对应的节点
+        const formNode = nodeStorage.get(cardKey);
+        if (formNode) {
+          try {
+            // 解析JSON参数，移除两端的单引号
+            let jsonString = params.join(' ');
+            // 移除两端的单引号
+            if (jsonString.startsWith("'") && jsonString.endsWith("'")) {
+              jsonString = jsonString.substring(1, jsonString.length - 1);
+            }
+            const formData = JSON.parse(jsonString);
+            // 更新表单的data.value
+            if (!formNode.data) {
+              formNode.data = { value: {} };
+            }
+            formNode.data.value = formData;
+            // 更新存储
+            nodeStorage.set(cardKey, formNode);
+            result = { message: 'Form data updated successfully', data: formData };
+          } catch (parseError) {
+            result = `Invalid JSON format: ${parseError.message}`;
+          }
+        } else {
+          result = `No node found for cardKey: ${cardKey}`;
+        }
+        break;
+      case 'fill':
+        // 从存储中获取cardKey对应的节点
+        const fillNode = nodeStorage.get(cardKey);
+        if (fillNode) {
+          // 获取填充值
+          const value = params.join(' ');
+          // 更新节点的data.value
+          if (!fillNode.data) {
+            fillNode.data = { value: {} };
+          }
+          fillNode.data.value = value;
+          // 更新存储
+          nodeStorage.set(cardKey, fillNode);
+          result = { message: 'Value filled successfully', value: value };
+        } else {
+          result = `No node found for cardKey: ${cardKey}`;
+        }
+        break;
+      case 'input':
+        // 从存储中获取cardKey对应的节点
+        const inputNode = nodeStorage.get(cardKey);
+        if (inputNode) {
+          // 获取输入值
+          const value = params.join(' ');
+          // 更新节点的data.value
+          if (!inputNode.data) {
+            inputNode.data = { value: {} };
+          }
+          // 如果是字符串类型，追加输入值
+          if (typeof inputNode.data.value === 'string') {
+            inputNode.data.value += value;
+          } else {
+            inputNode.data.value = value;
+          }
+          // 更新存储
+          nodeStorage.set(cardKey, inputNode);
+          result = { message: 'Input added successfully', value: inputNode.data.value };
+        } else {
+          result = `No node found for cardKey: ${cardKey}`;
+        }
+        break;
       default:
         result = `Action ${action} is not implemented yet.`;
     }
@@ -132,6 +213,18 @@ app.get('/docs-public/list', (req, res) => {
   } catch (error) {
     console.error('Error getting docs list:', error);
     res.status(500).json({ error: 'Failed to get docs list' });
+  }
+});
+
+// API endpoint for getting CLI commands
+app.get('/api/cli/commands', (req, res) => {
+  try {
+    const commandsPath = path.join(__dirname, '../../core/cli/commands.json');
+    const commands = JSON.parse(fs.readFileSync(commandsPath, 'utf8'));
+    res.json(commands);
+  } catch (error) {
+    console.error('Error getting CLI commands:', error);
+    res.status(500).json({ error: 'Failed to get CLI commands' });
   }
 });
 
