@@ -505,8 +505,72 @@ app.post('/api/execute-cli', (req, res) => {
               formNode.data.value = { ...formNode.data.value, ...formData };
             }
             
+            // 同步更新子组件的value
+            function updateChildNodesValue(nodes) {
+              for (let node of nodes) {
+                const nodeNick = node.config && node.config.nick;
+                if (nodeNick && formData[nodeNick] !== undefined) {
+                  if (!node.data) {
+                    node.data = {};
+                  }
+                  node.data.value = formData[nodeNick];
+                }
+                // 递归处理子节点的子节点
+                if (node.nodes && node.nodes.length > 0) {
+                  updateChildNodesValue(node.nodes);
+                }
+              }
+            }
+            if (formNode.nodes && formNode.nodes.length > 0) {
+              updateChildNodesValue(formNode.nodes);
+            }
+            
             // 更新存储
             nodeStorage.set(cardKey, formNode);
+            
+            // 同步更新 anxHashToNodeMap 中的节点
+            for (let [anxHash, rootNode] of anxHashToNodeMap) {
+              if (rootNode.cardKey === cardKey) {
+                // 更新根节点
+                if (!rootNode.data) {
+                  rootNode.data = { value: {} };
+                }
+                rootNode.data.value = formNode.data.value;
+                // 更新根节点的子组件
+                if (rootNode.nodes && rootNode.nodes.length > 0) {
+                  updateChildNodesValue(rootNode.nodes);
+                }
+                break;
+              }
+              // 递归查找并更新子节点
+              function updateNodeInAnxHashMap(nodes) {
+                for (let node of nodes) {
+                  if (node.cardKey === cardKey) {
+                    if (!node.data) {
+                      node.data = { value: {} };
+                    }
+                    node.data.value = formNode.data.value;
+                    // 更新该节点的子组件
+                    if (node.nodes && node.nodes.length > 0) {
+                      updateChildNodesValue(node.nodes);
+                    }
+                    return true;
+                  }
+                  if (node.nodes && node.nodes.length > 0) {
+                    if (updateNodeInAnxHashMap(node.nodes)) {
+                      return true;
+                    }
+                  }
+                }
+                return false;
+              }
+              if (rootNode.nodes && rootNode.nodes.length > 0) {
+                if (updateNodeInAnxHashMap(rootNode.nodes)) {
+                  break;
+                }
+              }
+            }
+            
             result = { 
               message: `Form data ${hasReplaceFlag ? 'replaced' : 'updated'} successfully`, 
               data: formNode.data.value 
@@ -640,7 +704,21 @@ app.post('/api/visualize-node', (req, res) => {
       return res.status(400).json({ error: 'node is required' });
     }
     
-    const html = generateNodeVisualization(node);
+    // 使用存储中的节点数据进行可视化渲染
+    let nodeToVisualize = { ...node };
+    
+    // 检查根节点是否有存储的数据
+    const storedRootNode = nodeStorage.get(node.cardKey);
+    if (storedRootNode) {
+      nodeToVisualize = storedRootNode;
+    }
+    
+    // 更新子节点，使用存储中的数据
+    if (nodeToVisualize.nodes && nodeToVisualize.nodes.length > 0) {
+      updateNodesWithStoredData(nodeToVisualize.nodes);
+    }
+    
+    const html = generateNodeVisualization(nodeToVisualize);
     const css = generateVisualizationCSS();
     
     res.json({

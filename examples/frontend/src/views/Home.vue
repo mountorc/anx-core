@@ -274,6 +274,8 @@ export default {
           if (result.nodes) {
             this.jsonStructure = JSON.stringify(result.nodes, null, 2);
             this.nodesStructure = result.nodes;
+            // 重新生成节点可视化
+            await this.generateNodeVisualization(this.nodesStructure);
           }
         } catch (error) {
           console.error('Error updating node data:', error);
