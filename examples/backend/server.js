@@ -13,18 +13,328 @@ const PORT = 7887;
 const cardStorage = new Map();
 // 存储完整的节点结构
 const nodeStorage = new Map();
+// 存储基于ANX内容的哈希值到节点结构的映射
+const anxHashToNodeMap = new Map();
+
+// 生成ANX内容的哈希值
+function generateAnxHash(anxContent) {
+  const crypto = require('crypto');
+  const jsonString = JSON.stringify(anxContent);
+  return crypto.createHash('md5').update(jsonString).digest('hex');
+}
+
+// 获取对象的属性值
+function getPropertyValue(obj, path) {
+  if (!obj || typeof obj !== 'object') return undefined;
+
+  const keys = path.split('.');
+  let value = obj;
+
+  for (const key of keys) {
+    if (value[key] === undefined) {
+      return undefined;
+    }
+    value = value[key];
+  }
+
+  return value;
+}
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// 从节点结构转换为Markdown
+async function nodesToMarkdown(nodesStructure) {
+  if (!nodesStructure) {
+    return '';
+  }
+  
+  // 先检查是否有存储的节点数据
+  const storedNode = nodeStorage.get(nodesStructure.cardKey);
+  if (storedNode) {
+    nodesStructure = storedNode;
+  }
+  
+  // 递归处理节点结构
+  async function processNode(node) {
+    // 提取当前节点的ANX内容
+    const nodeAnxContent = { ...node.config };
+    
+    // 处理子节点
+    let childMarkdown = '';
+    if (node.nodes && node.nodes.length > 0) {
+      // 递归处理每个子节点
+      const childContents = await Promise.all(node.nodes.map(child => processNode(child)));
+      childMarkdown = childContents.join('\n\n');
+    }
+    
+    // 转换当前节点为Markdown
+    let nodeMarkdown = '';
+    if (node.config.kind) {
+      // 根据节点类型生成Markdown
+      switch (node.config.kind) {
+        case 'form':
+          nodeMarkdown = node.config.title ? `## ${node.config.title}\n\n` : '';
+          nodeMarkdown += childMarkdown;
+          break;
+        case 'box':
+          // 处理box类型，渲染模板内容
+          if (node.config.title) {
+            nodeMarkdown = `## ${node.config.title}\n\n`;
+          }
+          
+          if (node.config.data && Array.isArray(node.config.data) && node.config.data.length > 0) {
+            for (let i = 0; i < node.config.data.length; i++) {
+              const item = node.config.data[i];
+              const templateContent = node.config.template || node.config.html;
+              if (templateContent) {
+                // 替换模板中的变量
+                let parsedTemplate = templateContent;
+                
+                // 替换双大括号变量
+                const doubleBracesRegex = /\{\{([^{}]+)\}\}/g;
+                parsedTemplate = parsedTemplate.replace(doubleBracesRegex, (match, variable) => {
+                  const value = getPropertyValue(item, variable.trim());
+                  return value !== undefined ? value : match;
+                });
+                
+                // 替换美元大括号变量
+                const dollarBracesRegex = /\$\{([^{}]+)\}/g;
+                parsedTemplate = parsedTemplate.replace(dollarBracesRegex, (match, variable) => {
+                  const value = getPropertyValue(item, variable.trim());
+                  return value !== undefined ? value : match;
+                });
+                
+                // 替换单大括号变量
+                const singleBracesRegex = /\{([^{}]+)\}/g;
+                parsedTemplate = parsedTemplate.replace(singleBracesRegex, (match, variable) => {
+                  const value = getPropertyValue(item, variable.trim());
+                  return value !== undefined ? value : match;
+                });
+                
+                // 用<x 0>这样的标签包裹每个box项
+                nodeMarkdown += `<x ${i}>
+${parsedTemplate}
+</x>\n\n`;
+              }
+            }
+          } else if (node.config.html || node.config.template) {
+            const templateContent = node.config.template || node.config.html;
+            // 替换模板中的变量
+            let parsedTemplate = templateContent;
+            
+            // 替换双大括号变量
+            const doubleBracesRegex = /\{\{([^{}]+)\}\}/g;
+            parsedTemplate = parsedTemplate.replace(doubleBracesRegex, (match, variable) => {
+              const value = getPropertyValue(node.config, variable.trim());
+              return value !== undefined ? value : match;
+            });
+            
+            // 替换美元大括号变量
+            const dollarBracesRegex = /\$\{([^{}]+)\}/g;
+            parsedTemplate = parsedTemplate.replace(dollarBracesRegex, (match, variable) => {
+              const value = getPropertyValue(node.config, variable.trim());
+              return value !== undefined ? value : match;
+            });
+            
+            // 替换单大括号变量
+            const singleBracesRegex = /\{([^{}]+)\}/g;
+            parsedTemplate = parsedTemplate.replace(singleBracesRegex, (match, variable) => {
+              const value = getPropertyValue(node.config, variable.trim());
+              return value !== undefined ? value : match;
+            });
+            
+            nodeMarkdown += `${parsedTemplate}\n\n`;
+          }
+          break;
+        case 'input':
+          const label = node.config.nick || 'Input';
+          const value = node.data && node.data.value ? node.data.value : node.config.value || node.config.placeholder || '';
+          nodeMarkdown = `**${label}:** ${value}`;
+          break;
+        case 'textarea':
+          const textareaLabel = node.config.nick || 'Textarea';
+          const textareaValue = node.data && node.data.value ? node.data.value : node.config.value || node.config.placeholder || '';
+          nodeMarkdown = `**${textareaLabel}:**\n\n\`\`\`\n${textareaValue}\n\`\`\``;
+          break;
+        case 'button':
+          const buttonLabel = node.config.label || 'Button';
+          const action = node.config.action || '#';
+          nodeMarkdown = `[${buttonLabel}](${action})`;
+          break;
+        case 'text':
+          nodeMarkdown = node.data && node.data.value ? node.data.value : node.config.value || '';
+          break;
+        case 'date':
+          const dateLabel = node.config.nick || 'Date';
+          const dateValue = node.data && node.data.value ? node.data.value : node.config.value || node.config.placeholder || '';
+          nodeMarkdown = `**${dateLabel}:** ${dateValue}`;
+          break;
+        case 'checkbox':
+          const checkboxLabel = node.config.nick ? `**${node.config.nick}:**\n\n` : '';
+          let checkboxContent = checkboxLabel;
+          if (node.config.options && Array.isArray(node.config.options)) {
+            const checkboxValue = node.data && node.data.value ? node.data.value : node.config.value || [];
+            node.config.options.forEach(option => {
+              const isChecked = Array.isArray(checkboxValue) && checkboxValue.includes(option.value);
+              checkboxContent += `${isChecked ? '✓ ' : '- '}${option.title}\n`;
+            });
+          }
+          nodeMarkdown = checkboxContent;
+          break;
+        case 'options':
+          const optionsLabel = node.config.nick || 'Options';
+          let optionsContent = `**${optionsLabel}:**\n\n`;
+          let optionsData = [];
+          
+          // 处理optionsSet中的dataset
+          if (node.config.optionsSet && node.config.optionsSet.dataset) {
+            try {
+              // 直接使用dataset作为配置，支持url_dataset和uuid_dataset
+              const { fetchDataset } = require('../../core/utils/dataset.js');
+              const datasetData = await fetchDataset(node.config.optionsSet.dataset);
+              
+              // 检查datasetData是否有data属性，如果有，使用data属性作为选项数组
+              let processedOptions = datasetData && datasetData.data ? datasetData.data : datasetData;
+              
+              // 确保processedOptions是一个数组
+              if (Array.isArray(processedOptions)) {
+                for (const option of processedOptions) {
+                  // Get title and value using titleNick and valueNick if provided
+                  const titleNick = node.config.optionsSet?.titleNick || 'title';
+                  const valueNick = node.config.optionsSet?.valueNick || 'value';
+                  const optionTitle = option[titleNick] || option.title || option.label || option.value || 'Unknown';
+                  const optionValue = option[valueNick] || option.value;
+                  
+                  optionsContent += `- ${optionTitle}\n`;
+                  optionsData.push({ title: optionTitle, value: optionValue });
+                }
+              } else {
+                optionsContent += '- No options available\n';
+              }
+            } catch (error) {
+              console.error('Error fetching options dataset:', error);
+              optionsContent += '- Error fetching options\n';
+            }
+          } else if (node.config.options && Array.isArray(node.config.options)) {
+            // 处理直接提供的options
+            for (const option of node.config.options) {
+              const optionTitle = option.title || option.label || option.value || 'Unknown';
+              const optionValue = option.value;
+              
+              optionsContent += `- ${optionTitle}\n`;
+              optionsData.push({ title: optionTitle, value: optionValue });
+            }
+          } else {
+            optionsContent += '- No options available\n';
+          }
+          
+          // 将options数据存储到node的data.options中
+          if (!node.data) {
+            node.data = {};
+          }
+          node.data.options = optionsData;
+          // 更新存储中的节点数据
+          nodeStorage.set(node.cardKey, node);
+          
+          nodeMarkdown = optionsContent;
+          break;
+        case 'table':
+          // 处理table类型，渲染表格内容
+          if (node.config.title) {
+            nodeMarkdown = `## ${node.config.title}\n\n`;
+          }
+          
+          // 生成Markdown表格
+          if (node.config.titles && Array.isArray(node.config.titles) && node.config.titles.length > 0) {
+            // 过滤掉隐藏的列
+            const visibleTitles = node.config.titles.filter(title => !title.hide);
+            
+            if (visibleTitles.length > 0) {
+              // 生成表头
+              const headers = visibleTitles.map(title => title.title).join(' | ');
+              const separators = visibleTitles.map(() => '---').join(' | ');
+              
+              nodeMarkdown += `| ${headers} |\n`;
+              nodeMarkdown += `| ${separators} |\n`;
+              
+              // 生成表格行
+              if (node.config.data && Array.isArray(node.config.data)) {
+                node.config.data.forEach(row => {
+                  let rowContent = '';
+                  
+                  // 处理不同格式的行数据
+                  if (Array.isArray(row)) {
+                    // 处理 [{"nick": "id", "value": 1}, ...] 格式
+                    visibleTitles.forEach(title => {
+                      const cell = row.find(item => item.nick === title.nick);
+                      rowContent += ` ${cell ? cell.value : ''} |`;
+                    });
+                  } else if (typeof row === 'object') {
+                    // 处理 {"id": 1, "name": "John"} 格式
+                    visibleTitles.forEach(title => {
+                      rowContent += ` ${row[title.nick] || ''} |`;
+                    });
+                  }
+                  
+                  nodeMarkdown += `|${rowContent}\n`;
+                });
+              } else {
+                // 只有表头，没有数据
+                nodeMarkdown += `| ${visibleTitles.map(() => '').join(' | ')} |\n`;
+              }
+              
+              nodeMarkdown += '\n';
+            }
+          }
+          break;
+        default:
+          nodeMarkdown = `<!-- ANX Component: ${node.config.kind} -->`;
+      }
+    }
+    
+    // 使用x标签包裹Markdown内容，并添加kind和cardKey属性
+    return `<x ${node.config.kind || ''} ${node.cardKey}>
+${nodeMarkdown}
+</x>`;
+  }
+  
+  return await processNode(nodesStructure);
+}
 
 // API endpoint for converting ANX to Markdown
 app.post('/convert', async (req, res) => {
   try {
     const { anxContent } = req.body;
     
-    // Convert ANX to Markdown
-    const markdown = await anxToMarkdown(anxContent);
+    // 生成ANX内容的哈希值
+    const anxHash = generateAnxHash(anxContent);
+    
+    // 检查是否已经为相同的ANX内容生成过节点结构
+    let nodesStructure = anxHashToNodeMap.get(anxHash);
+    
+    if (!nodesStructure) {
+      // 首次生成节点结构
+      nodesStructure = anxToNodes(anxContent);
+      // 存储到哈希映射中
+      anxHashToNodeMap.set(anxHash, nodesStructure);
+    }
+    
+    // 检查根节点是否有存储的数据
+    const storedRootNode = nodeStorage.get(nodesStructure.cardKey);
+    if (storedRootNode) {
+      // 使用存储中的数据更新根节点
+      Object.assign(nodesStructure, storedRootNode);
+    }
+    
+    // 更新子节点，使用存储中的数据
+    if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+      updateNodesWithStoredData(nodesStructure.nodes);
+    }
+    
+    // 从节点结构转换为Markdown
+    const markdown = await nodesToMarkdown(nodesStructure);
     
     res.json({ markdown });
   } catch (error) {
@@ -32,6 +342,24 @@ app.post('/convert', async (req, res) => {
     res.status(400).json({ error: 'Invalid ANX content. Please check your input.' });
   }
 });
+
+// 递归更新节点结构，使用存储中的数据
+function updateNodesWithStoredData(nodes) {
+  if (!Array.isArray(nodes)) return;
+  
+  nodes.forEach(node => {
+    // 检查是否有存储的节点数据
+    const storedNode = nodeStorage.get(node.cardKey);
+    if (storedNode) {
+      // 使用存储中的数据更新节点
+      Object.assign(node, storedNode);
+    }
+    // 递归更新子节点
+    if (node.nodes && node.nodes.length > 0) {
+      updateNodesWithStoredData(node.nodes);
+    }
+  });
+}
 
 // 递归存储所有节点的cardKey和config，以及完整的节点结构
 function storeCardNodes(nodes) {
@@ -55,8 +383,30 @@ app.post('/convert-to-nodes', (req, res) => {
   try {
     const { anxContent } = req.body;
     
-    // Convert ANX to nodes structure
-    const nodesStructure = anxToNodes(anxContent);
+    // 生成ANX内容的哈希值
+    const anxHash = generateAnxHash(anxContent);
+    
+    // 检查是否已经为相同的ANX内容生成过节点结构
+    let nodesStructure = anxHashToNodeMap.get(anxHash);
+    
+    if (!nodesStructure) {
+      // 首次生成节点结构
+      nodesStructure = anxToNodes(anxContent);
+      // 存储到哈希映射中
+      anxHashToNodeMap.set(anxHash, nodesStructure);
+    }
+    
+    // 检查根节点是否有存储的数据
+    const storedRootNode = nodeStorage.get(nodesStructure.cardKey);
+    if (storedRootNode) {
+      // 使用存储中的数据更新根节点
+      Object.assign(nodesStructure, storedRootNode);
+    }
+    
+    // 更新子节点，使用存储中的数据
+    if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+      updateNodesWithStoredData(nodesStructure.nodes);
+    }
     
     // 存储根节点
     if (nodesStructure.cardKey && nodesStructure.config) {
@@ -114,13 +464,28 @@ app.post('/execute-cli', (req, res) => {
           result = `No node found for cardKey: ${cardKey}`;
         }
         break;
+      case 'get_form':
+        // 从存储中获取cardKey对应的节点
+        const getFormNode = nodeStorage.get(cardKey);
+        if (getFormNode) {
+          // 返回表单的完整数据
+          result = getFormNode.data || { value: {} };
+        } else {
+          result = `No node found for cardKey: ${cardKey}`;
+        }
+        break;
       case 'set_form':
         // 从存储中获取cardKey对应的节点
         const formNode = nodeStorage.get(cardKey);
         if (formNode) {
           try {
+            // 检查是否有--replace参数
+            const hasReplaceFlag = params.includes('--replace');
+            // 移除--replace参数
+            const jsonParams = params.filter(param => param !== '--replace');
+            
             // 解析JSON参数，移除两端的单引号
-            let jsonString = params.join(' ');
+            let jsonString = jsonParams.join(' ');
             // 移除两端的单引号
             if (jsonString.startsWith("'") && jsonString.endsWith("'")) {
               jsonString = jsonString.substring(1, jsonString.length - 1);
@@ -130,10 +495,21 @@ app.post('/execute-cli', (req, res) => {
             if (!formNode.data) {
               formNode.data = { value: {} };
             }
-            formNode.data.value = formData;
+            
+            if (hasReplaceFlag) {
+              // 全量覆盖
+              formNode.data.value = formData;
+            } else {
+              // 增量更新
+              formNode.data.value = { ...formNode.data.value, ...formData };
+            }
+            
             // 更新存储
             nodeStorage.set(cardKey, formNode);
-            result = { message: 'Form data updated successfully', data: formData };
+            result = { 
+              message: `Form data ${hasReplaceFlag ? 'replaced' : 'updated'} successfully`, 
+              data: formNode.data.value 
+            };
           } catch (parseError) {
             result = `Invalid JSON format: ${parseError.message}`;
           }

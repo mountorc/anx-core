@@ -10,7 +10,8 @@ const {
   convertBoardToMarkdown, 
   convertFormToMarkdown, 
   convertOptionsToMarkdown, 
-  convertNavigationToMarkdown 
+  convertNavigationToMarkdown,
+  convertTableToMarkdown 
 } = require('./kinds/index.js');
 async function anxToMarkdown(anxContent) {
   if (!anxContent || typeof anxContent !== 'object') {
@@ -48,7 +49,7 @@ function anxToNodes(anxContent) {
   const result = {
     cardKey: generateCardKey(),
     config: {},
-    data: { "value": {} },
+    data: {},
     logs: [],
     nodes: []
   };
@@ -62,9 +63,14 @@ function anxToNodes(anxContent) {
     result.config = { ...anxContent }; // 复制整个ANX Config到config
   }
 
-  // 设置data
-  if (anxContent.value) {
+  // 设置data.value（仅在存在时）
+  if (anxContent.value !== undefined) {
     result.data.value = anxContent.value;
+  }
+
+  // 对于box和table类型，将config.data放到data.data中
+  if ((anxContent.kind === 'box' || anxContent.kind === 'table') && anxContent.data) {
+    result.data.data = anxContent.data;
   }
 
   // 处理子组件
@@ -73,20 +79,44 @@ function anxToNodes(anxContent) {
       const childNode = {
         cardKey: generateCardKey(),
         config: { ...child }, // 复制整个子组件对象到config
-        data: { "value": child.value || {} },
+        data: {},
         logs: [],
         nodes: []
       };
 
+      // 设置data.value（仅在存在时）
+      if (child.value !== undefined) {
+        childNode.data.value = child.value;
+      }
+
+      // 对于box和table类型，将config.data放到data.data中
+      if ((child.kind === 'box' || child.kind === 'table') && child.data) {
+        childNode.data.data = child.data;
+      }
+
       // 处理子组件的子组件
       if (child.kinds && Array.isArray(child.kinds)) {
-        childNode.nodes = child.kinds.map(grandchild => ({
-          cardKey: generateCardKey(),
-          config: { ...grandchild }, // 复制整个孙子组件对象到config
-          data: { "value": grandchild.value || {} },
-          logs: [],
-          nodes: []
-        }));
+        childNode.nodes = child.kinds.map(grandchild => {
+          const grandchildNode = {
+            cardKey: generateCardKey(),
+            config: { ...grandchild }, // 复制整个孙子组件对象到config
+            data: {},
+            logs: [],
+            nodes: []
+          };
+
+          // 设置data.value（仅在存在时）
+          if (grandchild.value !== undefined) {
+            grandchildNode.data.value = grandchild.value;
+          }
+
+          // 对于box和table类型，将config.data放到data.data中
+          if ((grandchild.kind === 'box' || grandchild.kind === 'table') && grandchild.data) {
+            grandchildNode.data.data = grandchild.data;
+          }
+
+          return grandchildNode;
+        });
       }
 
       return childNode;
@@ -144,6 +174,8 @@ async function convertComponentToMarkdown(component) {
       return await convertOptionsToMarkdown(processedComponent);
     case 'checkbox':
       return convertCheckboxToMarkdown(processedComponent);
+    case 'table':
+      return await convertTableToMarkdown(processedComponent);
     default:
       return `<!-- ANX Component: ${kind} -->`;
   }

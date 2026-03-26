@@ -29,11 +29,17 @@ async function convertOptionsToMarkdown(component) {
       if (optionsSet.dataset.path && datasetData) {
         processedOptions = getPropertyValue(datasetData, optionsSet.dataset.path);
       } else {
-        processedOptions = datasetData;
+        // 检查datasetData是否有data属性，如果有，使用data属性作为选项数组
+        processedOptions = datasetData && datasetData.data ? datasetData.data : datasetData;
       }
     } catch (error) {
       console.error('Error fetching options dataset:', error);
     }
+  }
+  
+  // 确保processedOptions是一个数组
+  if (!Array.isArray(processedOptions)) {
+    processedOptions = [];
   }
 
   if (processedOptions && Array.isArray(processedOptions)) {

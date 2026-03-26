@@ -59,11 +59,23 @@
         <div class="markdown-output" v-html="markdownOutput"></div>
         <pre class="raw-output">{{ rawMarkdownOutput }}</pre>
       </div>
+      <div class="visual-section">
+        <h2>Node Visualization</h2>
+        <div class="visual-output">
+          <div class="node-visualization" v-if="nodesStructure">
+            <div v-html="generateNodeVisualization(nodesStructure)"></div>
+          </div>
+          <div v-else class="no-data">
+            No node data available
+          </div>
+        </div>
+      </div>
     </div>
     <div class="test-cases">
       <h3>Test Cases</h3>
       <button @click="loadOptionsDatasetTest">Options Dataset Test</button>
       <button @click="loadFormTest">Form Test</button>
+      <button @click="loadTableTest">Table Test</button>
     </div>
   </div>
 </template>
@@ -85,6 +97,7 @@ export default {
       markdownOutput: '',
       rawMarkdownOutput: '',
       jsonStructure: '',
+      nodesStructure: null,
       cliCommand: '',
       cliOutput: '',
       showCommandsModal: false,
@@ -111,6 +124,7 @@ export default {
         
         const nodesResult = await nodesResponse.json();
         this.jsonStructure = JSON.stringify(nodesResult.nodes, null, 2);
+        this.nodesStructure = nodesResult.nodes;
         
         // Convert ANX to Markdown
         const markdownResponse = await fetch('/api/convert', {
@@ -225,6 +239,33 @@ export default {
 }`;
       this.convertAnxToMarkdown();
     },
+    loadTableTest() {
+      this.anxInput = `{
+  "kind": "table",
+  "nick": "users_table",
+  "title": "用户表",
+  "data": [
+    { "id": 1, "name": "张三", "email": "zhangsan@example.com", "status": "active" },
+    { "id": 2, "name": "李四", "email": "lisi@example.com", "status": "inactive" },
+    { "id": 3, "name": "王五", "email": "wangwu@example.com", "status": "active" }
+  ],
+  "titles": [
+    { "title": "ID", "nick": "id", "width": 80 },
+    { "title": "姓名", "nick": "name", "width": 120 },
+    { "title": "邮箱", "nick": "email", "width": 200 },
+    { "title": "状态", "nick": "status", "width": 100 }
+  ],
+  "pagination": {
+    "pageSize": 10,
+    "pageNum": 1
+  },
+  "sort": {
+    "field": "id",
+    "order": "asc"
+  }
+}`;
+      this.convertAnxToMarkdown();
+    },
     async executeCliCommand() {
       if (!this.cliCommand) {
         this.cliOutput = 'Please enter a CLI command.';
@@ -246,11 +287,164 @@ export default {
         this.cliOutput = `cardKey: ${result.cardKey}\naction: ${result.action}\nresult: ${JSON.stringify(result.result, null, 2)}`;
         
         // 重新获取节点结构以更新显示
-        await this.convertAnxToMarkdown();
+        await this.refreshNodesStructure();
       } catch (error) {
         console.error('Error executing CLI command:', error);
         this.cliOutput = 'Error executing CLI command. Please check your input.';
       }
+    },
+    async refreshNodesStructure() {
+      try {
+        // 解析ANX输入
+        const anxContent = JSON.parse(this.anxInput);
+        
+        // 获取更新后的节点结构
+        const nodesResponse = await fetch('/api/convert-to-nodes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ anxContent })
+        });
+        
+        const nodesResult = await nodesResponse.json();
+        this.jsonStructure = JSON.stringify(nodesResult.nodes, null, 2);
+        this.nodesStructure = nodesResult.nodes;
+      } catch (error) {
+        console.error('Error refreshing nodes structure:', error);
+        this.jsonStructure = 'Error refreshing nodes structure. Please check your input.';
+      }
+    },
+    generateNodeVisualization(node) {
+      if (!node || !node.config || !node.config.kind) {
+        return '';
+      }
+      
+      switch (node.config.kind) {
+        case 'box':
+          return this.generateBoxVisualization(node);
+        default:
+          return this.generateDefaultVisualization(node);
+      }
+    },
+    generateBoxVisualization(node) {
+      let html = `
+        <div class="box-visualization">
+          <div class="box-header">
+            <h3>${node.config.title || 'Box'} dataset</h3>
+          </div>
+          <div class="box-content">
+      `;
+      
+      if (node.config.data && Array.isArray(node.config.data)) {
+        node.config.data.forEach((item, index) => {
+          const parsedContent = this.parseTemplate(node.config.template, item);
+          html += `
+            <x ${index}>
+              <div class="box-data-item">
+                ${parsedContent}
+              </div>
+            </x>
+          `;
+        });
+      } else {
+        html += `
+          <div class="no-data">
+            No data available
+          </div>
+        `;
+      }
+      
+      html += `
+          </div>
+        </div>
+      `;
+      
+      return html;
+    },
+    generateDefaultVisualization(node) {
+      let html = `
+        <h3>${node.config.kind || 'Node'}</h3>
+        <div class="node-info">
+          <p><strong>Card Key:</strong> ${node.cardKey}</p>
+          <p><strong>Title:</strong> ${node.config.title || 'N/A'}</p>
+          <p><strong>Nick:</strong> ${node.config.nick || 'N/A'}</p>
+      `;
+      
+      if (node.data && node.data.options) {
+        html += `
+          <div class="node-options">
+            <h4>Options:</h4>
+            <ul>
+        `;
+        
+        node.data.options.forEach((option, index) => {
+          html += `
+              <li>${option.title} (${option.value})</li>
+          `;
+        });
+        
+        html += `
+            </ul>
+          </div>
+        `;
+      } else if (node.data && node.data.value) {
+        html += `
+          <div class="node-value">
+            <h4>Value:</h4>
+            <p>${JSON.stringify(node.data.value)}</p>
+          </div>
+        `;
+      }
+      
+      html += `
+        </div>
+      `;
+      
+      return html;
+    },
+    parseTemplate(template, data) {
+      if (!template) return '';
+      
+      let parsedTemplate = template;
+      
+      // 替换双大括号变量
+      const doubleBracesRegex = /\{\{([^{}]+)\}\}/g;
+      parsedTemplate = parsedTemplate.replace(doubleBracesRegex, (match, variable) => {
+        const value = this.getPropertyValue(data, variable.trim());
+        return value !== undefined ? value : match;
+      });
+      
+      // 替换美元大括号变量
+      const dollarBracesRegex = /\$\{([^{}]+)\}/g;
+      parsedTemplate = parsedTemplate.replace(dollarBracesRegex, (match, variable) => {
+        const value = this.getPropertyValue(data, variable.trim());
+        return value !== undefined ? value : match;
+      });
+      
+      // 替换单大括号变量
+      const singleBracesRegex = /\{([^{}]+)\}/g;
+      parsedTemplate = parsedTemplate.replace(singleBracesRegex, (match, variable) => {
+        const value = this.getPropertyValue(data, variable.trim());
+        return value !== undefined ? value : match;
+      });
+      
+      return parsedTemplate;
+    },
+    getPropertyValue(obj, path) {
+      if (!obj || typeof obj !== 'object') return undefined;
+
+      const keys = path.split('.');
+      let value = obj;
+
+      for (const key of keys) {
+        if (value[key] === undefined) {
+          return undefined;
+        }
+        value = value[key];
+      }
+
+      return value;
     },
     async showCommandsList() {
       try {
@@ -283,7 +477,8 @@ export default {
 
 .input-section,
 .json-section,
-.output-section {
+.output-section,
+.visual-section {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -294,7 +489,8 @@ export default {
 
 .input-section h2,
 .json-section h2,
-.output-section h2 {
+.output-section h2,
+.visual-section h2 {
   background-color: #f5f5f5;
   padding: 10px;
   margin: 0;
@@ -358,6 +554,121 @@ export default {
   background-color: #f9f9f9;
   overflow-y: auto;
   white-space: pre-wrap;
+}
+
+.visual-section {
+  background-color: #f9f9f9;
+}
+
+.visual-output {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.node-visualization {
+  background-color: white;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.node-item h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.node-info p {
+  margin: 8px 0;
+  color: #666;
+}
+
+.node-options {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.node-options h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 14px;
+}
+
+.node-options ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #666;
+}
+
+.node-options li {
+  margin: 5px 0;
+}
+
+.node-value {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.node-value h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 14px;
+}
+
+.no-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #999;
+  font-style: italic;
+}
+
+.box-visualization {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+
+.box-header {
+  background-color: #f5f5f5;
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.box-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.box-content {
+  padding: 15px;
+}
+
+.box-data-item {
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: white;
+  color: #333;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.box-data-item:last-child {
+  margin-bottom: 0;
 }
 
 .test-cases {
