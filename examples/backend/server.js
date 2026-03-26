@@ -5,6 +5,7 @@ const fs = require('fs');
 
 // Import the anxToMarkdown, anxToNodes functions and anxCLI from the core module
 const { anxToMarkdown, anxToNodes, anxCLI } = require('../../core/index.js');
+const { generateNodeVisualization, generateVisualizationCSS } = require('../../view/index.js');
 
 const app = express();
 const PORT = 7887;
@@ -304,7 +305,7 @@ ${nodeMarkdown}
 }
 
 // API endpoint for converting ANX to Markdown
-app.post('/convert', async (req, res) => {
+app.post('/api/convert', async (req, res) => {
   try {
     const { anxContent } = req.body;
     
@@ -379,7 +380,7 @@ function storeCardNodes(nodes) {
 }
 
 // API endpoint for converting ANX to nodes structure
-app.post('/convert-to-nodes', (req, res) => {
+app.post('/api/convert-to-nodes', (req, res) => {
   try {
     const { anxContent } = req.body;
     
@@ -427,7 +428,7 @@ app.post('/convert-to-nodes', (req, res) => {
 });
 
 // API endpoint for executing CLI commands
-app.post('/execute-cli', (req, res) => {
+app.post('/api/execute-cli', (req, res) => {
   try {
     const { command } = req.body;
     
@@ -631,6 +632,27 @@ app.get('/docs-public/docs', (req, res) => {
   }
 });
 
+// API endpoint for generating node visualization
+app.post('/api/visualize-node', (req, res) => {
+  try {
+    const { node } = req.body;
+    if (!node) {
+      return res.status(400).json({ error: 'node is required' });
+    }
+    
+    const html = generateNodeVisualization(node);
+    const css = generateVisualizationCSS();
+    
+    res.json({
+      html,
+      css
+    });
+  } catch (error) {
+    console.error('Error generating node visualization:', error);
+    res.status(500).json({ error: 'Failed to generate node visualization' });
+  }
+});
+
 // API endpoint for getting CLI commands list
 app.get('/cli/commands', (req, res) => {
   try {
@@ -639,6 +661,106 @@ app.get('/cli/commands', (req, res) => {
   } catch (error) {
     console.error('Error getting CLI commands:', error);
     res.status(500).json({ error: 'Failed to get CLI commands' });
+  }
+});
+
+// API endpoint for updating node data
+app.post('/api/update-node-data', (req, res) => {
+  try {
+    const { cardKey, field, value } = req.body;
+    
+    if (!cardKey || !field) {
+      return res.status(400).json({ error: 'cardKey and field are required' });
+    }
+    
+    // 查找并更新节点
+    let nodeUpdated = false;
+    let updatedRootNode = null;
+    let parentFormNode = null;
+    let updatedChildNode = null;
+    
+    function updateNodeInStructure(nodes, parentNode = null) {
+      for (let node of nodes) {
+        if (node.cardKey === cardKey) {
+          // 更新节点数据
+          if (!node.data) {
+            node.data = {};
+          }
+          node.data[field] = value;
+          nodeUpdated = true;
+          updatedChildNode = node;
+          
+          // 如果父节点是 form，记录父节点
+          if (parentNode && parentNode.config && parentNode.config.kind === 'form') {
+            parentFormNode = parentNode;
+          }
+          
+          return true;
+        }
+        
+        // 递归查找子节点
+        if (node.nodes && node.nodes.length > 0) {
+          if (updateNodeInStructure(node.nodes, node)) {
+            // 如果父节点是 form，记录父节点
+            if (parentNode && parentNode.config && parentNode.config.kind === 'form') {
+              parentFormNode = parentNode;
+            }
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    
+    // 在所有存储的节点中查找
+    for (let [anxHash, rootNode] of anxHashToNodeMap) {
+      if (rootNode.cardKey === cardKey) {
+        if (!rootNode.data) {
+          rootNode.data = {};
+        }
+        rootNode.data[field] = value;
+        nodeUpdated = true;
+        updatedRootNode = rootNode;
+        break;
+      }
+      
+      if (rootNode.nodes && rootNode.nodes.length > 0) {
+        if (updateNodeInStructure(rootNode.nodes, rootNode)) {
+          nodeUpdated = true;
+          updatedRootNode = rootNode;
+          break;
+        }
+      }
+    }
+    
+    if (!nodeUpdated) {
+      return res.status(404).json({ error: 'Node not found' });
+    }
+    
+    // 如果更新了子组件且有父 form 组件，同步更新 form 的 value
+    if (updatedChildNode && parentFormNode) {
+      if (!parentFormNode.data) {
+        parentFormNode.data = {};
+      }
+      if (!parentFormNode.data.value) {
+        parentFormNode.data.value = {};
+      }
+      
+      // 获取子组件的 nick
+      const childNick = updatedChildNode.config && updatedChildNode.config.nick;
+      if (childNick) {
+        parentFormNode.data.value[childNick] = value;
+      }
+    }
+    
+    res.json({
+      success: true,
+      message: 'Node data updated successfully',
+      nodes: updatedRootNode
+    });
+  } catch (error) {
+    console.error('Error updating node data:', error);
+    res.status(500).json({ error: 'Failed to update node data' });
   }
 });
 

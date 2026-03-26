@@ -62,8 +62,8 @@
       <div class="visual-section">
         <h2>Node Visualization</h2>
         <div class="visual-output">
-          <div class="node-visualization" v-if="nodesStructure">
-            <div v-html="generateNodeVisualization(nodesStructure)"></div>
+          <div class="node-visualization" v-if="nodesStructure" ref="visualizationContainer">
+            <div v-html="visualizationHTML"></div>
           </div>
           <div v-else class="no-data">
             No node data available
@@ -101,11 +101,20 @@ export default {
       cliCommand: '',
       cliOutput: '',
       showCommandsModal: false,
-      cliCommands: []
+      cliCommands: [],
+      visualizationHTML: '',
+      visualizationCSS: ''
     }
   },
   mounted() {
     this.convertAnxToMarkdown();
+    
+    // 监听 message 事件（来自可视化 iframe）
+    window.addEventListener('message', this.handleVisualizationMessage);
+  },
+  beforeUnmount() {
+    // 移除事件监听
+    window.removeEventListener('message', this.handleVisualizationMessage);
   },
   methods: {
     async convertAnxToMarkdown() {
@@ -126,6 +135,9 @@ export default {
         this.jsonStructure = JSON.stringify(nodesResult.nodes, null, 2);
         this.nodesStructure = nodesResult.nodes;
         
+        // Generate node visualization
+        await this.generateNodeVisualization(this.nodesStructure);
+        
         // Convert ANX to Markdown
         const markdownResponse = await fetch('/api/convert', {
           method: 'POST',
@@ -143,6 +155,129 @@ export default {
         this.rawMarkdownOutput = 'Error converting ANX to Markdown. Please check your input.';
         this.markdownOutput = '<p>Error converting ANX to Markdown. Please check your input.</p>';
         this.jsonStructure = 'Invalid JSON. Please check your input.';
+      }
+    },
+    async generateNodeVisualization(node) {
+      try {
+        const response = await fetch('/api/visualize-node', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ node })
+        });
+        
+        const result = await response.json();
+        this.visualizationHTML = result.html;
+        this.visualizationCSS = result.css;
+        
+        // 动态注入 CSS 和 JavaScript
+        this.$nextTick(() => {
+          this.injectVisualizationCSS(result.css);
+          this.injectVisualizationJS();
+        });
+      } catch (error) {
+        console.error('Error generating node visualization:', error);
+        this.visualizationHTML = '<div class="anx-error">Error generating node visualization</div>';
+      }
+    },
+    injectVisualizationJS() {
+      // 移除旧的脚本标签
+      const oldScript = document.getElementById('visualization-dynamic-script');
+      if (oldScript) {
+        oldScript.remove();
+      }
+      
+      // 创建新的脚本标签
+      const script = document.createElement('script');
+      script.id = 'visualization-dynamic-script';
+      script.textContent = `
+        // 更新节点数据
+        window.updateNodeData = function(element) {
+          const cardKey = element.getAttribute('data-card-key');
+          const field = element.getAttribute('data-field');
+          const value = element.value;
+          
+          // 发送消息到父窗口
+          window.parent.postMessage({
+            type: 'UPDATE_NODE_DATA',
+            cardKey: cardKey,
+            field: field,
+            value: value
+          }, '*');
+        };
+        
+        // 更新复选框数据
+        window.updateCheckboxData = function(element) {
+          const cardKey = element.getAttribute('data-card-key');
+          const field = element.getAttribute('data-field');
+          
+          // 获取当前所有选中的值
+          const checkboxes = document.querySelectorAll('[data-card-key="' + cardKey + '"][data-field="' + field + '"]');
+          const values = [];
+          checkboxes.forEach(function(cb) {
+            if (cb.checked) {
+              values.push(cb.getAttribute('data-option-value'));
+            }
+          });
+          
+          // 发送消息到父窗口
+          window.parent.postMessage({
+            type: 'UPDATE_NODE_DATA',
+            cardKey: cardKey,
+            field: field,
+            value: values
+          }, '*');
+        };
+      `;
+      document.head.appendChild(script);
+    },
+    injectVisualizationCSS(css) {
+      if (!css) return;
+      
+      // 移除旧的样式标签
+      const oldStyle = document.getElementById('visualization-dynamic-style');
+      if (oldStyle) {
+        oldStyle.remove();
+      }
+      
+      // 创建新的样式标签
+      const style = document.createElement('style');
+      style.id = 'visualization-dynamic-style';
+      style.textContent = css;
+      document.head.appendChild(style);
+    },
+    async handleVisualizationMessage(event) {
+      // 检查消息类型
+      if (event.data && event.data.type === 'UPDATE_NODE_DATA') {
+        const { cardKey, field, value } = event.data;
+        console.log('Node data changed from visualization:', { cardKey, field, value });
+        
+        try {
+          // 调用后端 API 更新节点数据
+          const response = await fetch('/api/update-node-data', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ cardKey, field, value })
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to update node data');
+          }
+          
+          const result = await response.json();
+          console.log('Node data updated:', result);
+          
+          // 更新 Core Nodes 显示
+          if (result.nodes) {
+            this.jsonStructure = JSON.stringify(result.nodes, null, 2);
+            this.nodesStructure = result.nodes;
+          }
+        } catch (error) {
+          console.error('Error updating node data:', error);
+        }
       }
     },
     convertMarkdownToHtml(markdown) {
@@ -310,141 +445,13 @@ export default {
         const nodesResult = await nodesResponse.json();
         this.jsonStructure = JSON.stringify(nodesResult.nodes, null, 2);
         this.nodesStructure = nodesResult.nodes;
+        
+        // 重新生成节点可视化
+        await this.generateNodeVisualization(this.nodesStructure);
       } catch (error) {
         console.error('Error refreshing nodes structure:', error);
         this.jsonStructure = 'Error refreshing nodes structure. Please check your input.';
       }
-    },
-    generateNodeVisualization(node) {
-      if (!node || !node.config || !node.config.kind) {
-        return '';
-      }
-      
-      switch (node.config.kind) {
-        case 'box':
-          return this.generateBoxVisualization(node);
-        default:
-          return this.generateDefaultVisualization(node);
-      }
-    },
-    generateBoxVisualization(node) {
-      let html = `
-        <div class="box-visualization">
-          <div class="box-header">
-            <h3>${node.config.title || 'Box'} dataset</h3>
-          </div>
-          <div class="box-content">
-      `;
-      
-      if (node.config.data && Array.isArray(node.config.data)) {
-        node.config.data.forEach((item, index) => {
-          const parsedContent = this.parseTemplate(node.config.template, item);
-          html += `
-            <x ${index}>
-              <div class="box-data-item">
-                ${parsedContent}
-              </div>
-            </x>
-          `;
-        });
-      } else {
-        html += `
-          <div class="no-data">
-            No data available
-          </div>
-        `;
-      }
-      
-      html += `
-          </div>
-        </div>
-      `;
-      
-      return html;
-    },
-    generateDefaultVisualization(node) {
-      let html = `
-        <h3>${node.config.kind || 'Node'}</h3>
-        <div class="node-info">
-          <p><strong>Card Key:</strong> ${node.cardKey}</p>
-          <p><strong>Title:</strong> ${node.config.title || 'N/A'}</p>
-          <p><strong>Nick:</strong> ${node.config.nick || 'N/A'}</p>
-      `;
-      
-      if (node.data && node.data.options) {
-        html += `
-          <div class="node-options">
-            <h4>Options:</h4>
-            <ul>
-        `;
-        
-        node.data.options.forEach((option, index) => {
-          html += `
-              <li>${option.title} (${option.value})</li>
-          `;
-        });
-        
-        html += `
-            </ul>
-          </div>
-        `;
-      } else if (node.data && node.data.value) {
-        html += `
-          <div class="node-value">
-            <h4>Value:</h4>
-            <p>${JSON.stringify(node.data.value)}</p>
-          </div>
-        `;
-      }
-      
-      html += `
-        </div>
-      `;
-      
-      return html;
-    },
-    parseTemplate(template, data) {
-      if (!template) return '';
-      
-      let parsedTemplate = template;
-      
-      // 替换双大括号变量
-      const doubleBracesRegex = /\{\{([^{}]+)\}\}/g;
-      parsedTemplate = parsedTemplate.replace(doubleBracesRegex, (match, variable) => {
-        const value = this.getPropertyValue(data, variable.trim());
-        return value !== undefined ? value : match;
-      });
-      
-      // 替换美元大括号变量
-      const dollarBracesRegex = /\$\{([^{}]+)\}/g;
-      parsedTemplate = parsedTemplate.replace(dollarBracesRegex, (match, variable) => {
-        const value = this.getPropertyValue(data, variable.trim());
-        return value !== undefined ? value : match;
-      });
-      
-      // 替换单大括号变量
-      const singleBracesRegex = /\{([^{}]+)\}/g;
-      parsedTemplate = parsedTemplate.replace(singleBracesRegex, (match, variable) => {
-        const value = this.getPropertyValue(data, variable.trim());
-        return value !== undefined ? value : match;
-      });
-      
-      return parsedTemplate;
-    },
-    getPropertyValue(obj, path) {
-      if (!obj || typeof obj !== 'object') return undefined;
-
-      const keys = path.split('.');
-      let value = obj;
-
-      for (const key of keys) {
-        if (value[key] === undefined) {
-          return undefined;
-        }
-        value = value[key];
-      }
-
-      return value;
     },
     async showCommandsList() {
       try {
@@ -573,56 +580,6 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.node-item h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  color: #333;
-  font-size: 18px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-}
-
-.node-info p {
-  margin: 8px 0;
-  color: #666;
-}
-
-.node-options {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
-}
-
-.node-options h4 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: #333;
-  font-size: 14px;
-}
-
-.node-options ul {
-  margin: 0;
-  padding-left: 20px;
-  color: #666;
-}
-
-.node-options li {
-  margin: 5px 0;
-}
-
-.node-value {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
-}
-
-.node-value h4 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: #333;
-  font-size: 14px;
-}
-
 .no-data {
   display: flex;
   justify-content: center;
@@ -630,45 +587,6 @@ export default {
   height: 100%;
   color: #999;
   font-style: italic;
-}
-
-.box-visualization {
-  background-color: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0e0e0;
-}
-
-.box-header {
-  background-color: #f5f5f5;
-  padding: 15px;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.box-header h3 {
-  margin: 0;
-  color: #333;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.box-content {
-  padding: 15px;
-}
-
-.box-data-item {
-  padding: 15px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  background-color: white;
-  color: #333;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-.box-data-item:last-child {
-  margin-bottom: 0;
 }
 
 .test-cases {
