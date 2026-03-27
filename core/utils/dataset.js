@@ -19,6 +19,9 @@ async function fetchDataset(datasetConfig) {
     return fetchLocalDataset(datasetConfig.uuid_dataset);
   } else if (datasetConfig.url_dataset) {
     return fetchUrlDataset(datasetConfig.url_dataset);
+  } else if (datasetConfig.data) {
+    // Directly return the data if it's provided in the dataset config
+    return datasetConfig.data;
   }
 
   return [];

@@ -88,9 +88,33 @@ async function nodesToMarkdown(nodesStructure) {
             nodeMarkdown = `## ${node.config.title}\n\n`;
           }
           
-          if (node.config.data && Array.isArray(node.config.data) && node.config.data.length > 0) {
-            for (let i = 0; i < node.config.data.length; i++) {
-              const item = node.config.data[i];
+          // 处理dataset
+          let boxData = node.config.data;
+          if (!boxData && node.config.dataset) {
+            try {
+              // 直接使用dataset作为配置，支持url_dataset和uuid_dataset
+              const { fetchDataset } = require('../../core/utils/dataset.js');
+              const datasetData = await fetchDataset(node.config.dataset);
+              // 直接使用返回的数组，因为fetchDataset已经返回了正确的数据格式
+              boxData = datasetData || [];
+              
+              // 将数据存储到node的data.data中
+              if (!node.data) {
+                node.data = {};
+              }
+              node.data.data = boxData;
+              // 更新node.config.data，以便后续使用
+              node.config.data = boxData;
+              // 更新存储中的节点数据
+              nodeStorage.set(node.cardKey, node);
+            } catch (error) {
+              console.error('Error fetching box dataset:', error);
+            }
+          }
+          
+          if (boxData && Array.isArray(boxData) && boxData.length > 0) {
+            for (let i = 0; i < boxData.length; i++) {
+              const item = boxData[i];
               const templateContent = node.config.template || node.config.html;
               if (templateContent) {
                 // 替换模板中的变量
@@ -407,7 +431,7 @@ function storeCardNodes(nodes) {
 }
 
 // API endpoint for converting ANX to nodes structure
-app.post('/api/convert-to-nodes', (req, res) => {
+app.post('/api/convert-to-nodes', async (req, res) => {
   try {
     const { anxContent } = req.body;
     
@@ -424,6 +448,41 @@ app.post('/api/convert-to-nodes', (req, res) => {
       anxHashToNodeMap.set(anxHash, nodesStructure);
     }
     
+    // 处理节点中的 dataset
+    async function processNodeDataset(node) {
+      if (node.config && node.config.dataset) {
+        try {
+          // 直接使用dataset作为配置，支持url_dataset和uuid_dataset
+          const { fetchDataset } = require('../../core/utils/dataset.js');
+          console.log('Processing dataset for node:', node.cardKey, 'with config:', node.config.dataset);
+          const datasetData = await fetchDataset(node.config.dataset);
+          // 直接使用返回的数组，因为fetchDataset已经返回了正确的数据格式
+          const processedData = datasetData || [];
+          console.log('Fetched dataset data:', processedData);
+          
+          // 将数据存储到node的data.data中
+          if (!node.data) {
+            node.data = {};
+          }
+          node.data.data = processedData;
+          // 更新node.config.data，以便后续使用
+          node.config.data = processedData;
+          // 更新存储中的节点数据
+          nodeStorage.set(node.cardKey, node);
+          console.log('Updated node data:', node.data);
+        } catch (error) {
+          console.error('Error fetching node dataset:', error);
+        }
+      }
+      
+      // 递归处理子节点
+      if (node.nodes && node.nodes.length > 0) {
+        for (const childNode of node.nodes) {
+          await processNodeDataset(childNode);
+        }
+      }
+    }
+    
     // 检查根节点是否有存储的数据
     const storedRootNode = nodeStorage.get(nodesStructure.cardKey);
     if (storedRootNode) {
@@ -435,6 +494,9 @@ app.post('/api/convert-to-nodes', (req, res) => {
     if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
       updateNodesWithStoredData(nodesStructure.nodes);
     }
+    
+    // 处理根节点和子节点的 dataset
+    await processNodeDataset(nodesStructure);
     
     // 存储根节点
     if (nodesStructure.cardKey && nodesStructure.config) {

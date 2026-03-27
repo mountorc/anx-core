@@ -77,6 +77,9 @@
       <button @click="loadFormTest">Form Test</button>
       <button @click="loadTableTest">Table Test</button>
       <button @click="loadBoardTableTest">Board with Table Test</button>
+      <button @click="loadBoxTapTest">Box Tap Test</button>
+      <button @click="loadBoxDatasetTest">Box Dataset Test</button>
+      <button @click="loadBoxDatasetUrlTest">Box Dataset URL Test</button>
     </div>
   </div>
 </template>
@@ -93,8 +96,77 @@ export default {
     { "name": "张三", "age": 25 },
     { "name": "李四", "age": 30 }
   ],
-  "template": "姓名: {{name}}, 年龄: {{age}}"
+  "template": "姓名: {{name}}, 年龄: {{age}}",
+  "tapSet": {
+    "navigateTo": {
+      "path": "/test",
+      "paramMap": {
+        "name": "name",
+        "age": "age"
+      }
+    }
+  }
 }`,
+      boxDatasetTest: `{
+  "kind": "box",
+  "title": "测试Box组件 dataset",
+  "dataset": {
+    "data": [
+      { "name": "张三", "age": 25 },
+      { "name": "李四", "age": 30 }
+    ]
+  },
+  "template": "姓名: {{name}}, 年龄: {{age}}",
+  "tapSet": {
+    "navigateTo": {
+      "path": "/test",
+      "paramMap": {
+        "name": "name",
+        "age": "age"
+      }
+    }
+  }
+}`,
+      boxDatasetUrlTest: `{
+  "kind": "box",
+  "title": "测试Box组件 dataset url",
+  "dataset": {
+    "url_dataset": "http://localhost:4665/dataset"
+  },
+  "template": "商品名称: {{name}}, 价格: {{price}}",
+  "tapSet": {
+    "navigateTo": {
+      "path": "/test",
+      "paramMap": {
+        "name": "name",
+        "price": "price"
+      }
+    }
+  }
+}`,
+      boxTapTest: `{
+  "kind": "box",
+  "title": "测试Box组件 tapSet",
+  "data": [
+    { "name": "商品A", "price": 98 },
+    { "name": "商品B", "price": 58 },
+    { "name": "商品C", "price": 38 },
+    { "name": "商品D", "price": 65 },
+    { "name": "商品E", "price": 107 }
+  ],
+  "template": "商品名称: {{name}}, 价格: {{price}}",
+  "tapSet": {
+    "navigateTo": {
+      "path": "/test",
+      "paramMap": {
+        "name": "name",
+        "price": "price"
+      }
+    }
+  }
+}`,
+
+
       markdownOutput: '',
       rawMarkdownOutput: '',
       jsonStructure: '',
@@ -433,6 +505,19 @@ export default {
 }`;
       this.convertAnxToMarkdown();
     },
+    loadBoxTapTest() {
+      this.anxInput = this.boxTapTest;
+      this.convertAnxToMarkdown();
+    },
+    loadBoxDatasetTest() {
+      this.anxInput = this.boxDatasetTest;
+      this.convertAnxToMarkdown();
+    },
+    loadBoxDatasetUrlTest() {
+      this.anxInput = this.boxDatasetUrlTest;
+      this.convertAnxToMarkdown();
+    },
+
     async executeCliCommand() {
       if (!this.cliCommand) {
         this.cliOutput = 'Please enter a CLI command.';
