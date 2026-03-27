@@ -9,9 +9,23 @@
  */
 function renderText(node) {
   const config = node.config;
-  const value = config.value || '';
+  const value = node.data && node.data.value ? node.data.value : config.value || '';
+  const title = config.title || config.nick || '';
 
-  return `<div class="text-visualization">${value}</div>`;
+  if (title) {
+    return `
+      <div class="text-visualization">
+        <label class="text-label">${title}</label>
+        <div class="text-content">${value}</div>
+      </div>
+    `;
+  } else {
+    return `
+      <div class="text-visualization">
+        <div class="text-content">${value}</div>
+      </div>
+    `;
+  }
 }
 
 module.exports = {

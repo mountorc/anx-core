@@ -41,6 +41,218 @@ function getPropertyValue(obj, path) {
   return value;
 }
 
+/**
+ * 计算formula表达式的值
+ * @param {string} formula - formula表达式
+ * @param {Object} formData - 表单数据对象
+ * @returns {any} - 计算结果
+ */
+function evaluateFormula(formula, formData) {
+  if (!formula || typeof formula !== 'string') {
+    return undefined;
+  }
+
+  try {
+    // 处理 case when then else end 语法
+    if (formula.toLowerCase().includes('case')) {
+      return evaluateCaseWhenFormula(formula, formData);
+    }
+
+    // 替换formula中的变量为实际值
+    let expression = formula;
+    
+    // 提取所有变量（非引号内的单词）
+    const variableRegex = /\b[a-zA-Z_][a-zA-Z0-9_]*\b/g;
+    const variables = [...formula.matchAll(variableRegex)].map(match => match[0]);
+    
+    // 去重
+    const uniqueVariables = [...new Set(variables)];
+    
+    // 替换变量为实际值
+    for (const variable of uniqueVariables) {
+      const value = formData[variable];
+      if (value !== undefined) {
+        // 根据值的类型决定如何替换
+        if (typeof value === 'string') {
+          expression = expression.replace(new RegExp(`\\b${variable}\\b`, 'g'), `'${value}'`);
+        } else if (typeof value === 'number') {
+          expression = expression.replace(new RegExp(`\\b${variable}\\b`, 'g'), value);
+        } else if (typeof value === 'boolean') {
+          expression = expression.replace(new RegExp(`\\b${variable}\\b`, 'g'), value);
+        }
+      }
+    }
+
+    // 使用Function构造函数安全地计算表达式
+    // eslint-disable-next-line no-new-func
+    const result = new Function('return ' + expression)();
+    return result;
+  } catch (error) {
+    console.error('Error evaluating formula:', formula, error);
+    return undefined;
+  }
+}
+
+/**
+ * 处理 case when then else end 语法的formula
+ * @param {string} formula - case when formula表达式
+ * @param {Object} formData - 表单数据对象
+ * @returns {any} - 计算结果
+ */
+function evaluateCaseWhenFormula(formula, formData) {
+  try {
+    // 解析 case when 语法
+    // 格式: case when condition1 then result1 when condition2 then result2 else result end
+    
+    const lowerFormula = formula.toLowerCase();
+    if (!lowerFormula.startsWith('case') || !lowerFormula.endsWith('end')) {
+      return undefined;
+    }
+
+    // 提取 when-then 对和 else 部分
+    const content = formula.slice(4, -3).trim(); // 移除 'case' 和 'end'
+    
+    // 找到所有的 when-then 对
+    const whenRegex = /when\s+(.+?)\s+then\s+(.+?)(?=\s+when|\s+else|$)/gi;
+    const whenMatches = [...content.matchAll(whenRegex)];
+    
+    for (const match of whenMatches) {
+      const conditionStr = match[1].trim();
+      const resultStr = match[2].trim();
+      
+      // 计算条件
+      const conditionResult = evaluateCondition(conditionStr, formData);
+      if (conditionResult) {
+        // 返回结果值
+        return evaluateValue(resultStr, formData);
+      }
+    }
+    
+    // 如果没有匹配的when，返回else部分的值
+    const elseMatch = content.match(/else\s+(.+)$/i);
+    if (elseMatch) {
+      return evaluateValue(elseMatch[1].trim(), formData);
+    }
+    
+    return undefined;
+  } catch (error) {
+    console.error('Error evaluating case when formula:', formula, error);
+    return undefined;
+  }
+}
+
+/**
+ * 计算条件表达式
+ * @param {string} condition - 条件表达式
+ * @param {Object} formData - 表单数据对象
+ * @returns {boolean} - 条件结果
+ */
+function evaluateCondition(condition, formData) {
+  try {
+    // 替换变量为实际值
+    let expression = condition;
+    const variableRegex = /\b[a-zA-Z_][a-zA-Z0-9_]*\b/g;
+    const variables = [...condition.matchAll(variableRegex)].map(match => match[0]);
+    const uniqueVariables = [...new Set(variables)];
+    
+    for (const variable of uniqueVariables) {
+      const value = formData[variable];
+      if (value !== undefined) {
+        if (typeof value === 'string') {
+          expression = expression.replace(new RegExp(`\\b${variable}\\b`, 'g'), `'${value}'`);
+        } else if (typeof value === 'number') {
+          expression = expression.replace(new RegExp(`\\b${variable}\\b`, 'g'), value);
+        } else if (typeof value === 'boolean') {
+          expression = expression.replace(new RegExp(`\\b${variable}\\b`, 'g'), value);
+        }
+      }
+    }
+    
+    // eslint-disable-next-line no-new-func
+    return new Function('return ' + expression)();
+  } catch (error) {
+    console.error('Error evaluating condition:', condition, error);
+    return false;
+  }
+}
+
+/**
+ * 计算值表达式
+ * @param {string} valueStr - 值表达式
+ * @param {Object} formData - 表单数据对象
+ * @returns {any} - 计算结果
+ */
+function evaluateValue(valueStr, formData) {
+  // 如果是字符串常量（用单引号包裹）
+  if (valueStr.startsWith("'") && valueStr.endsWith("'")) {
+    return valueStr.slice(1, -1);
+  }
+  
+  // 如果是数字
+  if (!isNaN(valueStr)) {
+    return Number(valueStr);
+  }
+  
+  // 如果是变量，从formData中获取值
+  const value = formData[valueStr];
+  if (value !== undefined) {
+    return value;
+  }
+  
+  // 否则作为表达式计算
+  try {
+    return evaluateFormula(valueStr, formData);
+  } catch (error) {
+    return valueStr;
+  }
+}
+
+/**
+ * 更新form中所有formula字段的值
+ * @param {Object} formNode - form节点
+ */
+function updateFormulas(formNode) {
+  if (!formNode || !formNode.nodes || formNode.nodes.length === 0) {
+    return;
+  }
+  
+  const formData = formNode.data?.value || {};
+  let hasChanges = false;
+  
+  // 遍历所有子节点，查找有formula的字段
+  for (const node of formNode.nodes) {
+    if (node.config && node.config.formula) {
+      const nick = node.config.nick;
+      if (!nick) continue;
+      
+      // 计算formula的值
+      const calculatedValue = evaluateFormula(node.config.formula, formData);
+      
+      if (calculatedValue !== undefined) {
+        // 更新节点的value
+        if (!node.data) {
+          node.data = {};
+        }
+        node.data.value = calculatedValue;
+        
+        // 更新formData
+        formData[nick] = calculatedValue;
+        hasChanges = true;
+        
+        console.log(`Updated formula field ${nick}: ${calculatedValue}`);
+      }
+    }
+  }
+  
+  // 如果有变化，更新formNode的data.value
+  if (hasChanges) {
+    if (!formNode.data) {
+      formNode.data = {};
+    }
+    formNode.data.value = formData;
+  }
+}
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -192,7 +404,9 @@ ${parsedTemplate}
           nodeMarkdown = `[${buttonLabel}](${action})`;
           break;
         case 'text':
-          nodeMarkdown = node.data && node.data.value ? node.data.value : node.config.value || '';
+          const textLabel = node.config.title || node.config.nick || 'Text';
+          const textValue = node.data && node.data.value ? node.data.value : node.config.value || '';
+          nodeMarkdown = `**${textLabel}:** ${textValue}`;
           break;
         case 'date':
           const dateLabel = node.config.nick || 'Date';
@@ -645,6 +859,9 @@ app.post('/api/execute-cli', (req, res) => {
               updateChildNodesValue(formNode.nodes);
             }
             
+            // 触发formula更新
+            updateFormulas(formNode);
+            
             // 更新存储
             nodeStorage.set(cardKey, formNode);
             
@@ -1026,6 +1243,25 @@ app.post('/api/update-node-data', (req, res) => {
       const childNick = updatedChildNode.config && updatedChildNode.config.nick;
       if (childNick) {
         parentFormNode.data.value[childNick] = value;
+      }
+      
+      // 触发formula更新
+      updateFormulas(parentFormNode);
+      
+      // 同步更新子组件的formula字段值
+      if (parentFormNode.nodes && parentFormNode.nodes.length > 0) {
+        for (const node of parentFormNode.nodes) {
+          if (node.config && node.config.formula && node.config.nick) {
+            const nick = node.config.nick;
+            const formulaValue = parentFormNode.data.value[nick];
+            if (formulaValue !== undefined) {
+              if (!node.data) {
+                node.data = {};
+              }
+              node.data.value = formulaValue;
+            }
+          }
+        }
       }
     }
     

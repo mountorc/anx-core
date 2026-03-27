@@ -8,7 +8,7 @@
  * @returns {Promise<string>} - 转换后的Markdown内容
  */
 async function convertFormToMarkdown(component) {
-  const { title, kinds } = component;
+  const { title, kinds, data } = component;
   let content = '';
 
   if (title) {

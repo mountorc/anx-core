@@ -435,6 +435,20 @@ export default {
       "value": ""
     },
     {
+      "kind": "input",
+      "type": "number",
+      "nick": "age",
+      "placeholder": "请输入年龄",
+      "value": ""
+    },
+    {
+      "kind": "text",
+      "type": "number",
+      "nick": "yearsSinceAdult",
+      "title": "成年年数",
+      "formula": "age - 18"
+    },
+    {
       "kind": "options",
       "nick": "gender",
       "title": "性别",

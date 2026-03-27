@@ -199,7 +199,8 @@ function generateVisualizationCSS() {
     
     .input-visualization,
     .textarea-visualization,
-    .date-visualization {
+    .date-visualization,
+    .text-visualization {
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -207,10 +208,26 @@ function generateVisualizationCSS() {
     
     .input-label,
     .textarea-label,
-    .date-label {
+    .date-label,
+    .text-label {
       font-size: 14px;
       font-weight: 500;
       color: #333;
+    }
+    
+    .text-visualization {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .text-content {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+      color: #333;
+      font-size: 14px;
     }
     
     .input-visualization input,

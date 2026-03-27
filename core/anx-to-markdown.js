@@ -157,7 +157,8 @@ async function convertComponentToMarkdown(component) {
     case 'board':
       return await convertBoardToMarkdown(processedComponent, convertComponentToMarkdown);
     case 'text':
-      return convertTextToMarkdown(processedComponent);
+      // 同时使用原始组件和processedComponent，保留title和nick，同时获取data.value
+      return convertTextToMarkdown(component, processedComponent);
     case 'input':
       return convertInputToMarkdown(processedComponent);
     case 'textarea':
@@ -183,12 +184,27 @@ async function convertComponentToMarkdown(component) {
 
 /**
  * 转换Text组件为Markdown
- * @param {Object} component - Text组件
+ * @param {Object} component - 原始Text组件
+ * @param {Object} processedComponent - 处理后的Text组件
  * @returns {string} - 转换后的Markdown内容
  */
-function convertTextToMarkdown(component) {
-  const { value } = component;
-  return value || '';
+function convertTextToMarkdown(component, processedComponent) {
+  // 从原始组件中获取title和nick
+  const { value, title, nick, data } = component;
+  // 从处理后的组件中获取data.value
+  const { data: processedData } = processedComponent || {};
+  // 确定标签
+  const label = title || nick || 'Text';
+  // 确定值
+  let textValue;
+  if (processedData && processedData.value !== undefined) {
+    textValue = processedData.value;
+  } else if (data && data.value !== undefined) {
+    textValue = data.value;
+  } else {
+    textValue = value;
+  }
+  return `**${label}:** ${textValue || ''}`;
 }
 
 /**
