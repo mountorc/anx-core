@@ -1,0 +1,21 @@
+{
+  "anxContent": {
+    "kind": "box",
+    "title": "测试Box组件",
+    "data": [
+      { "name": "张三", "age": 25 },
+      { "name": "李四", "age": 30 }
+    ],
+    "template": "姓名：{name}，年龄：{age}",
+    "tapSet": {
+      "title": "detail",
+      "navigateTo": {
+        "path": "/test",
+        "paramMap": {
+          "name": "name",
+          "age": "age"
+        }
+      }
+    }
+  }
+}

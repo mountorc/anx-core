@@ -47,7 +47,7 @@ function generateCardKey() {
  */
 function anxToNodes(anxContent) {
   const result = {
-    cardKey: generateCardKey(),
+    cardKey: anxContent?.cardKey || generateCardKey(),
     config: {},
     data: {},
     logs: [],
@@ -77,7 +77,7 @@ function anxToNodes(anxContent) {
   if (anxContent.kinds && Array.isArray(anxContent.kinds)) {
     result.nodes = anxContent.kinds.map(child => {
       const childNode = {
-        cardKey: generateCardKey(),
+        cardKey: child?.cardKey || generateCardKey(),
         config: { ...child }, // 复制整个子组件对象到config
         data: {},
         logs: [],
@@ -98,7 +98,7 @@ function anxToNodes(anxContent) {
       if (child.kinds && Array.isArray(child.kinds)) {
         childNode.nodes = child.kinds.map(grandchild => {
           const grandchildNode = {
-            cardKey: generateCardKey(),
+            cardKey: grandchild?.cardKey || generateCardKey(),
             config: { ...grandchild }, // 复制整个孙子组件对象到config
             data: {},
             logs: [],

@@ -347,7 +347,12 @@ ${parsedTemplate}
     }
     
     // 使用x标签包裹Markdown内容，并添加kind和cardKey属性
-    return `<x ${node.config.kind || ''} ${node.cardKey}>
+    let tapAttribute = '';
+    if (node.config.kind === 'box' && node.config.tapSet) {
+      const tapSetTitle = node.config.tapSet.title || '';
+      tapAttribute = ` tap="${tapSetTitle}"`;
+    }
+    return `<x ${node.config.kind || ''} ${node.cardKey}${tapAttribute}>
 ${nodeMarkdown}
 </x>`;
   }
@@ -391,7 +396,7 @@ app.post('/api/convert', async (req, res) => {
     res.json({ markdown });
   } catch (error) {
     console.error('Error converting ANX to Markdown:', error);
-    res.status(400).json({ error: 'Invalid ANX content. Please check your input.' });
+    res.status(400).json({ error: 'Invalid ANX content. Please check your input.', details: error.message });
   }
 });
 
@@ -457,8 +462,14 @@ app.post('/api/convert-to-nodes', async (req, res) => {
           console.log('Processing dataset for node:', node.cardKey, 'with config:', node.config.dataset);
           const datasetData = await fetchDataset(node.config.dataset);
           // 直接使用返回的数组，因为fetchDataset已经返回了正确的数据格式
-          const processedData = datasetData || [];
+          let processedData = datasetData || [];
           console.log('Fetched dataset data:', processedData);
+          
+          // 如果dataset获取失败且节点有原始数据，则使用原始数据
+          if (processedData.length === 0 && node.config.data && Array.isArray(node.config.data)) {
+            processedData = node.config.data;
+            console.log('Using original data instead of empty dataset:', processedData);
+          }
           
           // 将数据存储到node的data.data中
           if (!node.data) {
@@ -472,6 +483,16 @@ app.post('/api/convert-to-nodes', async (req, res) => {
           console.log('Updated node data:', node.data);
         } catch (error) {
           console.error('Error fetching node dataset:', error);
+          // 如果获取dataset时出错且节点有原始数据，则使用原始数据
+          if (node.config.data && Array.isArray(node.config.data)) {
+            if (!node.data) {
+              node.data = {};
+            }
+            node.data.data = node.config.data;
+            // 更新存储中的节点数据
+            nodeStorage.set(node.cardKey, node);
+            console.log('Using original data due to dataset fetch error:', node.data);
+          }
         }
       }
       
@@ -531,7 +552,17 @@ app.post('/api/execute-cli', (req, res) => {
       });
     }
     
-    const [, cardKey, action, ...params] = parts;
+    let cardKey = parts[1];
+    let action = parts[2];
+    const params = parts.slice(3);
+    
+    // 解析cardKey中的索引部分，如card_1774589249090_8899[0]
+    let itemIndex = null;
+    const indexMatch = cardKey.match(/^(.*)\[(\d+)\]$/);
+    if (indexMatch) {
+      cardKey = indexMatch[1];
+      itemIndex = parseInt(indexMatch[2], 10);
+    }
     
     // Execute CLI command based on action
     let result = '';
@@ -708,6 +739,84 @@ app.post('/api/execute-cli', (req, res) => {
           // 更新存储
           nodeStorage.set(cardKey, inputNode);
           result = { message: 'Input added successfully', value: inputNode.data.value };
+        } else {
+          result = `No node found for cardKey: ${cardKey}`;
+        }
+        break;
+      case 'tap':
+        // 从存储中获取cardKey对应的节点
+        const tapNode = nodeStorage.get(cardKey);
+        if (tapNode) {
+          // 检查节点是否有tapSet配置
+          const tapSet = tapNode.config.tapSet;
+          if (tapSet) {
+            // 处理itemIndex
+            let itemData = null;
+            if (itemIndex !== null) {
+              // 检查节点是否有数据数组
+              const nodeData = tapNode.data?.data || tapNode.config.data;
+              if (Array.isArray(nodeData) && itemIndex < nodeData.length) {
+                itemData = nodeData[itemIndex];
+              } else {
+                result = `Invalid item index ${itemIndex} for node ${cardKey}`;
+                break;
+              }
+            }
+            
+            // 处理tapSet中的动作
+            if (tapSet.navigateTo) {
+              const path = tapSet.navigateTo.path || '';
+              let paramsString = '';
+              
+              // 处理paramMap
+              if (tapSet.navigateTo.paramMap && itemData) {
+                const paramMap = tapSet.navigateTo.paramMap;
+                const paramArray = [];
+                
+                for (const key in paramMap) {
+                  const valuePath = paramMap[key];
+                  // 从itemData中获取值
+                  let value = itemData;
+                  for (const prop of valuePath.split('.')) {
+                    if (value && typeof value === 'object') {
+                      value = value[prop];
+                    } else {
+                      value = undefined;
+                      break;
+                    }
+                  }
+                  if (value !== undefined) {
+                    paramArray.push(`${key}=${encodeURIComponent(value)}`);
+                  }
+                }
+                
+                if (paramArray.length > 0) {
+                  paramsString = '?' + paramArray.join('&');
+                }
+              }
+              
+              const fullPath = path + paramsString;
+              result = { 
+                message: 'Tap action executed successfully', 
+                action: 'navigateTo',
+                path: fullPath
+              };
+            } else if (tapSet.setTimeout) {
+              // 处理setTimeout动作
+              const action = tapSet.setTimeout.action || '';
+              const delay = tapSet.setTimeout.delay || 0;
+              result = { 
+                message: 'Tap action executed successfully', 
+                action: 'setTimeout',
+                delay: delay,
+                actionString: action
+              };
+            } else {
+              result = 'No valid tap action found in tapSet';
+            }
+          } else {
+            result = `No tapSet configuration found for node ${cardKey}`;
+          }
         } else {
           result = `No node found for cardKey: ${cardKey}`;
         }

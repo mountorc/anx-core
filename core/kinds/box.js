@@ -3,6 +3,7 @@
  */
 
 const { parseTemplateForMarkdown } = require('../utils/template.js');
+const { fetchDataset } = require('../utils/dataset.js');
 
 /**
  * 转换Box组件为Markdown
@@ -10,15 +11,26 @@ const { parseTemplateForMarkdown } = require('../utils/template.js');
  * @returns {Promise<string>} - 转换后的Markdown内容
  */
 async function convertBoxToMarkdown(component) {
-  const { title, data, html, template } = component;
+  const { title, data, html, template, dataset } = component;
   let content = '';
 
   if (title) {
     content += `## ${title}\n\n`;
   }
 
-  if (data && data.length > 0) {
-    for (const item of data) {
+  // 处理数据集
+  let boxData = data;
+  if (!boxData && dataset) {
+    try {
+      const datasetData = await fetchDataset(dataset);
+      boxData = datasetData || [];
+    } catch (error) {
+      console.error('Error fetching dataset:', error);
+    }
+  }
+
+  if (boxData && boxData.length > 0) {
+    for (const item of boxData) {
       const templateContent = template || html;
       if (templateContent) {
         content += `${parseTemplateForMarkdown(templateContent, item)}\n\n`;

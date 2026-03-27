@@ -98,6 +98,7 @@ export default {
   ],
   "template": "姓名: {{name}}, 年龄: {{age}}",
   "tapSet": {
+    "title":"detail",
     "navigateTo": {
       "path": "/test",
       "paramMap": {
@@ -349,10 +350,33 @@ export default {
             this.nodesStructure = result.nodes;
             // 重新生成节点可视化
             await this.generateNodeVisualization(this.nodesStructure);
+            // 更新 Markdown Output
+            await this.updateMarkdownOutput();
           }
         } catch (error) {
           console.error('Error updating node data:', error);
         }
+      }
+    },
+    async updateMarkdownOutput() {
+      try {
+        // 解析ANX输入
+        const anxContent = JSON.parse(this.anxInput);
+        
+        // 转换ANX到Markdown
+        const markdownResponse = await fetch('/api/convert', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ anxContent })
+        });
+        
+        const markdownResult = await markdownResponse.json();
+        this.rawMarkdownOutput = markdownResult.markdown;
+        this.markdownOutput = this.convertMarkdownToHtml(markdownResult.markdown);
+      } catch (error) {
+        console.error('Error updating markdown output:', error);
       }
     },
     convertMarkdownToHtml(markdown) {
@@ -565,6 +589,8 @@ export default {
         
         // 重新生成节点可视化
         await this.generateNodeVisualization(this.nodesStructure);
+        // 更新 Markdown Output
+        await this.updateMarkdownOutput();
       } catch (error) {
         console.error('Error refreshing nodes structure:', error);
         this.jsonStructure = 'Error refreshing nodes structure. Please check your input.';

@@ -1,0 +1,40 @@
+{
+  "title": "Board演示",
+  "kind": "board",
+  "kinds": [
+    {
+      "title": "商品表",
+      "kind": "table",
+      "titles": [
+        {
+          "nick": "name",
+          "title": "商品名称"
+        },
+        {
+          "nick": "price",
+          "title": "价格"
+        }
+      ],
+      "dataset": {
+        "url_dataset": "http://localhost:4665/dataset"
+      }
+    },
+    {
+      "title": "商品列表",
+      "kind": "box",
+      "cardKey": "card_1774589249090_8899",
+      "dataset": {
+        "url_dataset": "http://localhost:4665/dataset"
+      },
+      "tapSet": {
+        "navigateTo": {
+          "path": "/test",
+          "paramMap": {
+            "id": "id",
+            "name": "name"
+          }
+        }
+      }
+    }
+  ]
+}
