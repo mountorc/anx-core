@@ -18,7 +18,7 @@ function renderBox(node) {
   let html = `
     <div class="box-visualization">
       <div class="box-header">
-        <h3>${title} dataset</h3>
+        <h3>${title}</h3>
       </div>
       <div class="box-content">
   `;
