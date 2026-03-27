@@ -155,7 +155,7 @@ async function convertComponentToMarkdown(component) {
     case 'box':
       return await convertBoxToMarkdown(processedComponent);
     case 'board':
-      return await convertBoardToMarkdown(processedComponent);
+      return await convertBoardToMarkdown(processedComponent, convertComponentToMarkdown);
     case 'text':
       return convertTextToMarkdown(processedComponent);
     case 'input':

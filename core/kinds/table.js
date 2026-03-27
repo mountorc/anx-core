@@ -22,7 +22,8 @@ async function convertTableToMarkdown(component) {
   if (!tableData && dataset) {
     try {
       const datasetData = await fetchDataset(dataset);
-      tableData = datasetData.data || [];
+      // 直接使用返回的数组，因为fetchDataset已经返回了正确的数据格式
+      tableData = datasetData || [];
     } catch (error) {
       console.error('Error fetching dataset:', error);
     }

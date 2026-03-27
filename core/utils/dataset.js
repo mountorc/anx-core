@@ -3,12 +3,14 @@
  * Handles both uuid_dataset and url_dataset
  */
 
+const fetch = require('node-fetch');
+
 /**
  * Fetch dataset data based on configuration
  * @param {Object} datasetConfig - Dataset configuration object
  * @returns {Promise<Array>} - Promise that resolves to the dataset data
  */
-export async function fetchDataset(datasetConfig) {
+async function fetchDataset(datasetConfig) {
   if (!datasetConfig) {
     return [];
   }
@@ -56,3 +58,7 @@ async function fetchUrlDataset(url) {
     return [];
   }
 }
+
+module.exports = {
+  fetchDataset
+};

@@ -79,6 +79,9 @@ async function nodesToMarkdown(nodesStructure) {
           nodeMarkdown = node.config.title ? `## ${node.config.title}\n\n` : '';
           nodeMarkdown += childMarkdown;
           break;
+        case 'board':
+          nodeMarkdown = childMarkdown;
+          break;
         case 'box':
           // 处理box类型，渲染模板内容
           if (node.config.title) {
@@ -247,6 +250,30 @@ ${parsedTemplate}
             nodeMarkdown = `## ${node.config.title}\n\n`;
           }
           
+          // 处理dataset
+          let tableData = node.config.data;
+          if (!tableData && node.config.dataset) {
+            try {
+              // 直接使用dataset作为配置，支持url_dataset和uuid_dataset
+              const { fetchDataset } = require('../../core/utils/dataset.js');
+              const datasetData = await fetchDataset(node.config.dataset);
+              // 直接使用返回的数组，因为fetchDataset已经返回了正确的数据格式
+              tableData = datasetData || [];
+              
+              // 将数据存储到node的data.data中
+              if (!node.data) {
+                node.data = {};
+              }
+              node.data.data = tableData;
+              // 更新node.config.data，以便后续使用
+              node.config.data = tableData;
+              // 更新存储中的节点数据
+              nodeStorage.set(node.cardKey, node);
+            } catch (error) {
+              console.error('Error fetching table dataset:', error);
+            }
+          }
+          
           // 生成Markdown表格
           if (node.config.titles && Array.isArray(node.config.titles) && node.config.titles.length > 0) {
             // 过滤掉隐藏的列
@@ -261,8 +288,8 @@ ${parsedTemplate}
               nodeMarkdown += `| ${separators} |\n`;
               
               // 生成表格行
-              if (node.config.data && Array.isArray(node.config.data)) {
-                node.config.data.forEach(row => {
+              if (tableData && Array.isArray(tableData)) {
+                tableData.forEach(row => {
                   let rowContent = '';
                   
                   // 处理不同格式的行数据

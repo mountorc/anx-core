@@ -76,6 +76,7 @@
       <button @click="loadOptionsDatasetTest">Options Dataset Test</button>
       <button @click="loadFormTest">Form Test</button>
       <button @click="loadTableTest">Table Test</button>
+      <button @click="loadBoardTableTest">Board with Table Test</button>
     </div>
   </div>
 </template>
@@ -379,27 +380,56 @@ export default {
     loadTableTest() {
       this.anxInput = `{
   "kind": "table",
-  "nick": "users_table",
-  "title": "用户表",
-  "data": [
-    { "id": 1, "name": "张三", "email": "zhangsan@example.com", "status": "active" },
-    { "id": 2, "name": "李四", "email": "lisi@example.com", "status": "inactive" },
-    { "id": 3, "name": "王五", "email": "wangwu@example.com", "status": "active" }
-  ],
+  "title": "用户数据表",
   "titles": [
-    { "title": "ID", "nick": "id", "width": 80 },
-    { "title": "姓名", "nick": "name", "width": 120 },
-    { "title": "邮箱", "nick": "email", "width": 200 },
-    { "title": "状态", "nick": "status", "width": 100 }
+    { "nick": "id", "title": "ID", "width": 60 },
+    { "nick": "name", "title": "姓名", "width": 120 },
+    { "nick": "age", "title": "年龄", "width": 80 },
+    { "nick": "email", "title": "邮箱", "width": 200 }
   ],
-  "pagination": {
-    "pageSize": 10,
-    "pageNum": 1
-  },
-  "sort": {
-    "field": "id",
-    "order": "asc"
-  }
+  "data": [
+    { "id": 1, "name": "张三", "age": 25, "email": "zhangsan@example.com" },
+    { "id": 2, "name": "李四", "age": 30, "email": "lisi@example.com" },
+    { "id": 3, "name": "王五", "age": 28, "email": "wangwu@example.com" }
+  ]
+}`;
+      this.convertAnxToMarkdown();
+    },
+    loadBoardTableTest() {
+      this.anxInput = `{
+  "kind": "board",
+  "kinds": [
+    {
+      "kind": "text",
+      "value": "## 数据管理系统"
+    },
+    {
+      "kind": "table",
+      "title": "商品表",
+      "titles": [
+        { "nick": "name", "title": "商品名称", "width": 120 },
+        { "nick": "price", "title": "价格", "width": 100 }
+      ],
+      "dataset": {
+        "url_dataset": "http://localhost:4665/dataset"
+      }
+    },
+    {
+      "kind": "table",
+      "title": "产品数据表",
+      "titles": [
+        { "nick": "id", "title": "产品ID", "width": 80 },
+        { "nick": "name", "title": "产品名称", "width": 150 },
+        { "nick": "price", "title": "价格", "width": 100 },
+        { "nick": "stock", "title": "库存", "width": 80 }
+      ],
+      "data": [
+        { "id": 101, "name": "笔记本电脑", "price": 5999, "stock": 50 },
+        { "id": 102, "name": "智能手机", "price": 3999, "stock": 100 },
+        { "id": 103, "name": "平板电脑", "price": 2999, "stock": 30 }
+      ]
+    }
+  ]
 }`;
       this.convertAnxToMarkdown();
     },
