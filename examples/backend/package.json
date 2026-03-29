@@ -1,7 +1,7 @@
 {
   "name": "anx-to-markdown-backend",
   "version": "1.0.0",
-  "description": "Backend server for ANX to Markdown conversion",
+  "description": "Backend server for ANX to Markup conversion",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

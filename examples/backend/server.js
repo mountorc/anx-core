@@ -3,8 +3,8 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 
-// Import the anxToMarkdown, anxToNodes functions and anxCLI from the core module
-const { anxToMarkdown, anxToNodes, anxCLI } = require('../../core/index.js');
+// Import the anxToMarkup, anxToNodes functions and anxCLI from the core module
+const { anxToMarkup, anxToNodes, anxCLI } = require('../../core/index.js');
 const { generateNodeVisualization, generateVisualizationCSS } = require('../../view/index.js');
 
 const app = express();
@@ -16,12 +16,45 @@ const cardStorage = new Map();
 const nodeStorage = new Map();
 // 存储基于ANX内容的哈希值到节点结构的映射
 const anxHashToNodeMap = new Map();
+// 存储hub中的anx config
+const hubAnxMap = new Map();
 
 // 生成ANX内容的哈希值
 function generateAnxHash(anxContent) {
   const crypto = require('crypto');
   const jsonString = JSON.stringify(anxContent);
   return crypto.createHash('md5').update(jsonString).digest('hex');
+}
+
+// 加载hub文件
+function loadHubFiles() {
+  const fs = require('fs');
+  const path = require('path');
+  const hubDir = path.join(__dirname, '../../hub');
+  
+  try {
+    if (fs.existsSync(hubDir)) {
+      const files = fs.readdirSync(hubDir);
+      files.forEach(file => {
+        if (file.endsWith('.json') && file !== 'index.json') {
+          const filePath = path.join(hubDir, file);
+          const content = fs.readFileSync(filePath, 'utf8');
+          try {
+            const hubFile = JSON.parse(content);
+            if (hubFile.uuid && hubFile.anxContent) {
+              hubAnxMap.set(hubFile.uuid, hubFile);
+              console.log(`Loaded hub file: ${hubFile.name} (${hubFile.uuid})`);
+            }
+          } catch (error) {
+            console.error(`Error parsing hub file ${file}:`, error);
+          }
+        }
+      });
+      console.log(`Loaded ${hubAnxMap.size} hub files`);
+    }
+  } catch (error) {
+    console.error('Error loading hub files:', error);
+  }
 }
 
 // 获取对象的属性值
@@ -257,8 +290,8 @@ function updateFormulas(formNode) {
 app.use(cors());
 app.use(express.json());
 
-// 从节点结构转换为Markdown
-async function nodesToMarkdown(nodesStructure) {
+// 从节点结构转换为Markup
+async function nodesToMarkup(nodesStructure) {
   if (!nodesStructure) {
     return '';
   }
@@ -275,29 +308,29 @@ async function nodesToMarkdown(nodesStructure) {
     const nodeAnxContent = { ...node.config };
     
     // 处理子节点
-    let childMarkdown = '';
+    let childMarkup = '';
     if (node.nodes && node.nodes.length > 0) {
       // 递归处理每个子节点
       const childContents = await Promise.all(node.nodes.map(child => processNode(child)));
-      childMarkdown = childContents.join('\n\n');
+      childMarkup = childContents.join('\n\n');
     }
     
-    // 转换当前节点为Markdown
-    let nodeMarkdown = '';
+    // 转换当前节点为Markup
+    let nodeMarkup = '';
     if (node.config.kind) {
-      // 根据节点类型生成Markdown
+      // 根据节点类型生成Markup
       switch (node.config.kind) {
         case 'form':
-          nodeMarkdown = node.config.title ? `## ${node.config.title}\n\n` : '';
-          nodeMarkdown += childMarkdown;
+          nodeMarkup = node.config.title ? `## ${node.config.title}\n\n` : '';
+          nodeMarkup += childMarkup;
           break;
         case 'board':
-          nodeMarkdown = childMarkdown;
+          nodeMarkup = childMarkup;
           break;
         case 'box':
           // 处理box类型，渲染模板内容
           if (node.config.title) {
-            nodeMarkdown = `## ${node.config.title}\n\n`;
+            nodeMarkup = `## ${node.config.title}\n\n`;
           }
           
           // 处理dataset
@@ -354,7 +387,7 @@ async function nodesToMarkdown(nodesStructure) {
                 });
                 
                 // 用<x 0>这样的标签包裹每个box项
-                nodeMarkdown += `<x ${i}>
+                nodeMarkup += `<x ${i}>
 ${parsedTemplate}
 </x>\n\n`;
               }
@@ -385,33 +418,33 @@ ${parsedTemplate}
               return value !== undefined ? value : match;
             });
             
-            nodeMarkdown += `${parsedTemplate}\n\n`;
+            nodeMarkup += `${parsedTemplate}\n\n`;
           }
           break;
         case 'input':
           const label = node.config.nick || 'Input';
           const value = node.data && node.data.value ? node.data.value : node.config.value || node.config.placeholder || '';
-          nodeMarkdown = `**${label}:** ${value}`;
+          nodeMarkup = `**${label}:** ${value}`;
           break;
         case 'textarea':
           const textareaLabel = node.config.nick || 'Textarea';
           const textareaValue = node.data && node.data.value ? node.data.value : node.config.value || node.config.placeholder || '';
-          nodeMarkdown = `**${textareaLabel}:**\n\n\`\`\`\n${textareaValue}\n\`\`\``;
+          nodeMarkup = `**${textareaLabel}:**\n\n\`\`\`\n${textareaValue}\n\`\`\``;
           break;
         case 'button':
           const buttonLabel = node.config.label || 'Button';
           const action = node.config.action || '#';
-          nodeMarkdown = `[${buttonLabel}](${action})`;
+          nodeMarkup = `[${buttonLabel}](${action})`;
           break;
         case 'text':
           const textLabel = node.config.title || node.config.nick || 'Text';
           const textValue = node.data && node.data.value ? node.data.value : node.config.value || '';
-          nodeMarkdown = `**${textLabel}:** ${textValue}`;
+          nodeMarkup = `**${textLabel}:** ${textValue}`;
           break;
         case 'date':
           const dateLabel = node.config.nick || 'Date';
           const dateValue = node.data && node.data.value ? node.data.value : node.config.value || node.config.placeholder || '';
-          nodeMarkdown = `**${dateLabel}:** ${dateValue}`;
+          nodeMarkup = `**${dateLabel}:** ${dateValue}`;
           break;
         case 'checkbox':
           const checkboxLabel = node.config.nick ? `**${node.config.nick}:**\n\n` : '';
@@ -423,7 +456,7 @@ ${parsedTemplate}
               checkboxContent += `${isChecked ? '✓ ' : '- '}${option.title}\n`;
             });
           }
-          nodeMarkdown = checkboxContent;
+          nodeMarkup = checkboxContent;
           break;
         case 'options':
           const optionsLabel = node.config.nick || 'Options';
@@ -480,12 +513,12 @@ ${parsedTemplate}
           // 更新存储中的节点数据
           nodeStorage.set(node.cardKey, node);
           
-          nodeMarkdown = optionsContent;
+          nodeMarkup = optionsContent;
           break;
         case 'table':
           // 处理table类型，渲染表格内容
           if (node.config.title) {
-            nodeMarkdown = `## ${node.config.title}\n\n`;
+            nodeMarkup = `## ${node.config.title}\n\n`;
           }
           
           // 处理dataset
@@ -512,7 +545,7 @@ ${parsedTemplate}
             }
           }
           
-          // 生成Markdown表格
+          // 生成Markup表格
           if (node.config.titles && Array.isArray(node.config.titles) && node.config.titles.length > 0) {
             // 过滤掉隐藏的列
             const visibleTitles = node.config.titles.filter(title => !title.hide);
@@ -522,8 +555,8 @@ ${parsedTemplate}
               const headers = visibleTitles.map(title => title.title).join(' | ');
               const separators = visibleTitles.map(() => '---').join(' | ');
               
-              nodeMarkdown += `| ${headers} |\n`;
-              nodeMarkdown += `| ${separators} |\n`;
+              nodeMarkup += `| ${headers} |\n`;
+              nodeMarkup += `| ${separators} |\n`;
               
               // 生成表格行
               if (tableData && Array.isArray(tableData)) {
@@ -544,21 +577,21 @@ ${parsedTemplate}
                     });
                   }
                   
-                  nodeMarkdown += `|${rowContent}\n`;
+                  nodeMarkup += `|${rowContent}\n`;
                 });
               } else {
                 // 只有表头，没有数据
-                nodeMarkdown += `| ${visibleTitles.map(() => '').join(' | ')} |\n`;
+                nodeMarkup += `| ${visibleTitles.map(() => '').join(' | ')} |\n`;
               }
               
-              nodeMarkdown += '\n';
+              nodeMarkup += '\n';
             }
           }
           break;
         case 'list':
           // 处理list类型，渲染列表内容
           if (node.config.title) {
-            nodeMarkdown = `## ${node.config.title}\n\n`;
+            nodeMarkup = `## ${node.config.title}\n\n`;
           }
           
           const itemList = node.config.itemList || [];
@@ -569,8 +602,8 @@ ${parsedTemplate}
             const headers = itemList.map(item => item.title || item.nick || '').join(' | ');
             const separators = itemList.map(() => '---').join(' | ');
             
-            nodeMarkdown += `| ${headers} |\n`;
-            nodeMarkdown += `| ${separators} |\n`;
+            nodeMarkup += `| ${headers} |\n`;
+            nodeMarkup += `| ${separators} |\n`;
             
             // 生成数据行
             for (const row of listData) {
@@ -578,37 +611,78 @@ ${parsedTemplate}
                 const value = row[item.nick] !== undefined ? row[item.nick] : '';
                 return value;
               });
-              nodeMarkdown += `| ${cells.join(' | ')} |\n`;
+              nodeMarkup += `| ${cells.join(' | ')} |\n`;
             }
             
-            nodeMarkdown += '\n';
+            nodeMarkup += '\n';
           } else {
-            nodeMarkdown += '*No data*\n\n';
+            nodeMarkup += '*No data*\n\n';
           }
           break;
         default:
-          nodeMarkdown = `<!-- ANX Component: ${node.config.kind} -->`;
+          nodeMarkup = `<!-- ANX Component: ${node.config.kind} -->`;
       }
     }
     
-    // 使用x标签包裹Markdown内容，并添加kind和cardKey属性
+    // 使用x标签包裹Markup内容，并添加kind和cardKey属性
     let tapAttribute = '';
     if (node.config.kind === 'box' && node.config.tapSet) {
       const tapSetTitle = node.config.tapSet.title || '';
       tapAttribute = ` tap="${tapSetTitle}"`;
     }
     return `<x ${node.config.kind || ''} ${node.cardKey}${tapAttribute}>
-${nodeMarkdown}
+${nodeMarkup}
 </x>`;
   }
   
   return await processNode(nodesStructure);
 }
 
-// API endpoint for converting ANX to Markdown
+// API endpoint for converting ANX to Markup (POST)
 app.post('/api/convert', async (req, res) => {
   try {
-    const { anxContent } = req.body;
+    let { anxContent, uuid_tile } = req.body;
+    
+    // 如果提供了uuid_tile，则从hub中获取anx config
+    if (uuid_tile) {
+      const hubFile = hubAnxMap.get(uuid_tile);
+      if (hubFile) {
+        anxContent = hubFile.anxContent;
+      } else {
+        return res.status(404).json({ error: 'ANX config not found for the given uuid_tile' });
+      }
+    }
+    
+    // 每次都重新生成节点结构，不使用缓存
+    // 这样当用户修改输入框内容时，会使用新的内容生成Markup
+    const nodesStructure = anxToNodes(anxContent);
+    
+    // 从节点结构转换为Markup
+    const markup = await nodesToMarkup(nodesStructure);
+    
+    res.json({ markup });
+  } catch (error) {
+    console.error('Error converting ANX to Markup:', error);
+    res.status(400).json({ error: 'Invalid ANX content. Please check your input.', details: error.message });
+  }
+});
+
+// API endpoint for converting ANX to Markup (GET)
+app.get('/api/convert', async (req, res) => {
+  try {
+    const { uuid_tile } = req.query;
+    
+    if (!uuid_tile) {
+      return res.status(400).json({ error: 'uuid_tile is required for GET request' });
+    }
+    
+    // 从hub中获取anx config
+    const hubFile = hubAnxMap.get(uuid_tile);
+    if (!hubFile) {
+      return res.status(404).json({ error: 'ANX config not found for the given uuid_tile' });
+    }
+    
+    const anxContent = hubFile.anxContent;
     
     // 生成ANX内容的哈希值
     const anxHash = generateAnxHash(anxContent);
@@ -635,12 +709,12 @@ app.post('/api/convert', async (req, res) => {
       updateNodesWithStoredData(nodesStructure.nodes);
     }
     
-    // 从节点结构转换为Markdown
-    const markdown = await nodesToMarkdown(nodesStructure);
-    
-    res.json({ markdown });
+    // 从节点结构转换为Markup
+    const markup = await nodesToMarkup(nodesStructure);
+
+    res.json({ markup });
   } catch (error) {
-    console.error('Error converting ANX to Markdown:', error);
+    console.error('Error converting ANX to Markup (GET):', error);
     res.status(400).json({ error: 'Invalid ANX content. Please check your input.', details: error.message });
   }
 });
@@ -683,7 +757,17 @@ function storeCardNodes(nodes) {
 // API endpoint for converting ANX to nodes structure
 app.post('/api/convert-to-nodes', async (req, res) => {
   try {
-    const { anxContent } = req.body;
+    let { anxContent, uuid_tile } = req.body;
+    
+    // 如果提供了uuid_tile，则从hub中获取anx config
+    if (uuid_tile) {
+      const hubFile = hubAnxMap.get(uuid_tile);
+      if (hubFile) {
+        anxContent = hubFile.anxContent;
+      } else {
+        return res.status(404).json({ error: 'ANX config not found for the given uuid_tile' });
+      }
+    }
     
     // 生成ANX内容的哈希值
     const anxHash = generateAnxHash(anxContent);
@@ -1306,6 +1390,50 @@ app.post('/api/update-node-data', (req, res) => {
     res.status(500).json({ error: 'Failed to update node data' });
   }
 });
+
+// 通过uuid加载hub中的anx config
+app.get('/api/hub/:uuid', (req, res) => {
+  try {
+    const { uuid } = req.params;
+    const hubFile = hubAnxMap.get(uuid);
+    
+    if (hubFile) {
+      res.json({
+        success: true,
+        data: hubFile
+      });
+    } else {
+      res.json({
+        success: false,
+        message: 'ANX config not found for the given uuid'
+      });
+    }
+  } catch (error) {
+    console.error('Error loading hub anx config:', error);
+    res.status(500).json({ error: 'Failed to load hub anx config' });
+  }
+});
+
+// 获取所有hub中的anx config列表
+app.get('/api/hub', (req, res) => {
+  try {
+    const hubList = Array.from(hubAnxMap.values()).map(hubFile => ({
+      uuid: hubFile.uuid,
+      name: hubFile.name
+    }));
+    
+    res.json({
+      success: true,
+      data: hubList
+    });
+  } catch (error) {
+    console.error('Error loading hub list:', error);
+    res.status(500).json({ error: 'Failed to load hub list' });
+  }
+});
+
+// 加载hub文件
+loadHubFiles();
 
 // Start the server
 app.listen(PORT, () => {
