@@ -555,6 +555,37 @@ ${parsedTemplate}
             }
           }
           break;
+        case 'list':
+          // 处理list类型，渲染列表内容
+          if (node.config.title) {
+            nodeMarkdown = `## ${node.config.title}\n\n`;
+          }
+          
+          const itemList = node.config.itemList || [];
+          const listData = node.data && node.data.value ? node.data.value : (node.config.data || []);
+          
+          if (itemList.length > 0 && listData.length > 0) {
+            // 生成表头
+            const headers = itemList.map(item => item.title || item.nick || '').join(' | ');
+            const separators = itemList.map(() => '---').join(' | ');
+            
+            nodeMarkdown += `| ${headers} |\n`;
+            nodeMarkdown += `| ${separators} |\n`;
+            
+            // 生成数据行
+            for (const row of listData) {
+              const cells = itemList.map(item => {
+                const value = row[item.nick] !== undefined ? row[item.nick] : '';
+                return value;
+              });
+              nodeMarkdown += `| ${cells.join(' | ')} |\n`;
+            }
+            
+            nodeMarkdown += '\n';
+          } else {
+            nodeMarkdown += '*No data*\n\n';
+          }
+          break;
         default:
           nodeMarkdown = `<!-- ANX Component: ${node.config.kind} -->`;
       }

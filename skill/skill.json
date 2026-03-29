@@ -1,0 +1,57 @@
+{
+  "name": "anx-core-skill",
+  "description": "Provides API capabilities for ANX markup output and CLI execution",
+  "version": "1.0.0",
+  "author": "ANX Team",
+  "homepage": "",
+  "metadata": {
+    "category": "development",
+    "tags": ["anx", "core", "api", "cli", "markdown"]
+  },
+  "trigger": {
+    "description": "When user needs to work with ANX format, convert ANX to Markdown, execute CLI commands, or generate node visualizations",
+    "keywords": ["anx", "convert", "markdown", "cli", "command", "visualization", "node", "form", "parse"]
+  },
+  "actions": [
+    {
+      "name": "convertAnxToMarkdown",
+      "description": "Convert ANX content to Markdown format",
+      "parameters": {
+        "anxContent": "JSON object representing ANX content"
+      }
+    },
+    {
+      "name": "convertAnxToNodes",
+      "description": "Convert ANX content to nodes structure",
+      "parameters": {
+        "anxContent": "JSON object representing ANX content"
+      }
+    },
+    {
+      "name": "executeCliCommand",
+      "description": "Execute ANX CLI commands",
+      "parameters": {
+        "command": "CLI command string to execute"
+      }
+    },
+    {
+      "name": "generateNodeVisualization",
+      "description": "Generate node visualization HTML and CSS",
+      "parameters": {
+        "node": "Node structure to visualize"
+      }
+    },
+    {
+      "name": "getCliCommands",
+      "description": "Get list of available CLI commands"
+    }
+  ],
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "compatibleWith": [
+    "trae",
+    "openclaw",
+    "cloude code"
+  ]
+}

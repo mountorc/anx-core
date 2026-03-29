@@ -8,6 +8,7 @@ const { convertFormToMarkdown } = require('./form.js');
 const { convertOptionsToMarkdown } = require('./options.js');
 const { convertNavigationToMarkdown } = require('./navigation.js');
 const { convertTableToMarkdown } = require('./table.js');
+const { convertListToMarkdown } = require('./list.js');
 
 module.exports = {
   convertBoxToMarkdown,
@@ -15,5 +16,6 @@ module.exports = {
   convertFormToMarkdown,
   convertOptionsToMarkdown,
   convertNavigationToMarkdown,
-  convertTableToMarkdown
+  convertTableToMarkdown,
+  convertListToMarkdown
 };

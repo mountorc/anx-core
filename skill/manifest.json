@@ -1,0 +1,20 @@
+{
+  "name": "ANX Core Skill",
+  "version": "1.0.0",
+  "description": "Provides API capabilities for ANX markup output and CLI execution",
+  "author": "ANX Team",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "node-fetch": "^3.3.2"
+  },
+  "compatibleWith": [
+    "trae",
+    "cloude code",
+    "openclaw"
+  ]
+}

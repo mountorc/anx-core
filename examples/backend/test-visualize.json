@@ -1,0 +1,56 @@
+{
+  "node": {
+    "cardKey": "card_1774626004162_5953",
+    "config": {
+      "kind": "form",
+      "title": "测试Form Formula",
+      "kinds": [
+        {
+          "kind": "input",
+          "type": "number",
+          "nick": "price",
+          "title": "价格",
+          "defaultValue": 100
+        },
+        {
+          "kind": "input",
+          "type": "number",
+          "nick": "quantity",
+          "title": "数量",
+          "defaultValue": 2
+        },
+        {
+          "kind": "text",
+          "type": "number",
+          "nick": "total",
+          "title": "总价",
+          "formula": "price * quantity"
+        },
+        {
+          "kind": "text",
+          "type": "string",
+          "nick": "ageGroup",
+          "title": "年龄段",
+          "formula": "case when age >= 18 then 'Adult' else 'Minor' end"
+        },
+        {
+          "kind": "input",
+          "type": "number",
+          "nick": "age",
+          "title": "年龄",
+          "defaultValue": 20
+        },
+        {
+          "kind": "text",
+          "type": "number",
+          "nick": "yearsSinceAdult",
+          "title": "成年年数",
+          "formula": "age - 18"
+        }
+      ]
+    },
+    "data": {},
+    "logs": [],
+    "nodes": []
+  }
+}

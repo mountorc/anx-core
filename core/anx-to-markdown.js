@@ -11,7 +11,8 @@ const {
   convertFormToMarkdown, 
   convertOptionsToMarkdown, 
   convertNavigationToMarkdown,
-  convertTableToMarkdown 
+  convertTableToMarkdown,
+  convertListToMarkdown 
 } = require('./kinds/index.js');
 async function anxToMarkdown(anxContent) {
   if (!anxContent || typeof anxContent !== 'object') {
@@ -69,7 +70,7 @@ function anxToNodes(anxContent) {
   }
 
   // 对于box和table类型，将config.data放到data.data中
-  if ((anxContent.kind === 'box' || anxContent.kind === 'table') && anxContent.data) {
+  if ((anxContent.kind === 'box' || anxContent.kind === 'table' || anxContent.kind === 'list') && anxContent.data) {
     result.data.data = anxContent.data;
   }
 
@@ -177,6 +178,8 @@ async function convertComponentToMarkdown(component) {
       return convertCheckboxToMarkdown(processedComponent);
     case 'table':
       return await convertTableToMarkdown(processedComponent);
+    case 'list':
+      return await convertListToMarkdown(processedComponent);
     default:
       return `<!-- ANX Component: ${kind} -->`;
   }

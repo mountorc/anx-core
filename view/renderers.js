@@ -13,6 +13,7 @@ const { renderNavigation } = require('./kinds/navigation.js');
 const { renderDate } = require('./kinds/date.js');
 const { renderOptions } = require('./kinds/options.js');
 const { renderCheckbox } = require('./kinds/checkbox.js');
+const { renderList } = require('./kinds/list.js');
 const { renderDefault } = require('./kinds/default.js');
 
 /**
@@ -50,6 +51,8 @@ function renderNode(node) {
       return renderOptions(node);
     case 'checkbox':
       return renderCheckbox(node);
+    case 'list':
+      return renderList(node);
     default:
       return renderDefault(node);
   }

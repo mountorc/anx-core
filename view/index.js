@@ -174,6 +174,48 @@ function generateVisualizationCSS() {
       font-weight: 600;
     }
     
+    .list-visualization {
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e0e0e0;
+    }
+    
+    .list-title {
+      background-color: #f5f5f5;
+      padding: 15px;
+      border-bottom: 1px solid #e0e0e0;
+      margin: 0;
+      color: #333;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .list-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .list-table th,
+    .list-table td {
+      padding: 10px;
+      border: 1px solid #e0e0e0;
+      text-align: left;
+    }
+    
+    .list-table th {
+      background-color: #f5f5f5;
+      font-weight: 600;
+    }
+    
+    .list-empty {
+      padding: 20px;
+      text-align: center;
+      color: #999;
+      font-style: italic;
+    }
+    
     .form-visualization {
       background-color: white;
       border-radius: 8px;
@@ -223,9 +265,8 @@ function generateVisualizationCSS() {
     
     .text-content {
       padding: 10px 12px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background-color: #f9f9f9;
+      border: none;
+      background-color: transparent;
       color: #333;
       font-size: 14px;
     }
