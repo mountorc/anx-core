@@ -451,9 +451,15 @@ ${parsedTemplate}
           let checkboxContent = checkboxLabel;
           if (node.config.options && Array.isArray(node.config.options)) {
             const checkboxValue = node.data && node.data.value ? node.data.value : node.config.value || [];
-            node.config.options.forEach(option => {
+            node.config.options.forEach((option, index) => {
               const isChecked = Array.isArray(checkboxValue) && checkboxValue.includes(option.value);
-              checkboxContent += `${isChecked ? '✓ ' : '- '}${option.title}\n`;
+              const optionTitle = option.title || option.value || 'Unknown';
+              const optionValue = option.value;
+              if (isChecked) {
+                checkboxContent += `<${index} ${optionValue} checked>${optionTitle}</${index}>\n`;
+              } else {
+                checkboxContent += `<${index} ${optionValue}>${optionTitle}</${index}>\n`;
+              }
             });
           }
           nodeMarkup = checkboxContent;
@@ -475,15 +481,22 @@ ${parsedTemplate}
               
               // 确保processedOptions是一个数组
               if (Array.isArray(processedOptions)) {
-                for (const option of processedOptions) {
+                const selectedValue = node.data && node.data.value ? node.data.value : node.config.value;
+                for (let index = 0; index < processedOptions.length; index++) {
+                  const option = processedOptions[index];
                   // Get title and value using titleNick and valueNick if provided
                   const titleNick = node.config.optionsSet?.titleNick || 'title';
                   const valueNick = node.config.optionsSet?.valueNick || 'value';
                   const optionTitle = option[titleNick] || option.title || option.label || option.value || 'Unknown';
                   const optionValue = option[valueNick] || option.value;
+                  const isSelected = selectedValue === optionValue;
                   
-                  optionsContent += `- ${optionTitle}\n`;
-                  optionsData.push({ title: optionTitle, value: optionValue });
+                  if (isSelected) {
+                    optionsContent += `<x ${index} selected>${optionTitle}</x>\n`;
+                  } else {
+                    optionsContent += `<x ${index}>${optionTitle}</x>\n`;
+                  }
+                  optionsData.push({ title: optionTitle, value: optionValue, selected: isSelected });
                 }
               } else {
                 optionsContent += '- No options available\n';
@@ -494,12 +507,19 @@ ${parsedTemplate}
             }
           } else if (node.config.options && Array.isArray(node.config.options)) {
             // 处理直接提供的options
-            for (const option of node.config.options) {
+            const selectedValue = node.data && node.data.value ? node.data.value : node.config.value;
+            for (let index = 0; index < node.config.options.length; index++) {
+              const option = node.config.options[index];
               const optionTitle = option.title || option.label || option.value || 'Unknown';
               const optionValue = option.value;
+              const isSelected = selectedValue === optionValue;
               
-              optionsContent += `- ${optionTitle}\n`;
-              optionsData.push({ title: optionTitle, value: optionValue });
+              if (isSelected) {
+                optionsContent += `<x ${index} selected>${optionTitle}</x>\n`;
+              } else {
+                optionsContent += `<x ${index}>${optionTitle}</x>\n`;
+              }
+              optionsData.push({ title: optionTitle, value: optionValue, selected: isSelected });
             }
           } else {
             optionsContent += '- No options available\n';
