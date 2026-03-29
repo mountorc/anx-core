@@ -433,8 +433,7 @@ ${parsedTemplate}
           break;
         case 'button':
           const buttonLabel = node.config.label || 'Button';
-          const action = node.config.action || '#';
-          nodeMarkup = `[${buttonLabel}](${action})`;
+          nodeMarkup = `${buttonLabel}`;
           break;
         case 'text':
           const textLabel = node.config.title || node.config.nick || 'Text';
