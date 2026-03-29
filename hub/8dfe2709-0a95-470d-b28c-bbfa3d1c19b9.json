@@ -114,40 +114,13 @@
         "kind": "options",
         "nick": "industry",
         "title": "行业选择",
-        "options": [
-          {
-            "value": "",
-            "title": "请选择行业"
+        "optionsSet": {
+          "dataset": {
+            "url_dataset": "http://localhost:7887/dataset/industries"
           },
-          {
-            "value": "it",
-            "title": "信息技术"
-          },
-          {
-            "value": "finance",
-            "title": "金融"
-          },
-          {
-            "value": "education",
-            "title": "教育"
-          },
-          {
-            "value": "healthcare",
-            "title": "医疗健康"
-          },
-          {
-            "value": "retail",
-            "title": "零售"
-          },
-          {
-            "value": "manufacturing",
-            "title": "制造业"
-          },
-          {
-            "value": "other",
-            "title": "其他"
-          }
-        ]
+          "titleNick": "name",
+          "valueNick": "id"
+        }
       },
       {
         "kind": "options",

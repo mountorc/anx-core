@@ -19,6 +19,10 @@ const anxHashToNodeMap = new Map();
 // 存储hub中的anx config
 const hubAnxMap = new Map();
 
+// 存储CLI命令执行记录的日志缓存
+const cliLogs = [];
+const MAX_LOGS = 100; // 最大日志条数
+
 // 生成ANX内容的哈希值
 function generateAnxHash(anxContent) {
   const crypto = require('crypto');
@@ -433,12 +437,13 @@ ${parsedTemplate}
           break;
         case 'button':
           const buttonLabel = node.config.label || 'Button';
-          nodeMarkup = `${buttonLabel}`;
+          const action = node.config.action || '#';
+          nodeMarkup = `[${buttonLabel}](${action})`;
           break;
         case 'text':
-          const textLabel = node.config.title || node.config.nick || 'Text';
+          const textLabel = node.config.title || node.config.nick;
           const textValue = node.data && node.data.value ? node.data.value : node.config.value || '';
-          nodeMarkup = `**${textLabel}:** ${textValue}`;
+          nodeMarkup = textLabel ? `**${textLabel}:** ${textValue}` : textValue;
           break;
         case 'date':
           const dateLabel = node.config.nick || 'Date';
@@ -453,10 +458,11 @@ ${parsedTemplate}
             node.config.options.forEach((option, index) => {
               const isChecked = Array.isArray(checkboxValue) && checkboxValue.includes(option.value);
               const optionTitle = option.title || option.value || 'Unknown';
+              const optionValue = option.value;
               if (isChecked) {
-                checkboxContent += `<x ${index} checked>${optionTitle}</x>\n`;
+                checkboxContent += `<x ${index} ${optionValue} checked>${optionTitle}</x>\n`;
               } else {
-                checkboxContent += `<x ${index}>${optionTitle}</x>\n`;
+                checkboxContent += `<x ${index} ${optionValue}>${optionTitle}</x>\n`;
               }
             });
           }
@@ -490,9 +496,9 @@ ${parsedTemplate}
                   const isSelected = selectedValue === optionValue;
                   
                   if (isSelected) {
-                    optionsContent += `<x ${index} selected>${optionTitle}</x>\n`;
+                    optionsContent += `<x ${index} ${optionValue} selected>${optionTitle}</x>\n`;
                   } else {
-                    optionsContent += `<x ${index}>${optionTitle}</x>\n`;
+                    optionsContent += `<x ${index} ${optionValue}>${optionTitle}</x>\n`;
                   }
                   optionsData.push({ title: optionTitle, value: optionValue, selected: isSelected });
                 }
@@ -513,9 +519,9 @@ ${parsedTemplate}
               const isSelected = selectedValue === optionValue;
               
               if (isSelected) {
-                optionsContent += `<x ${index} selected>${optionTitle}</x>\n`;
+                optionsContent += `<x ${index} ${optionValue} selected>${optionTitle}</x>\n`;
               } else {
-                optionsContent += `<x ${index}>${optionTitle}</x>\n`;
+                optionsContent += `<x ${index} ${optionValue}>${optionTitle}</x>\n`;
               }
               optionsData.push({ title: optionTitle, value: optionValue, selected: isSelected });
             }
@@ -709,16 +715,19 @@ app.post('/api/convert', async (req, res) => {
 // API endpoint for converting ANX to Markup (GET)
 app.get('/api/convert', async (req, res) => {
   try {
-    const { uuid_tile } = req.query;
+    const { uuid_tile, uuid_card } = req.query;
     
-    if (!uuid_tile) {
-      return res.status(400).json({ error: 'uuid_tile is required for GET request' });
+    // 优先使用 uuid_tile，然后使用 uuid_card
+    const uuid = uuid_tile || uuid_card;
+    
+    if (!uuid) {
+      return res.status(400).json({ error: 'uuid_tile or uuid_card is required for GET request' });
     }
     
     // 从hub中获取anx config
-    const hubFile = hubAnxMap.get(uuid_tile);
+    const hubFile = hubAnxMap.get(uuid);
     if (!hubFile) {
-      return res.status(404).json({ error: 'ANX config not found for the given uuid_tile' });
+      return res.status(404).json({ error: `ANX config not found for the given uuid: ${uuid}` });
     }
     
     const anxContent = hubFile.anxContent;
@@ -913,11 +922,26 @@ app.post('/api/execute-cli', (req, res) => {
     // Parse CLI command
     const parts = command.trim().split(/\s+/);
     if (parts.length < 3 || parts[0] !== 'anx') {
-      return res.json({
+      const response = {
         cardKey: '',
         action: '',
         result: 'Invalid CLI command format. Use: anx <cardKey> <action> [params...]'
+      };
+      
+      // 记录日志
+      cliLogs.unshift({
+        timestamp: new Date().toISOString(),
+        command: command,
+        status: 'error',
+        response: response
       });
+      
+      // 限制日志数量
+      if (cliLogs.length > MAX_LOGS) {
+        cliLogs.pop();
+      }
+      
+      return res.json(response);
     }
     
     let cardKey = parts[1];
@@ -1192,22 +1216,133 @@ app.post('/api/execute-cli', (req, res) => {
           result = `No node found for cardKey: ${cardKey}`;
         }
         break;
+      case 'clear_form':
+        // 从存储中获取cardKey对应的节点
+        const clearFormNode = nodeStorage.get(cardKey);
+        if (clearFormNode) {
+          // 清空表单的data.value
+          if (!clearFormNode.data) {
+            clearFormNode.data = { value: {} };
+          } else {
+            clearFormNode.data.value = {};
+          }
+          
+          // 同步更新子组件的value
+          function clearChildNodesValue(nodes) {
+            for (let node of nodes) {
+              if (node.data) {
+                node.data.value = '';
+              }
+              // 递归处理子节点的子节点
+              if (node.nodes && node.nodes.length > 0) {
+                clearChildNodesValue(node.nodes);
+              }
+            }
+          }
+          if (clearFormNode.nodes && clearFormNode.nodes.length > 0) {
+            clearChildNodesValue(clearFormNode.nodes);
+          }
+          
+          // 更新存储
+          nodeStorage.set(cardKey, clearFormNode);
+          
+          // 同步更新 anxHashToNodeMap 中的节点
+          for (let [anxHash, rootNode] of anxHashToNodeMap) {
+            if (rootNode.cardKey === cardKey) {
+              // 更新根节点
+              if (!rootNode.data) {
+                rootNode.data = { value: {} };
+              } else {
+                rootNode.data.value = {};
+              }
+              // 更新根节点的子组件
+              if (rootNode.nodes && rootNode.nodes.length > 0) {
+                clearChildNodesValue(rootNode.nodes);
+              }
+              break;
+            }
+            // 递归查找并更新子节点
+            function clearNodeInAnxHashMap(nodes) {
+              for (let node of nodes) {
+                if (node.cardKey === cardKey) {
+                  if (!node.data) {
+                    node.data = { value: {} };
+                  } else {
+                    node.data.value = {};
+                  }
+                  // 更新该节点的子组件
+                  if (node.nodes && node.nodes.length > 0) {
+                    clearChildNodesValue(node.nodes);
+                  }
+                  return true;
+                }
+                if (node.nodes && node.nodes.length > 0) {
+                  if (clearNodeInAnxHashMap(node.nodes)) {
+                    return true;
+                  }
+                }
+              }
+              return false;
+            }
+            if (rootNode.nodes && rootNode.nodes.length > 0) {
+              if (clearNodeInAnxHashMap(rootNode.nodes)) {
+                break;
+              }
+            }
+          }
+          
+          result = { message: 'Form data cleared successfully' };
+        } else {
+          result = `No node found for cardKey: ${cardKey}`;
+        }
+        break;
       default:
         result = `Action ${action} is not implemented yet.`;
     }
     
-    res.json({
+    const response = {
       cardKey: cardKey,
       action: action,
       result: result
+    };
+    
+    // 记录日志
+    cliLogs.unshift({
+      timestamp: new Date().toISOString(),
+      command: command,
+      status: 'success',
+      response: response
     });
+    
+    // 限制日志数量
+    if (cliLogs.length > MAX_LOGS) {
+      cliLogs.pop();
+    }
+    
+    res.json(response);
   } catch (error) {
     console.error('Error executing CLI command:', error);
-    res.status(400).json({
+    const response = {
       cardKey: '',
       action: '',
       result: 'Error executing CLI command. Please check your input.'
+    };
+    
+    // 记录日志
+    cliLogs.unshift({
+      timestamp: new Date().toISOString(),
+      command: req.body.command || '',
+      status: 'error',
+      response: response,
+      error: error.message
     });
+    
+    // 限制日志数量
+    if (cliLogs.length > MAX_LOGS) {
+      cliLogs.pop();
+    }
+    
+    res.status(400).json(response);
   }
 });
 
@@ -1308,6 +1443,44 @@ app.get('/cli/commands', (req, res) => {
   } catch (error) {
     console.error('Error getting CLI commands:', error);
     res.status(500).json({ error: 'Failed to get CLI commands' });
+  }
+});
+
+// API endpoint for getting CLI logs
+app.get('/api/cli/logs', (req, res) => {
+  try {
+    res.json({ logs: cliLogs });
+  } catch (error) {
+    console.error('Error getting CLI logs:', error);
+    res.status(500).json({ error: 'Failed to get CLI logs' });
+  }
+});
+
+// API endpoint for getting dataset files
+app.get('/dataset/:filename', (req, res) => {
+  try {
+    let { filename } = req.params;
+    
+    // 如果文件名没有 .json 后缀，自动添加
+    if (!filename.endsWith('.json')) {
+      filename = filename + '.json';
+    }
+    
+    const datasetPath = path.join(__dirname, '../dataset', filename);
+    
+    // Check if file exists
+    if (!fs.existsSync(datasetPath)) {
+      return res.status(404).json({ error: 'Dataset file not found' });
+    }
+    
+    // Read and parse the JSON file
+    const content = fs.readFileSync(datasetPath, 'utf8');
+    const dataset = JSON.parse(content);
+    
+    res.json(dataset);
+  } catch (error) {
+    console.error('Error getting dataset:', error);
+    res.status(500).json({ error: 'Failed to get dataset' });
   }
 });
 

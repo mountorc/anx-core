@@ -1,0 +1,22 @@
+{
+  "name": "行业列表",
+  "description": "包含各个行业的数据集",
+  "data": [
+    { "id": "it", "name": "信息技术", "code": "IT", "icon": "💻" },
+    { "id": "finance", "name": "金融", "code": "FIN", "icon": "💰" },
+    { "id": "education", "name": "教育", "code": "EDU", "icon": "📚" },
+    { "id": "healthcare", "name": "医疗健康", "code": "MED", "icon": "🏥" },
+    { "id": "retail", "name": "零售", "code": "RET", "icon": "🛒" },
+    { "id": "manufacturing", "name": "制造业", "code": "MFG", "icon": "🏭" },
+    { "id": "realestate", "name": "房地产", "code": "RE", "icon": "🏠" },
+    { "id": "transportation", "name": "交通运输", "code": "TRN", "icon": "🚗" },
+    { "id": "energy", "name": "能源", "code": "ENG", "icon": "⚡" },
+    { "id": "agriculture", "name": "农业", "code": "AGR", "icon": "🌾" },
+    { "id": "entertainment", "name": "娱乐", "code": "ENT", "icon": "🎬" },
+    { "id": "tourism", "name": "旅游", "code": "TRV", "icon": "✈️" },
+    { "id": "food", "name": "餐饮", "code": "FOD", "icon": "🍽️" },
+    { "id": "consulting", "name": "咨询", "code": "CON", "icon": "💼" },
+    { "id": "legal", "name": "法律", "code": "LAW", "icon": "⚖️" },
+    { "id": "other", "name": "其他", "code": "OTH", "icon": "📦" }
+  ]
+}

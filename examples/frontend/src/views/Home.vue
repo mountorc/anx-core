@@ -22,6 +22,7 @@
             />
             <button @click="executeCliCommand">Execute</button>
             <button @click="showCommandsList">Commands</button>
+            <button @click="showCliLogs">Logs</button>
           </div>
           <!-- Commands list modal -->
           <div class="modal" v-if="showCommandsModal">
@@ -45,6 +46,40 @@
               </div>
               <div class="modal-footer">
                 <button @click="showCommandsModal = false">Close</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- CLI Logs modal -->
+          <div class="modal" v-if="showLogsModal">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3>CLI Command Logs</h3>
+                <button @click="showLogsModal = false" class="close-btn">×</button>
+              </div>
+              <div class="modal-body">
+                <div v-if="cliLogs.length === 0" class="no-logs">
+                  No CLI command logs available.
+                </div>
+                <div v-else class="logs-list">
+                  <div v-for="(log, index) in cliLogs" :key="index" class="log-item" :class="log.status">
+                    <div class="log-header">
+                      <span class="log-timestamp">{{ formatTimestamp(log.timestamp) }}</span>
+                      <span class="log-status">{{ log.status.toUpperCase() }}</span>
+                    </div>
+                    <div class="log-command">{{ log.command }}</div>
+                    <div class="log-response">
+                      <pre>{{ JSON.stringify(log.response, null, 2) }}</pre>
+                    </div>
+                    <div v-if="log.error" class="log-error">
+                      <strong>Error:</strong> {{ log.error }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button @click="refreshCliLogs">Refresh</button>
+                <button @click="showLogsModal = false">Close</button>
               </div>
             </div>
           </div>
@@ -171,7 +206,9 @@ export default {
       cliCommand: '',
       cliOutput: '',
       showCommandsModal: false,
+      showLogsModal: false,
       cliCommands: [],
+      cliLogs: [],
       visualizationHTML: '',
       visualizationCSS: '',
       hubList: [], // 存储从hub获取的tile case列表
@@ -381,17 +418,8 @@ export default {
             this.nodesStructure = result.nodes;
             // 重新生成节点可视化
             await this.generateNodeVisualization(this.nodesStructure);
-            // 直接从更新后的节点结构生成 Markup
-            const markupResponse = await fetch('/api/convert', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ anxContent: result.nodes.config })
-            });
-            const markupResult = await markupResponse.json();
-            this.rawMarkupOutput = markupResult.markup;
-            this.markupOutput = this.convertMarkupToHtml(markupResult.markup);
+            // 重新解析ANX输入，确保使用最新的数据
+            this.convertAnxToMarkup();
           }
         } catch (error) {
           console.error('Error updating node data:', error);
@@ -838,6 +866,29 @@ export default {
         console.error('Error fetching CLI commands:', error);
         alert('Failed to load CLI commands. Please try again.');
       }
+    },
+    async showCliLogs() {
+      try {
+        await this.refreshCliLogs();
+        this.showLogsModal = true;
+      } catch (error) {
+        console.error('Error showing CLI logs:', error);
+        alert('Failed to load CLI logs. Please try again.');
+      }
+    },
+    async refreshCliLogs() {
+      try {
+        const response = await fetch('/api/cli/logs');
+        const data = await response.json();
+        this.cliLogs = data.logs;
+      } catch (error) {
+        console.error('Error refreshing CLI logs:', error);
+        alert('Failed to refresh CLI logs. Please try again.');
+      }
+    },
+    formatTimestamp(timestamp) {
+      const date = new Date(timestamp);
+      return date.toLocaleString();
     }
   }
 }
@@ -1196,6 +1247,103 @@ export default {
   font-family: monospace;
 }
 
+/* CLI Logs styles */
+.no-logs {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+  font-style: italic;
+}
+
+.logs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.log-item {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  background-color: #f9f9f9;
+}
+
+.log-item.success {
+  border-left: 4px solid #4CAF50;
+}
+
+.log-item.error {
+  border-left: 4px solid #f44336;
+  background-color: #fff8f8;
+}
+
+.log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.log-timestamp {
+  font-size: 12px;
+  color: #666;
+  font-family: monospace;
+}
+
+.log-status {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+.log-item.success .log-status {
+  background-color: #e8f5e8;
+  color: #4CAF50;
+}
+
+.log-item.error .log-status {
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+.log-command {
+  font-family: monospace;
+  font-size: 14px;
+  margin-bottom: 10px;
+  padding: 8px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  word-break: break-all;
+}
+
+.log-response {
+  margin-bottom: 10px;
+}
+
+.log-response pre {
+  margin: 0;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 13px;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.log-error {
+  color: #f44336;
+  font-size: 13px;
+  padding: 8px;
+  background-color: #ffebee;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+
 .modal-footer {
   padding: 15px;
   border-top: 1px solid #ddd;
@@ -1212,9 +1360,19 @@ export default {
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  margin-left: 10px;
 }
 
 .modal-footer button:hover {
   background-color: #45a049;
+}
+
+.modal-footer button:first-child {
+  margin-left: 0;
+  background-color: #2196F3;
+}
+
+.modal-footer button:first-child:hover {
+  background-color: #0b7dda;
 }
 </style>

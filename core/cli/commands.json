@@ -91,6 +91,12 @@
           "description": "Reset to initial default value; and clear validation status",
           "usage": "anx <cardKey> reset",
           "example": "anx form-container reset"
+        },
+        {
+          "name": "clear_form",
+          "description": "Clear form data; reset all form fields to empty",
+          "usage": "anx <cardKey> clear_form",
+          "example": "anx registration-form clear_form"
         }
       ]
     },
