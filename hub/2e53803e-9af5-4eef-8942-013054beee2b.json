@@ -1,0 +1,78 @@
+{
+  "uuid": "2e53803e-9af5-4eef-8942-013054beee2b",
+  "name": "Board with Table Test",
+  "anxContent": {
+    "kind": "board",
+    "kinds": [
+      {
+        "kind": "text",
+        "value": "## 数据管理系统"
+      },
+      {
+        "kind": "table",
+        "title": "商品表",
+        "titles": [
+          {
+            "nick": "name",
+            "title": "商品名称",
+            "width": 120
+          },
+          {
+            "nick": "price",
+            "title": "价格",
+            "width": 100
+          }
+        ],
+        "dataset": {
+          "url_dataset": "http://localhost:4665/dataset"
+        }
+      },
+      {
+        "kind": "table",
+        "title": "产品数据表",
+        "titles": [
+          {
+            "nick": "id",
+            "title": "产品ID",
+            "width": 80
+          },
+          {
+            "nick": "name",
+            "title": "产品名称",
+            "width": 150
+          },
+          {
+            "nick": "price",
+            "title": "价格",
+            "width": 100
+          },
+          {
+            "nick": "stock",
+            "title": "库存",
+            "width": 80
+          }
+        ],
+        "data": [
+          {
+            "id": 101,
+            "name": "笔记本电脑",
+            "price": 5999,
+            "stock": 50
+          },
+          {
+            "id": 102,
+            "name": "智能手机",
+            "price": 3999,
+            "stock": 100
+          },
+          {
+            "id": 103,
+            "name": "平板电脑",
+            "price": 2999,
+            "stock": 30
+          }
+        ]
+      }
+    ]
+  }
+}

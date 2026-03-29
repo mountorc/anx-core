@@ -29,15 +29,16 @@ class ANXCoreSkill {
     }
   }
 
-  // 转换ANX到Markdown
-  async convertAnxToMarkdown(anxContent) {
+  // 转换ANX到Markup
+  async convertAnxToMarkdown(anxContent, uuid_tile) {
     try {
+      const payload = anxContent ? { anxContent } : { uuid_tile };
       const response = await fetch(`${this.backendUrl}/api/convert`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ anxContent })
+        body: JSON.stringify(payload)
       });
       
       if (!response.ok) {
@@ -45,21 +46,44 @@ class ANXCoreSkill {
       }
       
       const result = await response.json();
-      return result.markdown;
+      return result.markup;
     } catch (error) {
-      return `Error converting ANX to Markdown: ${error.message}`;
+      return `Error converting ANX to Markup: ${error.message}`;
+    }
+  }
+
+  // 通过uuid_tile加载ANX配置并转换为Markup
+  async convertAnxToMarkupByUuid(uuid_tile) {
+    try {
+      const response = await fetch(`${this.backendUrl}/api/convert`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ uuid_tile })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      return result.markup;
+    } catch (error) {
+      return `Error converting ANX to Markup by UUID: ${error.message}`;
     }
   }
 
   // 转换ANX到节点结构
-  async convertAnxToNodes(anxContent) {
+  async convertAnxToNodes(anxContent, uuid_tile) {
     try {
+      const payload = anxContent ? { anxContent } : { uuid_tile };
       const response = await fetch(`${this.backendUrl}/api/convert-to-nodes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ anxContent })
+        body: JSON.stringify(payload)
       });
       
       if (!response.ok) {
@@ -70,6 +94,28 @@ class ANXCoreSkill {
       return result.nodes;
     } catch (error) {
       return `Error converting ANX to nodes: ${error.message}`;
+    }
+  }
+
+  // 通过uuid_tile加载ANX配置并转换为节点结构
+  async convertAnxToNodesByUuid(uuid_tile) {
+    try {
+      const response = await fetch(`${this.backendUrl}/api/convert-to-nodes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ uuid_tile })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      return result.nodes;
+    } catch (error) {
+      return `Error converting ANX to nodes by UUID: ${error.message}`;
     }
   }
 
@@ -141,9 +187,13 @@ class ANXCoreSkill {
       case 'readUsageFile':
         return await this.readUsageFile(args.filename);
       case 'convertAnxToMarkdown':
-        return await this.convertAnxToMarkdown(args.anxContent);
+        return await this.convertAnxToMarkdown(args.anxContent, args.uuid_tile);
+      case 'convertAnxToMarkupByUuid':
+        return await this.convertAnxToMarkupByUuid(args.uuid_tile);
       case 'convertAnxToNodes':
-        return await this.convertAnxToNodes(args.anxContent);
+        return await this.convertAnxToNodes(args.anxContent, args.uuid_tile);
+      case 'convertAnxToNodesByUuid':
+        return await this.convertAnxToNodesByUuid(args.uuid_tile);
       case 'executeCliCommand':
         return await this.executeCliCommand(args.command);
       case 'generateNodeVisualization':
@@ -151,7 +201,7 @@ class ANXCoreSkill {
       case 'getCliCommands':
         return await this.getCliCommands();
       default:
-        return 'Command not supported. Available commands: getUsageFiles, readUsageFile, convertAnxToMarkdown, convertAnxToNodes, executeCliCommand, generateNodeVisualization, getCliCommands';
+        return 'Command not supported. Available commands: getUsageFiles, readUsageFile, convertAnxToMarkdown, convertAnxToMarkupByUuid, convertAnxToNodes, convertAnxToNodesByUuid, executeCliCommand, generateNodeVisualization, getCliCommands';
     }
   }
 
@@ -169,8 +219,10 @@ class ANXCoreSkill {
       commands: [
         'getUsageFiles - Get all usage documentation files',
         'readUsageFile - Read a specific usage documentation file',
-        'convertAnxToMarkdown - Convert ANX content to Markdown',
+        'convertAnxToMarkdown - Convert ANX content to Markup',
+        'convertAnxToMarkupByUuid - Convert ANX content to Markup by UUID tile',
         'convertAnxToNodes - Convert ANX content to nodes structure',
+        'convertAnxToNodesByUuid - Convert ANX content to nodes structure by UUID tile',
         'executeCliCommand - Execute CLI commands',
         'generateNodeVisualization - Generate node visualization',
         'getCliCommands - Get list of available CLI commands'

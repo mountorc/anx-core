@@ -1,13 +1,13 @@
 <template>
   <div class="app">
     <header class="header">
-      <h1>ANX to Markdown Converter</h1>
+      <h1>ANX to Markup Converter</h1>
     </header>
     <main class="main">
       <router-view />
     </main>
     <footer class="footer">
-      <p>© 2026 ANX to Markdown Converter</p>
+      <p>© 2026 ANX to Markup Converter</p>
     </footer>
   </div>
 </template>

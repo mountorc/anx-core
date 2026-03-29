@@ -1,0 +1,16 @@
+{
+  "uuid": "a1845c5b-bde5-4d32-8df8-cbc432261301",
+  "name": "Options Dataset Test",
+  "anxContent": {
+    "kind": "options",
+    "nick": "product",
+    "value": "",
+    "optionsSet": {
+      "dataset": {
+        "url_dataset": "http://localhost:4665/dataset"
+      },
+      "titleNick": "name",
+      "valueNick": "name"
+    }
+  }
+}

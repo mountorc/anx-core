@@ -2,15 +2,15 @@
  * 处理Box组件的ANX配置
  */
 
-const { parseTemplateForMarkdown } = require('../utils/template.js');
+const { parseTemplateForMarkup } = require('../utils/template.js');
 const { fetchDataset } = require('../utils/dataset.js');
 
 /**
- * 转换Box组件为Markdown
+ * 转换Box组件为Markup
  * @param {Object} component - Box组件
- * @returns {Promise<string>} - 转换后的Markdown内容
+ * @returns {Promise<string>} - 转换后的Markup内容
  */
-async function convertBoxToMarkdown(component) {
+async function convertBoxToMarkup(component) {
   const { title, data, html, template, dataset } = component;
   let content = '';
 
@@ -33,17 +33,17 @@ async function convertBoxToMarkdown(component) {
     for (const item of boxData) {
       const templateContent = template || html;
       if (templateContent) {
-        content += `${parseTemplateForMarkdown(templateContent, item)}\n\n`;
+        content += `${parseTemplateForMarkup(templateContent, item)}\n\n`;
       }
     }
   } else if (html || template) {
     const templateContent = template || html;
-    content += `${parseTemplateForMarkdown(templateContent, component)}\n\n`;
+    content += `${parseTemplateForMarkup(templateContent, component)}\n\n`;
   }
 
   return content;
 }
 
 module.exports = {
-  convertBoxToMarkdown
+  convertBoxToMarkup
 };

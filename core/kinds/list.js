@@ -3,11 +3,11 @@
  */
 
 /**
- * 转换List组件为Markdown
+ * 转换List组件为Markup
  * @param {Object} component - List组件
- * @returns {Promise<string>} - 转换后的Markdown内容
+ * @returns {Promise<string>} - 转换后的Markup内容
  */
-async function convertListToMarkdown(component) {
+async function convertListToMarkup(component) {
   const { title, itemList, data } = component;
   let content = '';
 
@@ -42,5 +42,5 @@ async function convertListToMarkdown(component) {
 }
 
 module.exports = {
-  convertListToMarkdown
+  convertListToMarkup
 };

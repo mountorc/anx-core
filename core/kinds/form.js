@@ -3,11 +3,11 @@
  */
 
 /**
- * 转换Form组件为Markdown
+ * 转换Form组件为Markup
  * @param {Object} component - Form组件
- * @returns {Promise<string>} - 转换后的Markdown内容
+ * @returns {Promise<string>} - 转换后的Markup内容
  */
-async function convertFormToMarkdown(component) {
+async function convertFormToMarkup(component) {
   const { title, kinds, data } = component;
   let content = '';
 
@@ -17,9 +17,9 @@ async function convertFormToMarkdown(component) {
 
   if (kinds && Array.isArray(kinds)) {
     // 动态导入以避免循环依赖
-    const { anxToMarkdown } = await import('../anx-to-markdown.js');
+    const { anxToMarkup } = await import('../anx-to-markup.js');
     for (const field of kinds) {
-      content += `${await anxToMarkdown(field)}\n\n`;
+      content += `${await anxToMarkup(field)}\n\n`;
     }
   }
 
@@ -27,5 +27,5 @@ async function convertFormToMarkdown(component) {
 }
 
 module.exports = {
-  convertFormToMarkdown
+  convertFormToMarkup
 };

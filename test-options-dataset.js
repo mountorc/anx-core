@@ -1,8 +1,8 @@
 /**
- * 测试ANX转Markdown功能（带options dataset）
+ * 测试ANX转Markup功能（带options dataset）
  */
 
-import { anxToMarkdown } from './core/index.js';
+import { anxToMarkup } from './core/index.js';
 
 // 测试用例: 带url_dataset的Options组件（用户提供的示例）
 const optionsWithUrlDataset = {
@@ -19,13 +19,13 @@ const optionsWithUrlDataset = {
 };
 
 // 执行测试
-console.log('=== 测试ANX转Markdown功能（带options dataset）===');
+console.log('=== 测试ANX转Markup功能（带options dataset）===');
 console.log('');
 
-anxToMarkdown(optionsWithUrlDataset)
-  .then(markdown => {
+anxToMarkup(optionsWithUrlDataset)
+  .then(markup => {
     console.log('Options组件（带url_dataset）:');
-    console.log(markdown);
+    console.log(markup);
     console.log('\n=== 测试完成 ===');
   })
   .catch(error => {

@@ -1,0 +1,50 @@
+{
+  "uuid": "472421ef-b364-4229-b7a8-f9e9d2153e0e",
+  "name": "Table Test",
+  "anxContent": {
+    "kind": "table",
+    "title": "用户数据表",
+    "titles": [
+      {
+        "nick": "id",
+        "title": "ID",
+        "width": 60
+      },
+      {
+        "nick": "name",
+        "title": "姓名",
+        "width": 120
+      },
+      {
+        "nick": "age",
+        "title": "年龄",
+        "width": 80
+      },
+      {
+        "nick": "email",
+        "title": "邮箱",
+        "width": 200
+      }
+    ],
+    "data": [
+      {
+        "id": 1,
+        "name": "张三",
+        "age": 25,
+        "email": "zhangsan@example.com"
+      },
+      {
+        "id": 2,
+        "name": "李四",
+        "age": 30,
+        "email": "lisi@example.com"
+      },
+      {
+        "id": 3,
+        "name": "王五",
+        "age": 28,
+        "email": "wangwu@example.com"
+      }
+    ]
+  }
+}

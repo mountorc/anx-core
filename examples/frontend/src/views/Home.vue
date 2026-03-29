@@ -6,7 +6,7 @@
         <textarea 
           v-model="anxInput" 
           placeholder="Enter ANX format content here..."
-          @input="convertAnxToMarkdown"
+          @input="debouncedConvertAnxToMarkup"
         ></textarea>
       </div>
       <div class="json-section">
@@ -55,9 +55,9 @@
         </div>
       </div>
       <div class="output-section">
-        <h2>Markdown Output</h2>
-        <div class="markdown-output" v-html="markdownOutput"></div>
-        <pre class="raw-output">{{ rawMarkdownOutput }}</pre>
+        <h2>Markup Output</h2>
+        <div class="markup-output" v-html="markupOutput"></div>
+        <pre class="raw-output">{{ rawMarkupOutput }}</pre>
       </div>
       <div class="visual-section">
         <h2>Node Visualization</h2>
@@ -71,16 +71,10 @@
         </div>
       </div>
     </div>
-    <div class="test-cases">
-      <h3>Test Cases</h3>
-      <button @click="loadOptionsDatasetTest">Options Dataset Test</button>
-      <button @click="loadFormTest">Form Test</button>
-      <button @click="loadTableTest">Table Test</button>
-      <button @click="loadBoardTableTest">Board with Table Test</button>
-      <button @click="loadBoxTapTest">Box Tap Test</button>
-      <button @click="loadBoxDatasetTest">Box Dataset Test</button>
-      <button @click="loadBoxDatasetUrlTest">Box Dataset URL Test</button>
-      <button @click="loadJobCreationFormTest">Job Creation Form Test</button>
+    <div class="tile-cases">
+      <h3>Tile Cases</h3>
+      <!-- 动态加载的tile case -->
+      <button v-for="item in hubList" :key="item.uuid" @click="loadHubTestCase(item.uuid)">{{ item.name }}</button>
     </div>
   </div>
 </template>
@@ -109,6 +103,7 @@ export default {
     }
   }
 }`,
+      hubList: [], // 存储从hub获取的tile case列表
       boxDatasetTest: `{
   "kind": "box",
   "title": "测试Box组件 dataset",
@@ -169,8 +164,8 @@ export default {
 }`,
 
 
-      markdownOutput: '',
-      rawMarkdownOutput: '',
+      markupOutput: '',
+      rawMarkupOutput: '',
       jsonStructure: '',
       nodesStructure: null,
       cliCommand: '',
@@ -178,11 +173,14 @@ export default {
       showCommandsModal: false,
       cliCommands: [],
       visualizationHTML: '',
-      visualizationCSS: ''
+      visualizationCSS: '',
+      hubList: [], // 存储从hub获取的tile case列表
+      debounceTimer: null
     }
   },
   mounted() {
-    this.convertAnxToMarkdown();
+    this.convertAnxToMarkup();
+    this.loadHubList();
     
     // 监听 message 事件（来自可视化 iframe）
     window.addEventListener('message', this.handleVisualizationMessage);
@@ -192,7 +190,39 @@ export default {
     window.removeEventListener('message', this.handleVisualizationMessage);
   },
   methods: {
-    async convertAnxToMarkdown() {
+    // 防抖函数，避免频繁的API调用
+    debouncedConvertAnxToMarkup() {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.convertAnxToMarkup();
+      }, 300); // 300毫秒的防抖延迟
+    },
+    // 加载hub中的tile case列表
+    async loadHubList() {
+      try {
+        const response = await fetch('/api/hub');
+        const data = await response.json();
+        if (data.success) {
+          this.hubList = data.data;
+        }
+      } catch (error) {
+        console.error('Error loading hub list:', error);
+      }
+    },
+    // 加载指定的tile case
+    async loadHubTestCase(uuid) {
+      try {
+        const response = await fetch(`/api/hub/${uuid}`);
+        const data = await response.json();
+        if (data.success) {
+          this.anxInput = JSON.stringify(data.data.anxContent, null, 2);
+          this.convertAnxToMarkup();
+        }
+      } catch (error) {
+        console.error('Error loading hub tile case:', error);
+      }
+    },
+    async convertAnxToMarkup() {
       try {
         // Parse the ANX input string to a JavaScript object
         const anxContent = JSON.parse(this.anxInput);
@@ -210,11 +240,8 @@ export default {
         this.jsonStructure = JSON.stringify(nodesResult.nodes, null, 2);
         this.nodesStructure = nodesResult.nodes;
         
-        // Generate node visualization
-        await this.generateNodeVisualization(this.nodesStructure);
-        
-        // Convert ANX to Markdown
-        const markdownResponse = await fetch('/api/convert', {
+        // Convert ANX to Markup
+        const markupResponse = await fetch('/api/convert', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -222,13 +249,16 @@ export default {
           body: JSON.stringify({ anxContent })
         });
         
-        const markdownResult = await markdownResponse.json();
-        this.rawMarkdownOutput = markdownResult.markdown;
-        this.markdownOutput = this.convertMarkdownToHtml(markdownResult.markdown);
+        const markupResult = await markupResponse.json();
+        this.rawMarkupOutput = markupResult.markup;
+        this.markupOutput = this.convertMarkupToHtml(markupResult.markup);
+        
+        // Generate node visualization (can be done in parallel or after Markup conversion)
+        this.generateNodeVisualization(this.nodesStructure);
       } catch (error) {
         console.error('Error converting ANX:', error);
-        this.rawMarkdownOutput = 'Error converting ANX to Markdown. Please check your input.';
-        this.markdownOutput = '<p>Error converting ANX to Markdown. Please check your input.</p>';
+        this.rawMarkupOutput = 'Error converting ANX to Markup. Please check your input.';
+        this.markupOutput = '<p>Error converting ANX to Markup. Please check your input.</p>';
         this.jsonStructure = 'Invalid JSON. Please check your input.';
       }
     },
@@ -351,21 +381,30 @@ export default {
             this.nodesStructure = result.nodes;
             // 重新生成节点可视化
             await this.generateNodeVisualization(this.nodesStructure);
-            // 更新 Markdown Output
-            await this.updateMarkdownOutput();
+            // 直接从更新后的节点结构生成 Markup
+            const markupResponse = await fetch('/api/convert', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ anxContent: result.nodes.config })
+            });
+            const markupResult = await markupResponse.json();
+            this.rawMarkupOutput = markupResult.markup;
+            this.markupOutput = this.convertMarkupToHtml(markupResult.markup);
           }
         } catch (error) {
           console.error('Error updating node data:', error);
         }
       }
     },
-    async updateMarkdownOutput() {
+    async updateMarkupOutput() {
       try {
         // 解析ANX输入
         const anxContent = JSON.parse(this.anxInput);
         
-        // 转换ANX到Markdown
-        const markdownResponse = await fetch('/api/convert', {
+        // 转换ANX到Markup
+        const markupResponse = await fetch('/api/convert', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -373,16 +412,16 @@ export default {
           body: JSON.stringify({ anxContent })
         });
         
-        const markdownResult = await markdownResponse.json();
-        this.rawMarkdownOutput = markdownResult.markdown;
-        this.markdownOutput = this.convertMarkdownToHtml(markdownResult.markdown);
+        const markupResult = await markupResponse.json();
+        this.rawMarkupOutput = markupResult.markup;
+        this.markupOutput = this.convertMarkupToHtml(markupResult.markup);
       } catch (error) {
-        console.error('Error updating markdown output:', error);
+        console.error('Error updating markup output:', error);
       }
     },
-    convertMarkdownToHtml(markdown) {
-      // Simple Markdown to HTML conversion
-      return markdown
+    convertMarkupToHtml(markup) {
+      // Simple Markup to HTML conversion
+      return markup
         .replace(/^## (.*$)/gim, '<h2>$1</h2>')
         .replace(/^# (.*$)/gim, '<h1>$1</h1>')
         .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
@@ -410,7 +449,7 @@ export default {
     "valueNick": "name" 
   } 
 }`;
-      this.convertAnxToMarkdown();
+      this.convertAnxToMarkup();
     },
     loadFormTest() {
       this.anxInput = `{
@@ -538,7 +577,7 @@ export default {
     }
   ]
 }`;
-      this.convertAnxToMarkdown();
+      this.convertAnxToMarkup();
     },
     loadTableTest() {
       this.anxInput = `{
@@ -556,7 +595,7 @@ export default {
     { "id": 3, "name": "王五", "age": 28, "email": "wangwu@example.com" }
   ]
 }`;
-      this.convertAnxToMarkdown();
+      this.convertAnxToMarkup();
     },
     loadJobCreationFormTest() {
       this.anxInput = `{
@@ -681,7 +720,7 @@ export default {
     }
   ]
 }`;
-      this.convertAnxToMarkdown();
+      this.convertAnxToMarkup();
     },
     loadBoardTableTest() {
       this.anxInput = `{
@@ -719,19 +758,19 @@ export default {
     }
   ]
 }`;
-      this.convertAnxToMarkdown();
+      this.convertAnxToMarkup();
     },
     loadBoxTapTest() {
       this.anxInput = this.boxTapTest;
-      this.convertAnxToMarkdown();
+      this.convertAnxToMarkup();
     },
     loadBoxDatasetTest() {
       this.anxInput = this.boxDatasetTest;
-      this.convertAnxToMarkdown();
+      this.convertAnxToMarkup();
     },
     loadBoxDatasetUrlTest() {
       this.anxInput = this.boxDatasetUrlTest;
-      this.convertAnxToMarkdown();
+      this.convertAnxToMarkup();
     },
 
     async executeCliCommand() {
@@ -880,7 +919,7 @@ export default {
   flex-direction: column;
 }
 
-.markdown-output {
+.markup-output {
   flex: 1;
   padding: 15px;
   border-bottom: 1px solid #ddd;
@@ -930,7 +969,7 @@ export default {
   gap: 10px;
 }
 
-.test-cases button {
+.tile-cases button {
   padding: 8px 16px;
   background-color: #4CAF50;
   color: white;
@@ -939,7 +978,7 @@ export default {
   cursor: pointer;
 }
 
-.test-cases button:hover {
+.tile-cases button:hover {
   background-color: #45a049;
 }
 

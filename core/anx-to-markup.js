@@ -1,32 +1,32 @@
 /**
- * 将ANX格式内容转换为Markdown格式
+ * 将ANX格式内容转换为Markup格式
  * @param {Object} anxContent - ANX格式的内容
- * @returns {Promise<string>} - 转换后的Markdown格式内容
+ * @returns {Promise<string>} - 转换后的Markup格式内容
  */
 const { fetchDataset } = require('./utils/dataset.js');
 const { parseTemplateForMarkdown } = require('./utils/template.js');
 const { 
-  convertBoxToMarkdown, 
-  convertBoardToMarkdown, 
-  convertFormToMarkdown, 
-  convertOptionsToMarkdown, 
-  convertNavigationToMarkdown,
-  convertTableToMarkdown,
-  convertListToMarkdown 
+  convertBoxToMarkup, 
+  convertBoardToMarkup, 
+  convertFormToMarkup, 
+  convertOptionsToMarkup, 
+  convertNavigationToMarkup,
+  convertTableToMarkup,
+  convertListToMarkup 
 } = require('./kinds/index.js');
-async function anxToMarkdown(anxContent) {
+async function anxToMarkup(anxContent) {
   if (!anxContent || typeof anxContent !== 'object') {
     return '';
   }
 
   // 处理ANX组件
   if (anxContent.kind) {
-    return await convertComponentToMarkdown(anxContent);
+    return await convertComponentToMarkup(anxContent);
   }
 
   // 处理ANX组件数组
   if (Array.isArray(anxContent)) {
-    const results = await Promise.all(anxContent.map(item => anxToMarkdown(item)));
+    const results = await Promise.all(anxContent.map(item => anxToMarkup(item)));
     return results.join('\n\n');
   }
 
@@ -128,11 +128,11 @@ function anxToNodes(anxContent) {
 }
 
 /**
- * 转换单个ANX组件为Markdown
+ * 转换单个ANX组件为Markup
  * @param {Object} component - ANX组件
- * @returns {Promise<string>} - 转换后的Markdown内容
+ * @returns {Promise<string>} - 转换后的Markup内容
  */
-async function convertComponentToMarkdown(component) {
+async function convertComponentToMarkup(component) {
   const { kind, title, data, html, template, value, options, label, placeholder, rows, nick, action, dataset } = component;
 
   // 处理dataset
@@ -154,44 +154,44 @@ async function convertComponentToMarkdown(component) {
 
   switch (kind) {
     case 'box':
-      return await convertBoxToMarkdown(processedComponent);
+      return await convertBoxToMarkup(processedComponent);
     case 'board':
-      return await convertBoardToMarkdown(processedComponent, convertComponentToMarkdown);
+      return await convertBoardToMarkup(processedComponent, convertComponentToMarkup);
     case 'text':
       // 同时使用原始组件和processedComponent，保留title和nick，同时获取data.value
-      return convertTextToMarkdown(component, processedComponent);
+      return convertTextToMarkup(component, processedComponent);
     case 'input':
-      return convertInputToMarkdown(processedComponent);
+      return convertInputToMarkup(processedComponent);
     case 'textarea':
-      return convertTextareaToMarkdown(processedComponent);
+      return convertTextareaToMarkup(processedComponent);
     case 'button':
-      return convertButtonToMarkdown(processedComponent);
+      return convertButtonToMarkup(processedComponent);
     case 'form':
-      return await convertFormToMarkdown(processedComponent);
+      return await convertFormToMarkup(processedComponent);
     case 'navigation':
-      return convertNavigationToMarkdown(processedComponent);
+      return convertNavigationToMarkup(processedComponent);
     case 'date':
-      return convertDateToMarkdown(processedComponent);
+      return convertDateToMarkup(processedComponent);
     case 'options':
-      return await convertOptionsToMarkdown(processedComponent);
+      return await convertOptionsToMarkup(processedComponent);
     case 'checkbox':
-      return convertCheckboxToMarkdown(processedComponent);
+      return convertCheckboxToMarkup(processedComponent);
     case 'table':
-      return await convertTableToMarkdown(processedComponent);
+      return await convertTableToMarkup(processedComponent);
     case 'list':
-      return await convertListToMarkdown(processedComponent);
+      return await convertListToMarkup(processedComponent);
     default:
       return `<!-- ANX Component: ${kind} -->`;
   }
 }
 
 /**
- * 转换Text组件为Markdown
+ * 转换Text组件为Markup
  * @param {Object} component - 原始Text组件
  * @param {Object} processedComponent - 处理后的Text组件
- * @returns {string} - 转换后的Markdown内容
+ * @returns {string} - 转换后的Markup内容
  */
-function convertTextToMarkdown(component, processedComponent) {
+function convertTextToMarkup(component, processedComponent) {
   // 从原始组件中获取title和nick
   const { value, title, nick, data } = component;
   // 从处理后的组件中获取data.value
@@ -211,22 +211,22 @@ function convertTextToMarkdown(component, processedComponent) {
 }
 
 /**
- * 转换Input组件为Markdown
+ * 转换Input组件为Markup
  * @param {Object} component - Input组件
- * @returns {string} - 转换后的Markdown内容
+ * @returns {string} - 转换后的Markup内容
  */
-function convertInputToMarkdown(component) {
+function convertInputToMarkup(component) {
   const { placeholder, value, nick } = component;
   const label = nick || 'Input';
   return `**${label}:** ${value || placeholder || ''}`;
 }
 
 /**
- * 转换Textarea组件为Markdown
+ * 转换Textarea组件为Markup
  * @param {Object} component - Textarea组件
- * @returns {string} - 转换后的Markdown内容
+ * @returns {string} - 转换后的Markup内容
  */
-function convertTextareaToMarkdown(component) {
+function convertTextareaToMarkup(component) {
   const { placeholder, value, nick, rows } = component;
   const label = nick || 'Textarea';
   const content = value || placeholder || '';
@@ -234,33 +234,33 @@ function convertTextareaToMarkdown(component) {
 }
 
 /**
- * 转换Button组件为Markdown
+ * 转换Button组件为Markup
  * @param {Object} component - Button组件
- * @returns {string} - 转换后的Markdown内容
+ * @returns {string} - 转换后的Markup内容
  */
-function convertButtonToMarkdown(component) {
+function convertButtonToMarkup(component) {
   const { label, action } = component;
   const buttonLabel = label || 'Button';
   return `[${buttonLabel}](${action || '#'})`;
 }
 
 /**
- * 转换Date组件为Markdown
+ * 转换Date组件为Markup
  * @param {Object} component - Date组件
- * @returns {string} - 转换后的Markdown内容
+ * @returns {string} - 转换后的Markup内容
  */
-function convertDateToMarkdown(component) {
+function convertDateToMarkup(component) {
   const { placeholder, value, nick } = component;
   const label = nick || 'Date';
   return `**${label}:** ${value || placeholder || ''}`;
 }
 
 /**
- * 转换Checkbox组件为Markdown
+ * 转换Checkbox组件为Markup
  * @param {Object} component - Checkbox组件
- * @returns {string} - 转换后的Markdown内容
+ * @returns {string} - 转换后的Markup内容
  */
-function convertCheckboxToMarkdown(component) {
+function convertCheckboxToMarkup(component) {
   const { options, value, nick } = component;
   let content = '';
 
@@ -282,6 +282,6 @@ function convertCheckboxToMarkdown(component) {
 
 // 导出所有功能
 module.exports = {
-  anxToMarkdown,
+  anxToMarkup,
   anxToNodes
 };

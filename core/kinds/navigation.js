@@ -3,11 +3,11 @@
  */
 
 /**
- * 转换Navigation组件为Markdown
+ * 转换Navigation组件为Markup
  * @param {Object} component - Navigation组件
- * @returns {string} - 转换后的Markdown内容
+ * @returns {string} - 转换后的Markup内容
  */
-function convertNavigationToMarkdown(component) {
+function convertNavigationToMarkup(component) {
   const { title, items } = component;
   let content = '';
 
@@ -29,5 +29,5 @@ function convertNavigationToMarkdown(component) {
 }
 
 module.exports = {
-  convertNavigationToMarkdown
+  convertNavigationToMarkup
 };

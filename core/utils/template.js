@@ -25,12 +25,12 @@ function getPropertyValue(obj, path) {
 }
 
 /**
- * 解析模板，替换变量（适用于Markdown）
+ * 解析模板，替换变量（适用于Markup）
  * @param {string} templateContent - 模板内容
  * @param {Object} data - 数据对象
  * @returns {string} - 解析后的模板
  */
-function parseTemplateForMarkdown(templateContent, data) {
+function parseTemplateForMarkup(templateContent, data) {
   if (!templateContent) return '';
 
   let parsedTemplate = templateContent;
@@ -61,5 +61,5 @@ function parseTemplateForMarkdown(templateContent, data) {
 
 module.exports = {
   getPropertyValue,
-  parseTemplateForMarkdown
+  parseTemplateForMarkup
 };

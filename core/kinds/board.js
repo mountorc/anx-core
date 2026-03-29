@@ -3,12 +3,12 @@
  */
 
 /**
- * 转换Board组件为Markdown
+ * 转换Board组件为Markup
  * @param {Object} component - Board组件
  * @param {Function} convertComponent - 组件转换函数
- * @returns {Promise<string>} - 转换后的Markdown内容
+ * @returns {Promise<string>} - 转换后的Markup内容
  */
-async function convertBoardToMarkdown(component, convertComponent) {
+async function convertBoardToMarkup(component, convertComponent) {
   const { kinds } = component;
   if (!kinds || !Array.isArray(kinds)) {
     return '';
@@ -19,5 +19,5 @@ async function convertBoardToMarkdown(component, convertComponent) {
 }
 
 module.exports = {
-  convertBoardToMarkdown
+  convertBoardToMarkup
 };

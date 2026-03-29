@@ -1,0 +1,68 @@
+{
+  "uuid": "7e6c1c39-14cb-4835-943b-4ad99d0720d7",
+  "name": "List Test",
+  "anxContent": {
+    "kind": "list",
+    "nick": "skills",
+    "title": "技能列表",
+    "itemList": [
+      {
+        "nick": "skillName",
+        "title": "技能名称",
+        "kind": "input",
+        "type": "string",
+        "lineEdit": "2",
+        "defaultValue": ""
+      },
+      {
+        "nick": "level",
+        "title": "熟练度",
+        "kind": "options",
+        "type": "string",
+        "lineEdit": "2",
+        "optionsItem": [
+          {
+            "value": "beginner",
+            "title": "初级"
+          },
+          {
+            "value": "intermediate",
+            "title": "中级"
+          },
+          {
+            "value": "advanced",
+            "title": "高级"
+          },
+          {
+            "value": "expert",
+            "title": "专家"
+          }
+        ]
+      },
+      {
+        "nick": "years",
+        "title": "使用年限",
+        "kind": "input",
+        "type": "number",
+        "lineEdit": "2",
+        "defaultValue": 0
+      }
+    ],
+    "data": [
+      {
+        "skillName": "JavaScript",
+        "level": "advanced",
+        "years": 5
+      },
+      {
+        "skillName": "Vue.js",
+        "level": "intermediate",
+        "years": 3
+      }
+    ],
+    "addButton": {
+      "iitemPre": -1
+    },
+    "moveButton": true
+  }
+}

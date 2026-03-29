@@ -5,11 +5,11 @@
 const { fetchDataset } = require('../utils/dataset.js');
 
 /**
- * 转换Options组件为Markdown
+ * 转换Options组件为Markup
  * @param {Object} component - Options组件
- * @returns {Promise<string>} - 转换后的Markdown内容
+ * @returns {Promise<string>} - 转换后的Markup内容
  */
-async function convertOptionsToMarkdown(component) {
+async function convertOptionsToMarkup(component) {
   const { title, options, value, multiple, nick, optionsSet } = component;
   let content = '';
 
@@ -83,5 +83,5 @@ function getPropertyValue(obj, path) {
 }
 
 module.exports = {
-  convertOptionsToMarkdown
+  convertOptionsToMarkup
 };

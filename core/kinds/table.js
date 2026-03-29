@@ -5,11 +5,11 @@
 const { fetchDataset } = require('../utils/dataset.js');
 
 /**
- * 转换Table组件为Markdown
+ * 转换Table组件为Markup
  * @param {Object} component - Table组件
- * @returns {Promise<string>} - 转换后的Markdown内容
+ * @returns {Promise<string>} - 转换后的Markup内容
  */
-async function convertTableToMarkdown(component) {
+async function convertTableToMarkup(component) {
   const { title, data, dataset, titles } = component;
   let content = '';
 
@@ -29,7 +29,7 @@ async function convertTableToMarkdown(component) {
     }
   }
 
-  // 生成Markdown表格
+  // 生成Markup表格
   if (titles && Array.isArray(titles) && titles.length > 0 && tableData && Array.isArray(tableData)) {
     // 过滤掉隐藏的列
     const visibleTitles = titles.filter(title => !title.hide);
@@ -83,5 +83,5 @@ async function convertTableToMarkdown(component) {
 }
 
 module.exports = {
-  convertTableToMarkdown
+  convertTableToMarkup
 };

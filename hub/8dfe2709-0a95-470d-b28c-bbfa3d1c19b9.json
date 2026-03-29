@@ -1,0 +1,219 @@
+{
+  "uuid": "8dfe2709-0a95-470d-b28c-bbfa3d1c19b9",
+  "name": "Job Creation Form Test",
+  "anxContent": {
+    "kind": "form",
+    "title": "创建求职账户",
+    "description": "加入我们，发现更多职业机会",
+    "kinds": [
+      {
+        "kind": "text",
+        "value": "加入我们，发现更多职业机会"
+      },
+      {
+        "kind": "input",
+        "nick": "lastName",
+        "title": "姓",
+        "placeholder": "请输入姓"
+      },
+      {
+        "kind": "input",
+        "nick": "firstName",
+        "title": "名",
+        "placeholder": "请输入名"
+      },
+      {
+        "kind": "input",
+        "nick": "email",
+        "title": "电子邮箱",
+        "placeholder": "请输入电子邮箱",
+        "type": "email"
+      },
+      {
+        "kind": "input",
+        "nick": "phone",
+        "title": "手机号码",
+        "placeholder": "请输入手机号码",
+        "type": "tel"
+      },
+      {
+        "kind": "date",
+        "nick": "birthdate",
+        "title": "出生日期",
+        "placeholder": "年 / 月 / 日"
+      },
+      {
+        "kind": "input",
+        "nick": "city",
+        "title": "所在城市",
+        "placeholder": "请输入所在城市"
+      },
+      {
+        "kind": "options",
+        "nick": "education",
+        "title": "最高学历",
+        "options": [
+          {
+            "value": "",
+            "title": "请选择学历"
+          },
+          {
+            "value": "highSchool",
+            "title": "高中及以下"
+          },
+          {
+            "value": "college",
+            "title": "大专"
+          },
+          {
+            "value": "bachelor",
+            "title": "本科"
+          },
+          {
+            "value": "master",
+            "title": "硕士"
+          },
+          {
+            "value": "phd",
+            "title": "博士"
+          }
+        ]
+      },
+      {
+        "kind": "options",
+        "nick": "experience",
+        "title": "工作年限",
+        "options": [
+          {
+            "value": "",
+            "title": "请选择"
+          },
+          {
+            "value": "fresh",
+            "title": "应届毕业生"
+          },
+          {
+            "value": "1-3",
+            "title": "1-3年"
+          },
+          {
+            "value": "3-5",
+            "title": "3-5年"
+          },
+          {
+            "value": "5-10",
+            "title": "5-10年"
+          },
+          {
+            "value": "10+",
+            "title": "10年以上"
+          }
+        ]
+      },
+      {
+        "kind": "options",
+        "nick": "industry",
+        "title": "行业选择",
+        "options": [
+          {
+            "value": "",
+            "title": "请选择行业"
+          },
+          {
+            "value": "it",
+            "title": "信息技术"
+          },
+          {
+            "value": "finance",
+            "title": "金融"
+          },
+          {
+            "value": "education",
+            "title": "教育"
+          },
+          {
+            "value": "healthcare",
+            "title": "医疗健康"
+          },
+          {
+            "value": "retail",
+            "title": "零售"
+          },
+          {
+            "value": "manufacturing",
+            "title": "制造业"
+          },
+          {
+            "value": "other",
+            "title": "其他"
+          }
+        ]
+      },
+      {
+        "kind": "options",
+        "nick": "occupation",
+        "title": "职业选择",
+        "options": [
+          {
+            "value": "",
+            "title": "请选择职业"
+          },
+          {
+            "value": "developer",
+            "title": "开发工程师"
+          },
+          {
+            "value": "designer",
+            "title": "设计师"
+          },
+          {
+            "value": "product",
+            "title": "产品经理"
+          },
+          {
+            "value": "marketing",
+            "title": "市场营销"
+          },
+          {
+            "value": "hr",
+            "title": "人力资源"
+          },
+          {
+            "value": "other",
+            "title": "其他"
+          }
+        ]
+      },
+      {
+        "kind": "checkbox",
+        "nick": "jobType",
+        "title": "期望职位类型",
+        "options": [
+          {
+            "value": "fulltime",
+            "title": "全职"
+          },
+          {
+            "value": "parttime",
+            "title": "兼职"
+          },
+          {
+            "value": "internship",
+            "title": "实习"
+          },
+          {
+            "value": "remote",
+            "title": "远程"
+          }
+        ]
+      },
+      {
+        "kind": "button",
+        "label": "创建账户",
+        "action": "/create-account",
+        "style": "primary",
+        "size": "large"
+      }
+    ]
+  }
+}
