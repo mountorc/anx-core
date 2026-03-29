@@ -653,9 +653,30 @@ app.post('/api/convert', async (req, res) => {
       }
     }
     
-    // 每次都重新生成节点结构，不使用缓存
-    // 这样当用户修改输入框内容时，会使用新的内容生成Markup
-    const nodesStructure = anxToNodes(anxContent);
+    // 生成ANX内容的哈希值
+    const anxHash = generateAnxHash(anxContent);
+    
+    // 检查是否已经为相同的ANX内容生成过节点结构
+    let nodesStructure = anxHashToNodeMap.get(anxHash);
+    
+    if (!nodesStructure) {
+      // 首次生成节点结构
+      nodesStructure = anxToNodes(anxContent);
+      // 存储到哈希映射中
+      anxHashToNodeMap.set(anxHash, nodesStructure);
+    }
+    
+    // 检查根节点是否有存储的数据
+    const storedRootNode = nodeStorage.get(nodesStructure.cardKey);
+    if (storedRootNode) {
+      // 使用存储中的数据更新根节点
+      Object.assign(nodesStructure, storedRootNode);
+    }
+    
+    // 更新子节点，使用存储中的数据
+    if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+      updateNodesWithStoredData(nodesStructure.nodes);
+    }
     
     // 从节点结构转换为Markup
     const markup = await nodesToMarkup(nodesStructure);
@@ -1327,6 +1348,8 @@ app.post('/api/update-node-data', (req, res) => {
           rootNode.data = {};
         }
         rootNode.data[field] = value;
+        // 更新nodeStorage中的节点
+        nodeStorage.set(cardKey, rootNode);
         nodeUpdated = true;
         updatedRootNode = rootNode;
         break;
@@ -1334,6 +1357,8 @@ app.post('/api/update-node-data', (req, res) => {
       
       if (rootNode.nodes && rootNode.nodes.length > 0) {
         if (updateNodeInStructure(rootNode.nodes, rootNode)) {
+          // 更新nodeStorage中的节点
+          nodeStorage.set(cardKey, updatedChildNode);
           nodeUpdated = true;
           updatedRootNode = rootNode;
           break;
