@@ -454,11 +454,10 @@ ${parsedTemplate}
             node.config.options.forEach((option, index) => {
               const isChecked = Array.isArray(checkboxValue) && checkboxValue.includes(option.value);
               const optionTitle = option.title || option.value || 'Unknown';
-              const optionValue = option.value;
               if (isChecked) {
-                checkboxContent += `<${index} ${optionValue} checked>${optionTitle}</${index}>\n`;
+                checkboxContent += `<x ${index} checked>${optionTitle}</x>\n`;
               } else {
-                checkboxContent += `<${index} ${optionValue}>${optionTitle}</${index}>\n`;
+                checkboxContent += `<x ${index}>${optionTitle}</x>\n`;
               }
             });
           }
