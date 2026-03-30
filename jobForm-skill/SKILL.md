@@ -1,11 +1,13 @@
-# Job Form Skill
-
+---
 name: job-form-skill
 description: 填写求职表单，动态加载行业和职业数据，支持MCP方式提交
 homepage: 
 author: ANX Team
 version: 1.0.0
 license: MIT
+---
+
+# Job Form Skill
 
 ## 技能信息
 
