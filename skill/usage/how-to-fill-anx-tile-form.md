@@ -13,13 +13,8 @@ const skill = new ANXCoreSkill();
 const markup = await skill.convertAnxToMarkupByUuid(uuid_tile);
 ```
 
-### 2. 识别表单结构
-```javascript
-const nodes = await skill.convertAnxToNodesByUuid(uuid_tile);
-const formCardKey = nodes.cardKey;
-```
 
-### 3. CLI填表
+### 2. CLI填表
 ```javascript
 // 批量填写
 const command = `anx ${formCardKey} set_form '${JSON.stringify(formData)}' --replace`;
