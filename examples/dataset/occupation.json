@@ -1,0 +1,26 @@
+[
+  {
+    "id": "developer",
+    "name": "开发工程师"
+  },
+  {
+    "id": "designer",
+    "name": "设计师"
+  },
+  {
+    "id": "product",
+    "name": "产品经理"
+  },
+  {
+    "id": "marketing",
+    "name": "市场营销"
+  },
+  {
+    "id": "hr",
+    "name": "人力资源"
+  },
+  {
+    "id": "other",
+    "name": "其他"
+  }
+]

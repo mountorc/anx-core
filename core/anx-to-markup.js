@@ -180,6 +180,10 @@ async function convertComponentToMarkup(component) {
       return await convertTableToMarkup(processedComponent);
     case 'list':
       return await convertListToMarkup(processedComponent);
+    case 'file':
+    case 'image':
+    case 'images':
+      return convertFileToMarkup(processedComponent);
     default:
       return `<!-- ANX Component: ${kind} -->`;
   }
@@ -278,7 +282,29 @@ function convertCheckboxToMarkup(component) {
   return content;
 }
 
+/**
+ * 转换File组件为Markup
+ * @param {Object} component - File组件
+ * @returns {string} - 转换后的Markup内容
+ */
+function convertFileToMarkup(component) {
+  const { title, description, accept, multiple, maxSize, preview, nick } = component;
+  const cardKey = 'card_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+  
+  let markup = `<x file ${cardKey}>\n<!-- ANX Component: ${component.kind} -->\n`;
 
+  if (title || nick) {
+    const label = title || nick;
+    markup += `**${label}:**\n`;
+  }
+
+  if (description) {
+    markup += `${description}\n`;
+  }
+
+  markup += `</x>\n`;
+  return markup;
+}
 
 // 导出所有功能
 module.exports = {

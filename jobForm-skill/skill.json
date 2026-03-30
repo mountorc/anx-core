@@ -1,0 +1,13 @@
+{
+  "name": "Job Form Filler",
+  "description": "填写求职表单，包括动态加载行业和职业数据",
+  "version": "1.0.0",
+  "author": "ANX Team",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "job-form-skill",
+  "version": "1.0.0",
+  "description": "Job form filling skill for ANX",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "anx",
+    "skill",
+    "job-form"
+  ],
+  "author": "ANX Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}

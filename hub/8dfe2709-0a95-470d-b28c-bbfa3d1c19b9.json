@@ -126,36 +126,13 @@
         "kind": "options",
         "nick": "occupation",
         "title": "职业选择",
-        "options": [
-          {
-            "value": "",
-            "title": "请选择职业"
+        "optionsSet": {
+          "dataset": {
+            "url_dataset": "http://localhost:7887/dataset/occupation"
           },
-          {
-            "value": "developer",
-            "title": "开发工程师"
-          },
-          {
-            "value": "designer",
-            "title": "设计师"
-          },
-          {
-            "value": "product",
-            "title": "产品经理"
-          },
-          {
-            "value": "marketing",
-            "title": "市场营销"
-          },
-          {
-            "value": "hr",
-            "title": "人力资源"
-          },
-          {
-            "value": "other",
-            "title": "其他"
-          }
-        ]
+          "titleNick": "name",
+          "valueNick": "id"
+        }
       },
       {
         "kind": "checkbox",

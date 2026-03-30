@@ -15,6 +15,7 @@ const { renderOptions } = require('./kinds/options.js');
 const { renderCheckbox } = require('./kinds/checkbox.js');
 const { renderList } = require('./kinds/list.js');
 const { renderDefault } = require('./kinds/default.js');
+const { renderFile } = require('./kinds/file.js');
 
 /**
  * 渲染节点
@@ -53,6 +54,10 @@ function renderNode(node) {
       return renderCheckbox(node);
     case 'list':
       return renderList(node);
+    case 'file':
+    case 'image':
+    case 'images':
+      return renderFile(node);
     default:
       return renderDefault(node);
   }

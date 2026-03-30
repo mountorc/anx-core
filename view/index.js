@@ -450,6 +450,144 @@ function generateVisualizationCSS() {
       color: #999;
       font-style: italic;
     }
+    
+    /* File upload styles */
+    .anx-file-component {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .anx-file-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .anx-file-description {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .anx-upload-area {
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .anx-upload-area:hover {
+      border-color: #409eff;
+      background-color: #f5f9ff;
+    }
+    
+    .anx-upload-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .anx-upload-icon {
+      font-size: 32px;
+    }
+    
+    .anx-upload-text {
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .anx-image-preview {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .anx-preview-image {
+      max-width: 100px;
+      max-height: 100px;
+      border-radius: 4px;
+    }
+    
+    .anx-remove-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: #ff4d4f;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .anx-remove-btn:hover {
+      background-color: #ff7875;
+    }
+    
+    .anx-images-upload {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .anx-upload-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+    }
+    
+    .anx-image-preview-item {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .anx-upload-item {
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .anx-upload-item:hover {
+      border-color: #409eff;
+      background-color: #f5f9ff;
+    }
+    
+    .anx-file-upload {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .anx-file-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+    }
+    
+    .anx-file-icon {
+      font-size: 24px;
+    }
+    
+    .anx-file-name {
+      flex: 1;
+      font-size: 14px;
+      color: #333;
+    }
   `;
 }
 

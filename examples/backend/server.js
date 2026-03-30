@@ -1648,6 +1648,42 @@ app.get('/api/hub', (req, res) => {
   }
 });
 
+// 文件上传API
+app.post('/api/upload', (req, res) => {
+  try {
+    // 这里应该使用multer或类似的库来处理文件上传
+    // 为了演示，我们返回一个模拟的文件URL
+    const fileUrl = `https://example.com/uploads/${Date.now()}.jpg`;
+    
+    res.json({
+      success: true,
+      fileUrl: fileUrl
+    });
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    res.status(500).json({ error: 'Failed to upload file' });
+  }
+});
+
+// 接收求职表单提交结果的API
+app.post('/api/job-form/submit', (req, res) => {
+  try {
+    const formData = req.body;
+    console.log('Received job form submission:', formData);
+    
+    // 这里可以添加处理逻辑，比如存储到数据库
+    
+    res.json({
+      success: true,
+      message: 'Job form submitted successfully',
+      data: formData
+    });
+  } catch (error) {
+    console.error('Error processing job form submission:', error);
+    res.status(500).json({ error: 'Failed to process job form submission' });
+  }
+});
+
 // 加载hub文件
 loadHubFiles();
 

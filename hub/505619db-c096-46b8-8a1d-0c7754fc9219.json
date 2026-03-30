@@ -1,0 +1,179 @@
+{
+  "uuid": "505619db-c096-46b8-8a1d-0c7754fc9219",
+  "name": "服装图像处理",
+  "anxContent": {
+    "kind": "form",
+    "type": "object",
+    "nick": "clothing_image_processing",
+    "title": "服装图像处理",
+    "kinds": [
+      {
+        "kind": "file",
+        "type": "array",
+        "nick": "images",
+        "title": "上传图像",
+        "must": true,
+        "description": "支持上传多张服装图像（最多8张）",
+        "accept": "image/*",
+        "multiple": true,
+        "maxCount": 8
+      },
+      {
+        "kind": "textarea",
+        "type": "string",
+        "nick": "system_prompt",
+        "title": "系统提示词",
+        "value": "对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景",
+        "must": true,
+        "description": "系统级别的处理指令",
+        "placeholder": "请输入系统提示词",
+        "maxLength": 500
+      },
+      {
+        "kind": "textarea",
+        "type": "string",
+        "nick": "user_prompt",
+        "title": "用户提示词",
+        "value": "",
+        "must": false,
+        "description": "用户的自定义提示词",
+        "placeholder": "请输入用户提示词（可选）",
+        "maxLength": 500
+      },
+      {
+        "kind": "input",
+        "type": "string",
+        "nick": "display_style",
+        "title": "展示风格",
+        "value": "",
+        "must": false,
+        "description": "图像展示风格",
+        "placeholder": "请输入展示风格"
+      },
+      {
+        "kind": "input",
+        "type": "string",
+        "nick": "remove_parts",
+        "title": "去除部位",
+        "value": "",
+        "must": false,
+        "description": "需要去除的部位",
+        "placeholder": "请输入需要去除的部位"
+      },
+      {
+        "kind": "options",
+        "type": "string",
+        "nick": "aspect_ratio",
+        "title": "宽高比",
+        "value": "randomize",
+        "must": false,
+        "description": "输出图像的宽高比",
+        "options": [
+          { "title": "随机", "value": "randomize" },
+          { "title": "1:1", "value": "1:1" },
+          { "title": "4:3", "value": "4:3" },
+          { "title": "16:9", "value": "16:9" }
+        ]
+      },
+      {
+        "kind": "options",
+        "type": "string",
+        "nick": "resolution",
+        "title": "分辨率",
+        "value": "auto",
+        "must": false,
+        "description": "输出图像的分辨率",
+        "options": [
+          { "title": "自动", "value": "auto" },
+          { "title": "1K", "value": "1k" },
+          { "title": "2K", "value": "2k" },
+          { "title": "4K", "value": "4k" }
+        ]
+      },
+      {
+        "kind": "input",
+        "type": "number",
+        "nick": "seed",
+        "title": "随机种子",
+        "value": 1424685757,
+        "must": false,
+        "description": "随机种子值，用于可重复的结果"
+      },
+      {
+        "kind": "checkbox",
+        "type": "boolean",
+        "nick": "skip_error",
+        "title": "跳过错误",
+        "value": false,
+        "must": false,
+        "description": "是否跳过处理中的错误"
+      },
+      {
+        "kind": "options",
+        "type": "string",
+        "nick": "rmbg_model",
+        "title": "背景移除模型",
+        "value": "RMBG-2.0",
+        "must": false,
+        "description": "使用的背景移除模型",
+        "options": [
+          { "title": "RMBG-2.0", "value": "RMBG-2.0" }
+        ]
+      },
+      {
+        "kind": "input",
+        "type": "number",
+        "nick": "sensitivity",
+        "title": "敏感度",
+        "value": 1,
+        "must": false,
+        "description": "背景移除的敏感度（0-1）"
+      },
+      {
+        "kind": "input",
+        "type": "number",
+        "nick": "process_res",
+        "title": "处理分辨率",
+        "value": 1024,
+        "must": false,
+        "description": "处理时的分辨率"
+      },
+      {
+        "kind": "options",
+        "type": "string",
+        "nick": "background",
+        "title": "背景类型",
+        "value": "Color",
+        "must": false,
+        "description": "背景类型",
+        "options": [
+          { "title": "纯色", "value": "Color" },
+          { "title": "透明", "value": "Transparent" },
+          { "title": "模糊", "value": "Blur" }
+        ]
+      },
+      {
+        "kind": "input",
+        "type": "string",
+        "nick": "background_color",
+        "title": "背景颜色",
+        "value": "#222222",
+        "must": false,
+        "description": "纯色背景的颜色值"
+      },
+      {
+        "kind": "button",
+        "type": "string",
+        "nick": "submit",
+        "title": "开始处理",
+        "description": "提交表单并开始图像处理",
+        "tapSet": {
+          "action": "submit_form",
+          "params": {
+            "workflowId": "2028318219441803266"
+          }
+        }
+      }
+    ]
+  }
+}

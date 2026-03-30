@@ -218,6 +218,7 @@ export default {
   mounted() {
     this.convertAnxToMarkup();
     this.loadHubList();
+    this.initFileUploads();
     
     // 监听 message 事件（来自可视化 iframe）
     window.addEventListener('message', this.handleVisualizationMessage);
@@ -463,6 +464,126 @@ export default {
         .replace(/\n\n/gim, '</p><p>')
         .replace(/^(.+)$/gim, '<p>$1</p>')
         .replace(/<p><\/p>/gim, '');
+    },
+    // Initialize file upload functionality
+    initFileUploads() {
+      // Add file upload functions to global scope
+      window.handleFileChange = (event, cardKey, kind, maxSize, maxCount, preview) => {
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
+        
+        // Handle file validation and upload
+        if (kind === 'image' || kind === 'file') {
+          this.handleSingleFile(files[0], cardKey, kind, maxSize, preview);
+        } else if (kind === 'images') {
+          this.handleMultipleFiles(files, cardKey, maxSize, maxCount, preview);
+        }
+        
+        // Reset file input
+        event.target.value = '';
+      };
+      
+      window.triggerFileInput = (inputId) => {
+        document.getElementById(inputId).click();
+      };
+      
+      window.removeFile = (cardKey, kind, index) => {
+        if (kind === 'image' || kind === 'file') {
+          this.updateNodeDataForFile(cardKey, '');
+        } else if (kind === 'images') {
+          const currentValue = this.getNodeValue(cardKey) || [];
+          const newValues = currentValue.filter((_, i) => i !== index);
+          this.updateNodeDataForFile(cardKey, newValues);
+        }
+      };
+    },
+    handleSingleFile(file, cardKey, kind, maxSize, preview) {
+      // Validate file size
+      if (file.size > maxSize) {
+        alert('文件大小超过限制');
+        return;
+      }
+      
+      // Generate preview URL
+      const previewUrl = URL.createObjectURL(file);
+      
+      // Update node with preview URL temporarily
+      this.updateNodeDataForFile(cardKey, previewUrl);
+      
+      // Upload file to server
+      this.uploadFile(file, cardKey, kind);
+    },
+    handleMultipleFiles(files, cardKey, maxSize, maxCount, preview) {
+      const currentValue = this.getNodeValue(cardKey) || [];
+      const newFiles = [...currentValue];
+      
+      for (let i = 0; i < files.length; i++) {
+        if (newFiles.length >= maxCount) {
+          alert("最多只能上传" + maxCount + "个文件");
+          break;
+        }
+        
+        const file = files[i];
+        
+        // Validate file size
+        if (file.size > maxSize) {
+          alert('文件大小超过限制');
+          return;
+        }
+        
+        // Generate preview URL
+        const previewUrl = URL.createObjectURL(file);
+        newFiles.push(previewUrl);
+        
+        // Update node with preview URLs temporarily
+        this.updateNodeDataForFile(cardKey, newFiles);
+        
+        // Upload file to server
+        this.uploadFile(file, cardKey, 'images', newFiles.length - 1);
+      }
+    },
+    uploadFile(file, cardKey, kind, index) {
+      // 导入OSS上传工具
+      import('/Users/a1-6/Documents/code/trae/anx-core/view/utils/oss.js')
+        .then(module => {
+          const { uploadImageToOSS } = module;
+          
+          // 上传图片到OSS
+          uploadImageToOSS(file)
+            .then(fileUrl => {
+              if (kind === 'image' || kind === 'file') {
+                // Update with server URL
+                this.updateNodeDataForFile(cardKey, fileUrl);
+              } else if (kind === 'images') {
+                // Update specific index with server URL
+                const currentValue = this.getNodeValue(cardKey) || [];
+                const newValues = [...currentValue];
+                newValues[index] = fileUrl;
+                this.updateNodeDataForFile(cardKey, newValues);
+              }
+            })
+            .catch(error => {
+              console.error('File upload error:', error);
+              alert('文件上传失败: ' + error.message);
+            });
+        })
+        .catch(error => {
+          console.error('Error loading OSS module:', error);
+          alert('加载上传模块失败');
+        });
+    },
+    updateNodeDataForFile(cardKey, value) {
+      // Send message to parent window
+      window.parent.postMessage({
+        type: 'UPDATE_NODE_DATA',
+        cardKey: cardKey,
+        field: 'value',
+        value: value
+      }, '*');
+    },
+    getNodeValue(cardKey) {
+      // This is a placeholder - in a real implementation, you would get the current value from the node
+      return [];
     },
     loadOptionsDatasetTest() {
       this.anxInput = `{ 
