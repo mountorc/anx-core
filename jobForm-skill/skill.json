@@ -1,13 +1,51 @@
 {
-  "name": "Job Form Filler",
-  "description": "填写求职表单，包括动态加载行业和职业数据",
+  "name": "job-form-skill",
+  "description": "填写求职表单，动态加载行业和职业数据，支持MCP方式提交",
   "version": "1.0.0",
   "author": "ANX Team",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
+  "homepage": "",
+  "metadata": {
+    "category": "form",
+    "tags": ["job", "form", "career", "application"]
   },
+  "trigger": {
+    "description": "When user needs to fill job application form, load industry and occupation data dynamically, or submit form via MCP",
+    "keywords": ["job", "form", "career", "application", "industry", "occupation", "submit"]
+  },
+  "actions": [
+    {
+      "name": "fillJobForm",
+      "description": "Fill job application form with provided data",
+      "parameters": {
+        "formData": "Object containing form field values"
+      }
+    },
+    {
+      "name": "getIndustryData",
+      "description": "Load industry data from API"
+    },
+    {
+      "name": "getOccupationData",
+      "description": "Load occupation data from API"
+    },
+    {
+      "name": "submitForm",
+      "description": "Submit form data via MCP API",
+      "parameters": {
+        "formData": "Object containing form field values to submit"
+      }
+    },
+    {
+      "name": "getFormConfig",
+      "description": "Get form configuration in plain text"
+    }
+  ],
   "dependencies": {
     "axios": "^1.6.0"
-  }
+  },
+  "compatibleWith": [
+    "trae",
+    "openclaw",
+    "cloude code"
+  ]
 }
