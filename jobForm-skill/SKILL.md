@@ -92,24 +92,24 @@ skill.execute('getIndustryData')
 skill.execute('getOccupationData')
   .then(occupations => console.log(occupations));
 
-// 提交表单
+// 提交表单 - 请提供真实的表单数据
 const formData = {
-  lastName: '张',
-  firstName: '三',
-  email: 'zhangsan@example.com',
-  phone: '13800138000',
-  birthdate: '1990-01-01',
-  city: '北京',
-  education: 'bachelor',
-  experience: '3-5',
-  industry: 'it',
-  occupation: 'developer',
-  jobType: ['fulltime', 'remote']
+  lastName: '请输入姓',
+  firstName: '请输入名',
+  email: '请输入邮箱',
+  phone: '请输入电话',
+  birthdate: '请输入出生日期',
+  city: '请输入城市',
+  education: '请选择学历',
+  experience: '请选择工作年限',
+  industry: '请选择行业',
+  occupation: '请选择职业',
+  jobType: ['请选择职位类型']
 };
 skill.execute('submitForm', { formData })
   .then(result => console.log(result));
 
-// 完整的表单填写流程
+// 完整的表单填写流程 - 请提供真实的表单数据
 skill.execute('fillJobForm', { formData })
   .then(result => console.log(result));
 ```
@@ -192,6 +192,10 @@ async function safeExecute(command, args) {
 3. **API 调用失败**
    - 症状: 返回 HTTP 错误状态码
    - 解决: 检查后端服务日志，确认 API 端点是否正常
+
+4. **表单数据不完整**
+   - 症状: 提交时返回 "Missing required form fields" 错误
+   - 解决: 确保所有必填字段都已提供真实有效的值
 
 ### 日志与调试
 

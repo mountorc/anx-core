@@ -104,12 +104,7 @@ class JobFormSkill {
       return response.data;
     } catch (error) {
       console.error('Error submitting to MCP API:', error);
-      // 模拟成功响应作为后备
-      return {
-        success: true,
-        message: this.getMcpSubmitConfig().successMessage + ' (simulated)',
-        data: formData
-      };
+      throw error;
     }
   }
 
@@ -140,29 +135,18 @@ class JobFormSkill {
       
       // 4. 准备表单数据
       console.log('Step 4: Preparing form data...');
-      // 合并传入的表单数据与默认值
-      const finalFormData = {
-        lastName: '',
-        firstName: '',
-        email: '',
-        phone: '',
-        birthdate: '',
-        city: '',
-        education: '',
-        experience: '',
-        industry: industryData[0]?.id || '', // 选择第一个行业
-        occupation: occupationData[0]?.id || '', // 选择第一个职业
-        jobType: [], // 空的职位类型数组
-        ...formData // 覆盖默认值
-      };
-      console.log('Form data prepared:', finalFormData);
+      // 确保所有必填字段都有值
+      if (!formData.lastName || !formData.firstName || !formData.email || !formData.phone || !formData.birthdate || !formData.city || !formData.education || !formData.experience || !formData.industry || !formData.occupation || !formData.jobType) {
+        throw new Error('Missing required form fields');
+      }
+      console.log('Form data prepared:', formData);
       
       // 5. 提交表单数据到MCP API
       console.log('Step 5: Submitting to MCP API...');
       const mcpSubmitConfig = this.getMcpSubmitConfig();
       console.log('MCP Submit API:', mcpSubmitConfig.url);
       console.log('MCP Submit Method:', mcpSubmitConfig.method);
-      const submitResult = await this.submitForm(finalFormData);
+      const submitResult = await this.submitForm(formData);
       console.log('Submitted to MCP API successfully:', submitResult);
       
       return {
@@ -171,7 +155,7 @@ class JobFormSkill {
         data: {
           formConfig: formConfig,
           mcpSubmitConfig: mcpSubmitConfig,
-          formData: finalFormData,
+          formData: formData,
           industryData: industryData,
           occupationData: occupationData,
           submitResult: submitResult
