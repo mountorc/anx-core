@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const fetch = require('node-fetch');
 
 /**
@@ -12,7 +10,6 @@ class ANXCoreSkill {
       backendUrl: config.backendUrl || 'http://localhost:7887',
       ...config
     };
-    this.usagePath = path.join(__dirname, 'usage');
   }
 
   /**
@@ -34,18 +31,9 @@ class ANXCoreSkill {
     return [
       {
         name: 'convertAnxToMarkup',
-        description: 'Convert ANX content to Markup format',
+        description: 'Convert ANX content to Markup format by uuid_tile',
         parameters: {
-          anxContent: { type: 'object', optional: true },
-          uuid_tile: { type: 'string', optional: true }
-        }
-      },
-      {
-        name: 'convertAnxToNodes',
-        description: 'Convert ANX content to nodes structure',
-        parameters: {
-          anxContent: { type: 'object', optional: true },
-          uuid_tile: { type: 'string', optional: true }
+          uuid_tile: { type: 'string', description: 'UUID of the ANX tile', required: true }
         }
       },
       {
@@ -55,28 +43,7 @@ class ANXCoreSkill {
           command: { type: 'string', required: true }
         }
       },
-      {
-        name: 'generateNodeVisualization',
-        description: 'Generate node visualization HTML and CSS',
-        parameters: {
-          node: { type: 'object', required: true }
-        }
-      },
-      {
-        name: 'getCliCommands',
-        description: 'Get list of available CLI commands'
-      },
-      {
-        name: 'getUsageFiles',
-        description: 'Get all usage documentation files'
-      },
-      {
-        name: 'readUsageFile',
-        description: 'Read a specific usage documentation file',
-        parameters: {
-          filename: { type: 'string', required: true }
-        }
-      }
+
     ];
   }
 
@@ -86,9 +53,9 @@ class ANXCoreSkill {
    * Convert ANX content to Markup
    */
   async convertAnxToMarkup(args = {}) {
-    const { anxContent, uuid_tile } = args;
+    const { uuid_tile } = args;
     try {
-      const payload = anxContent ? { anxContent } : { uuid_tile };
+      const payload = { uuid_tile };
       const response = await fetch(`${this.config.backendUrl}/api/convert`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -101,30 +68,6 @@ class ANXCoreSkill {
       
       const result = await response.json();
       return { success: true, data: result.markup };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
-
-  /**
-   * Convert ANX content to nodes structure
-   */
-  async convertAnxToNodes(args = {}) {
-    const { anxContent, uuid_tile } = args;
-    try {
-      const payload = anxContent ? { anxContent } : { uuid_tile };
-      const response = await fetch(`${this.config.backendUrl}/api/convert-to-nodes`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      return { success: true, data: result.nodes };
     } catch (error) {
       return { success: false, error: error.message };
     }
@@ -153,72 +96,7 @@ class ANXCoreSkill {
     }
   }
 
-  /**
-   * Generate node visualization
-   */
-  async generateNodeVisualization(args = {}) {
-    const { node } = args;
-    try {
-      const response = await fetch(`${this.config.backendUrl}/api/visualize-node`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ node })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      return { success: true, data: result };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
 
-  /**
-   * Get CLI commands list
-   */
-  async getCliCommands() {
-    try {
-      const response = await fetch(`${this.config.backendUrl}/api/cli/commands`);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      return { success: true, data: result };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
-
-  /**
-   * Get usage files
-   */
-  async getUsageFiles() {
-    try {
-      const files = fs.readdirSync(this.usagePath);
-      return { success: true, data: files.filter(file => file.endsWith('.md')) };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
-
-  /**
-   * Read usage file
-   */
-  async readUsageFile(args = {}) {
-    const { filename } = args;
-    try {
-      const filePath = path.join(this.usagePath, filename);
-      const content = fs.readFileSync(filePath, 'utf8');
-      return { success: true, data: content };
-    } catch (error) {
-      return { success: false, error: error.message };
-    }
-  }
 
   // ==================== OpenClaw Interface ====================
 
@@ -229,18 +107,8 @@ class ANXCoreSkill {
     switch (capability) {
       case 'convertAnxToMarkup':
         return await this.convertAnxToMarkup(args);
-      case 'convertAnxToNodes':
-        return await this.convertAnxToNodes(args);
       case 'executeCliCommand':
         return await this.executeCliCommand(args);
-      case 'generateNodeVisualization':
-        return await this.generateNodeVisualization(args);
-      case 'getCliCommands':
-        return await this.getCliCommands();
-      case 'getUsageFiles':
-        return await this.getUsageFiles();
-      case 'readUsageFile':
-        return await this.readUsageFile(args);
       default:
         return { 
           success: false, 
@@ -254,7 +122,7 @@ class ANXCoreSkill {
    */
   async healthCheck() {
     try {
-      const response = await fetch(`${this.config.backendUrl}/api/cli/commands`);
+      const response = await fetch(`${this.config.backendUrl}/api/convert`);
       return { 
         success: true, 
         status: 'healthy',

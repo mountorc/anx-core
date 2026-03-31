@@ -13,18 +13,9 @@
   "capabilities": [
     {
       "name": "convertAnxToMarkup",
-      "description": "Convert ANX content to Markup format",
+      "description": "Convert ANX content to Markup format by uuid_tile",
       "parameters": {
-        "anxContent": { "type": "object", "description": "ANX content object", "optional": true },
-        "uuid_tile": { "type": "string", "description": "UUID of the ANX tile", "optional": true }
-      }
-    },
-    {
-      "name": "convertAnxToNodes",
-      "description": "Convert ANX content to nodes structure",
-      "parameters": {
-        "anxContent": { "type": "object", "description": "ANX content object", "optional": true },
-        "uuid_tile": { "type": "string", "description": "UUID of the ANX tile", "optional": true }
+        "uuid_tile": { "type": "string", "description": "UUID of the ANX tile", "required": true }
       }
     },
     {
@@ -32,28 +23,6 @@
       "description": "Execute ANX CLI commands",
       "parameters": {
         "command": { "type": "string", "description": "CLI command string to execute", "required": true }
-      }
-    },
-    {
-      "name": "generateNodeVisualization",
-      "description": "Generate node visualization HTML and CSS",
-      "parameters": {
-        "node": { "type": "object", "description": "Node structure to visualize", "required": true }
-      }
-    },
-    {
-      "name": "getCliCommands",
-      "description": "Get list of available CLI commands"
-    },
-    {
-      "name": "getUsageFiles",
-      "description": "Get all usage documentation files"
-    },
-    {
-      "name": "readUsageFile",
-      "description": "Read a specific usage documentation file",
-      "parameters": {
-        "filename": { "type": "string", "description": "Name of the usage file", "required": true }
       }
     }
   ],

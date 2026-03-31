@@ -15,19 +15,12 @@ ANX Core Skill 是一个 OpenClaw 兼容的技能，提供 ANX 格式转换、CL
 ## 功能特性
 
 ### 1. ANX 转换
-- **convertAnxToMarkup**: 将 ANX 内容转换为 Markup 格式
-- **convertAnxToNodes**: 将 ANX 内容转换为节点结构
+- **convertAnxToMarkup**: 将 ANX 内容转换为 Markup 格式（通过 uuid_tile）
 
 ### 2. CLI 执行
 - **executeCliCommand**: 执行 ANX CLI 命令
-- **getCliCommands**: 获取可用的 CLI 命令列表
 
-### 3. 可视化
-- **generateNodeVisualization**: 生成节点的可视化 HTML 和 CSS
 
-### 4. 文档
-- **getUsageFiles**: 获取所有使用说明文件
-- **readUsageFile**: 读取特定的使用说明文件
 
 ## 安装
 
@@ -84,10 +77,7 @@ console.log(health.status);  // 'healthy' 或 'unhealthy'
 本技能连接到以下后端 API：
 
 - `POST /api/convert` - 转换 ANX 到 Markup
-- `POST /api/convert-to-nodes` - 转换 ANX 到节点结构
 - `POST /api/execute-cli` - 执行 CLI 命令
-- `POST /api/visualize-node` - 生成节点可视化
-- `GET /api/cli/commands` - 获取 CLI 命令列表
 
 ## 返回值格式
 
@@ -109,10 +99,7 @@ skill/
 ├── skill.json        # 技能配置
 ├── package.json      # 依赖配置
 ├── manifest.json     # 清单文件
-├── SKILL.md          # 技能文档
-└── usage/            # 使用说明文件夹
-    ├── how-to-use-anx-core-skill.md
-    └── how-to-fill-anx-tile-form.md
+└── SKILL.md          # 技能文档
 ```
 
 ## 依赖
