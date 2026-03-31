@@ -69,7 +69,7 @@ npm install
 ### 配置后端服务
 
 确保 ANX 后端服务在以下地址运行：
-- 地址: http://localhost:7887
+- 地址: http://host.docker.internal:7887
 - 端口: 7887
 
 ## 使用示例
@@ -160,10 +160,10 @@ async function safeExecute(command, args) {
 
 - **industry**: 行业选择，下拉选择，必填
   - 选项来源：通过API动态加载
-  - API地址：http://localhost:7887/dataset/industries
+  - API地址：http://host.docker.internal:7887/dataset/industries
 - **occupation**: 职业选择，下拉选择，必填
   - 选项来源：通过API动态加载
-  - API地址：http://localhost:7887/dataset/occupation
+  - API地址：http://host.docker.internal:7887/dataset/occupation
 
 ### 职位类型字段
 
@@ -172,7 +172,7 @@ async function safeExecute(command, args) {
 
 ## MCP 提交配置
 
-- **URL**: http://localhost:7887/api/job-form/submit
+- **URL**: http://host.docker.internal:7887/api/job-form/submit
 - **Method**: POST
 - **Headers**: Content-Type: application/json
 - **Data**: 表单数据对象
