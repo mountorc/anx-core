@@ -3,34 +3,7 @@
  * 基于 AutoDataSource OSS 上传文件（Token方式）
  */
 
-const BASE_URL = '/autoDataSource';
-
-/**
- * 生成上传token
- * @param {string} uuidAutoAuth - 授权UUID，例如 "oss_intostore_123456"
- * @param {string} basePath - 基础路径，文件会上传到该路径下，例如 "turan/"
- * @returns {Promise<Object>} - 包含token的响应对象
- */
-async function generateUploadToken(uuidAutoAuth, basePath) {
-  try {
-    const response = await fetch(`${BASE_URL}/api/oss/token/generate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: `uuid_autoAuth=${encodeURIComponent(uuidAutoAuth)}&basePath=${encodeURIComponent(basePath)}`
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error generating upload token:', error);
-    throw error;
-  }
-}
+const BASE_URL = 'http://localhost:8080/autoDataSource';
 
 /**
  * 使用token上传文件
@@ -66,19 +39,12 @@ async function uploadFileByToken(token, file, fileName) {
  * 上传图片到OSS
  * @param {File} file - 要上传的图片文件
  * @param {string} basePath - 基础路径，默认为 "anx-core/"
- * @param {string} uuidAutoAuth - 授权UUID，默认为 "oss_intostore_123456"
  * @returns {Promise<string>} - 上传后的图片URL
  */
-async function uploadImageToOSS(file, basePath = 'anx-core/', uuidAutoAuth = 'oss_intostore_123456') {
+async function uploadImageToOSS(file, basePath = 'anx-core/') {
   try {
-    // 生成上传token
-    const tokenResult = await generateUploadToken(uuidAutoAuth, basePath);
-    
-    if (!tokenResult.success) {
-      throw new Error(`Failed to generate token: ${tokenResult.message || 'Unknown error'}`);
-    }
-    
-    const token = tokenResult.data;
+    // 使用默认的token
+    const token = '4218fac63b734af88f2db0316e61d0ae';
     
     // 生成唯一的文件名，避免重复
     const timestamp = Date.now();
@@ -100,4 +66,4 @@ async function uploadImageToOSS(file, basePath = 'anx-core/', uuidAutoAuth = 'os
   }
 }
 
-export { generateUploadToken, uploadFileByToken, uploadImageToOSS };
+export { uploadFileByToken, uploadImageToOSS };

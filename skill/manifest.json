@@ -1,20 +1,20 @@
 {
-  "name": "ANX Core Skill",
+  "name": "anx-core-skill",
   "version": "1.0.0",
-  "description": "Provides API capabilities for ANX markup output and CLI execution",
+  "description": "ANX Core Skill - Provides API capabilities for ANX markup output and CLI execution",
   "author": "ANX Team",
+  "license": "MIT",
   "main": "index.js",
+  "keywords": ["anx", "core", "skill", "api", "cli", "markup", "openclaw"],
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "node -e \"const Skill = require('./index.js'); const skill = new Skill(); skill.healthCheck().then(console.log)\""
   },
   "dependencies": {
-    "fs": "^0.0.1-security",
-    "path": "^0.12.7",
     "node-fetch": "^3.3.2"
   },
-  "compatibleWith": [
-    "trae",
-    "cloude code",
-    "openclaw"
-  ]
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "compatibleWith": ["openclaw", "trae", "claude-code"]
 }

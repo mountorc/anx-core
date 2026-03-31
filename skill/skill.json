@@ -1,57 +1,74 @@
 {
   "name": "anx-core-skill",
-  "description": "Provides API capabilities for ANX markup output and CLI execution",
   "version": "1.0.0",
+  "description": "ANX Core Skill - Provides API capabilities for ANX markup output and CLI execution",
   "author": "ANX Team",
-  "homepage": "",
-  "metadata": {
-    "category": "development",
-    "tags": ["anx", "core", "api", "cli", "markdown"]
+  "license": "MIT",
+  "main": "index.js",
+  "keywords": ["anx", "core", "skill", "api", "cli", "markup"],
+  "triggers": {
+    "description": "When user needs to work with ANX format, convert ANX to Markdown/Markup, execute CLI commands, or generate node visualizations",
+    "keywords": ["anx", "convert", "markup", "cli", "command", "visualization", "node", "form", "parse", "tile"]
   },
-  "trigger": {
-    "description": "When user needs to work with ANX format, convert ANX to Markdown, execute CLI commands, or generate node visualizations",
-    "keywords": ["anx", "convert", "markdown", "cli", "command", "visualization", "node", "form", "parse"]
-  },
-  "actions": [
+  "capabilities": [
     {
-      "name": "convertAnxToMarkdown",
-      "description": "Convert ANX content to Markdown format",
+      "name": "convertAnxToMarkup",
+      "description": "Convert ANX content to Markup format",
       "parameters": {
-        "anxContent": "JSON object representing ANX content"
+        "anxContent": { "type": "object", "description": "ANX content object", "optional": true },
+        "uuid_tile": { "type": "string", "description": "UUID of the ANX tile", "optional": true }
       }
     },
     {
       "name": "convertAnxToNodes",
       "description": "Convert ANX content to nodes structure",
       "parameters": {
-        "anxContent": "JSON object representing ANX content"
+        "anxContent": { "type": "object", "description": "ANX content object", "optional": true },
+        "uuid_tile": { "type": "string", "description": "UUID of the ANX tile", "optional": true }
       }
     },
     {
       "name": "executeCliCommand",
       "description": "Execute ANX CLI commands",
       "parameters": {
-        "command": "CLI command string to execute"
+        "command": { "type": "string", "description": "CLI command string to execute", "required": true }
       }
     },
     {
       "name": "generateNodeVisualization",
       "description": "Generate node visualization HTML and CSS",
       "parameters": {
-        "node": "Node structure to visualize"
+        "node": { "type": "object", "description": "Node structure to visualize", "required": true }
       }
     },
     {
       "name": "getCliCommands",
       "description": "Get list of available CLI commands"
+    },
+    {
+      "name": "getUsageFiles",
+      "description": "Get all usage documentation files"
+    },
+    {
+      "name": "readUsageFile",
+      "description": "Read a specific usage documentation file",
+      "parameters": {
+        "filename": { "type": "string", "description": "Name of the usage file", "required": true }
+      }
     }
   ],
+  "config": {
+    "backendUrl": {
+      "type": "string",
+      "default": "http://localhost:7887",
+      "description": "Backend service URL"
+    }
+  },
   "dependencies": {
     "node-fetch": "^3.3.2"
   },
-  "compatibleWith": [
-    "trae",
-    "openclaw",
-    "cloude code"
-  ]
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "compatibleWith": ["openclaw", "trae", "claude-code"]
 }

@@ -543,12 +543,10 @@ export default {
       }
     },
     uploadFile(file, cardKey, kind, index) {
-      // 导入OSS上传工具
-      import('/Users/a1-6/Documents/code/trae/anx-core/view/utils/oss.js')
-        .then(module => {
-          const { uploadImageToOSS } = module;
-          
-          // 上传图片到OSS
+      // 导入前端的OSS上传工具
+      import('/src/utils/oss.js')
+        .then(({ uploadImageToOSS }) => {
+          // 直接上传到OSS
           uploadImageToOSS(file)
             .then(fileUrl => {
               if (kind === 'image' || kind === 'file') {

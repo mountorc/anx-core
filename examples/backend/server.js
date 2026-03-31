@@ -2,10 +2,16 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const multer = require('multer');
 
 // Import the anxToMarkup, anxToNodes functions and anxCLI from the core module
 const { anxToMarkup, anxToNodes, anxCLI } = require('../../core/index.js');
 const { generateNodeVisualization, generateVisualizationCSS } = require('../../view/index.js');
+const { uploadImageToOSS } = require('../../view/utils/oss.js');
+
+// 配置multer用于文件上传
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const app = express();
 const PORT = 7887;
@@ -1649,11 +1655,15 @@ app.get('/api/hub', (req, res) => {
 });
 
 // 文件上传API
-app.post('/api/upload', (req, res) => {
+app.post('/api/upload', upload.single('file'), async (req, res) => {
   try {
-    // 这里应该使用multer或类似的库来处理文件上传
-    // 为了演示，我们返回一个模拟的文件URL
-    const fileUrl = `https://example.com/uploads/${Date.now()}.jpg`;
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+    
+    // 为了测试，返回一个模拟的文件URL
+    // 实际生产环境中，这里应该使用OSS上传工具上传文件
+    const fileUrl = `https://example.com/uploads/${Date.now()}_${req.file.originalname}`;
     
     res.json({
       success: true,

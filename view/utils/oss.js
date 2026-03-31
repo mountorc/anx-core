@@ -3,7 +3,21 @@
  * 基于 AutoDataSource OSS 上传文件（Token方式）
  */
 
-const BASE_URL = '/autoDataSource';
+// 检查是否在Node.js环境中
+const isNode = typeof window === 'undefined';
+
+// 在Node.js环境中使用node-fetch和form-data
+let fetch;
+let FormData;
+if (isNode) {
+  fetch = require('node-fetch');
+  FormData = require('form-data');
+} else {
+  fetch = window.fetch;
+  FormData = window.FormData;
+}
+
+const BASE_URL = 'http://localhost:7887/autoDataSource';
 
 /**
  * 生成上传token
@@ -46,8 +60,16 @@ async function uploadFileByToken(token, file, fileName) {
     formData.append('file', file);
     formData.append('fileName', fileName);
     
+    let headers = {};
+    
+    // 在Node.js环境中，需要手动设置Content-Type头，包含边界
+    if (isNode && formData.getHeaders) {
+      headers = formData.getHeaders();
+    }
+    
     const response = await fetch(`${BASE_URL}/api/oss/upload-by-token`, {
       method: 'POST',
+      headers: headers,
       body: formData
     });
     
@@ -100,8 +122,17 @@ async function uploadImageToOSS(file, basePath = 'anx-core/', uuidAutoAuth = 'os
   }
 }
 
-module.exports = {
-  generateUploadToken,
-  uploadFileByToken,
-  uploadImageToOSS
-};
+// 在Node.js环境中使用module.exports，在浏览器环境中使用window对象
+if (isNode) {
+  module.exports = {
+    generateUploadToken,
+    uploadFileByToken,
+    uploadImageToOSS
+  };
+} else {
+  window.oss = {
+    generateUploadToken,
+    uploadFileByToken,
+    uploadImageToOSS
+  };
+}

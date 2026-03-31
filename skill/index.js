@@ -2,42 +2,96 @@ const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 
+/**
+ * ANX Core Skill
+ * OpenClaw compatible skill for ANX markup output and CLI execution
+ */
 class ANXCoreSkill {
-  constructor() {
+  constructor(config = {}) {
+    this.config = {
+      backendUrl: config.backendUrl || 'http://localhost:7887',
+      ...config
+    };
     this.usagePath = path.join(__dirname, 'usage');
-    this.backendUrl = 'http://localhost:7887';
   }
 
-  // 读取使用说明文件
-  async readUsageFile(filename) {
-    try {
-      const filePath = path.join(this.usagePath, filename);
-      const content = fs.readFileSync(filePath, 'utf8');
-      return content;
-    } catch (error) {
-      return `Error reading usage file ${filename}: ${error.message}`;
-    }
+  /**
+   * Get skill metadata
+   */
+  getMetadata() {
+    return {
+      name: 'anx-core-skill',
+      version: '1.0.0',
+      description: 'ANX Core Skill - Provides API capabilities for ANX markup output and CLI execution',
+      author: 'ANX Team'
+    };
   }
 
-  // 获取所有使用说明文件
-  async getUsageFiles() {
-    try {
-      const files = fs.readdirSync(this.usagePath);
-      return files.filter(file => file.endsWith('.md'));
-    } catch (error) {
-      return [];
-    }
+  /**
+   * Get skill capabilities
+   */
+  getCapabilities() {
+    return [
+      {
+        name: 'convertAnxToMarkup',
+        description: 'Convert ANX content to Markup format',
+        parameters: {
+          anxContent: { type: 'object', optional: true },
+          uuid_tile: { type: 'string', optional: true }
+        }
+      },
+      {
+        name: 'convertAnxToNodes',
+        description: 'Convert ANX content to nodes structure',
+        parameters: {
+          anxContent: { type: 'object', optional: true },
+          uuid_tile: { type: 'string', optional: true }
+        }
+      },
+      {
+        name: 'executeCliCommand',
+        description: 'Execute ANX CLI commands',
+        parameters: {
+          command: { type: 'string', required: true }
+        }
+      },
+      {
+        name: 'generateNodeVisualization',
+        description: 'Generate node visualization HTML and CSS',
+        parameters: {
+          node: { type: 'object', required: true }
+        }
+      },
+      {
+        name: 'getCliCommands',
+        description: 'Get list of available CLI commands'
+      },
+      {
+        name: 'getUsageFiles',
+        description: 'Get all usage documentation files'
+      },
+      {
+        name: 'readUsageFile',
+        description: 'Read a specific usage documentation file',
+        parameters: {
+          filename: { type: 'string', required: true }
+        }
+      }
+    ];
   }
 
-  // 转换ANX到Markup
-  async convertAnxToMarkdown(anxContent, uuid_tile) {
+  // ==================== Core Methods ====================
+
+  /**
+   * Convert ANX content to Markup
+   */
+  async convertAnxToMarkup(args = {}) {
+    const { anxContent, uuid_tile } = args;
     try {
       const payload = anxContent ? { anxContent } : { uuid_tile };
-      const response = await fetch(`${this.backendUrl}/api/convert`, {
+      const response = await fetch(`${this.config.backendUrl}/api/convert`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       
@@ -46,43 +100,22 @@ class ANXCoreSkill {
       }
       
       const result = await response.json();
-      return result.markup;
+      return { success: true, data: result.markup };
     } catch (error) {
-      return `Error converting ANX to Markup: ${error.message}`;
+      return { success: false, error: error.message };
     }
   }
 
-  // 通过uuid_tile加载ANX配置并转换为Markup
-  async convertAnxToMarkupByUuid(uuid_tile) {
-    try {
-      const response = await fetch(`${this.backendUrl}/api/convert`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ uuid_tile })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      return result.markup;
-    } catch (error) {
-      return `Error converting ANX to Markup by UUID: ${error.message}`;
-    }
-  }
-
-  // 转换ANX到节点结构
-  async convertAnxToNodes(anxContent, uuid_tile) {
+  /**
+   * Convert ANX content to nodes structure
+   */
+  async convertAnxToNodes(args = {}) {
+    const { anxContent, uuid_tile } = args;
     try {
       const payload = anxContent ? { anxContent } : { uuid_tile };
-      const response = await fetch(`${this.backendUrl}/api/convert-to-nodes`, {
+      const response = await fetch(`${this.config.backendUrl}/api/convert-to-nodes`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       
@@ -91,42 +124,21 @@ class ANXCoreSkill {
       }
       
       const result = await response.json();
-      return result.nodes;
+      return { success: true, data: result.nodes };
     } catch (error) {
-      return `Error converting ANX to nodes: ${error.message}`;
+      return { success: false, error: error.message };
     }
   }
 
-  // 通过uuid_tile加载ANX配置并转换为节点结构
-  async convertAnxToNodesByUuid(uuid_tile) {
+  /**
+   * Execute CLI command
+   */
+  async executeCliCommand(args = {}) {
+    const { command } = args;
     try {
-      const response = await fetch(`${this.backendUrl}/api/convert-to-nodes`, {
+      const response = await fetch(`${this.config.backendUrl}/api/execute-cli`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ uuid_tile })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      return result.nodes;
-    } catch (error) {
-      return `Error converting ANX to nodes by UUID: ${error.message}`;
-    }
-  }
-
-  // 执行CLI命令
-  async executeCliCommand(command) {
-    try {
-      const response = await fetch(`${this.backendUrl}/api/execute-cli`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ command })
       });
       
@@ -135,20 +147,21 @@ class ANXCoreSkill {
       }
       
       const result = await response.json();
-      return result;
+      return { success: true, data: result };
     } catch (error) {
-      return `Error executing CLI command: ${error.message}`;
+      return { success: false, error: error.message };
     }
   }
 
-  // 生成节点可视化
-  async generateNodeVisualization(node) {
+  /**
+   * Generate node visualization
+   */
+  async generateNodeVisualization(args = {}) {
+    const { node } = args;
     try {
-      const response = await fetch(`${this.backendUrl}/api/visualize-node`, {
+      const response = await fetch(`${this.config.backendUrl}/api/visualize-node`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ node })
       });
       
@@ -157,88 +170,110 @@ class ANXCoreSkill {
       }
       
       const result = await response.json();
-      return result;
+      return { success: true, data: result };
     } catch (error) {
-      return `Error generating node visualization: ${error.message}`;
+      return { success: false, error: error.message };
     }
   }
 
-  // 获取CLI命令列表
+  /**
+   * Get CLI commands list
+   */
   async getCliCommands() {
     try {
-      const response = await fetch(`${this.backendUrl}/api/cli/commands`);
+      const response = await fetch(`${this.config.backendUrl}/api/cli/commands`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
       const result = await response.json();
-      return result;
+      return { success: true, data: result };
     } catch (error) {
-      return `Error getting CLI commands: ${error.message}`;
+      return { success: false, error: error.message };
     }
   }
 
-  // Skill interface methods
-  async execute(command, args) {
-    switch (command) {
+  /**
+   * Get usage files
+   */
+  async getUsageFiles() {
+    try {
+      const files = fs.readdirSync(this.usagePath);
+      return { success: true, data: files.filter(file => file.endsWith('.md')) };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Read usage file
+   */
+  async readUsageFile(args = {}) {
+    const { filename } = args;
+    try {
+      const filePath = path.join(this.usagePath, filename);
+      const content = fs.readFileSync(filePath, 'utf8');
+      return { success: true, data: content };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  // ==================== OpenClaw Interface ====================
+
+  /**
+   * Main execute method - OpenClaw standard interface
+   */
+  async execute(capability, args = {}) {
+    switch (capability) {
+      case 'convertAnxToMarkup':
+        return await this.convertAnxToMarkup(args);
+      case 'convertAnxToNodes':
+        return await this.convertAnxToNodes(args);
+      case 'executeCliCommand':
+        return await this.executeCliCommand(args);
+      case 'generateNodeVisualization':
+        return await this.generateNodeVisualization(args);
+      case 'getCliCommands':
+        return await this.getCliCommands();
       case 'getUsageFiles':
         return await this.getUsageFiles();
       case 'readUsageFile':
-        return await this.readUsageFile(args.filename);
-      case 'convertAnxToMarkdown':
-        return await this.convertAnxToMarkdown(args.anxContent, args.uuid_tile);
-      case 'convertAnxToMarkupByUuid':
-        return await this.convertAnxToMarkupByUuid(args.uuid_tile);
-      case 'convertAnxToNodes':
-        return await this.convertAnxToNodes(args.anxContent, args.uuid_tile);
-      case 'convertAnxToNodesByUuid':
-        return await this.convertAnxToNodesByUuid(args.uuid_tile);
-      case 'executeCliCommand':
-        return await this.executeCliCommand(args.command);
-      case 'generateNodeVisualization':
-        return await this.generateNodeVisualization(args.node);
-      case 'getCliCommands':
-        return await this.getCliCommands();
+        return await this.readUsageFile(args);
       default:
-        return 'Command not supported. Available commands: getUsageFiles, readUsageFile, convertAnxToMarkdown, convertAnxToMarkupByUuid, convertAnxToNodes, convertAnxToNodesByUuid, executeCliCommand, generateNodeVisualization, getCliCommands';
+        return { 
+          success: false, 
+          error: `Capability '${capability}' not found. Available: ${this.getCapabilities().map(c => c.name).join(', ')}` 
+        };
     }
   }
 
-  // Health check
+  /**
+   * Health check - OpenClaw standard
+   */
   async healthCheck() {
-    return { status: 'ok', timestamp: new Date().toISOString() };
-  }
-
-  // Get skill information
-  async getInfo() {
-    return {
-      name: 'ANX Core Skill',
-      version: '1.0.0',
-      description: 'Provides API capabilities for ANX markup output and CLI execution',
-      commands: [
-        'getUsageFiles - Get all usage documentation files',
-        'readUsageFile - Read a specific usage documentation file',
-        'convertAnxToMarkdown - Convert ANX content to Markup',
-        'convertAnxToMarkupByUuid - Convert ANX content to Markup by UUID tile',
-        'convertAnxToNodes - Convert ANX content to nodes structure',
-        'convertAnxToNodesByUuid - Convert ANX content to nodes structure by UUID tile',
-        'executeCliCommand - Execute CLI commands',
-        'generateNodeVisualization - Generate node visualization',
-        'getCliCommands - Get list of available CLI commands'
-      ],
-      backendUrl: this.backendUrl
-    };
+    try {
+      const response = await fetch(`${this.config.backendUrl}/api/cli/commands`);
+      return { 
+        success: true, 
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        backend: response.ok ? 'connected' : 'disconnected'
+      };
+    } catch (error) {
+      return { 
+        success: false, 
+        status: 'unhealthy',
+        timestamp: new Date().toISOString(),
+        error: error.message 
+      };
+    }
   }
 }
 
-// Export the skill
+// Export for OpenClaw
 module.exports = ANXCoreSkill;
 
-// For direct execution
-if (require.main === module) {
-  const skill = new ANXCoreSkill();
-  skill.healthCheck().then(console.log);
-  skill.getInfo().then(console.log);
-  skill.getUsageFiles().then(console.log);
-}
+// Default export
+module.exports.default = ANXCoreSkill;
