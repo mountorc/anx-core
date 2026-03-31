@@ -2,7 +2,7 @@ const axios = require('axios');
 
 class JobFormSkill {
   constructor() {
-    this.backendUrl = 'http://localhost:7887';
+    this.backendUrl = 'http://host.docker.internal:7887/';
   }
 
   /**
@@ -24,9 +24,9 @@ class JobFormSkill {
 8. 工作年限（experience）：下拉选择，必填
    选项：请选择、应届毕业生、1-3年、3-5年、5-10年、10年以上
 9. 行业选择（industry）：下拉选择，必填
-   选项来源：通过API动态加载，API地址为http://localhost:7887/dataset/industries，数据路径为data，显示字段为name，值字段为id
+   选项来源：通过API动态加载，API地址为http://host.docker.internal:7887/dataset/industries，数据路径为data，显示字段为name，值字段为id
 10. 职业选择（occupation）：下拉选择，必填
-    选项来源：通过API动态加载，API地址为http://localhost:7887/dataset/occupation，数据直接在响应中，显示字段为name，值字段为id
+    选项来源：通过API动态加载，API地址为http://host.docker.internal:7887/dataset/occupation，数据直接在响应中，显示字段为name，值字段为id
 11. 期望职位类型（jobType）：多选框，必填
     选项：全职、兼职、实习、远程
 `;
@@ -53,7 +53,7 @@ class JobFormSkill {
    */
   async getIndustryData() {
     try {
-      // 从纯文本描述中提取API信息：API地址为http://localhost:7887/dataset/industries，数据路径为data
+      // 从纯文本描述中提取API信息：API地址为http://host.docker.internal:7887//dataset/industries，数据路径为data
       const apiUrl = `${this.backendUrl}/dataset/industries`;
       const dataPath = 'data'; // 数据在响应中的路径
       
@@ -73,7 +73,7 @@ class JobFormSkill {
    */
   async getOccupationData() {
     try {
-      // 从纯文本描述中提取API信息：API地址为http://localhost:7887/dataset/occupation，数据直接在响应中
+      // 从纯文本描述中提取API信息：API地址为http://host.docker.internal:7887/dataset/occupation，数据直接在响应中
       const apiUrl = `${this.backendUrl}/dataset/occupation`;
       const dataPath = ''; // 数据直接在响应中
       
