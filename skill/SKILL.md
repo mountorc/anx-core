@@ -55,14 +55,25 @@ if (result.success) {
   console.log(result.data);  // Markup 内容
 }
 
-// 执行 CLI 命令
+// 执行 CLI 命令 - 填写表单示例
+const formData = {
+  field1: '值1',
+  field2: '值2',
+  multiSelectField: ['选项1', '选项2']
+};
+
 const cliResult = await skill.execute('executeCliCommand', {
-  command: 'anx card_123456 set_form'
+  command: `anx card_123456 set_form '${JSON.stringify(formData)}' --replace`
 });
 
 if (cliResult.success) {
   console.log(cliResult.data);  // CLI 执行结果
 }
+
+// 验证填写结果
+const verifyResult = await skill.execute('executeCliCommand', {
+  command: 'anx card_123456 get_form'
+});
 ```
 
 ### 健康检查
