@@ -57,7 +57,7 @@ if (result.success) {
 
 // 执行 CLI 命令
 const cliResult = await skill.execute('executeCliCommand', {
-  command: 'anx card_123456 get_form'
+  command: 'anx card_123456 set_form'
 });
 
 if (cliResult.success) {
