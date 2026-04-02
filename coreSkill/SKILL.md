@@ -5,37 +5,35 @@ description: "Guide for connecting to ANX Core via uuid_tile, fetching markup, a
 
 # ANX Core Skill Guide
 
-## 1. Connecting via uuid_tile
-
-### Load Tile by UUID
+## 1. Get Markup by uuid_tile
 
 ```javascript
-// Fetch tile
-async function loadTile(uuid) {
-  const response = await fetch(`http://host.docker.internal:7887/api/hub/${uuid}`);
-  const data = await response.json();
-  return data.data.anxContent;
-}
-
-// Example
-loadTile('505619db-c096-46b8-8a1d-0c7754fc9219');
-```
-
-## 2. Understanding Markup
-
-### ANX to Markup
-```javascript
-async function convertToMarkup(anxContent) {
-  const response = await fetch('http://host.docker.internal:7887/api/convert', {
+// Get markup directly by uuid_tile
+async function getMarkupByUuid(uuid) {
+  // Step 1: Load tile
+  const hubResponse = await fetch(`http://host.docker.internal:7887/api/hub/${uuid}`);
+  const hubData = await hubResponse.json();
+  const anxContent = hubData.data.anxContent;
+  
+  // Step 2: Convert to markup
+  const convertResponse = await fetch('http://host.docker.internal:7887/api/convert', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ anxContent })
   });
-  return (await response.json()).markup;
+  const { markup } = await convertResponse.json();
+  
+  return markup;
 }
+
+// Example: Get clothing image processing markup
+const markup = await getMarkupByUuid('505619db-c096-46b8-8a1d-0c7754fc9219');
+console.log('Markup:', markup);
 ```
 
-### Markup Examples
+## 2. Understanding Markup Structure
+
+### Markup Example
 
 **Form → Markup:**
 ```json
@@ -72,6 +70,35 @@ async function convertToMarkup(anxContent) {
 | `<x checkbox>` | Multi-select |
 | `<x file>` | File upload |
 | `<x table>` | Data table |
+
+### Real Markup Output
+
+From clothing image processing tile:
+```markdown
+<x form card_1775042299455_9844>
+## 服装图像处理
+
+<x file card_1775042299455_5553>
+<!-- ANX Component: file -->
+</x>
+
+<x textarea card_1775042299455_2274>
+**system_prompt:**
+
+```
+对图像中的服装进行精修处理...
+```
+</x>
+
+<x input card_1775042299455_1701>
+**display_style:** 请输入展示风格
+</x>
+
+<x button card_1775042299455_6341>
+[Button](#)
+</x>
+</x>
+```
 
 ## 3. Form CLI Commands
 
@@ -115,18 +142,15 @@ executeCli('submit form clothing_image_processing');
 ## 4. Complete Workflow
 
 ```javascript
-// 1. Load tile
+// 1. Get markup by uuid_tile
 const uuid = '505619db-c096-46b8-8a1d-0c7754fc9219';
-const anxContent = await loadTile(uuid);
-
-// 2. Convert to markup
-const markup = await convertToMarkup(anxContent);
+const markup = await getMarkupByUuid(uuid);
 console.log('Markup:', markup);
 
-// 3. Update data
+// 2. Update data
 await executeCli('set form clothing_image_processing seed 99999');
 
-// 4. Listen for changes
+// 3. Listen for changes
 window.addEventListener('message', (event) => {
   if (event.data.type === 'UPDATE_NODE_DATA') {
     const { cardKey, field, value } = event.data;
