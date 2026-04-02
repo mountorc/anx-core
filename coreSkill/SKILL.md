@@ -8,26 +8,15 @@ description: "Guide for connecting to ANX Core via uuid_tile, fetching markup, a
 ## 1. Get Markup by uuid_tile
 
 ```javascript
-// Get markup directly by uuid_tile
-async function getMarkupByUuid(uuid) {
-  // Step 1: Load tile
-  const hubResponse = await fetch(`http://host.docker.internal:7887/api/hub/${uuid}`);
-  const hubData = await hubResponse.json();
-  const anxContent = hubData.data.anxContent;
-  
-  // Step 2: Convert to markup
-  const convertResponse = await fetch('http://host.docker.internal:7887/api/convert', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ anxContent })
-  });
-  const { markup } = await convertResponse.json();
-  
+// Get markup directly by uuid_tile (one step!)
+async function getTileMarkup(uuid) {
+  const response = await fetch(`http://host.docker.internal:7887/api/convert?uuid_tile=${uuid}`);
+  const { markup } = await response.json();
   return markup;
 }
 
 // Example: Get clothing image processing markup
-const markup = await getMarkupByUuid('505619db-c096-46b8-8a1d-0c7754fc9219');
+const markup = await getTileMarkup('505619db-c096-46b8-8a1d-0c7754fc9219');
 console.log('Markup:', markup);
 ```
 
@@ -142,9 +131,9 @@ executeCli('submit form clothing_image_processing');
 ## 4. Complete Workflow
 
 ```javascript
-// 1. Get markup by uuid_tile
+// 1. Get markup by uuid_tile (one step!)
 const uuid = '505619db-c096-46b8-8a1d-0c7754fc9219';
-const markup = await getMarkupByUuid(uuid);
+const markup = await getTileMarkup(uuid);
 console.log('Markup:', markup);
 
 // 2. Update data
@@ -154,7 +143,7 @@ await executeCli('set form clothing_image_processing seed 99999');
 window.addEventListener('message', (event) => {
   if (event.data.type === 'UPDATE_NODE_DATA') {
     const { cardKey, field, value } = event.data;
-    console.log(`${field} = ${value}`);
+    console.log(`${field} = ${value}');
   }
 });
 ```
@@ -200,6 +189,7 @@ Button actions triggered on click:
 
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
+| `http://host.docker.internal:7887/api/convert?uuid_tile=:uuid` | GET | Get markup by uuid_tile (one step) |
 | `http://host.docker.internal:7887/api/hub` | GET | List tiles |
 | `http://host.docker.internal:7887/api/hub/:uuid` | GET | Get tile |
 | `http://host.docker.internal:7887/api/convert` | POST | ANX to Markup |
