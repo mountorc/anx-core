@@ -50,26 +50,32 @@
             </div>
           </div>
           
-          <!-- CLI Logs modal -->
+          <!-- Unified Logs modal -->
           <div class="modal" v-if="showLogsModal">
             <div class="modal-content">
               <div class="modal-header">
-                <h3>CLI Command Logs</h3>
+                <h3>System Logs</h3>
                 <button @click="showLogsModal = false" class="close-btn">×</button>
               </div>
               <div class="modal-body">
-                <div v-if="cliLogs.length === 0" class="no-logs">
-                  No CLI command logs available.
+                <div v-if="allLogs.length === 0" class="no-logs">
+                  No logs available.
                 </div>
                 <div v-else class="logs-list">
-                  <div v-for="(log, index) in cliLogs" :key="index" class="log-item" :class="log.status">
+                  <div v-for="(log, index) in allLogs" :key="index" class="log-item" :class="[log.status, log.type]">
                     <div class="log-header">
                       <span class="log-timestamp">{{ formatTimestamp(log.timestamp) }}</span>
-                      <span class="log-status">{{ log.status.toUpperCase() }}</span>
+                      <span class="log-type">{{ log.type.toUpperCase() }}</span>
+                      <span class="log-status">{{ (log.status || 'success').toUpperCase() }}</span>
                     </div>
-                    <div class="log-command">{{ log.command }}</div>
-                    <div class="log-response">
+                    <div v-if="log.command" class="log-command">{{ log.command }}</div>
+                    <div v-else-if="log.message" class="log-message">{{ log.message }}</div>
+                    <div v-if="log.response" class="log-response">
                       <pre>{{ JSON.stringify(log.response, null, 2) }}</pre>
+                    </div>
+                    <div v-if="log.details" class="log-details">
+                      <strong>Details:</strong>
+                      <pre>{{ JSON.stringify(log.details, null, 2) }}</pre>
                     </div>
                     <div v-if="log.error" class="log-error">
                       <strong>Error:</strong> {{ log.error }}
@@ -78,7 +84,7 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button @click="refreshCliLogs">Refresh</button>
+                <button @click="refreshLogs">Refresh</button>
                 <button @click="showLogsModal = false">Close</button>
               </div>
             </div>
@@ -209,6 +215,7 @@ export default {
       showLogsModal: false,
       cliCommands: [],
       cliLogs: [],
+      allLogs: [],
       visualizationHTML: '',
       visualizationCSS: '',
       hubList: [], // 存储从hub获取的tile case列表
@@ -220,6 +227,9 @@ export default {
     this.loadHubList();
     this.initFileUploads();
     
+    // 从URL参数中获取uuid_tile并自动加载对应的tile
+    this.checkUrlForUuidTile();
+    
     // 监听 message 事件（来自可视化 iframe）
     window.addEventListener('message', this.handleVisualizationMessage);
   },
@@ -228,6 +238,15 @@ export default {
     window.removeEventListener('message', this.handleVisualizationMessage);
   },
   methods: {
+    // 检查URL参数中是否包含uuid_tile
+    checkUrlForUuidTile() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const uuidTile = urlParams.get('uuid_tile');
+      if (uuidTile) {
+        console.log(`[URL] Found uuid_tile parameter: ${uuidTile}`);
+        this.loadHubTestCase(uuidTile);
+      }
+    },
     // 防抖函数，避免频繁的API调用
     debouncedConvertAnxToMarkup() {
       clearTimeout(this.debounceTimer);
@@ -372,6 +391,19 @@ export default {
             value: values
           }, '*');
         };
+        
+        // 处理tap事件
+        window.handleTapSet = function(tapSet, node, button) {
+          console.log('Handling tap set:', tapSet);
+          console.log('Node:', node);
+          
+          // 模拟处理过程
+          setTimeout(() => {
+            console.log('Tap set processed');
+            // 可以在这里添加实际的处理逻辑
+            // 例如导航、API调用等
+          }, 1500);
+        };
       `;
       document.head.appendChild(script);
     },
@@ -393,8 +425,26 @@ export default {
     async handleVisualizationMessage(event) {
       // 检查消息类型
       if (event.data && event.data.type === 'UPDATE_NODE_DATA') {
-        const { cardKey, field, value } = event.data;
+        const { cardKey, field, value, log } = event.data;
         console.log('Node data changed from visualization:', { cardKey, field, value });
+        
+        // 记录view日志
+        if (log) {
+          this.addViewLog({
+            timestamp: log.timestamp,
+            action: log.action,
+            details: log.details,
+            message: `View field updated: ${field} = ${value}`
+          });
+        } else {
+          // 如果没有log对象，创建一个
+          this.addViewLog({
+            timestamp: new Date().toISOString(),
+            action: 'field_update',
+            details: { cardKey, field, value },
+            message: `View field updated: ${field} = ${value}`
+          });
+        }
         
         try {
           // 调用后端 API 更新节点数据
@@ -424,6 +474,14 @@ export default {
           }
         } catch (error) {
           console.error('Error updating node data:', error);
+          // 记录错误日志
+          this.addViewLog({
+            timestamp: new Date().toISOString(),
+            action: 'field_update_error',
+            details: { cardKey, field, value, error: error.message },
+            message: `Error updating view field: ${field}`,
+            status: 'error'
+          });
         }
       }
     },
@@ -988,21 +1046,58 @@ export default {
     },
     async showCliLogs() {
       try {
-        await this.refreshCliLogs();
+        await this.refreshLogs();
         this.showLogsModal = true;
       } catch (error) {
-        console.error('Error showing CLI logs:', error);
-        alert('Failed to load CLI logs. Please try again.');
+        console.error('Error showing logs:', error);
+        alert('Failed to load logs. Please try again.');
       }
     },
-    async refreshCliLogs() {
+    async refreshLogs() {
       try {
-        const response = await fetch('/api/cli/logs');
-        const data = await response.json();
-        this.cliLogs = data.logs;
+        // 获取CLI日志
+        const cliResponse = await fetch('/api/cli/logs');
+        const cliData = await cliResponse.json();
+        const cliLogs = cliData.logs || [];
+        
+        // 为CLI日志添加类型标识
+        const formattedCLILogs = cliLogs.map(log => ({
+          ...log,
+          type: 'cli'
+        }));
+        
+        // 获取本地存储的view日志
+        const viewLogs = JSON.parse(localStorage.getItem('viewLogs') || '[]');
+        
+        // 合并并按时间戳排序
+        this.allLogs = [...formattedCLILogs, ...viewLogs].sort((a, b) => {
+          return new Date(b.timestamp) - new Date(a.timestamp);
+        });
       } catch (error) {
-        console.error('Error refreshing CLI logs:', error);
-        alert('Failed to refresh CLI logs. Please try again.');
+        console.error('Error refreshing logs:', error);
+        alert('Failed to refresh logs. Please try again.');
+      }
+    },
+    addViewLog(log) {
+      // 获取本地存储的view日志
+      const viewLogs = JSON.parse(localStorage.getItem('viewLogs') || '[]');
+      
+      // 添加新日志
+      viewLogs.unshift({
+        ...log,
+        type: 'view',
+        status: 'success'
+      });
+      
+      // 限制日志数量，只保留最近100条
+      const limitedLogs = viewLogs.slice(0, 100);
+      
+      // 保存回本地存储
+      localStorage.setItem('viewLogs', JSON.stringify(limitedLogs));
+      
+      // 刷新日志显示
+      if (this.showLogsModal) {
+        this.refreshLogs();
       }
     },
     formatTimestamp(timestamp) {
@@ -1396,11 +1491,81 @@ export default {
   background-color: #fff8f8;
 }
 
+.log-item.cli {
+  background-color: #f9f9f9;
+}
+
+.log-item.view {
+  background-color: #f0f8ff;
+}
+
+.log-type {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  margin-right: 8px;
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.log-item.cli .log-type {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.log-item.view .log-type {
+  background-color: #2196F3;
+  color: white;
+}
+
+.log-message {
+  font-size: 14px;
+  margin: 10px 0;
+  padding: 8px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.log-details {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.log-details pre {
+  margin: 5px 0 0 0;
+  padding: 8px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 12px;
+  max-height: 150px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
 .log-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.log-header .log-timestamp {
+  flex: 1;
+}
+
+.log-header .log-type {
+  margin-right: 8px;
+}
+
+.log-header .log-status {
+  margin-left: auto;
 }
 
 .log-timestamp {

@@ -36,7 +36,8 @@ function renderForm(node, renderNode) {
       const childNode = {
         config: subConfig,
         data: { value: childValue },
-        nodes: []
+        nodes: [],
+        tapSet: subConfig.tapSet
       };
       content += renderNode(childNode);
     });

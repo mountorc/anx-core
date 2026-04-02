@@ -36,6 +36,22 @@ async function uploadFileByToken(token, file, fileName) {
 }
 
 /**
+ * 获取OSS上传token
+ * @returns {Promise<string>} - 上传token
+ */
+async function getOSSToken() {
+  try {
+    // 这里应该调用获取token的API
+    // 由于目前API可能有问题，暂时返回用户提供的有效token
+    return 'de12b5548a2b401eb62094d837cc36a1';
+  } catch (error) {
+    console.error('Error getting OSS token:', error);
+    // 出错时返回默认token
+    return 'de12b5548a2b401eb62094d837cc36a1';
+  }
+}
+
+/**
  * 上传图片到OSS
  * @param {File} file - 要上传的图片文件
  * @param {string} basePath - 基础路径，默认为 "anx-core/"
@@ -43,8 +59,9 @@ async function uploadFileByToken(token, file, fileName) {
  */
 async function uploadImageToOSS(file, basePath = 'anx-core/') {
   try {
-    // 使用默认的token
-    const token = '4218fac63b734af88f2db0316e61d0ae';
+    // 获取最新的token
+    const token = await getOSSToken();
+    console.log('Using OSS token:', token);
     
     // 生成唯一的文件名，避免重复
     const timestamp = Date.now();

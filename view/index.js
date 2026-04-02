@@ -11,7 +11,9 @@ const { renderNode } = require('./renderers.js');
  */
 function generateNodeVisualization(node) {
   const html = renderNode(node);
-  return html;
+  const js = generateVisualizationJS();
+  const css = `<style>${generateVisualizationCSS()}</style>`;
+  return css + html + js;
 }
 
 /**
@@ -28,19 +30,42 @@ function generateVisualizationJS() {
     const field = element.getAttribute('data-field');
     const value = element.value;
     
+    // 记录字段修改日志
+    console.log('[View Log] Field updated:', {
+      timestamp: new Date().toISOString(),
+      cardKey: cardKey,
+      field: field,
+      value: value,
+      action: 'field_update'
+    });
+    
     // 调用父窗口的更新函数（如果在iframe中）
     if (window.parent && window.parent !== window) {
       window.parent.postMessage({
         type: 'UPDATE_NODE_DATA',
         cardKey: cardKey,
         field: field,
-        value: value
+        value: value,
+        log: {
+          timestamp: new Date().toISOString(),
+          action: 'field_update',
+          details: { cardKey, field, value }
+        }
       }, '*');
     }
     
     // 同时触发全局事件
     window.dispatchEvent(new CustomEvent('nodeDataChanged', {
-      detail: { cardKey, field, value }
+      detail: { 
+        cardKey, 
+        field, 
+        value,
+        log: {
+          timestamp: new Date().toISOString(),
+          action: 'field_update',
+          details: { cardKey, field, value }
+        }
+      }
     }));
   };
   
@@ -60,21 +85,258 @@ function generateVisualizationJS() {
       }
     });
     
+    // 记录字段修改日志
+    console.log('[View Log] Checkbox updated:', {
+      timestamp: new Date().toISOString(),
+      cardKey: cardKey,
+      field: field,
+      optionValue: optionValue,
+      isChecked: isChecked,
+      selectedValues: values,
+      action: 'checkbox_update'
+    });
+    
     // 调用父窗口的更新函数（如果在iframe中）
     if (window.parent && window.parent !== window) {
       window.parent.postMessage({
         type: 'UPDATE_NODE_DATA',
         cardKey: cardKey,
         field: field,
-        value: values
+        value: values,
+        log: {
+          timestamp: new Date().toISOString(),
+          action: 'checkbox_update',
+          details: { cardKey, field, optionValue, isChecked, selectedValues: values }
+        }
       }, '*');
     }
     
     // 同时触发全局事件
     window.dispatchEvent(new CustomEvent('nodeDataChanged', {
-      detail: { cardKey, field, value: values }
+      detail: { 
+        cardKey, 
+        field, 
+        value: values,
+        log: {
+          timestamp: new Date().toISOString(),
+          action: 'checkbox_update',
+          details: { cardKey, field, optionValue, isChecked, selectedValues: values }
+        }
+      }
     }));
   };
+  
+  // 处理tap事件
+  window.handleTapSet = function(tapSet, data, element) {
+    if (!tapSet || typeof tapSet !== 'object') return;
+
+    Object.keys(tapSet).forEach(actionType => {
+      const actionConfig = tapSet[actionType];
+      handleAction(actionType, actionConfig, data, null, element);
+    });
+  };
+  
+  // 处理trigger事件
+  window.handleTriggerSet = function(triggerSet, data, element) {
+    if (!triggerSet || typeof triggerSet !== 'object') return {};
+
+    const handlers = {};
+
+    Object.keys(triggerSet).forEach(triggerType => {
+      const actionConfig = triggerSet[triggerType];
+      const eventType = mapTriggerTypeToEvent(triggerType);
+      
+      if (eventType) {
+        const handler = (event) => {
+          Object.keys(actionConfig).forEach(actionType => {
+            handleAction(actionType, actionConfig[actionType], data, event, element);
+          });
+        };
+
+        element.addEventListener(eventType, handler);
+        handlers[triggerType] = handler;
+      }
+    });
+
+    return handlers;
+  };
+  
+  // 映射trigger类型到事件类型
+  function mapTriggerTypeToEvent(triggerType) {
+    const eventMap = {
+      input: 'input',
+      focus: 'focus',
+      blur: 'blur',
+      submit: 'submit',
+      tap: 'click',
+      longtap: 'contextmenu', // Using contextmenu as long tap alternative
+      doubletap: 'dblclick',
+      cancel: 'cancel',
+      clear: 'input'
+    };
+
+    return eventMap[triggerType] || null;
+  }
+  
+  // 处理action
+  function handleAction(actionType, actionConfig, data, event, element) {
+    switch (actionType) {
+      case 'navigateTo':
+        handleNavigateTo(actionConfig, data, event);
+        break;
+      case 'navigateBack':
+        handleNavigateBack(actionConfig, event);
+        break;
+      case 'updateData':
+        handleUpdateData(actionConfig, data, event);
+        break;
+      case 'setTimeout':
+        handleSetTimeout(actionConfig, data, event, element);
+        break;
+      case 'requestSet':
+        handleRequestSet(actionConfig, data, event);
+        break;
+      default:
+        console.warn('Unknown action type: ' + actionType);
+    }
+  }
+  
+  // 处理导航
+  function handleNavigateTo(config, data, event) {
+    if (!config.path) return;
+
+    let path = config.path;
+    const params = new URLSearchParams();
+
+    if (config.paramMap && typeof config.paramMap === 'object') {
+      Object.keys(config.paramMap).forEach(targetParam => {
+        const sourceField = config.paramMap[targetParam];
+        const value = getDataValue(data, sourceField);
+        if (value !== undefined) {
+          params.set(targetParam, value);
+        }
+      });
+    }
+
+    const queryString = params.toString();
+    if (queryString) {
+      path = path + '?' + queryString;
+    }
+
+    window.location.href = path;
+  }
+  
+  // 处理返回导航
+  function handleNavigateBack(config, event) {
+    window.history.back();
+  }
+  
+  // 处理数据更新
+  function handleUpdateData(config, data, event) {
+    if (!config.tableName) return;
+
+    // This is a placeholder implementation
+    // In a real application, this would update the data in a dataset
+    console.log('Updating data:', {
+      tableName: config.tableName,
+      paramMap: config.paramMap,
+      uniqueMap: config.uniqueMap,
+      data
+    });
+  }
+  
+  // 处理延时
+  function handleSetTimeout(config, data, event, element) {
+    if (!config.delay) return;
+
+    setTimeout(() => {
+      if (config.action) {
+        handleAction(config.action.type, config.action.config, data, event, element);
+      }
+    }, config.delay);
+  }
+  
+  // 处理请求
+  function handleRequestSet(config, data, event) {
+    console.log('Starting handleRequestSet...');
+    console.log('Config:', config);
+    console.log('Data:', data);
+    console.log('Event:', event);
+    
+    if (!config.url) {
+      console.warn('No URL provided in config');
+      return;
+    }
+
+    const method = config.method || 'GET';
+    const params = {};
+
+    console.log('Processing paramMap...');
+    if (config.paramMap && typeof config.paramMap === 'object') {
+      Object.keys(config.paramMap).forEach(targetParam => {
+        const sourceField = config.paramMap[targetParam];
+        const value = getDataValue(data, sourceField);
+        console.log('Param:', targetParam, 'Source:', sourceField, 'Value:', value);
+        if (value !== undefined) {
+          params[targetParam] = value;
+        }
+      });
+    }
+
+    let url = config.url;
+    let fetchOptions = {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    console.log('Building request...');
+    if (method === 'GET') {
+      const queryString = new URLSearchParams(params).toString();
+      if (queryString) {
+        url = url + '?' + queryString;
+      }
+    } else {
+      fetchOptions.body = JSON.stringify(params);
+    }
+
+    console.log('Preparing to send request...');
+    console.log('Final request:', {
+      url: url,
+      method: method,
+      params: params,
+      options: fetchOptions
+    });
+    
+    console.log('Sending request now...');
+    fetch(url, fetchOptions)
+      .then(response => {
+        console.log('Response received:', response);
+        return response.json();
+      })
+      .then(responseData => {
+        console.log('Request response data:', responseData);
+      })
+      .catch(error => {
+        console.error('Request error:', error);
+      });
+  }
+  
+  // 获取数据值
+  function getDataValue(data, fieldPath) {
+    if (!data || !fieldPath) return undefined;
+
+    const parts = fieldPath.split('.');
+    let value = data;
+
+    for (const part of parts) {
+      if (value === undefined || value === null) return undefined;
+      value = value[part];
+    }
+
+    return value;
+  }
 })();
 </script>
   `;
@@ -297,7 +559,7 @@ function generateVisualizationCSS() {
     
     .button-visualization button {
       padding: 10px 16px;
-      background-color: #409eff;
+      background-color: #28a745;
       color: white;
       border: none;
       border-radius: 4px;
@@ -308,7 +570,7 @@ function generateVisualizationCSS() {
     }
     
     .button-visualization button:hover {
-      background-color: #66b1ff;
+      background-color: #218838;
     }
     
     .options-visualization {
