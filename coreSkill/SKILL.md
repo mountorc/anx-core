@@ -21,11 +21,6 @@ async function loadTile(uuid) {
 loadTile('505619db-c096-46b8-8a1d-0c7754fc9219');
 ```
 
-### URL Parameter
-```
-http://host.docker.internal:17887/?uuid_tile=505619db-c096-46b8-8a1d-0c7754fc9219
-```
-
 ### Convert to Nodes
 ```javascript
 async function convertToNodes(anxContent) {
