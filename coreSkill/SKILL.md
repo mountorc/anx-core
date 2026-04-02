@@ -1,76 +1,50 @@
 ---
 name: "coreSkill"
-description: "Guide for connecting to ANX Core via uuid_tile, fetching markup, and controlling form data via CLI. Invoke when user needs to integrate with ANX Core, work with uuid_tile, or execute form-related CLI commands."
+description: "Guide for filling forms via ANX Core. Step 1: Get markup by uuid_tile. Step 2: Generate and execute CLI commands to fill form fields. Invoke when user needs to fill a form using ANX Core."
 ---
 
-# ANX Core Skill Guide
+# ANX Core 填表任务指南
 
-## 1. Get Markup by uuid_tile
+## 任务概述
+
+这是一个**两步填表任务**：
+1. **第一步**: 通过 `uuid_tile` 获取表单 markup
+2. **第二步**: 生成 CLI 命令并执行，填写表单字段
+
+---
+
+## 第一步: 获取 Markup
+
+通过 `uuid_tile` 获取表单的结构化 markup：
 
 ```javascript
-// Get markup directly by uuid_tile (one step!)
 async function getTileMarkup(uuid) {
   const response = await fetch(`http://host.docker.internal:7887/anxCore/getMarkup?uuid_tile=${uuid}`);
   const { markup } = await response.json();
   return markup;
 }
 
-// Example: Get clothing image processing markup
-const markup = await getTileMarkup('505619db-c096-46b8-8a1d-0c7754fc9219');
-console.log('Markup:', markup);
+// 示例: 获取服装图像处理表单
+const uuid = '505619db-c096-46b8-8a1d-0c7754fc9219';
+const markup = await getTileMarkup(uuid);
+console.log(markup);
 ```
 
-## 2. Understanding Markup Structure
+### Markup 结构示例
 
-### Markup Example
-
-**Form → Markup:**
-```json
-{"kind": "form", "title": "Login", "kinds": [
-  {"kind": "input", "nick": "username", "title": "Username"},
-  {"kind": "button", "title": "Submit"}
-]}
-```
-↓
-```markdown
-## Login
-<x input card_xxx>**Username:**</x>
-<x button card_yyy>**Submit**</x>
-```
-
-
-### Markup Tags
-| Tag | Component |
-|-----|-----------|
-| `<x input>` | Text input |
-| `<x textarea>` | Multi-line input |
-| `<x button>` | Action button |
-| `<x options>` | Dropdown |
-| `<x checkbox>` | Multi-select |
-| `<x file>` | File upload |
-| `<x table>` | Data table |
-
-### Real Markup Output
-
-From clothing image processing tile:
 ```markdown
 <x form card_1775042299455_9844>
 ## 服装图像处理
 
-<x file card_1775042299455_5553>
-<!-- ANX Component: file -->
-</x>
-
 <x textarea card_1775042299455_2274>
 **system_prompt:**
-
 ```
 对图像中的服装进行精修处理...
 ```
 </x>
 
-<x input card_1775042299455_1701>
-**display_style:** 请输入展示风格
+<x input card_1775042299455_5335>
+**seed:** 1424685757
 </x>
 
 <x button card_1775042299455_6341>
@@ -79,42 +53,28 @@ From clothing image processing tile:
 </x>
 ```
 
-## 3. Form CLI Commands
+### 字段识别
 
-### Set Form Data
+从 markup 中识别需要填写的字段：
+- `system_prompt` - textarea 类型
+- `seed` - input 类型，当前值 1424685757
+- `display_style` - input 类型
+- `aspect_ratio` - options 类型
 
-**方法1: JSON 批量更新**
+---
+
+## 第二步: 执行 CLI 填表
+
+### 生成 CLI 命令
+
+根据字段生成 `set_form` 命令：
+
 ```bash
-anx <cardKey> set_form '{"field1":"value1","field2":"value2"}'
-
-# Example
-anx clothing_image_processing set_form '{"seed":12345,"system_prompt":"Process image"}'
+anx <cardKey> set_form '{"field1":"value1","field2":"value2",...}'
 ```
 
-**方法3: 全量替换（使用 --replace）**
-```bash
-anx <cardKey> set_form --replace '{"seed":12345,"system_prompt":"Process image"}'
-```
+### 执行 CLI
 
-### Get Form Data
-```bash
-anx <cardKey> get_form          # Get all fields
-anx <cardKey> get_form <field>  # Get specific field
-
-# Examples
-anx clothing_image_processing get_form
-anx clothing_image_processing get_form seed
-```
-
-### Submit Form
-```bash
-anx <cardKey> submit
-
-# Example
-anx clothing_image_processing submit
-```
-
-### Execute via API
 ```javascript
 async function executeCli(command) {
   const response = await fetch('http://host.docker.internal:7887/api/execute-cli', {
@@ -125,86 +85,89 @@ async function executeCli(command) {
   return await response.json();
 }
 
-// Examples
-executeCli('anx clothing_image_processing set_form \'{"seed":12345,"system_prompt":"Process image"}\'');
+// 填写表单字段
+await executeCli('anx clothing_image_processing set_form \'{"seed":99999,"system_prompt":"Custom prompt"}\'');
 ```
 
-## 4. Complete Workflow
+### CLI 格式说明
+
+| 格式 | 说明 | 示例 |
+|------|------|------|
+| `anx <cardKey> set_form '{"field":"value"}'` | 批量更新字段 | `anx form set_form '{"seed":123}'` |
+| `anx <cardKey> set_form --replace '{...}'` | 全量替换所有字段 | `anx form set_form --replace '{"seed":123}'` |
+
+---
+
+## 完整填表示例
 
 ```javascript
-// 1. Get markup by uuid_tile (one step!)
+// ========== 第一步: 获取 Markup ==========
 const uuid = '505619db-c096-46b8-8a1d-0c7754fc9219';
 const markup = await getTileMarkup(uuid);
-console.log('Markup:', markup);
 
-// 2. update multiple fields with JSON
-await executeCli('anx clothing_image_processing set_form \'{"seed":99999,"system_prompt":"Custom prompt"}\'');
+// 从 markup 解析字段:
+// - system_prompt: textarea
+// - seed: input (当前值: 1424685757)
+// - display_style: input
+// - aspect_ratio: options
 
-// 3. Listen for changes
-window.addEventListener('message', (event) => {
-  if (event.data.type === 'UPDATE_NODE_DATA') {
-    const { cardKey, field, value } = event.data;
-    console.log(`${field} = ${value}');
-  }
-});
+// ========== 第二步: 生成并执行 CLI ==========
+// 填写表单字段
+const formData = {
+  "seed": 99999,
+  "system_prompt": "自定义处理指令",
+  "display_style": "时尚风格"
+};
+
+const cliCommand = `anx clothing_image_processing set_form '${JSON.stringify(formData)}'`;
+await executeCli(cliCommand);
+
+// 填表完成!
+console.log('表单已填写完成');
 ```
 
-## 5. Event System (tapSet)
+---
 
-Button actions triggered on click:
+## Markup 标签参考
 
+| 标签 | 组件类型 | 填写方式 |
+|------|----------|----------|
+| `<x input>` | 文本输入 | `set_form '{"field":"value"}'` |
+| `<x textarea>` | 多行文本 | `set_form '{"field":"value"}'` |
+| `<x options>` | 下拉选择 | `set_form '{"field":"option_value"}'` |
+| `<x checkbox>` | 多选框 | `set_form '{"field":["value1","value2"]}'` |
+| `<x file>` | 文件上传 | 通过文件上传接口 |
+| `<x button>` | 按钮 | 触发提交或动作 |
+
+---
+
+## API 端点
+
+| 端点 | 方法 | 用途 |
+|------|------|------|
+| `http://host.docker.internal:7887/anxCore/getMarkup?uuid_tile=:uuid` | GET | **第一步**: 获取表单 markup |
+| `http://host.docker.internal:7887/api/execute-cli` | POST | **第二步**: 执行 CLI 填表 |
+
+---
+
+## 字段值格式
+
+### input / textarea
 ```json
-{
-  "kind": "button",
-  "title": "Submit",
-  "tapSet": {
-    "requestSet": {
-      "method": "POST",
-      "url": "http://host.docker.internal:7887/api/submit",
-      "paramMap": {
-        "workflowId": "123",
-        "data": "formData"
-      }
-    }
-  }
-}
+{"field_name": "文本值"}
 ```
 
-### Action Types
-| Action | Purpose | Parameters |
-|--------|---------|------------|
-| `requestSet` | HTTP request | method, url, paramMap |
-| `navigateTo` | Page navigation | path, paramMap |
-
-### paramMap Syntax
+### options (单选)
 ```json
-{
-  "workflowId": "123",      // Static value
-  "data": "formData",       // Field reference
-  "image": "images[0]",     // Array index
-  "user.name": "profile.name"  // Nested path
-}
+{"field_name": "option_value"}
 ```
 
-## 6. API Endpoints
+### checkbox (多选)
+```json
+{"field_name": ["value1", "value2"]}
+```
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `http://host.docker.internal:7887/anxCore/getMarkup?uuid_tile=:uuid` | GET | Get markup by uuid_tile (one step) |
-| `http://host.docker.internal:7887/anxCore/getMarkup` | POST | Get markup by anxContent or uuid_tile |
-| `http://host.docker.internal:7887/api/hub` | GET | List tiles |
-| `http://host.docker.internal:7887/api/hub/:uuid` | GET | Get tile |
-| `http://host.docker.internal:7887/api/execute-cli` | POST | Execute CLI |
-| `http://host.docker.internal:7887/api/update-node-data` | POST | Update node data |
-
-## 7. Component Kinds
-
-- `form` - Form container
-- `input` - Text input
-- `textarea` - Multi-line input
-- `button` - Action button
-- `options` - Dropdown select
-- `checkbox` - Multi-select
-- `file` - File upload
-- `table` - Data table
-- `list` - Dynamic list
+### number
+```json
+{"field_name": 12345}
+```
