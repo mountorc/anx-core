@@ -92,23 +92,45 @@ From clothing image processing tile:
 ## 3. Form CLI Commands
 
 ### Set Form Data
+
+**方法1: 单个字段更新**
 ```bash
-set form <cardKey> <field> <value>
+anx <cardKey> set_form <field> <value>
 
 # Examples
-set form clothing_image_processing seed 12345
-set form clothing_image_processing system_prompt "Process image"
+anx clothing_image_processing set_form seed 12345
+anx clothing_image_processing set_form system_prompt "Process image"
+```
+
+**方法2: JSON 批量更新**
+```bash
+anx <cardKey> set_form '{"field1":"value1","field2":"value2"}'
+
+# Example
+anx clothing_image_processing set_form '{"seed":12345,"system_prompt":"Process image"}'
+```
+
+**方法3: 全量替换（使用 --replace）**
+```bash
+anx <cardKey> set_form --replace '{"seed":12345,"system_prompt":"Process image"}'
 ```
 
 ### Get Form Data
 ```bash
-get form <cardKey>          # Get all fields
-get form <cardKey> <field>  # Get specific field
+anx <cardKey> get_form          # Get all fields
+anx <cardKey> get_form <field>  # Get specific field
+
+# Examples
+anx clothing_image_processing get_form
+anx clothing_image_processing get_form seed
 ```
 
 ### Submit Form
 ```bash
-submit form <cardKey>
+anx <cardKey> submit
+
+# Example
+anx clothing_image_processing submit
 ```
 
 ### Execute via API
@@ -123,7 +145,8 @@ async function executeCli(command) {
 }
 
 // Examples
-executeCli('set form clothing_image_processing seed 12345');
+executeCli('anx clothing_image_processing set_form seed 12345');
+executeCli('anx clothing_image_processing set_form \'{"seed":12345,"system_prompt":"Process image"}\'');
 executeCli('get form clothing_image_processing');
 executeCli('submit form clothing_image_processing');
 ```
@@ -136,8 +159,11 @@ const uuid = '505619db-c096-46b8-8a1d-0c7754fc9219';
 const markup = await getTileMarkup(uuid);
 console.log('Markup:', markup);
 
-// 2. Update data
-await executeCli('set form clothing_image_processing seed 99999');
+// 2. Update data (single field)
+await executeCli('anx clothing_image_processing set_form seed 99999');
+
+// OR update multiple fields with JSON
+await executeCli('anx clothing_image_processing set_form \'{"seed":99999,"system_prompt":"Custom prompt"}\'');
 
 // 3. Listen for changes
 window.addEventListener('message', (event) => {
