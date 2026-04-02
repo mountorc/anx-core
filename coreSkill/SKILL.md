@@ -93,16 +93,7 @@ From clothing image processing tile:
 
 ### Set Form Data
 
-**方法1: 单个字段更新**
-```bash
-anx <cardKey> set_form <field> <value>
-
-# Examples
-anx clothing_image_processing set_form seed 12345
-anx clothing_image_processing set_form system_prompt "Process image"
-```
-
-**方法2: JSON 批量更新**
+**方法1: JSON 批量更新**
 ```bash
 anx <cardKey> set_form '{"field1":"value1","field2":"value2"}'
 
@@ -145,7 +136,6 @@ async function executeCli(command) {
 }
 
 // Examples
-executeCli('anx clothing_image_processing set_form seed 12345');
 executeCli('anx clothing_image_processing set_form \'{"seed":12345,"system_prompt":"Process image"}\'');
 ```
 
