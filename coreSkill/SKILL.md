@@ -3,19 +3,19 @@ name: "coreSkill"
 description: "Guide for filling forms via ANX Core. Step 1: Get markup by uuid_tile. Step 2: Generate and execute CLI commands to fill form fields. Invoke when user needs to fill a form using ANX Core."
 ---
 
-# ANX Core 填表任务指南
+# ANX Core Form Filling Guide
 
-## 任务概述
+## Task Overview
 
-这是一个**两步填表任务**：
-1. **第一步**: 通过 `uuid_tile` 获取表单 markup
-2. **第二步**: 生成 CLI 命令并执行，填写表单字段
+This is a **two-step form filling task**:
+1. **Step 1**: Get form markup via `uuid_tile`
+2. **Step 2**: Generate and execute CLI commands to fill form fields
 
 ---
 
-## 第一步: 获取 Markup
+## Step 1: Get Markup
 
-通过 `uuid_tile` 获取表单的结构化 markup：
+Get structured form markup via `uuid_tile`:
 
 ```javascript
 async function getTileMarkup(uuid) {
@@ -24,22 +24,22 @@ async function getTileMarkup(uuid) {
   return markup;
 }
 
-// 示例: 获取服装图像处理表单
+// Example: Get clothing image processing form
 const uuid = '505619db-c096-46b8-8a1d-0c7754fc9219';
 const markup = await getTileMarkup(uuid);
 console.log(markup);
 ```
 
-### Markup 结构示例
+### Markup Structure Example
 
 ```markdown
 <x form card_1775042299455_9844>
-## 服装图像处理
+## Clothing Image Processing
 
 <x textarea card_1775042299455_2274>
 **system_prompt:**
 ```
-对图像中的服装进行精修处理...
+Process the clothing image with refinement...
 ```
 </x>
 
@@ -53,27 +53,27 @@ console.log(markup);
 </x>
 ```
 
-### 字段识别
+### Field Identification
 
-从 markup 中识别需要填写的字段：
-- `system_prompt` - textarea 类型
-- `seed` - input 类型，当前值 1424685757
-- `display_style` - input 类型
-- `aspect_ratio` - options 类型
+Identify fields to fill from markup:
+- `system_prompt` - textarea type
+- `seed` - input type, current value 1424685757
+- `display_style` - input type
+- `aspect_ratio` - options type
 
 ---
 
-## 第二步: 执行 CLI 填表
+## Step 2: Execute CLI to Fill Form
 
-### 生成 CLI 命令
+### Generate CLI Command
 
-根据字段生成 `set_form` 命令：
+Generate `set_form` command based on fields:
 
 ```bash
 anx <cardKey> set_form '{"field1":"value1","field2":"value2",...}'
 ```
 
-### 执行 CLI
+### Execute CLI
 
 ```javascript
 async function executeCli(command) {
@@ -85,84 +85,84 @@ async function executeCli(command) {
   return await response.json();
 }
 
-// 填写表单字段
+// Fill form fields
 await executeCli('anx clothing_image_processing set_form \'{"seed":99999,"system_prompt":"Custom prompt"}\'');
 ```
 
-### CLI 格式说明
+### CLI Format Reference
 
-| 格式 | 说明 | 示例 |
-|------|------|------|
-| `anx <cardKey> set_form '{"field":"value"}'` | 批量更新字段 | `anx form set_form '{"seed":123}'` |
-| `anx <cardKey> set_form --replace '{...}'` | 全量替换所有字段 | `anx form set_form --replace '{"seed":123}'` |
+| Format | Description | Example |
+|--------|-------------|---------|
+| `anx <cardKey> set_form '{"field":"value"}'` | Batch update fields | `anx form set_form '{"seed":123}'` |
+| `anx <cardKey> set_form --replace '{...}'` | Replace all fields | `anx form set_form --replace '{"seed":123}'` |
 
 ---
 
-## 完整填表示例
+## Complete Form Filling Example
 
 ```javascript
-// ========== 第一步: 获取 Markup ==========
+// ========== Step 1: Get Markup ==========
 const uuid = '505619db-c096-46b8-8a1d-0c7754fc9219';
 const markup = await getTileMarkup(uuid);
 
-// 从 markup 解析字段:
+// Parse fields from markup:
 // - system_prompt: textarea
-// - seed: input (当前值: 1424685757)
+// - seed: input (current value: 1424685757)
 // - display_style: input
 // - aspect_ratio: options
 
-// ========== 第二步: 生成并执行 CLI ==========
-// 填写表单字段
+// ========== Step 2: Generate and Execute CLI ==========
+// Fill form fields
 const formData = {
   "seed": 99999,
-  "system_prompt": "自定义处理指令",
-  "display_style": "时尚风格"
+  "system_prompt": "Custom processing instruction",
+  "display_style": "Fashion style"
 };
 
 const cliCommand = `anx clothing_image_processing set_form '${JSON.stringify(formData)}'`;
 await executeCli(cliCommand);
 
-// 填表完成!
-console.log('表单已填写完成');
+// Form filling complete!
+console.log('Form filled successfully');
 ```
 
 ---
 
-## Markup 标签参考
+## Markup Tag Reference
 
-| 标签 | 组件类型 | 填写方式 |
-|------|----------|----------|
-| `<x input>` | 文本输入 | `set_form '{"field":"value"}'` |
-| `<x textarea>` | 多行文本 | `set_form '{"field":"value"}'` |
-| `<x options>` | 下拉选择 | `set_form '{"field":"option_value"}'` |
-| `<x checkbox>` | 多选框 | `set_form '{"field":["value1","value2"]}'` |
-| `<x file>` | 文件上传 | 通过文件上传接口 |
-| `<x button>` | 按钮 | 触发提交或动作 |
-
----
-
-## API 端点
-
-| 端点 | 方法 | 用途 |
-|------|------|------|
-| `http://host.docker.internal:7887/anxCore/getMarkup?uuid_tile=:uuid` | GET | **第一步**: 获取表单 markup |
-| `http://host.docker.internal:7887/api/execute-cli` | POST | **第二步**: 执行 CLI 填表 |
+| Tag | Component Type | Filling Method |
+|-----|----------------|----------------|
+| `<x input>` | Text input | `set_form '{"field":"value"}'` |
+| `<x textarea>` | Multi-line text | `set_form '{"field":"value"}'` |
+| `<x options>` | Dropdown | `set_form '{"field":"option_value"}'` |
+| `<x checkbox>` | Multi-select | `set_form '{"field":["value1","value2"]}'` |
+| `<x file>` | File upload | Via file upload API |
+| `<x button>` | Button | Trigger submit or action |
 
 ---
 
-## 字段值格式
+## API Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `http://host.docker.internal:7887/anxCore/getMarkup?uuid_tile=:uuid` | GET | **Step 1**: Get form markup |
+| `http://host.docker.internal:7887/api/execute-cli` | POST | **Step 2**: Execute CLI to fill form |
+
+---
+
+## Field Value Formats
 
 ### input / textarea
 ```json
-{"field_name": "文本值"}
+{"field_name": "text value"}
 ```
 
-### options (单选)
+### options (single select)
 ```json
 {"field_name": "option_value"}
 ```
 
-### checkbox (多选)
+### checkbox (multi-select)
 ```json
 {"field_name": ["value1", "value2"]}
 ```
