@@ -10,7 +10,7 @@ description: "Guide for connecting to ANX Core via uuid_tile, fetching markup, a
 ```javascript
 // Get markup directly by uuid_tile (one step!)
 async function getTileMarkup(uuid) {
-  const response = await fetch(`http://host.docker.internal:7887/api/convert?uuid_tile=${uuid}`);
+  const response = await fetch(`http://host.docker.internal:7887/anxCore/getMarkup?uuid_tile=${uuid}`);
   const { markup } = await response.json();
   return markup;
 }
@@ -189,10 +189,10 @@ Button actions triggered on click:
 
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
-| `http://host.docker.internal:7887/api/convert?uuid_tile=:uuid` | GET | Get markup by uuid_tile (one step) |
+| `http://host.docker.internal:7887/anxCore/getMarkup?uuid_tile=:uuid` | GET | Get markup by uuid_tile (one step) |
+| `http://host.docker.internal:7887/anxCore/getMarkup` | POST | Get markup by anxContent or uuid_tile |
 | `http://host.docker.internal:7887/api/hub` | GET | List tiles |
 | `http://host.docker.internal:7887/api/hub/:uuid` | GET | Get tile |
-| `http://host.docker.internal:7887/api/convert` | POST | ANX to Markup |
 | `http://host.docker.internal:7887/api/execute-cli` | POST | Execute CLI |
 | `http://host.docker.internal:7887/api/update-node-data` | POST | Update node data |
 

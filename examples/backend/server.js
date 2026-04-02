@@ -40,7 +40,7 @@ function generateAnxHash(anxContent) {
 function loadHubFiles() {
   const fs = require('fs');
   const path = require('path');
-  const hubDir = path.join(__dirname, '../../hub');
+  const hubDir = path.join(__dirname, '../../examples/hub');
   
   try {
     if (fs.existsSync(hubDir)) {
@@ -769,6 +769,111 @@ app.get('/api/convert', async (req, res) => {
     res.json({ markup });
   } catch (error) {
     console.error('Error converting ANX to Markup (GET):', error);
+    res.status(400).json({ error: 'Invalid ANX content. Please check your input.', details: error.message });
+  }
+});
+
+// API endpoint for getting markup (GET) - new endpoint
+app.get('/anxCore/getMarkup', async (req, res) => {
+  try {
+    const { uuid_tile, uuid_card } = req.query;
+    
+    // 优先使用 uuid_tile，然后使用 uuid_card
+    const uuid = uuid_tile || uuid_card;
+    
+    if (!uuid) {
+      return res.status(400).json({ error: 'uuid_tile or uuid_card is required' });
+    }
+    
+    // 从hub中获取anx config
+    const hubFile = hubAnxMap.get(uuid);
+    if (!hubFile) {
+      return res.status(404).json({ error: `ANX config not found for the given uuid: ${uuid}` });
+    }
+    
+    const anxContent = hubFile.anxContent;
+    
+    // 生成ANX内容的哈希值
+    const anxHash = generateAnxHash(anxContent);
+    
+    // 检查是否已经为相同的ANX内容生成过节点结构
+    let nodesStructure = anxHashToNodeMap.get(anxHash);
+    
+    if (!nodesStructure) {
+      // 首次生成节点结构
+      nodesStructure = anxToNodes(anxContent);
+      // 存储到哈希映射中
+      anxHashToNodeMap.set(anxHash, nodesStructure);
+    }
+    
+    // 检查根节点是否有存储的数据
+    const storedRootNode = nodeStorage.get(nodesStructure.cardKey);
+    if (storedRootNode) {
+      // 使用存储中的数据更新根节点
+      Object.assign(nodesStructure, storedRootNode);
+    }
+    
+    // 更新子节点，使用存储中的数据
+    if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+      updateNodesWithStoredData(nodesStructure.nodes);
+    }
+    
+    // 从节点结构转换为Markup
+    const markup = await nodesToMarkup(nodesStructure);
+
+    res.json({ markup });
+  } catch (error) {
+    console.error('Error in /anxCore/getMarkup:', error);
+    res.status(400).json({ error: 'Invalid ANX content. Please check your input.', details: error.message });
+  }
+});
+
+// API endpoint for getting markup (POST) - new endpoint
+app.post('/anxCore/getMarkup', async (req, res) => {
+  try {
+    let { anxContent, uuid_tile } = req.body;
+    
+    // 如果提供了uuid_tile，则从hub中获取anx config
+    if (uuid_tile) {
+      const hubFile = hubAnxMap.get(uuid_tile);
+      if (hubFile) {
+        anxContent = hubFile.anxContent;
+      } else {
+        return res.status(404).json({ error: 'ANX config not found for the given uuid_tile' });
+      }
+    }
+    
+    // 生成ANX内容的哈希值
+    const anxHash = generateAnxHash(anxContent);
+    
+    // 检查是否已经为相同的ANX内容生成过节点结构
+    let nodesStructure = anxHashToNodeMap.get(anxHash);
+    
+    if (!nodesStructure) {
+      // 首次生成节点结构
+      nodesStructure = anxToNodes(anxContent);
+      // 存储到哈希映射中
+      anxHashToNodeMap.set(anxHash, nodesStructure);
+    }
+    
+    // 检查根节点是否有存储的数据
+    const storedRootNode = nodeStorage.get(nodesStructure.cardKey);
+    if (storedRootNode) {
+      // 使用存储中的数据更新根节点
+      Object.assign(nodesStructure, storedRootNode);
+    }
+    
+    // 更新子节点，使用存储中的数据
+    if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+      updateNodesWithStoredData(nodesStructure.nodes);
+    }
+    
+    // 从节点结构转换为Markup
+    const markup = await nodesToMarkup(nodesStructure);
+    
+    res.json({ markup });
+  } catch (error) {
+    console.error('Error in /anxCore/getMarkup (POST):', error);
     res.status(400).json({ error: 'Invalid ANX content. Please check your input.', details: error.message });
   }
 });
