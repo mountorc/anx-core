@@ -147,8 +147,6 @@ async function executeCli(command) {
 // Examples
 executeCli('anx clothing_image_processing set_form seed 12345');
 executeCli('anx clothing_image_processing set_form \'{"seed":12345,"system_prompt":"Process image"}\'');
-executeCli('get form clothing_image_processing');
-executeCli('submit form clothing_image_processing');
 ```
 
 ## 4. Complete Workflow
