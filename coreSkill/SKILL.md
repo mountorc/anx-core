@@ -21,18 +21,6 @@ async function loadTile(uuid) {
 loadTile('505619db-c096-46b8-8a1d-0c7754fc9219');
 ```
 
-### Convert to Nodes
-```javascript
-async function convertToNodes(anxContent) {
-  const response = await fetch('http://host.docker.internal:7887/api/convert-to-nodes', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ anxContent })
-  });
-  return (await response.json()).nodes;
-}
-```
-
 ## 2. Understanding Markup
 
 ### ANX to Markup
@@ -131,22 +119,14 @@ executeCli('submit form clothing_image_processing');
 const uuid = '505619db-c096-46b8-8a1d-0c7754fc9219';
 const anxContent = await loadTile(uuid);
 
-// 2. Convert to nodes
-const nodes = await convertToNodes(anxContent);
+// 2. Convert to markup
+const markup = await convertToMarkup(anxContent);
+console.log('Markup:', markup);
 
-// 3. Generate visualization
-const vizResponse = await fetch('http://host.docker.internal:7887/api/visualize-node', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ node: nodes })
-});
-const html = (await vizResponse.json()).html;
-document.getElementById('container').innerHTML = html;
-
-// 4. Update data
+// 3. Update data
 await executeCli('set form clothing_image_processing seed 99999');
 
-// 5. Listen for changes
+// 4. Listen for changes
 window.addEventListener('message', (event) => {
   if (event.data.type === 'UPDATE_NODE_DATA') {
     const { cardKey, field, value } = event.data;
@@ -199,8 +179,6 @@ Button actions triggered on click:
 | `http://host.docker.internal:7887/api/hub` | GET | List tiles |
 | `http://host.docker.internal:7887/api/hub/:uuid` | GET | Get tile |
 | `http://host.docker.internal:7887/api/convert` | POST | ANX to Markup |
-| `http://host.docker.internal:7887/api/convert-to-nodes` | POST | ANX to Nodes |
-| `http://host.docker.internal:7887/api/visualize-node` | POST | Generate HTML |
 | `http://host.docker.internal:7887/api/execute-cli` | POST | Execute CLI |
 | `http://host.docker.internal:7887/api/update-node-data` | POST | Update node data |
 
