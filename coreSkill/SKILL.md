@@ -12,7 +12,7 @@ description: "Guide for connecting to ANX Core via uuid_tile, fetching markup, a
 ```javascript
 // Fetch tile
 async function loadTile(uuid) {
-  const response = await fetch(`/api/hub/${uuid}`);
+  const response = await fetch(`http://host.docker.internal:7887/api/hub/${uuid}`);
   const data = await response.json();
   return data.data.anxContent;
 }
@@ -23,13 +23,13 @@ loadTile('505619db-c096-46b8-8a1d-0c7754fc9219');
 
 ### URL Parameter
 ```
-http://localhost:17887/?uuid_tile=505619db-c096-46b8-8a1d-0c7754fc9219
+http://host.docker.internal:17887/?uuid_tile=505619db-c096-46b8-8a1d-0c7754fc9219
 ```
 
 ### Convert to Nodes
 ```javascript
 async function convertToNodes(anxContent) {
-  const response = await fetch('/api/convert-to-nodes', {
+  const response = await fetch('http://host.docker.internal:7887/api/convert-to-nodes', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ anxContent })
@@ -43,7 +43,7 @@ async function convertToNodes(anxContent) {
 ### ANX to Markup
 ```javascript
 async function convertToMarkup(anxContent) {
-  const response = await fetch('/api/convert', {
+  const response = await fetch('http://host.docker.internal:7887/api/convert', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ anxContent })
@@ -115,7 +115,7 @@ submit form <cardKey>
 ### Execute via API
 ```javascript
 async function executeCli(command) {
-  const response = await fetch('/api/execute-cli', {
+  const response = await fetch('http://host.docker.internal:7887/api/execute-cli', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ command })
@@ -140,7 +140,7 @@ const anxContent = await loadTile(uuid);
 const nodes = await convertToNodes(anxContent);
 
 // 3. Generate visualization
-const vizResponse = await fetch('/api/visualize-node', {
+const vizResponse = await fetch('http://host.docker.internal:7887/api/visualize-node', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ node: nodes })
@@ -171,7 +171,7 @@ Button actions triggered on click:
   "tapSet": {
     "requestSet": {
       "method": "POST",
-      "url": "/api/submit",
+      "url": "http://host.docker.internal:7887/api/submit",
       "paramMap": {
         "workflowId": "123",
         "data": "formData"
@@ -201,13 +201,13 @@ Button actions triggered on click:
 
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
-| `/api/hub` | GET | List tiles |
-| `/api/hub/:uuid` | GET | Get tile |
-| `/api/convert` | POST | ANX to Markup |
-| `/api/convert-to-nodes` | POST | ANX to Nodes |
-| `/api/visualize-node` | POST | Generate HTML |
-| `/api/execute-cli` | POST | Execute CLI |
-| `/api/update-node-data` | POST | Update node data |
+| `http://host.docker.internal:7887/api/hub` | GET | List tiles |
+| `http://host.docker.internal:7887/api/hub/:uuid` | GET | Get tile |
+| `http://host.docker.internal:7887/api/convert` | POST | ANX to Markup |
+| `http://host.docker.internal:7887/api/convert-to-nodes` | POST | ANX to Nodes |
+| `http://host.docker.internal:7887/api/visualize-node` | POST | Generate HTML |
+| `http://host.docker.internal:7887/api/execute-cli` | POST | Execute CLI |
+| `http://host.docker.internal:7887/api/update-node-data` | POST | Update node data |
 
 ## 7. Component Kinds
 
