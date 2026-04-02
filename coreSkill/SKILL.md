@@ -38,16 +38,6 @@ console.log('Markup:', markup);
 <x button card_yyy>**Submit**</x>
 ```
 
-**Table → Markup:**
-```json
-{"kind": "table", "titles": [{"nick": "name"}], "data": [{"name": "Alice"}]}
-```
-↓
-```markdown
-| Name |
-|------|
-| Alice |
-```
 
 ### Markup Tags
 | Tag | Component |
@@ -147,10 +137,7 @@ const uuid = '505619db-c096-46b8-8a1d-0c7754fc9219';
 const markup = await getTileMarkup(uuid);
 console.log('Markup:', markup);
 
-// 2. Update data (single field)
-await executeCli('anx clothing_image_processing set_form seed 99999');
-
-// OR update multiple fields with JSON
+// 2. update multiple fields with JSON
 await executeCli('anx clothing_image_processing set_form \'{"seed":99999,"system_prompt":"Custom prompt"}\'');
 
 // 3. Listen for changes
