@@ -30,5 +30,9 @@
   {
     "uuid": "505619db-c096-46b8-8a1d-0c7754fc9219",
     "name": "服装图像处理"
+  },
+  {
+    "uuid": "3a7f5c2e-8b9d-4e6f-a1c2-3d4e5f6a7b8c",
+    "name": "Employee Leave Request Workflow"
   }
 ]

@@ -649,6 +649,83 @@ ${parsedTemplate}
             nodeMarkup += '*No data*\n\n';
           }
           break;
+        case 'sop':
+          // 处理sop类型，渲染工作流内容
+          const sopTitle = node.config.title || 'SOP Workflow';
+          const steps = node.config.steps || [];
+          
+          // Get current step info from data
+          const currentStepUuid = node.data?.currentStepUuid;
+          const claimedStepUuid = node.data?.claimedStepUuid;
+          const nextStepUuid = node.data?.nextStepUuid;
+          const completedSteps = node.data?.completedSteps || [];
+          
+          // Find steps by UUID
+          const currentStep = steps.find(s => s.uuid === currentStepUuid);
+          const claimedStep = steps.find(s => s.uuid === claimedStepUuid);
+          let nextStep = steps.find(s => s.uuid === nextStepUuid);
+          
+          // If no next step specified, find it based on completed steps
+          if (!nextStep) {
+            nextStep = steps.find(s => {
+              if (completedSteps.includes(s.uuid) || s.uuid === claimedStepUuid) {
+                return false;
+              }
+              if (s.sources && s.sources.length > 0) {
+                const sourcesJoin = s.sources_join || 'all';
+                if (sourcesJoin === 'all') {
+                  return s.sources.every(src => completedSteps.includes(src));
+                } else {
+                  return s.sources.some(src => completedSteps.includes(src));
+                }
+              }
+              return s.start === true;
+            });
+          }
+          
+          // Render workflow header
+          nodeMarkup = `## ${sopTitle}\n\n`;
+          
+          // If we have state data, render current/claimed/next steps
+          if (claimedStep || nextStep) {
+            // Render current claimed step (in progress)
+            if (claimedStep) {
+              nodeMarkup += `### 🔄 In Progress: ${claimedStep.nick || claimedStep.uuid}\n\n`;
+              if (claimedStep.action) {
+                nodeMarkup += `**Action:** ${claimedStep.action}\n\n`;
+              }
+              if (claimedStep.sources && claimedStep.sources.length > 0) {
+                nodeMarkup += `**Dependencies:** ${claimedStep.sources.join(', ')}\n\n`;
+              }
+            }
+            
+            // Render next step (to be claimed)
+            if (nextStep) {
+              nodeMarkup += `### ⏳ Next Step: ${nextStep.nick || nextStep.uuid}\n\n`;
+              if (nextStep.action) {
+                nodeMarkup += `**Action:** ${nextStep.action}\n\n`;
+              }
+              if (nextStep.sources && nextStep.sources.length > 0) {
+                nodeMarkup += `**Dependencies:** ${nextStep.sources.join(', ')}\n\n`;
+              }
+            }
+          } else {
+            // No state data - render all steps as overview
+            nodeMarkup += `### Workflow Steps (${steps.length} total)\n\n`;
+            steps.forEach((step, index) => {
+              const stepNick = step.nick || step.uuid;
+              const isStart = step.start ? ' (Start)' : '';
+              const hasApproval = step.approvalRequired ? ' [Approval Required]' : '';
+              nodeMarkup += `${index + 1}. **${stepNick}**${isStart}${hasApproval}\n`;
+              if (step.action) {
+                nodeMarkup += `   - Action: ${step.action}\n`;
+              }
+              if (step.sources && step.sources.length > 0) {
+                nodeMarkup += `   - Dependencies: ${step.sources.join(', ')}\n`;
+              }
+            });
+          }
+          break;
         default:
           nodeMarkup = `<!-- ANX Component: ${node.config.kind} -->`;
       }

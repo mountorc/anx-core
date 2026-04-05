@@ -9,6 +9,7 @@ const { convertOptionsToMarkup } = require('./options.js');
 const { convertNavigationToMarkup } = require('./navigation.js');
 const { convertTableToMarkup } = require('./table.js');
 const { convertListToMarkup } = require('./list.js');
+const { convertSopToMarkup } = require('./sop.js');
 
 module.exports = {
   convertBoxToMarkup,
@@ -17,5 +18,6 @@ module.exports = {
   convertOptionsToMarkup,
   convertNavigationToMarkup,
   convertTableToMarkup,
-  convertListToMarkup
+  convertListToMarkup,
+  convertSopToMarkup
 };

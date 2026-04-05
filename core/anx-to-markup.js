@@ -12,7 +12,8 @@ const {
   convertOptionsToMarkup, 
   convertNavigationToMarkup,
   convertTableToMarkup,
-  convertListToMarkup 
+  convertListToMarkup,
+  convertSopToMarkup
 } = require('./kinds/index.js');
 async function anxToMarkup(anxContent) {
   if (!anxContent || typeof anxContent !== 'object') {
@@ -134,6 +135,7 @@ function anxToNodes(anxContent) {
  */
 async function convertComponentToMarkup(component) {
   const { kind, title, data, html, template, value, options, label, placeholder, rows, nick, action, dataset } = component;
+  console.log('convertComponentToMarkup called for kind:', kind);
 
   // 处理dataset
   let processedComponent = { ...component };
@@ -152,6 +154,7 @@ async function convertComponentToMarkup(component) {
     }
   }
 
+  console.log('Processing switch case for kind:', kind);
   switch (kind) {
     case 'box':
       return await convertBoxToMarkup(processedComponent);
@@ -180,6 +183,8 @@ async function convertComponentToMarkup(component) {
       return await convertTableToMarkup(processedComponent);
     case 'list':
       return await convertListToMarkup(processedComponent);
+    case 'sop':
+      return convertSopToMarkup(processedComponent, processedComponent.data, processedComponent.uuid);
     case 'file':
     case 'image':
     case 'images':

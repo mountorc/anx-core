@@ -1,0 +1,121 @@
+{
+  "uuid": "3a7f5c2e-8b9d-4e6f-a1c2-3d4e5f6a7b8c",
+  "name": "Employee Leave Request Workflow",
+  "anxContent": {
+    "protocol": "ANX",
+    "version": "1.0.0",
+    "kind": "sop",
+    "title": "Employee Leave Request Approval Workflow",
+    "steps": [
+      {
+        "uuid": "step_001",
+        "start": true,
+        "nick": "fillLeaveForm",
+        "kind": "form",
+        "items": [
+          {
+            "nick": "leaveStartDate",
+            "kind": "date",
+            "title": "Start Date",
+            "required": true
+          },
+          {
+            "nick": "leaveEndDate",
+            "kind": "date",
+            "title": "End Date",
+            "required": true
+          },
+          {
+            "nick": "leaveType",
+            "kind": "options",
+            "title": "Leave Type",
+            "required": true,
+            "options": [
+              { "title": "Annual Leave", "value": "annual" },
+              { "title": "Sick Leave", "value": "sick" },
+              { "title": "Personal Leave", "value": "personal" }
+            ]
+          },
+          {
+            "nick": "leaveReason",
+            "kind": "textarea",
+            "title": "Reason",
+            "required": true,
+            "placeholder": "Please describe the reason for your leave request..."
+          }
+        ]
+      },
+      {
+        "uuid": "step_002",
+        "nick": "calculateLeaveDuration",
+        "sources": ["step_001"],
+        "action": "calculateLeaveDuration"
+      },
+      {
+        "uuid": "step_003",
+        "nick": "supervisorApproval",
+        "sources": ["step_002"],
+        "approvalRequired": true,
+        "kind": "form",
+        "items": [
+          {
+            "nick": "approvalDecision",
+            "kind": "options",
+            "title": "Approval Decision",
+            "required": true,
+            "options": [
+              { "title": "Approve", "value": "approve" },
+              { "title": "Reject", "value": "reject" }
+            ]
+          },
+          {
+            "nick": "supervisorComments",
+            "kind": "textarea",
+            "title": "Comments",
+            "placeholder": "Add any comments or feedback..."
+          }
+        ]
+      },
+      {
+        "uuid": "step_004",
+        "nick": "hrReview",
+        "sources": ["step_003"],
+        "sources_join": "all",
+        "condition": [
+          {
+            "operator": "==",
+            "nick": "approvalDecision",
+            "value": "approve",
+            "targets": ["step_004"]
+          }
+        ],
+        "approvalRequired": true,
+        "kind": "form",
+        "items": [
+          {
+            "nick": "hrApproval",
+            "kind": "options",
+            "title": "HR Approval",
+            "required": true,
+            "options": [
+              { "title": "Approve", "value": "approve" },
+              { "title": "Reject", "value": "reject" }
+            ]
+          },
+          {
+            "nick": "hrComments",
+            "kind": "textarea",
+            "title": "HR Comments",
+            "placeholder": "HR department comments..."
+          }
+        ]
+      },
+      {
+        "uuid": "step_005",
+        "nick": "completeProcess",
+        "sources": ["step_004"],
+        "action": "finalizeLeaveRequest"
+      }
+    ]
+  }
+}
