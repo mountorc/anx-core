@@ -6,3 +6,12 @@ node_modules/
 
 # 忽略前端 node_modules 文件夹
 frontend/node_modules/
+
+# 忽略 .trae 文件夹
+.trae/
+
+# 忽略 docs- 文件夹
+docs-*/
+
+# 忽略 jobForm-skill 文件夹
+jobForm-skill/

@@ -10,6 +10,11 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:7887',
         changeOrigin: true
+      },
+      '/core': {
+        target: 'http://localhost:17888',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/core/, '')
       }
     }
   }

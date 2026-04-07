@@ -1,12 +1,15 @@
 <template>
   <div class="app">
-    <header class="header">
+    <header v-if="!isNodeVisualizationPage" class="header">
       <h1>ANX to Markup Converter</h1>
+      <nav class="nav">
+        <button @click="goToCorePage" class="nav-btn">Core Page</button>
+      </nav>
     </header>
-    <main class="main">
+    <main :class="{ 'main-full': isNodeVisualizationPage, 'main': !isNodeVisualizationPage }">
       <router-view />
     </main>
-    <footer class="footer">
+    <footer v-if="!isNodeVisualizationPage" class="footer">
       <p>© 2026 ANX to Markup Converter</p>
     </footer>
   </div>
@@ -14,7 +17,17 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  computed: {
+    isNodeVisualizationPage() {
+      return this.$route.path.startsWith('/anx/view/')
+    }
+  },
+  methods: {
+    goToCorePage() {
+      window.open('http://localhost:17888/', '_blank')
+    }
+  }
 }
 </script>
 
@@ -44,9 +57,35 @@ body {
   text-align: center;
 }
 
+.nav {
+  margin-top: 10px;
+}
+
+.nav-btn {
+  background-color: white;
+  color: #4CAF50;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.nav-btn:hover {
+  background-color: #f0f0f0;
+}
+
 .main {
   flex: 1;
   padding: 1rem;
+}
+
+.main-full {
+  flex: 1;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
 .footer {

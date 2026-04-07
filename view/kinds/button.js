@@ -2,6 +2,9 @@
  * Button 组件渲染器
  */
 
+// 导入触发事件工具
+const { handleButtonClick } = require('../utils/trigger.js');
+
 /**
  * 渲染 Button 组件
  * @param {Object} node - 节点结构
@@ -26,7 +29,7 @@ function renderButton(node) {
 
   let buttonHtml = `
     <div class="button-visualization">
-      <button id="${buttonId}" class="anx-button" onclick="console.log('直接点击事件触发');">
+      <button id="${buttonId}" class="anx-button">
         <span class="button-text">${label}</span>
         <span class="button-loader" style="display: none;">⟳</span>
       </button>
@@ -117,9 +120,9 @@ function renderButton(node) {
         if (button) {
           console.log('Adding click event listener...');
           // 移除可能存在的事件监听器
-          button.removeEventListener('click', handleButtonClick);
+          button.removeEventListener('click', onButtonClick);
           // 添加新的事件监听器
-          button.addEventListener('click', handleButtonClick);
+          button.addEventListener('click', onButtonClick);
           console.log('Click event listener added');
         } else {
           console.error('Button element not found:', buttonId);
@@ -129,88 +132,43 @@ function renderButton(node) {
             console.log('Delayed button find:', delayedButton);
             if (delayedButton) {
               console.log('Adding click event listener after delay...');
-              delayedButton.addEventListener('click', handleButtonClick);
+              delayedButton.addEventListener('click', onButtonClick);
               console.log('Click event listener added after delay');
             }
           }, 1000);
         }
         
-        function handleButtonClick() {
+        function onButtonClick() {
           console.log('=== Button click handler triggered ===');
-          console.log('button tap ' + this.textContent);
           console.log('Button element:', this);
           console.log('Button ID:', buttonId);
           console.log('Button label:', label);
           console.log('Button has tapSet:', tapSet ? 'true' : 'false');
           
-          // 记录按钮点击日志
-          const clickLog = {
-            timestamp: new Date().toISOString(),
-            action: 'button_click',
-            details: {
-              buttonId: buttonId,
-              label: label,
-              tapSet: tapSet
-            }
-          };
-          
-          console.log('[View Log] Button clicked:', clickLog);
-          console.log('点击成功');
-          
-          // 向core发送trigger事件请求
-          const triggerEventData = {
-            type: 'TRIGGER_EVENT',
-            eventType: 'tap',
+          // 构建按钮数据
+          const buttonData = {
             buttonId: buttonId,
             label: label,
             tapSet: tapSet,
-            node: node,
-            log: clickLog
+            node: node
           };
           
-          console.log('Sending trigger event to core:', triggerEventData);
-          
-          // 向父窗口发送trigger事件
-          if (window.parent && window.parent !== window) {
-            window.parent.postMessage(triggerEventData, '*');
-            console.log('Trigger event sent to parent');
-          }
-          
-          // 同时触发全局事件
-          window.dispatchEvent(new CustomEvent('triggerEvent', {
-            detail: triggerEventData
-          }));
-          console.log('Global trigger event dispatched');
-          
-          // 添加点击反馈
-          console.log('Adding click feedback...');
-          this.disabled = true;
-          this.classList.add('loading');
-          
-          // 调用tap事件处理函数
-          console.log('Calling handleTapSet...');
-          console.log('window.handleTapSet exists:', typeof window.handleTapSet === 'function');
-          
-          if (window.handleTapSet && tapSet) {
-            try {
-              console.log('Executing handleTapSet...');
-              window.handleTapSet(tapSet, node, this);
-              // 模拟处理完成，恢复按钮状态
-              setTimeout(() => {
-                console.log('Restoring button state...');
-                this.disabled = false;
-                this.classList.remove('loading');
-              }, 1000);
-            } catch (error) {
-              console.error('Error handling tap event:', error);
-              this.disabled = false;
-              this.classList.remove('loading');
-            }
+          // 调用 trigger.js 中的 handleButtonClick 函数
+          if (window.handleButtonClick) {
+            console.log('Calling window.handleButtonClick...');
+            window.handleButtonClick(buttonData, this)
+              .then(result => {
+                console.log('Button click handled successfully:', result);
+              })
+              .catch(error => {
+                console.error('Error handling button click:', error);
+              });
           } else {
-            console.warn('handleTapSet function not available or no tapSet');
-            // 没有tapSet时，直接恢复按钮状态
+            console.warn('handleButtonClick function not available');
+            // 降级处理
+            this.disabled = true;
+            this.classList.add('loading');
             setTimeout(() => {
-              console.log('Restoring button state...');
               this.disabled = false;
               this.classList.remove('loading');
             }, 500);
