@@ -341,7 +341,11 @@ Add command definition in `core/cli/commands.json`:
 
 ## License
 
-MIT License
+ANX Core Engine is open source under the Apache-2.0 license:
+
+- **Open Source**: ANX Core Engine is open source under the Apache-2.0 license
+- **Commercial Use**: Compatible standard versions can be freely used for commercial purposes; modified versions that are incompatible with the ANX protocol are prohibited from commercial use and distribution
+- **Closed Source Components**: Some modules of the core engine are not within the open source scope and are added to the project after closed-source proprietary compilation
 
 ## Contribution
 
