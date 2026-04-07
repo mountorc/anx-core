@@ -1,89 +1,89 @@
 # ANX Core
 
-ANX Core 是一个用于处理 ANX (ANnotation eXtended) 格式的核心库，支持将 ANX 配置转换为可视化的 UI 组件和 Markdown 格式。
+ANX Core is a core library for processing ANX (ANnotation eXtended) format, supporting the conversion of ANX configuration to visual UI components and Markdown format.
 
-## 项目简介
+## Project Introduction
 
-ANX Core 提供了一套完整的工具链，用于：
-- 将 ANX 配置转换为节点结构
-- 生成可视化的 UI 组件
-- 转换为 Markdown 格式
-- 支持 CLI 命令操作
-- 提供前后端示例实现
+ANX Core provides a complete toolchain for:
+- Converting ANX configuration to node structure
+- Generating visual UI components
+- Converting to Markdown format
+- Supporting CLI command operations
+- Providing front-end and back-end example implementations
 
-## 项目结构
+## Project Structure
 
 ```
 anx-core/
-├── core/                    # 核心功能模块
-│   ├── kinds/              # 各种组件类型处理
-│   │   ├── board.js        # 面板组件
-│   │   ├── box.js          # 盒子组件
-│   │   ├── form.js         # 表单组件
-│   │   ├── list.js         # 列表组件
-│   │   ├── navigation.js   # 导航组件
-│   │   ├── options.js      # 选项组件
-│   │   ├── table.js        # 表格组件
-│   │   └── file.js         # 文件组件
-│   ├── utils/              # 工具函数
-│   │   ├── dataset.js      # 数据集处理
-│   │   ├── template.js     # 模板处理
-│   │   └── trigger-and-tap.js  # 事件处理
-│   ├── cli/                # CLI 命令行工具
-│   │   ├── cli.js          # CLI 实现
-│   │   ├── commands.json   # 命令配置
-│   │   └── index.js        # CLI 入口
-│   ├── anx-to-markup.js    # ANX 转 Markup
-│   └── index.js            # 核心入口
-├── view/                    # 视图渲染模块
-│   ├── kinds/              # 视图组件渲染器
-│   │   ├── button.js       # 按钮渲染
-│   │   ├── form.js         # 表单渲染
-│   │   ├── input.js        # 输入框渲染
-│   │   └── ...             # 其他渲染器
-│   ├── utils/              # 视图工具
-│   ├── index.js            # 视图入口
-│   └── renderers.js        # 渲染器注册
-├── examples/                # 示例项目
-│   ├── backend/            # 后端示例 (Express)
-│   │   ├── server.js       # 服务器入口
+├── core/                    # Core functionality modules
+│   ├── kinds/              # Various component type handlers
+│   │   ├── board.js        # Board component
+│   │   ├── box.js          # Box component
+│   │   ├── form.js         # Form component
+│   │   ├── list.js         # List component
+│   │   ├── navigation.js   # Navigation component
+│   │   ├── options.js      # Options component
+│   │   ├── table.js        # Table component
+│   │   └── file.js         # File component
+│   ├── utils/              # Utility functions
+│   │   ├── dataset.js      # Dataset processing
+│   │   ├── template.js     # Template processing
+│   │   └── trigger-and-tap.js  # Event processing
+│   ├── cli/                # CLI command line tools
+│   │   ├── cli.js          # CLI implementation
+│   │   ├── commands.json   # Command configuration
+│   │   └── index.js        # CLI entry
+│   ├── anx-to-markup.js    # ANX to Markup
+│   └── index.js            # Core entry
+├── view/                    # View rendering module
+│   ├── kinds/              # View component renderers
+│   │   ├── button.js       # Button rendering
+│   │   ├── form.js         # Form rendering
+│   │   ├── input.js        # Input box rendering
+│   │   └── ...             # Other renderers
+│   ├── utils/              # View utilities
+│   ├── index.js            # View entry
+│   └── renderers.js        # Renderer registration
+├── examples/                # Example projects
+│   ├── backend/            # Backend example (Express)
+│   │   ├── server.js       # Server entry
 │   │   └── package.json
-│   └── frontend/           # 前端示例 (Vue 3)
+│   └── frontend/           # Frontend example (Vue 3)
 │       ├── src/
 │       │   ├── views/
 │       │   │   └── Home.vue
 │       │   └── utils/
 │       └── package.json
-├── hub/                     # 预定义配置库
-│   ├── 505619db-c096-46b8-8a1d-0c7754fc9219.json  # 服装图像处理
+├── hub/                     # Predefined configuration library
+│   ├── 505619db-c096-46b8-8a1d-0c7754fc9219.json  # Clothing image processing
 │   └── ...
-├── skill/                   # Skill 模块
+├── skill/                   # Skill module
 │   ├── index.js
 │   └── SKILL.md
-└── docs-*/                  # 文档目录
+└── docs-*/                  # Documentation directories
 ```
 
-## 核心功能
+## Core Features
 
-### 1. ANX 格式转换
+### 1. ANX Format Conversion
 
-将 ANX JSON 配置转换为节点结构：
+Convert ANX JSON configuration to node structure:
 
 ```javascript
 const { anxToNodes } = require('./core');
 
 const anxContent = {
   kind: "form",
-  title: "用户表单",
+  title: "User Form",
   kinds: [
     {
       kind: "input",
       nick: "username",
-      title: "用户名"
+      title: "Username"
     },
     {
       kind: "button",
-      title: "提交",
+      title: "Submit",
       tapSet: {
         requestSet: {
           method: "POST",
@@ -97,9 +97,9 @@ const anxContent = {
 const nodes = anxToNodes(anxContent);
 ```
 
-### 2. 可视化渲染
+### 2. Visual Rendering
 
-生成可交互的 HTML 可视化组件：
+Generate interactive HTML visual components:
 
 ```javascript
 const { generateNodeVisualization } = require('./view');
@@ -107,35 +107,35 @@ const { generateNodeVisualization } = require('./view');
 const html = generateNodeVisualization(node);
 ```
 
-### 3. CLI 命令支持
+### 3. CLI Command Support
 
-支持命令行操作：
+Support command line operations:
 
 ```bash
-# 执行 CLI 命令
+# Execute CLI command
 node cli.js --command="set form clothing_image_processing"
 ```
 
-## 支持的组件类型
+## Supported Component Types
 
-| 组件类型 | 说明 | 特性 |
-|---------|------|------|
-| `box` | 盒子容器 | 支持 tapSet 事件 |
-| `board` | 面板布局 | 支持多种子组件 |
-| `form` | 表单 | 支持输入验证、提交 |
-| `table` | 表格 | 支持数据展示 |
-| `list` | 列表 | 支持动态数据 |
-| `input` | 输入框 | 支持多种类型 |
-| `textarea` | 文本域 | 支持多行输入 |
-| `button` | 按钮 | 支持 tapSet 事件 |
-| `options` | 下拉选项 | 支持数据集 |
-| `checkbox` | 复选框 | 支持多选 |
-| `file` | 文件上传 | 支持图片预览 |
-| `navigation` | 导航 | 支持页面跳转 |
+| Component Type | Description | Features |
+|---------------|-------------|----------|
+| `box` | Box container | Supports tapSet events |
+| `board` | Board layout | Supports multiple sub-components |
+| `form` | Form | Supports input validation, submission |
+| `table` | Table | Supports data display |
+| `list` | List | Supports dynamic data |
+| `input` | Input box | Supports multiple types |
+| `textarea` | Text area | Supports multi-line input |
+| `button` | Button | Supports tapSet events |
+| `options` | Dropdown options | Supports datasets |
+| `checkbox` | Checkbox | Supports multiple selection |
+| `file` | File upload | Supports image preview |
+| `navigation` | Navigation | Supports page navigation |
 
-## 事件系统 (tapSet)
+## Event System (tapSet)
 
-支持的事件类型：
+Supported event types:
 
 ```json
 {
@@ -164,59 +164,59 @@ node cli.js --command="set form clothing_image_processing"
 }
 ```
 
-## 快速开始
+## Quick Start
 
-### 安装依赖
+### Install Dependencies
 
 ```bash
-# 安装核心依赖
+# Install core dependencies
 npm install
 
-# 安装后端依赖
+# Install backend dependencies
 cd examples/backend && npm install
 
-# 安装前端依赖
+# Install frontend dependencies
 cd examples/frontend && npm install
 ```
 
-### 启动服务
+### Start Services
 
 ```bash
-# 启动后端服务 (端口 7887)
+# Start backend service (port 7887)
 cd examples/backend
 npm run dev
 
-# 启动前端服务 (端口 17887)
+# Start frontend service (port 17887)
 cd examples/frontend
 npm run dev
 ```
 
-访问 http://localhost:17887/ 查看示例。
+Visit http://localhost:17887/ to view examples.
 
-### 使用示例
+### Usage Examples
 
-#### 1. 基本表单
+#### 1. Basic Form
 
 ```json
 {
   "kind": "form",
-  "title": "用户注册",
+  "title": "User Registration",
   "kinds": [
     {
       "kind": "input",
       "nick": "username",
-      "title": "用户名",
-      "placeholder": "请输入用户名"
+      "title": "Username",
+      "placeholder": "Please enter username"
     },
     {
       "kind": "input",
       "nick": "email",
-      "title": "邮箱",
+      "title": "Email",
       "type": "email"
     },
     {
       "kind": "button",
-      "title": "提交",
+      "title": "Submit",
       "tapSet": {
         "requestSet": {
           "method": "POST",
@@ -228,15 +228,15 @@ npm run dev
 }
 ```
 
-#### 2. 带数据集的表格
+#### 2. Table with Dataset
 
 ```json
 {
   "kind": "table",
-  "title": "商品列表",
+  "title": "Product List",
   "titles": [
-    { "nick": "name", "title": "商品名称" },
-    { "nick": "price", "title": "价格" }
+    { "nick": "name", "title": "Product Name" },
+    { "nick": "price", "title": "Price" }
   ],
   "dataset": {
     "url_dataset": "http://localhost:4665/dataset"
@@ -244,88 +244,88 @@ npm run dev
 }
 ```
 
-#### 3. 文件上传
+#### 3. File Upload
 
 ```json
 {
   "kind": "file",
   "nick": "images",
-  "title": "上传图片",
+  "title": "Upload Images",
   "accept": "image/*",
   "multiple": true,
   "maxCount": 8
 }
 ```
 
-## API 接口
+## API Interfaces
 
-### 后端 API
+### Backend API
 
-| 接口 | 方法 | 说明 |
-|-----|------|------|
-| `/api/convert` | POST | ANX 转 Markup |
-| `/api/convert-to-nodes` | POST | ANX 转节点结构 |
-| `/api/visualize-node` | POST | 生成节点可视化 |
-| `/api/update-node-data` | POST | 更新节点数据 |
-| `/api/execute-cli` | POST | 执行 CLI 命令 |
-| `/api/cli/commands` | GET | 获取 CLI 命令列表 |
-| `/api/cli/logs` | GET | 获取 CLI 日志 |
-| `/api/hub` | GET | 获取 Hub 列表 |
-| `/api/hub/:uuid` | GET | 获取 Hub 详情 |
+| Interface | Method | Description |
+|-----------|--------|-------------|
+| `/api/convert` | POST | ANX to Markup |
+| `/api/convert-to-nodes` | POST | ANX to node structure |
+| `/api/visualize-node` | POST | Generate node visualization |
+| `/api/update-node-data` | POST | Update node data |
+| `/api/execute-cli` | POST | Execute CLI command |
+| `/api/cli/commands` | GET | Get CLI command list |
+| `/api/cli/logs` | GET | Get CLI logs |
+| `/api/hub` | GET | Get Hub list |
+| `/api/hub/:uuid` | GET | Get Hub details |
 
-### 请求示例
+### Request Example
 
 ```bash
-# 转换 ANX 到 Markup
+# Convert ANX to Markup
 curl -X POST http://localhost:7887/api/convert \
   -H "Content-Type: application/json" \
   -d '{
     "anxContent": {
       "kind": "box",
-      "title": "测试"
+      "title": "Test"
     }
   }'
 ```
 
-## 配置说明
+## Configuration Notes
 
-### Hub 配置
+### Hub Configuration
 
-Hub 目录存储预定义的 ANX 配置，每个配置文件包含：
+The Hub directory stores predefined ANX configurations, each configuration file contains:
 
 ```json
 {
   "uuid": "505619db-c096-46b8-8a1d-0c7754fc9219",
-  "name": "服装图像处理",
+  "name": "Clothing Image Processing",
   "anxContent": {
-    // ANX 配置
+    // ANX configuration
   }
 }
 ```
 
-### 按钮颜色规则
+### Button Color Rules
 
-- **蓝色 (#409eff)**: 按钮包含 `tapSet` 配置，可触发请求
-- **绿色 (#28a745)**: 按钮无 `tapSet` 配置，仅显示
+- **Blue (#409eff)**: Button contains `tapSet` configuration, can trigger requests
+- **Green (#28a745)**: Button has no `tapSet` configuration, display only
 
-## 开发指南
+## Development Guide
 
-### 添加新的组件类型
+### Add New Component Type
 
-1. 在 `core/kinds/` 创建组件处理器
-2. 在 `view/kinds/` 创建视图渲染器
-3. 在 `view/renderers.js` 注册渲染器
+1. Create component handler in `core/kinds/`
+2. Create view renderer in `view/kinds/`
+3. Register renderer in `view/renderers.js`
 
-### 添加 CLI 命令
+### Add CLI Command
 
-在 `core/cli/commands.json` 中添加命令定义：
+Add command definition in `core/cli/commands.json`:
 
 ```json
 {
   "commands": [
     {
       "name": "my-command",
-      "description": "命令描述",
+      "description": "Command description",
       "usage": "my-command [args]",
       "example": "my-command arg1 arg2"
     }
@@ -333,20 +333,20 @@ Hub 目录存储预定义的 ANX 配置，每个配置文件包含：
 }
 ```
 
-## 技术栈
+## Technology Stack
 
-- **后端**: Node.js, Express
-- **前端**: Vue 3, Vite
-- **核心**: 原生 JavaScript
+- **Backend**: Node.js, Express
+- **Frontend**: Vue 3, Vite
+- **Core**: Native JavaScript
 
-## 许可证
+## License
 
 MIT License
 
-## 贡献
+## Contribution
 
-欢迎提交 Issue 和 Pull Request。
+Welcome to submit Issues and Pull Requests.
 
-## 联系方式
+## Contact
 
-如有问题，请通过 GitHub Issues 联系。
+For questions, please contact through GitHub Issues.
