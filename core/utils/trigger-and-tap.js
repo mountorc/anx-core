@@ -1,38 +1,108 @@
+import { executeRequest } from './request.js';
+
+/**
+ * Log to system log
+ * @param {string} action - Action type
+ * @param {Object} details - Log details
+ */
+function logToSystem(action, details) {
+  const logEntry = {
+    type: 'system',
+    action: action,
+    timestamp: new Date().toISOString(),
+    details: details,
+    message: `[Trigger] ${action}: ${JSON.stringify(details)}`
+  };
+
+  // Log to console
+  console.log(`[Trigger] ${action}:`, details);
+
+  // Dispatch global event for external logging
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('systemLog', {
+      detail: logEntry
+    }));
+  }
+
+  // Store in localStorage for persistence
+  if (typeof localStorage !== 'undefined') {
+    try {
+      const logs = JSON.parse(localStorage.getItem('systemLogs') || '[]');
+      logs.unshift(logEntry);
+      // Keep only last 100 logs
+      const limitedLogs = logs.slice(0, 100);
+      localStorage.setItem('systemLogs', JSON.stringify(limitedLogs));
+    } catch (e) {
+      console.error('Failed to store log:', e);
+    }
+  }
+}
+
 export function handleTapSet(tapSet, data, element) {
   if (!tapSet || typeof tapSet !== 'object') return;
 
-  const tapHandler = (event) => {
-    Object.keys(tapSet).forEach(actionType => {
-      const actionConfig = tapSet[actionType];
-      handleAction(actionType, actionConfig, data, event, element);
+  console.log('[Trigger] Setting up tap handler', {
+    tapSet: tapSet,
+    timestamp: new Date().toISOString()
+  });
+
+  const tapHandler = async (event) => {
+    console.log('[Trigger] Tap event triggered', {
+      eventType: event.type,
+      timestamp: new Date().toISOString()
     });
+    for (const actionType of Object.keys(tapSet)) {
+      const actionConfig = tapSet[actionType];
+      await handleAction(actionType, actionConfig, data, event, element);
+    }
   };
 
   element.addEventListener('click', tapHandler);
+  console.log('[Trigger] Tap handler added to element');
   return tapHandler;
 }
 
 export function handleTriggerSet(triggerSet, data, element) {
   if (!triggerSet || typeof triggerSet !== 'object') return {};
 
+  console.log('[Trigger] Setting up trigger handlers', {
+    triggerSet: triggerSet,
+    timestamp: new Date().toISOString()
+  });
+
   const handlers = {};
 
   Object.keys(triggerSet).forEach(triggerType => {
     const actionConfig = triggerSet[triggerType];
     const eventType = mapTriggerTypeToEvent(triggerType);
-    
+
     if (eventType) {
-      const handler = (event) => {
-        Object.keys(actionConfig).forEach(actionType => {
-          handleAction(actionType, actionConfig[actionType], data, event, element);
+      console.log('[Trigger] Setting up trigger handler for', {
+        triggerType: triggerType,
+        eventType: eventType
+      });
+      const handler = async (event) => {
+        console.log('[Trigger] Trigger event triggered', {
+          triggerType: triggerType,
+          eventType: event.type,
+          timestamp: new Date().toISOString()
         });
+        for (const actionType of Object.keys(actionConfig)) {
+          await handleAction(actionType, actionConfig[actionType], data, event, element);
+        }
       };
 
       element.addEventListener(eventType, handler);
       handlers[triggerType] = handler;
+      console.log('[Trigger] Trigger handler added for', triggerType);
+    } else {
+      console.warn('[Trigger] Unknown trigger type:', triggerType);
     }
   });
 
+  console.log('[Trigger] All trigger handlers set up', {
+    handlers: Object.keys(handlers)
+  });
   return handlers;
 }
 
@@ -70,9 +140,16 @@ function mapTriggerTypeToEvent(triggerType) {
   return eventMap[triggerType] || null;
 }
 
-function handleAction(actionType, actionConfig, data, event, element) {
+async function handleAction(actionType, actionConfig, data, event, element) {
   // 记录操作开始
   console.log(`[Action] Starting ${actionType} action`, {
+    actionType: actionType,
+    actionConfig: actionConfig,
+    timestamp: new Date().toISOString()
+  });
+
+  // 记录到系统日志
+  logToSystem('action_start', {
     actionType: actionType,
     actionConfig: actionConfig,
     timestamp: new Date().toISOString()
@@ -93,16 +170,29 @@ function handleAction(actionType, actionConfig, data, event, element) {
         handleSetTimeout(actionConfig, data, event, element);
         break;
       case 'requestSet':
-        handleRequestSet(actionConfig, data, event);
+        await handleRequestSet(actionConfig, data, event);
         break;
       default:
         console.warn(`[Action] Unknown action type: ${actionType}`);
     }
     // 记录操作成功
     console.log(`[Action] ${actionType} action completed successfully`);
+
+    // 记录到系统日志
+    logToSystem('action_success', {
+      actionType: actionType,
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
     // 记录操作错误
     console.error(`[Action] Error in ${actionType} action:`, error);
+
+    // 记录到系统日志
+    logToSystem('action_error', {
+      actionType: actionType,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
   }
 }
 
@@ -192,7 +282,15 @@ function handleSetTimeout(config, data, event, element) {
   }, config.delay);
 }
 
-function handleRequestSet(config, data, event) {
+async function handleRequestSet(config, data, event) {
+  // Log to system
+  logToSystem('request_start', {
+    url: config.url,
+    method: config.method,
+    paramMap: config.paramMap,
+    timestamp: new Date().toISOString()
+  });
+
   console.log('[Action] RequestSet - Preparing API request', {
     url: config.url,
     method: config.method,
@@ -202,66 +300,40 @@ function handleRequestSet(config, data, event) {
 
   if (!config.url) {
     console.warn('[Action] RequestSet - No URL specified');
+    logToSystem('request_error', {
+      error: 'No URL specified',
+      timestamp: new Date().toISOString()
+    });
     return;
   }
 
-  const method = config.method || 'GET';
-  const params = {};
+  try {
+    // Use the new executeRequest function from request.js
+    const result = await executeRequest(config, data);
+    console.log('[Action] RequestSet - Request completed successfully:', result);
 
-  if (config.paramMap && typeof config.paramMap === 'object') {
-    Object.keys(config.paramMap).forEach(targetParam => {
-      const sourceField = config.paramMap[targetParam];
-      const value = getDataValue(data, sourceField);
-      if (value !== undefined) {
-        params[targetParam] = value;
-        console.log(`[Action] RequestSet - Added parameter ${targetParam}: ${value}`);
-      }
+    // Log success to system
+    logToSystem('request_success', {
+      url: config.url,
+      method: config.method,
+      status: result.status,
+      timestamp: new Date().toISOString()
     });
+
+    return result;
+  } catch (error) {
+    console.error('[Action] RequestSet - Request error:', error);
+
+    // Log error to system
+    logToSystem('request_error', {
+      url: config.url,
+      method: config.method,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+
+    throw error;
   }
-
-  let url = config.url;
-  const fetchOptions = {
-    method: method,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-
-  if (method === 'GET') {
-    const searchParams = new URLSearchParams();
-    Object.keys(params).forEach(key => {
-      searchParams.set(key, params[key]);
-    });
-    const queryString = searchParams.toString();
-    if (queryString) {
-      url = `${url}?${queryString}`;
-      console.log('[Action] RequestSet - Generated full URL with query string:', url);
-    }
-  } else {
-    fetchOptions.body = JSON.stringify(params);
-    console.log('[Action] RequestSet - Prepared request body:', fetchOptions.body);
-  }
-
-  console.log('[Action] RequestSet - Sending API request:', {
-    url: url,
-    method: method,
-    headers: fetchOptions.headers
-  });
-  
-  fetch(url, fetchOptions)
-    .then(response => {
-      console.log('[Action] RequestSet - Received response:', {
-        status: response.status,
-        statusText: response.statusText
-      });
-      return response.json();
-    })
-    .then(responseData => {
-      console.log('[Action] RequestSet - Request response data:', responseData);
-    })
-    .catch(error => {
-      console.error('[Action] RequestSet - Request error:', error);
-    });
 }
 
 function getDataValue(data, fieldPath) {

@@ -8,6 +8,7 @@ const multer = require('multer');
 const { anxToMarkup, anxToNodes, anxCLI } = require('../../core/index.js');
 const { generateNodeVisualization, generateVisualizationCSS } = require('../../view/index.js');
 const { uploadImageToOSS } = require('../../view/utils/oss.js');
+const { handleTapSet, handleTriggerSet } = require('../../core/utils/trigger-and-tap.js');
 
 // 配置multer用于文件上传
 const storage = multer.memoryStorage();
@@ -1591,6 +1592,16 @@ app.get('/docs-public/docs', (req, res) => {
 // API endpoint for generating node visualization
 app.post('/api/visualize-node', (req, res) => {
   try {
+    // 清除 view 目录下的模块缓存
+    Object.keys(require.cache).forEach(key => {
+      if (key.includes('view')) {
+        delete require.cache[key];
+      }
+    });
+    
+    // 重新加载 view 模块
+    const { generateNodeVisualization, generateVisualizationCSS } = require('../../view/index.js');
+    
     const { node } = req.body;
     if (!node) {
       return res.status(400).json({ error: 'node is required' });
@@ -1620,6 +1631,189 @@ app.post('/api/visualize-node', (req, res) => {
   } catch (error) {
     console.error('Error generating node visualization:', error);
     res.status(500).json({ error: 'Failed to generate node visualization' });
+  }
+});
+
+// API endpoint for triggering card key
+app.post('/api/trigger-card-key', (req, res) => {
+  try {
+    const { cardKey, tapSet } = req.body;
+    if (!cardKey) {
+      return res.status(400).json({ error: 'cardKey is required' });
+    }
+    
+    console.log('[API] Triggering card key:', cardKey);
+    if (tapSet) {
+      console.log('[API] With tapSet:', tapSet);
+    }
+    
+    // 记录日志到系统日志
+    const logEntry = {
+      timestamp: new Date().toISOString(),
+      type: 'system',
+      action: 'trigger_card_key',
+      cardKey: cardKey,
+      tapSet: tapSet || null,
+      message: `Triggering card key: ${cardKey}${tapSet ? ' with tapSet'+JSON.stringify(tapSet) : ''}`
+    };
+    
+    // 将日志添加到 CLI 日志缓存
+    cliLogs.unshift(logEntry);
+    if (cliLogs.length > MAX_LOGS) {
+      cliLogs.pop();
+    }
+    
+    // 获取存储中的节点数据
+    const storedNode = nodeStorage.get(cardKey);
+    if (storedNode) {
+      console.log('[API] Found stored node for card key:', cardKey);
+      // 可以在这里添加触发逻辑
+    }
+    
+    // 返回当前节点结构
+    res.json({
+      success: true,
+      message: 'Card key triggered successfully',
+      cardKey: cardKey,
+      tapSet: tapSet || null,
+      nodes: storedNode || null
+    });
+  } catch (error) {
+    console.error('[API] Error triggering card key:', error);
+    
+    // 记录错误日志
+    const errorLog = {
+      timestamp: new Date().toISOString(),
+      type: 'system',
+      action: 'trigger_card_key_error',
+      error: error.message,
+      message: `Error triggering card key: ${error.message}`
+    };
+    cliLogs.unshift(errorLog);
+    if (cliLogs.length > MAX_LOGS) {
+      cliLogs.pop();
+    }
+    
+    res.status(500).json({ error: 'Failed to trigger card key' });
+  }
+});
+
+// API endpoint for handling tap set
+app.post('/api/handle-tap-set', async (req, res) => {
+  try {
+    const { cardKey, tapSet } = req.body;
+    if (!cardKey || !tapSet) {
+      return res.status(400).json({ error: 'cardKey and tapSet are required' });
+    }
+    
+    console.log('[API] Handling tap set for card key:', cardKey);
+    console.log('[API] Tap set:', tapSet);
+    
+    // 记录日志到系统日志
+    const logEntry = {
+      timestamp: new Date().toISOString(),
+      type: 'system',
+      action: 'handle_tap_set',
+      cardKey: cardKey,
+      tapSet: tapSet,
+      message: `Handling tap set for card key: ${cardKey}`
+    };
+    
+    // 将日志添加到 CLI 日志缓存
+    cliLogs.unshift(logEntry);
+    if (cliLogs.length > MAX_LOGS) {
+      cliLogs.pop();
+    }
+    
+    // 获取存储中的节点数据
+    const storedNode = nodeStorage.get(cardKey);
+    if (storedNode) {
+      console.log('[API] Found stored node for card key:', cardKey);
+    }
+    
+    // 处理 tapSet 中的动作
+    // 注意：handleTapSet 函数需要 DOM 元素，这里我们只是模拟处理
+    // 实际的处理逻辑应该在前端完成
+    if (tapSet.requestSet) {
+      console.log('[API] Processing requestSet:', tapSet.requestSet);
+      
+      // 执行 requestSet 请求
+      try {
+        const { method, url, paramMap } = tapSet.requestSet;
+        const params = {};
+        
+        if (paramMap && typeof paramMap === 'object') {
+          Object.keys(paramMap).forEach(key => {
+            params[key] = paramMap[key];
+          });
+        }
+        
+        console.log('[API] Executing request:', { method, url, params });
+        
+        // 这里可以添加实际的请求逻辑
+        // 例如使用 fetch 或 axios 发送请求
+        
+        // 记录成功日志
+        const successLog = {
+          timestamp: new Date().toISOString(),
+          type: 'system',
+          action: 'request_set_executed',
+          cardKey: cardKey,
+          requestSet: tapSet.requestSet,
+          message: `Request set executed for card key: ${cardKey}`
+        };
+        cliLogs.unshift(successLog);
+        if (cliLogs.length > MAX_LOGS) {
+          cliLogs.pop();
+        }
+      } catch (requestError) {
+        console.error('[API] Error executing requestSet:', requestError);
+        
+        // 记录错误日志
+        const errorLog = {
+          timestamp: new Date().toISOString(),
+          type: 'system',
+          action: 'request_set_error',
+          cardKey: cardKey,
+          error: requestError.message,
+          message: `Error executing requestSet for card key: ${cardKey}`
+        };
+        cliLogs.unshift(errorLog);
+        if (cliLogs.length > MAX_LOGS) {
+          cliLogs.pop();
+        }
+      }
+    }
+    
+    if (tapSet.navigateTo) {
+      console.log('[API] Navigate to:', tapSet.navigateTo);
+    }
+    
+    // 返回当前节点结构
+    res.json({
+      success: true,
+      message: 'Tap set handled successfully',
+      cardKey: cardKey,
+      tapSet: tapSet,
+      nodes: storedNode || null
+    });
+  } catch (error) {
+    console.error('[API] Error handling tap set:', error);
+    
+    // 记录错误日志
+    const errorLog = {
+      timestamp: new Date().toISOString(),
+      type: 'system',
+      action: 'handle_tap_set_error',
+      error: error.message,
+      message: `Error handling tap set: ${error.message}`
+    };
+    cliLogs.unshift(errorLog);
+    if (cliLogs.length > MAX_LOGS) {
+      cliLogs.pop();
+    }
+    
+    res.status(500).json({ error: 'Failed to handle tap set' });
   }
 });
 

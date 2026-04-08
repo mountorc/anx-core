@@ -345,10 +345,24 @@ export default {
         this.$nextTick(() => {
           this.injectVisualizationCSS(result.css);
           this.injectVisualizationJS();
+          // 执行 visualizationHTML 中的脚本
+          this.executeVisualizationScripts();
         });
       } catch (error) {
         console.error('Error generating node visualization:', error);
         this.visualizationHTML = '<div class="anx-error">Error generating node visualization</div>';
+      }
+    },
+    executeVisualizationScripts() {
+      // 提取 visualizationHTML 中的脚本标签并执行
+      const container = this.$refs.visualizationContainer;
+      if (container) {
+        const scripts = container.querySelectorAll('script');
+        scripts.forEach(script => {
+          const newScript = document.createElement('script');
+          newScript.textContent = script.textContent;
+          document.head.appendChild(newScript);
+        });
       }
     },
     injectVisualizationJS() {
@@ -488,6 +502,102 @@ export default {
             action: 'field_update_error',
             details: { cardKey, field, value, error: error.message },
             message: `Error updating view field: ${field}`,
+            status: 'error'
+          });
+        }
+      } else if (event.data && event.data.type === 'TRIGGER_CARD_KEY') {
+        // 处理 cardKey 触发事件
+        const { cardKey } = event.data;
+        console.log('Trigger card key from visualization:', cardKey);
+        
+        // 记录日志
+        this.addViewLog({
+          timestamp: new Date().toISOString(),
+          action: 'trigger_card_key',
+          details: { cardKey: cardKey },
+          message: `Card key triggered: ${cardKey}`
+        });
+        
+        try {
+          // 调用后端 API 触发 cardKey 节点点击
+          const response = await fetch('/api/trigger-card-key', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ cardKey })
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to trigger card key');
+          }
+          
+          const result = await response.json();
+          console.log('Card key triggered:', result);
+          
+          // 更新 Core Nodes 显示
+          if (result.nodes) {
+            this.jsonStructure = JSON.stringify(result.nodes, null, 2);
+            this.nodesStructure = result.nodes;
+            // 重新生成节点可视化
+            await this.generateNodeVisualization(this.nodesStructure);
+          }
+        } catch (error) {
+          console.error('Error triggering card key:', error);
+          // 记录错误日志
+          this.addViewLog({
+            timestamp: new Date().toISOString(),
+            action: 'trigger_card_key_error',
+            details: { cardKey: cardKey, error: error.message },
+            message: `Error triggering card key: ${cardKey}`,
+            status: 'error'
+          });
+        }
+      } else if (event.data && event.data.type === 'HANDLE_TAP_SET') {
+        // 处理 tapSet 动作
+        const { cardKey, tapSet } = event.data;
+        console.log('Handle tap set from visualization:', { cardKey, tapSet });
+        
+        // 记录日志
+        this.addViewLog({
+          timestamp: new Date().toISOString(),
+          action: 'handle_tap_set',
+          details: { cardKey: cardKey, tapSet: tapSet },
+          message: `Tap set handled for card key: ${cardKey}`
+        });
+        
+        try {
+          // 调用后端 API 处理 tapSet 动作
+          const response = await fetch('/api/handle-tap-set', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ cardKey, tapSet })
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to handle tap set');
+          }
+          
+          const result = await response.json();
+          console.log('Tap set handled:', result);
+          
+          // 更新 Core Nodes 显示
+          if (result.nodes) {
+            this.jsonStructure = JSON.stringify(result.nodes, null, 2);
+            this.nodesStructure = result.nodes;
+            // 重新生成节点可视化
+            await this.generateNodeVisualization(this.nodesStructure);
+          }
+        } catch (error) {
+          console.error('Error handling tap set:', error);
+          // 记录错误日志
+          this.addViewLog({
+            timestamp: new Date().toISOString(),
+            action: 'handle_tap_set_error',
+            details: { cardKey: cardKey, tapSet: tapSet, error: error.message },
+            message: `Error handling tap set for card key: ${cardKey}`,
             status: 'error'
           });
         }
