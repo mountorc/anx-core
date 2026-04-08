@@ -1,5 +1,5 @@
 <template>
-  <div class="node-visualization-view">
+  <div class="anx-page">
     <div v-if="loading" class="loading">
       <p>Loading visualization...</p>
     </div>
@@ -9,7 +9,10 @@
     </div>
     
     <div v-else-if="visualization" class="visualization-container">
-      <div class="visualization-content" v-html="visualization"></div>
+      <ANXView 
+        :nodesStructure="nodesStructure"
+        :visualizationHTML="visualization"
+      />
     </div>
     
     <div v-else class="no-data">
@@ -21,16 +24,19 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import ANXView from '../components/ANXView.vue'
 
 const route = useRoute()
 const loading = ref(true)
 const error = ref('')
 const visualization = ref('')
+const nodesStructure = ref(null)
 
 const fetchNodeVisualization = async (uuid) => {
   loading.value = true
   error.value = ''
   visualization.value = ''
+  nodesStructure.value = null
   
   try {
     // 先从后端获取 ANX 配置
@@ -62,6 +68,7 @@ const fetchNodeVisualization = async (uuid) => {
     }
     
     const nodesData = await nodesResponse.json()
+    nodesStructure.value = nodesData.nodes
     
     // 然后获取可视化数据
     const vizResponse = await fetch('/api/visualize-node', {
@@ -104,7 +111,7 @@ watch(
 </script>
 
 <style scoped>
-.node-visualization-view {
+.anx-page {
   width: 100%;
   min-height: 100vh;
   background-color: #f5f5f5;
@@ -128,18 +135,10 @@ watch(
 }
 
 .visualization-container {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  overflow: hidden;
   width: 100%;
-  max-width: none;
+  height: 100vh;
   margin: 0;
   padding: 0;
-}
-
-.visualization-content {
-  padding: 20px;
 }
 
 .no-data {

@@ -107,8 +107,3 @@ export function handleButtonClick(buttonData, buttonElement) {
       throw error;
     });
 }
-
-module.exports = {
-  triggerEvent,
-  handleButtonClick
-};

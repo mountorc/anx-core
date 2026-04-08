@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import NodeVisualizationView from '../views/NodeVisualizationView.vue'
+import ANXPage from '../views/ANXPage.vue'
 
 const routes = [
   {
@@ -10,8 +10,8 @@ const routes = [
   },
   {
     path: '/anx/view/:uuid_tile',
-    name: 'NodeVisualization',
-    component: NodeVisualizationView
+    name: 'ANXPage',
+    component: ANXPage
   }
 ]
 

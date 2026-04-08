@@ -1,5 +1,17 @@
 <template>
   <div class="converter-container">
+    <div class="tile-cases">
+      <h3>Tile Cases</h3>
+      <div class="tile-grid">
+        <!-- 动态加载的tile case -->
+        <div v-for="item in hubList" :key="item.uuid" class="tile-item" @click="loadHubTestCase(item.uuid)">
+          <div class="tile-icon">
+            <div class="icon-background">{{ item.name.charAt(0) }}</div>
+          </div>
+          <div class="tile-name">{{ item.name }}</div>
+        </div>
+      </div>
+    </div>
     <div class="converter-content">
       <div class="input-section">
         <h2>ANX Config</h2>
@@ -101,28 +113,24 @@
         <pre class="raw-output">{{ rawMarkupOutput }}</pre>
       </div>
       <div class="visual-section">
-        <h2>Node Visualization</h2>
-        <div class="visual-output">
-          <div class="node-visualization" v-if="nodesStructure" ref="visualizationContainer">
-            <div v-html="visualizationHTML"></div>
-          </div>
-          <div v-else class="no-data">
-            No node data available
-          </div>
-        </div>
+        <h2>ANXView</h2>
+        <ANXView 
+          :nodesStructure="nodesStructure"
+          :visualizationHTML="visualizationHTML"
+        />
       </div>
-    </div>
-    <div class="tile-cases">
-      <h3>Tile Cases</h3>
-      <!-- 动态加载的tile case -->
-      <button v-for="item in hubList" :key="item.uuid" @click="loadHubTestCase(item.uuid)">{{ item.name }}</button>
     </div>
   </div>
 </template>
 
 <script>
+import ANXView from '../components/ANXView.vue';
+
 export default {
   name: 'Home',
+  components: {
+    ANXView
+  },
   data() {
     return {
       anxInput: `{
@@ -1136,12 +1144,19 @@ export default {
 .input-section h2,
 .json-section h2,
 .output-section h2,
-.visual-section h2 {
+.visual-section h2,
+.visual-section-header h2 {
   background-color: #f5f5f5;
   padding: 10px;
   margin: 0;
   font-size: 16px;
   border-bottom: 1px solid #ddd;
+}
+
+.visual-section-header {
+  border: 1px solid #ddd;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
 }
 
 .json-section {
@@ -1234,17 +1249,66 @@ export default {
   gap: 10px;
 }
 
-.tile-cases button {
-  padding: 8px 16px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+.tile-cases {
+  margin-bottom: 20px;
 }
 
-.tile-cases button:hover {
-  background-color: #45a049;
+.tile-cases h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #333;
+}
+
+.tile-grid {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.tile-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  width: 100px;
+}
+
+.tile-item:hover {
+  transform: translateY(-5px);
+}
+
+.tile-icon {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-background {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background-color: #4CAF50;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tile-name {
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .cli-section h3 {

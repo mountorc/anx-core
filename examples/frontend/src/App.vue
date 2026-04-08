@@ -53,12 +53,17 @@ body {
 .header {
   background-color: #4CAF50;
   color: white;
-  padding: 1rem;
+  padding: 0.5rem;
   text-align: center;
 }
 
+.header h1 {
+  font-size: 18px;
+  margin: 0;
+}
+
 .nav {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .nav-btn {

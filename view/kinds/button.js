@@ -1,187 +1,21 @@
-/**
- * Button 组件渲染器
- */
-
-// 导入触发事件工具
-const { handleButtonClick } = require('../utils/trigger.js');
-
-/**
- * 渲染 Button 组件
- * @param {Object} node - 节点结构
- * @returns {string} - 渲染后的 HTML
- */
 function renderButton(node) {
   const config = node.config;
   const label = config.title || config.label || 'Button';
-  const hasTapSet = node.tapSet || config.tapSet;
-  const tapSet = node.tapSet || config.tapSet;
-  const buttonId = `button-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  const buttonId = 'button-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+  const tapSet = node.tapSet || node.config.tapSet || {};
   
-  // 调试日志
-  console.log('=== Button Render Debug ===');
-  console.log('Button ID:', buttonId);
-  console.log('Button label:', config.title || config.label || 'Button');
-  console.log('config.tapSet:', config.tapSet);
-  console.log('node.tapSet:', node.tapSet);
-  console.log('hasTapSet:', hasTapSet);
-  console.log('Button color:', hasTapSet ? 'blue' : 'green');
-  console.log('=== End Button Render Debug ===');
-
-  let buttonHtml = `
-    <div class="button-visualization">
-      <button id="${buttonId}" class="anx-button">
-        <span class="button-text">${label}</span>
-        <span class="button-loader" style="display: none;">⟳</span>
-      </button>
-    </div>
-  `;
-
-  // 无论是否有tapSet，都添加点击事件
-  buttonHtml += `
-    <style>
-      .anx-button {
-        position: relative;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        background-color: ${hasTapSet ? '#409eff' : '#28a745'};
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        min-width: 120px;
-        overflow: hidden;
-        z-index: 1000;
-      }
-      
-      .anx-button:hover {
-        background-color: ${hasTapSet ? '#66b1ff' : '#218838'};
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-      
-      .anx-button:active {
-        transform: translateY(0);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-      
-      .anx-button:disabled {
-        background-color: #cccccc;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-      }
-      
-      .button-loader {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        animation: spin 1s linear infinite;
-      }
-      
-      @keyframes spin {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        100% { transform: translate(-50%, -50%) rotate(360deg); }
-      }
-      
-      .button-text {
-        transition: opacity 0.3s ease;
-      }
-      
-      .anx-button.loading .button-text {
-        opacity: 0;
-      }
-      
-      .anx-button.loading .button-loader {
-        display: inline;
-      }
-    </style>
-    <script>
-      console.log('=== Button script start ===');
-      console.log('Button ID:', '${buttonId}');
-      console.log('Button label:', '${label}');
-      console.log('Button has tapSet:', ${hasTapSet ? 'true' : 'false'});
-      
-      // 确保DOM加载完成后再绑定事件
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-          bindButtonEvents('${buttonId}', '${label}', ${JSON.stringify(tapSet)}, ${JSON.stringify(node)});
-        });
-      } else {
-        bindButtonEvents('${buttonId}', '${label}', ${JSON.stringify(tapSet)}, ${JSON.stringify(node)});
-      }
-      
-      function bindButtonEvents(buttonId, label, tapSet, node) {
-        console.log('Binding events for button:', buttonId);
-        const button = document.getElementById(buttonId);
-        console.log('Button element found:', button);
-        
-        if (button) {
-          console.log('Adding click event listener...');
-          // 移除可能存在的事件监听器
-          button.removeEventListener('click', onButtonClick);
-          // 添加新的事件监听器
-          button.addEventListener('click', onButtonClick);
-          console.log('Click event listener added');
-        } else {
-          console.error('Button element not found:', buttonId);
-          // 尝试延迟查找
-          setTimeout(() => {
-            const delayedButton = document.getElementById(buttonId);
-            console.log('Delayed button find:', delayedButton);
-            if (delayedButton) {
-              console.log('Adding click event listener after delay...');
-              delayedButton.addEventListener('click', onButtonClick);
-              console.log('Click event listener added after delay');
-            }
-          }, 1000);
-        }
-        
-        function onButtonClick() {
-          console.log('=== Button click handler triggered ===');
-          console.log('Button element:', this);
-          console.log('Button ID:', buttonId);
-          console.log('Button label:', label);
-          console.log('Button has tapSet:', tapSet ? 'true' : 'false');
-          
-          // 构建按钮数据
-          const buttonData = {
-            buttonId: buttonId,
-            label: label,
-            tapSet: tapSet,
-            node: node
-          };
-          
-          // 调用 trigger.js 中的 handleButtonClick 函数
-          if (window.handleButtonClick) {
-            console.log('Calling window.handleButtonClick...');
-            window.handleButtonClick(buttonData, this)
-              .then(result => {
-                console.log('Button click handled successfully:', result);
-              })
-              .catch(error => {
-                console.error('Error handling button click:', error);
-              });
-          } else {
-            console.warn('handleButtonClick function not available');
-            // 降级处理
-            this.disabled = true;
-            this.classList.add('loading');
-            setTimeout(() => {
-              this.disabled = false;
-              this.classList.remove('loading');
-            }, 500);
-          }
-        }
-      }
-      console.log('=== Button script end ===');
-    </script>
-  `;
-
-  return buttonHtml;
+  // 将 tapSet 转换为 JSON 字符串，确保双引号被正确转义
+  const tapSetJson = JSON.stringify(tapSet).replace(/"/g, '&quot;').replace(/\\n/g, '\\\\n');
+  
+  let html = '';
+  html += '<div class="button-visualization">';
+  // 使用内联 onclick 事件，直接弹窗显示 tapSet 配置
+  html += '  <button id="' + buttonId + '" class="anx-button" onclick="alert(JSON.stringify(' + tapSetJson + ', null, 2));">';
+  html += '    <span class="button-text">' + label + '</span>';
+  html += '  </button>';
+  html += '</div>';
+  
+  return html;
 }
 
-module.exports = {
-  renderButton
-};
+module.exports = { renderButton };
