@@ -3,147 +3,191 @@
     <div v-if="loading" class="loading">
       <p>Loading visualization...</p>
     </div>
-    
+
     <div v-else-if="error" class="error">
       <p>{{ error }}</p>
     </div>
-    
-    <div v-else-if="visualization" class="visualization-container">
-      <ANXView 
-        :nodesStructure="nodesStructure"
-        :visualizationHTML="visualization"
-      />
+
+    <div v-else-if="nodesStructure && visualizationHTML" class="visualization-container">
+      <anx-view
+        :nodes-structure="JSON.stringify(nodesStructure)"
+        :visualization-html="visualizationHTML"
+      ></anx-view>
     </div>
-    
+
     <div v-else class="no-data">
       <p>No visualization data available</p>
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
-import ANXView from '../components/ANXView.vue'
+<script>
+export default {
+  name: 'ANXPage',
+  data() {
+    return {
+      loading: true,
+      error: '',
+      nodesStructure: null,
+      visualizationHTML: '',
+      visualizationCSS: ''
+    };
+  },
+  mounted() {
+    const uuid = this.$route.params.uuid_tile;
+    if (uuid) {
+      this.fetchNodeVisualization(uuid);
+    }
+    
+    // 加载ANXView web component
+    import('../webComponents/ANXView.js');
+  },
+  watch: {
+    '$route.params.uuid_tile'(newUuid) {
+      if (newUuid) {
+        this.fetchNodeVisualization(newUuid);
+      }
+    }
+  },
+  methods: {
+    async fetchNodeVisualization(uuid) {
+      this.loading = true;
+      this.error = '';
+      this.nodesStructure = null;
+      this.visualizationHTML = '';
+      this.visualizationCSS = '';
 
-const route = useRoute()
-const loading = ref(true)
-const error = ref('')
-const visualization = ref('')
-const nodesStructure = ref(null)
+      try {
+        // 获取节点结构
+        const nodesResponse = await fetch('/api/convert-to-nodes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ uuid_tile: uuid })
+        });
 
-const fetchNodeVisualization = async (uuid) => {
-  loading.value = true
-  error.value = ''
-  visualization.value = ''
-  nodesStructure.value = null
-  
-  try {
-    // 先从后端获取 ANX 配置
-    const anxResponse = await fetch(`/api/convert?uuid_tile=${uuid}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ uuid_tile: uuid })
-    })
-    
-    if (!anxResponse.ok) {
-      throw new Error('Failed to fetch ANX configuration')
+        if (!nodesResponse.ok) {
+          throw new Error('Failed to fetch nodes structure');
+        }
+
+        const nodesResult = await nodesResponse.json();
+        if (!nodesResult.nodes) {
+          throw new Error('Failed to get nodes structure from response');
+        }
+        this.nodesStructure = nodesResult.nodes;
+
+        // 获取可视化数据
+        await this.generateNodeVisualization(this.nodesStructure);
+      } catch (err) {
+        console.error('Error fetching visualization:', err);
+        this.error = err.message;
+      } finally {
+        this.loading = false;
+      }
+    },
+    async generateNodeVisualization(node) {
+      try {
+        const response = await fetch('/api/visualize-node', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ node })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch visualization');
+        }
+
+        const result = await response.json();
+        this.visualizationHTML = result.html;
+        this.visualizationCSS = result.css;
+
+        // 动态注入 CSS
+        this.$nextTick(() => {
+          this.injectVisualizationCSS(result.css);
+        });
+      } catch (error) {
+        console.error('Error generating node visualization:', error);
+        this.visualizationHTML = '<div class="anx-error">Error generating node visualization</div>';
+      }
+    },
+    injectVisualizationCSS(css) {
+      if (!css) return;
+
+      // 移除旧的样式标签
+      const oldStyle = document.getElementById('anx-page-dynamic-style');
+      if (oldStyle) {
+        oldStyle.remove();
+      }
+
+      // 创建新的样式标签
+      const style = document.createElement('style');
+      style.id = 'anx-page-dynamic-style';
+      style.textContent = css;
+      document.head.appendChild(style);
     }
-    
-    const anxData = await anxResponse.json()
-    
-    // 然后获取节点结构
-    const nodesResponse = await fetch('/api/convert-to-nodes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ uuid_tile: uuid })
-    })
-    
-    if (!nodesResponse.ok) {
-      throw new Error('Failed to fetch nodes structure')
+  },
+  beforeUnmount() {
+    // 清理动态样式
+    const oldStyle = document.getElementById('anx-page-dynamic-style');
+    if (oldStyle) {
+      oldStyle.remove();
     }
-    
-    const nodesData = await nodesResponse.json()
-    nodesStructure.value = nodesData.nodes
-    
-    // 然后获取可视化数据
-    const vizResponse = await fetch('/api/visualize-node', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ node: nodesData.nodes })
-    })
-    
-    if (!vizResponse.ok) {
-      throw new Error('Failed to fetch visualization')
-    }
-    
-    const vizData = await vizResponse.json()
-    // 移除 CSS 代码，只使用 HTML
-    visualization.value = vizData.html
-  } catch (err) {
-    error.value = err.message
-  } finally {
-    loading.value = false
   }
-}
-
-onMounted(() => {
-  const uuid = route.params.uuid_tile
-  if (uuid) {
-    fetchNodeVisualization(uuid)
-  }
-})
-
-watch(
-  () => route.params.uuid_tile,
-  (newUuid) => {
-    if (newUuid) {
-      fetchNodeVisualization(newUuid)
-    }
-  }
-)
+};
 </script>
 
 <style scoped>
 .anx-page {
-  width: 100%;
-  min-height: 100vh;
-  background-color: #f5f5f5;
-  font-family: Arial, sans-serif;
+  width: 100vw;
+  height: 100vh;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
 }
 
 .loading {
-  text-align: center;
-  padding: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
   color: #666;
+  font-size: 18px;
 }
 
 .error {
-  text-align: center;
-  padding: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
   color: #dc3545;
   background: #f8d7da;
-  border-radius: 4px;
+  font-size: 18px;
+  padding: 20px;
+  text-align: center;
 }
 
 .visualization-container {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   margin: 0;
   padding: 0;
+  overflow: auto;
 }
 
 .no-data {
-  text-align: center;
-  padding: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
   color: #999;
+  font-size: 18px;
 }
 </style>

@@ -17,14 +17,14 @@ function logToSystem(action, details) {
   // Log to console
   console.log(`[Trigger] ${action}:`, details);
 
-  // Dispatch global event for external logging
+  // Dispatch global event for external logging (frontend only)
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('systemLog', {
       detail: logEntry
     }));
   }
 
-  // Store in localStorage for persistence
+  // Store in localStorage for persistence (frontend only)
   if (typeof localStorage !== 'undefined') {
     try {
       const logs = JSON.parse(localStorage.getItem('systemLogs') || '[]');
@@ -35,6 +35,12 @@ function logToSystem(action, details) {
     } catch (e) {
       console.error('Failed to store log:', e);
     }
+  }
+  
+  // For backend, we can store logs in memory or a file
+  if (typeof window === 'undefined') {
+    // Backend logging logic can be added here
+    console.log('[Backend Log]', logEntry);
   }
 }
 
@@ -48,7 +54,7 @@ export function handleTapSet(tapSet, data, element) {
 
   const tapHandler = async (event) => {
     console.log('[Trigger] Tap event triggered', {
-      eventType: event.type,
+      eventType: event ? event.type : 'simulated',
       timestamp: new Date().toISOString()
     });
     for (const actionType of Object.keys(tapSet)) {
@@ -57,8 +63,15 @@ export function handleTapSet(tapSet, data, element) {
     }
   };
 
-  element.addEventListener('click', tapHandler);
-  console.log('[Trigger] Tap handler added to element');
+  // Frontend event listener
+  if (typeof window !== 'undefined' && element && element.addEventListener) {
+    element.addEventListener('click', tapHandler);
+    console.log('[Trigger] Tap handler added to element');
+  } else {
+    // Backend simulation
+    console.log('[Backend] Tap handler created (simulated)');
+    // In a real backend environment, this could be a function that gets called directly
+  }
   return tapHandler;
 }
 
@@ -84,7 +97,7 @@ export function handleTriggerSet(triggerSet, data, element) {
       const handler = async (event) => {
         console.log('[Trigger] Trigger event triggered', {
           triggerType: triggerType,
-          eventType: event.type,
+          eventType: event ? event.type : 'simulated',
           timestamp: new Date().toISOString()
         });
         for (const actionType of Object.keys(actionConfig)) {
@@ -92,9 +105,17 @@ export function handleTriggerSet(triggerSet, data, element) {
         }
       };
 
-      element.addEventListener(eventType, handler);
-      handlers[triggerType] = handler;
-      console.log('[Trigger] Trigger handler added for', triggerType);
+      // Frontend event listener
+      if (typeof window !== 'undefined' && element && element.addEventListener) {
+        element.addEventListener(eventType, handler);
+        handlers[triggerType] = handler;
+        console.log('[Trigger] Trigger handler added for', triggerType);
+      } else {
+        // Backend simulation
+        handlers[triggerType] = handler;
+        console.log('[Backend] Trigger handler created for', triggerType, '(simulated)');
+        // In a real backend environment, these handlers could be called directly
+      }
     } else {
       console.warn('[Trigger] Unknown trigger type:', triggerType);
     }
@@ -229,12 +250,28 @@ function handleNavigateTo(config, data, event) {
   }
 
   console.log('[Action] NavigateTo - Navigating to:', path);
-  window.location.href = path;
+  
+  // Frontend navigation
+  if (typeof window !== 'undefined') {
+    window.location.href = path;
+  } else {
+    // Backend navigation (simulated)
+    console.log('[Backend] NavigateTo - Would navigate to:', path);
+    // In a real backend environment, this could be a redirect or API call
+  }
 }
 
 function handleNavigateBack(config, event) {
   console.log('[Action] NavigateBack - Navigating back to previous page');
-  window.history.back();
+  
+  // Frontend navigation
+  if (typeof window !== 'undefined') {
+    window.history.back();
+  } else {
+    // Backend navigation (simulated)
+    console.log('[Backend] NavigateBack - Would navigate back');
+    // In a real backend environment, this could be a redirect or API call
+  }
 }
 
 function handleUpdateData(config, data, event) {

@@ -30,13 +30,23 @@ export default {
     // 监听 visualizationHTML 变化，重新渲染和执行脚本
     visualizationHTML: {
       handler(newValue) {
+        console.log('ANXView: visualizationHTML updated:', newValue);
         this.renderHTML(newValue);
+      },
+      immediate: true
+    },
+    // 监听 nodesStructure 变化
+    nodesStructure: {
+      handler(newValue) {
+        console.log('ANXView: nodesStructure updated:', newValue);
       },
       immediate: true
     }
   },
   mounted() {
     // 组件挂载时的处理
+    console.log('ANXView: mounted with nodesStructure:', this.nodesStructure);
+    console.log('ANXView: mounted with visualizationHTML:', this.visualizationHTML);
     this.setupEventListeners();
     // 将 buttonTap 函数暴露到全局作用域
     window.buttonTap = buttonTap;
@@ -64,36 +74,29 @@ export default {
     },
     renderHTML(html) {
       const container = this.$refs.htmlContainer;
-      if (container) {
+      if (container && html) {
         // 清空容器
         container.innerHTML = '';
         
-        // 创建一个临时元素来解析 HTML
-        const tempElement = document.createElement('div');
-        tempElement.innerHTML = html;
-        
-        // 提取并执行脚本标签
-        const scripts = tempElement.querySelectorAll('script');
-        scripts.forEach(script => {
-          const newScript = document.createElement('script');
-          newScript.textContent = script.textContent;
-          document.head.appendChild(newScript);
-          // 执行完后移除脚本标签
-          setTimeout(() => {
-            document.head.removeChild(newScript);
-          }, 0);
-        });
-        
-        // 移除脚本标签，只保留 HTML 内容
-        scripts.forEach(script => {
-          script.remove();
-        });
-        
-        // 将剩余的 HTML 内容添加到容器中
-        while (tempElement.firstChild) {
-          container.appendChild(tempElement.firstChild);
+        try {
+          // 直接设置 HTML 内容
+          container.innerHTML = html;
+          
+          // 执行脚本标签
+          const scripts = container.querySelectorAll('script');
+          scripts.forEach(script => {
+            const newScript = document.createElement('script');
+            newScript.textContent = script.textContent;
+            document.head.appendChild(newScript);
+            // 执行完后移除脚本标签
+            setTimeout(() => {
+              document.head.removeChild(newScript);
+            }, 0);
+          });
+        } catch (error) {
+          console.error('Error rendering HTML:', error);
+          container.innerHTML = '<div class="error">Error rendering visualization</div>';
         }
-        
       }
     }
   },

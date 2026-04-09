@@ -1,8 +1,6 @@
 /**
  * 工具函数
  */
-
-console.log("dttttttt")
 /**
  * 处理触发事件
  * @param {string} cardKey - 卡片 key

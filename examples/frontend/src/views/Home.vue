@@ -113,24 +113,19 @@
         <pre class="raw-output">{{ rawMarkupOutput }}</pre>
       </div>
       <div class="visual-section">
-        <h2>ANXView</h2>
-        <ANXView 
-          :nodesStructure="nodesStructure"
-          :visualizationHTML="visualizationHTML"
-        />
+        <h2>ANXView (Web Component)</h2>
+        <anx-view 
+          :nodes-structure="JSON.stringify(nodesStructure)"
+          :visualization-html="visualizationHTML"
+        ></anx-view>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import ANXView from '../components/ANXView.vue';
-
 export default {
   name: 'Home',
-  components: {
-    ANXView
-  },
   data() {
     return {
       anxInput: `{
@@ -240,6 +235,9 @@ export default {
     
     // 监听 message 事件（来自可视化 iframe）
     window.addEventListener('message', this.handleVisualizationMessage);
+    
+    // 加载ANXView web component
+    import('../webComponents/ANXView.js');
   },
   beforeUnmount() {
     // 移除事件监听
@@ -1249,6 +1247,11 @@ export default {
   border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
+}
+
+.visual-section > *:not(h2) {
+  flex: 1;
+  overflow: auto;
 }
 
 .input-section h2,

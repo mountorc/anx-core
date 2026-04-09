@@ -1635,9 +1635,9 @@ app.post('/api/visualize-node', (req, res) => {
 });
 
 // API endpoint for triggering card key
-app.post('/api/trigger-card-key', (req, res) => {
+app.post('/api/trigger-card-key', async (req, res) => {
   try {
-    const { cardKey, tapSet } = req.body;
+    const { cardKey, tapSet, triggerSet, data } = req.body;
     if (!cardKey) {
       return res.status(400).json({ error: 'cardKey is required' });
     }
@@ -1645,6 +1645,9 @@ app.post('/api/trigger-card-key', (req, res) => {
     console.log('[API] Triggering card key:', cardKey);
     if (tapSet) {
       console.log('[API] With tapSet:', tapSet);
+    }
+    if (triggerSet) {
+      console.log('[API] With triggerSet:', triggerSet);
     }
     
     // 记录日志到系统日志
@@ -1654,7 +1657,8 @@ app.post('/api/trigger-card-key', (req, res) => {
       action: 'trigger_card_key',
       cardKey: cardKey,
       tapSet: tapSet || null,
-      message: `Triggering card key: ${cardKey}${tapSet ? ' with tapSet'+JSON.stringify(tapSet) : ''}`
+      triggerSet: triggerSet || null,
+      message: `Triggering card key: ${cardKey}${tapSet ? ' with tapSet'+JSON.stringify(tapSet) : ''}${triggerSet ? ' with triggerSet'+JSON.stringify(triggerSet) : ''}`
     };
     
     // 将日志添加到 CLI 日志缓存
@@ -1667,7 +1671,55 @@ app.post('/api/trigger-card-key', (req, res) => {
     const storedNode = nodeStorage.get(cardKey);
     if (storedNode) {
       console.log('[API] Found stored node for card key:', cardKey);
-      // 可以在这里添加触发逻辑
+    }
+    
+    // 调用 trigger-and-tap.js 中的函数
+    if (tapSet) {
+      console.log('[API] Calling handleTapSet');
+      try {
+        // 模拟一个元素对象
+        const mockElement = {
+          addEventListener: (eventType, handler) => {
+            console.log(`[Mock Element] Added ${eventType} event listener`);
+          }
+        };
+        
+        // 调用 handleTapSet
+        const tapHandler = handleTapSet(tapSet, data || {}, mockElement);
+        
+        // 模拟触发点击事件
+        if (tapHandler) {
+          console.log('[API] Simulating tap event');
+          await tapHandler({ type: 'click' });
+        }
+      } catch (tapError) {
+        console.error('[API] Error handling tapSet:', tapError);
+      }
+    }
+    
+    if (triggerSet) {
+      console.log('[API] Calling handleTriggerSet');
+      try {
+        // 模拟一个元素对象
+        const mockElement = {
+          addEventListener: (eventType, handler) => {
+            console.log(`[Mock Element] Added ${eventType} event listener`);
+          }
+        };
+        
+        // 调用 handleTriggerSet
+        const triggerHandlers = handleTriggerSet(triggerSet, data || {}, mockElement);
+        
+        // 模拟触发第一个触发事件
+        if (Object.keys(triggerHandlers).length > 0) {
+          const firstTriggerType = Object.keys(triggerHandlers)[0];
+          const firstHandler = triggerHandlers[firstTriggerType];
+          console.log(`[API] Simulating ${firstTriggerType} event`);
+          await firstHandler({ type: firstTriggerType });
+        }
+      } catch (triggerError) {
+        console.error('[API] Error handling triggerSet:', triggerError);
+      }
     }
     
     // 返回当前节点结构
@@ -1676,6 +1728,7 @@ app.post('/api/trigger-card-key', (req, res) => {
       message: 'Card key triggered successfully',
       cardKey: cardKey,
       tapSet: tapSet || null,
+      triggerSet: triggerSet || null,
       nodes: storedNode || null
     });
   } catch (error) {

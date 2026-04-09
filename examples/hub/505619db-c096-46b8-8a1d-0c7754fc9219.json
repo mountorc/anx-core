@@ -187,6 +187,10 @@
           }
         }
       }
-    ]
+    ],
+    "resultSet":{
+      "showType":"right",
+      "items":[]
+    }
   }
 }
