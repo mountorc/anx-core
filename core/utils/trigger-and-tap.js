@@ -1,62 +1,29 @@
-import { executeRequest } from './request.js';
+const { executeRequest } = require('./request.js');
+const { logToSystem, logError } = require('./log.js');
 
 /**
  * Log to system log
  * @param {string} action - Action type
  * @param {Object} details - Log details
  */
-function logToSystem(action, details) {
-  const logEntry = {
-    type: 'system',
-    action: action,
-    timestamp: new Date().toISOString(),
-    details: details,
-    message: `[Trigger] ${action}: ${JSON.stringify(details)}`
-  };
 
-  // Log to console
-  console.log(`[Trigger] ${action}:`, details);
+/**
+ * Log error
+ * @param {string} action - Action type
+ * @param {string} error - Error message
+ * @param {Object} details - Log details
+ */
 
-  // Dispatch global event for external logging (frontend only)
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('systemLog', {
-      detail: logEntry
-    }));
-  }
-
-  // Store in localStorage for persistence (frontend only)
-  if (typeof localStorage !== 'undefined') {
-    try {
-      const logs = JSON.parse(localStorage.getItem('systemLogs') || '[]');
-      logs.unshift(logEntry);
-      // Keep only last 100 logs
-      const limitedLogs = logs.slice(0, 100);
-      localStorage.setItem('systemLogs', JSON.stringify(limitedLogs));
-    } catch (e) {
-      console.error('Failed to store log:', e);
-    }
-  }
-  
-  // For backend, we can store logs in memory or a file
-  if (typeof window === 'undefined') {
-    // Backend logging logic can be added here
-    console.log('[Backend Log]', logEntry);
-  }
-}
-
-export function handleTapSet(tapSet, data, element) {
-  if (!tapSet || typeof tapSet !== 'object') return;
-
-  console.log('[Trigger] Setting up tap handler', {
-    tapSet: tapSet,
+function handleTapSet(tapSet, data, element) {
+  // 记录到系统日志
+  logToSystem('handleTapSet', {
+    actionType: "",
+    actionConfig: {},
     timestamp: new Date().toISOString()
   });
+  if (!tapSet || typeof tapSet !== 'object') return;
 
   const tapHandler = async (event) => {
-    console.log('[Trigger] Tap event triggered', {
-      eventType: event ? event.type : 'simulated',
-      timestamp: new Date().toISOString()
-    });
     for (const actionType of Object.keys(tapSet)) {
       const actionConfig = tapSet[actionType];
       await handleAction(actionType, actionConfig, data, event, element);
@@ -75,7 +42,14 @@ export function handleTapSet(tapSet, data, element) {
   return tapHandler;
 }
 
-export function handleTriggerSet(triggerSet, data, element) {
+function handleTriggerSet(triggerSet, data, element) {
+  // 记录到系统日志
+  logToSystem('handleTriggerSet', {
+    actionType: "",
+    actionConfig: {},
+    timestamp: new Date().toISOString()
+  });
+  
   if (!triggerSet || typeof triggerSet !== 'object') return {};
 
   console.log('[Trigger] Setting up trigger handlers', {
@@ -127,7 +101,7 @@ export function handleTriggerSet(triggerSet, data, element) {
   return handlers;
 }
 
-export function generateEventHandlers(config, data, element) {
+function generateEventHandlers(config, data, element) {
   const handlers = {};
 
   if (config.tapSet) {
@@ -141,7 +115,7 @@ export function generateEventHandlers(config, data, element) {
   return handlers;
 }
 
-export function addEventListeners(element, config, data) {
+function addEventListeners(element, config, data) {
   return generateEventHandlers(config, data, element);
 }
 
@@ -209,9 +183,8 @@ async function handleAction(actionType, actionConfig, data, event, element) {
     console.error(`[Action] Error in ${actionType} action:`, error);
 
     // 记录到系统日志
-    logToSystem('action_error', {
+    logError('action_error', error.message, {
       actionType: actionType,
-      error: error.message,
       timestamp: new Date().toISOString()
     });
   }
@@ -362,10 +335,9 @@ async function handleRequestSet(config, data, event) {
     console.error('[Action] RequestSet - Request error:', error);
 
     // Log error to system
-    logToSystem('request_error', {
+    logError('request_error', error.message, {
       url: config.url,
       method: config.method,
-      error: error.message,
       timestamp: new Date().toISOString()
     });
 
@@ -401,3 +373,11 @@ function getDataValue(data, fieldPath) {
 
   return value;
 }
+
+// 导出模块
+module.exports = {
+  handleTapSet,
+  handleTriggerSet,
+  generateEventHandlers,
+  addEventListeners
+};

@@ -26,9 +26,12 @@ const anxHashToNodeMap = new Map();
 // 存储hub中的anx config
 const hubAnxMap = new Map();
 
-// 存储CLI命令执行记录的日志缓存
+// 导入日志模块
+const { logToSystem, logError, readLogs } = require('../../core/utils/log.js');
+
+// 存储CLI命令执行记录的日志缓存（保持兼容性）
 const cliLogs = [];
-const MAX_LOGS = 100; // 最大日志条数
+const MAX_LOGS = 1000; // 最大日志条数
 
 // 生成ANX内容的哈希值
 function generateAnxHash(anxContent) {
@@ -1117,19 +1120,11 @@ app.post('/api/execute-cli', (req, res) => {
         result: 'Invalid CLI command format. Use: anx <cardKey> <action> [params...]'
       };
       
-      // 记录日志
-      cliLogs.unshift({
-        timestamp: new Date().toISOString(),
+      // 使用统一的日志模块
+      logError('cli_command_error', 'Invalid CLI command format', {
         command: command,
-        status: 'error',
         response: response
       });
-      
-      // 限制日志数量
-      if (cliLogs.length > MAX_LOGS) {
-        cliLogs.pop();
-      }
-      
       return res.json(response);
     }
     
@@ -1495,18 +1490,11 @@ app.post('/api/execute-cli', (req, res) => {
       result: result
     };
     
-    // 记录日志
-    cliLogs.unshift({
-      timestamp: new Date().toISOString(),
+    // 使用统一的日志模块
+    logToSystem('cli_command_success', {
       command: command,
-      status: 'success',
       response: response
     });
-    
-    // 限制日志数量
-    if (cliLogs.length > MAX_LOGS) {
-      cliLogs.pop();
-    }
     
     res.json(response);
   } catch (error) {
@@ -1517,19 +1505,11 @@ app.post('/api/execute-cli', (req, res) => {
       result: 'Error executing CLI command. Please check your input.'
     };
     
-    // 记录日志
-    cliLogs.unshift({
-      timestamp: new Date().toISOString(),
+    // 使用统一的日志模块
+    logError('cli_command_execution_error', error.message, {
       command: req.body.command || '',
-      status: 'error',
-      response: response,
-      error: error.message
+      response: response
     });
-    
-    // 限制日志数量
-    if (cliLogs.length > MAX_LOGS) {
-      cliLogs.pop();
-    }
     
     res.status(400).json(response);
   }
@@ -1642,58 +1622,26 @@ app.post('/api/trigger-card-key', async (req, res) => {
       return res.status(400).json({ error: 'cardKey is required' });
     }
     
-    console.log('[API] Triggering card key:', cardKey);
-    if (tapSet) {
-      console.log('[API] With tapSet:', tapSet);
-    }
-    if (triggerSet) {
-      console.log('[API] With triggerSet:', triggerSet);
-    }
-    
-    // 记录日志到系统日志
-    const logEntry = {
-      timestamp: new Date().toISOString(),
-      type: 'system',
-      action: 'trigger_card_key',
+    // 使用统一的日志模块
+    logToSystem('trigger_card_key', {
       cardKey: cardKey,
       tapSet: tapSet || null,
-      triggerSet: triggerSet || null,
-      message: `Triggering card key: ${cardKey}${tapSet ? ' with tapSet'+JSON.stringify(tapSet) : ''}${triggerSet ? ' with triggerSet'+JSON.stringify(triggerSet) : ''}`
-    };
-    
-    // 将日志添加到 CLI 日志缓存
-    cliLogs.unshift(logEntry);
-    if (cliLogs.length > MAX_LOGS) {
-      cliLogs.pop();
-    }
+      triggerSet: triggerSet || null
+    });
     
     // 获取存储中的节点数据
     const storedNode = nodeStorage.get(cardKey);
-    if (storedNode) {
-      console.log('[API] Found stored node for card key:', cardKey);
-    }
     
     // 调用 trigger-and-tap.js 中的函数
     if (tapSet) {
-      console.log('[API] Calling handleTapSet');
       try {
-        // 模拟一个元素对象
-        const mockElement = {
-          addEventListener: (eventType, handler) => {
-            console.log(`[Mock Element] Added ${eventType} event listener`);
-          }
-        };
-        
         // 调用 handleTapSet
-        const tapHandler = handleTapSet(tapSet, data || {}, mockElement);
-        
-        // 模拟触发点击事件
-        if (tapHandler) {
-          console.log('[API] Simulating tap event');
-          await tapHandler({ type: 'click' });
-        }
+        handleTapSet(tapSet, data || {}, null);
       } catch (tapError) {
-        console.error('[API] Error handling tapSet:', tapError);
+        logToSystem('handleTapSet-error', {
+          cardKey: cardKey,
+          tapError: tapError,
+        });
       }
     }
     
@@ -1734,141 +1682,17 @@ app.post('/api/trigger-card-key', async (req, res) => {
   } catch (error) {
     console.error('[API] Error triggering card key:', error);
     
-    // 记录错误日志
-    const errorLog = {
-      timestamp: new Date().toISOString(),
-      type: 'system',
-      action: 'trigger_card_key_error',
-      error: error.message,
+    // 使用统一的日志模块
+    logError('trigger_card_key_error', error.message, {
       message: `Error triggering card key: ${error.message}`
-    };
-    cliLogs.unshift(errorLog);
-    if (cliLogs.length > MAX_LOGS) {
-      cliLogs.pop();
-    }
+    });
+    
     
     res.status(500).json({ error: 'Failed to trigger card key' });
   }
 });
 
-// API endpoint for handling tap set
-app.post('/api/handle-tap-set', async (req, res) => {
-  try {
-    const { cardKey, tapSet } = req.body;
-    if (!cardKey || !tapSet) {
-      return res.status(400).json({ error: 'cardKey and tapSet are required' });
-    }
-    
-    console.log('[API] Handling tap set for card key:', cardKey);
-    console.log('[API] Tap set:', tapSet);
-    
-    // 记录日志到系统日志
-    const logEntry = {
-      timestamp: new Date().toISOString(),
-      type: 'system',
-      action: 'handle_tap_set',
-      cardKey: cardKey,
-      tapSet: tapSet,
-      message: `Handling tap set for card key: ${cardKey}`
-    };
-    
-    // 将日志添加到 CLI 日志缓存
-    cliLogs.unshift(logEntry);
-    if (cliLogs.length > MAX_LOGS) {
-      cliLogs.pop();
-    }
-    
-    // 获取存储中的节点数据
-    const storedNode = nodeStorage.get(cardKey);
-    if (storedNode) {
-      console.log('[API] Found stored node for card key:', cardKey);
-    }
-    
-    // 处理 tapSet 中的动作
-    // 注意：handleTapSet 函数需要 DOM 元素，这里我们只是模拟处理
-    // 实际的处理逻辑应该在前端完成
-    if (tapSet.requestSet) {
-      console.log('[API] Processing requestSet:', tapSet.requestSet);
-      
-      // 执行 requestSet 请求
-      try {
-        const { method, url, paramMap } = tapSet.requestSet;
-        const params = {};
-        
-        if (paramMap && typeof paramMap === 'object') {
-          Object.keys(paramMap).forEach(key => {
-            params[key] = paramMap[key];
-          });
-        }
-        
-        console.log('[API] Executing request:', { method, url, params });
-        
-        // 这里可以添加实际的请求逻辑
-        // 例如使用 fetch 或 axios 发送请求
-        
-        // 记录成功日志
-        const successLog = {
-          timestamp: new Date().toISOString(),
-          type: 'system',
-          action: 'request_set_executed',
-          cardKey: cardKey,
-          requestSet: tapSet.requestSet,
-          message: `Request set executed for card key: ${cardKey}`
-        };
-        cliLogs.unshift(successLog);
-        if (cliLogs.length > MAX_LOGS) {
-          cliLogs.pop();
-        }
-      } catch (requestError) {
-        console.error('[API] Error executing requestSet:', requestError);
-        
-        // 记录错误日志
-        const errorLog = {
-          timestamp: new Date().toISOString(),
-          type: 'system',
-          action: 'request_set_error',
-          cardKey: cardKey,
-          error: requestError.message,
-          message: `Error executing requestSet for card key: ${cardKey}`
-        };
-        cliLogs.unshift(errorLog);
-        if (cliLogs.length > MAX_LOGS) {
-          cliLogs.pop();
-        }
-      }
-    }
-    
-    if (tapSet.navigateTo) {
-      console.log('[API] Navigate to:', tapSet.navigateTo);
-    }
-    
-    // 返回当前节点结构
-    res.json({
-      success: true,
-      message: 'Tap set handled successfully',
-      cardKey: cardKey,
-      tapSet: tapSet,
-      nodes: storedNode || null
-    });
-  } catch (error) {
-    console.error('[API] Error handling tap set:', error);
-    
-    // 记录错误日志
-    const errorLog = {
-      timestamp: new Date().toISOString(),
-      type: 'system',
-      action: 'handle_tap_set_error',
-      error: error.message,
-      message: `Error handling tap set: ${error.message}`
-    };
-    cliLogs.unshift(errorLog);
-    if (cliLogs.length > MAX_LOGS) {
-      cliLogs.pop();
-    }
-    
-    res.status(500).json({ error: 'Failed to handle tap set' });
-  }
-});
+
 
 // API endpoint for getting CLI commands list
 app.get('/cli/commands', (req, res) => {
@@ -1884,7 +1708,35 @@ app.get('/cli/commands', (req, res) => {
 // API endpoint for getting CLI logs
 app.get('/api/cli/logs', (req, res) => {
   try {
-    res.json({ logs: cliLogs });
+    console.log('[API] Getting CLI logs...');
+    
+    // 直接返回system-logs.json文件的内容
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const logFilePath = path.resolve(__dirname, '../../log/system-logs.json');
+      console.log('[API] Reading log file:', logFilePath);
+      
+      if (fs.existsSync(logFilePath)) {
+        const logContent = fs.readFileSync(logFilePath, 'utf8');
+        console.log('[API] Log file content length:', logContent.length);
+        
+        try {
+          const logs = JSON.parse(logContent);
+          console.log('[API] Logs parsed successfully:', logs.length, 'entries');
+          res.json({ logs: logs });
+        } catch (parseError) {
+          console.error('[API] Error parsing log file:', parseError);
+          res.json({ logs: [] });
+        }
+      } else {
+        console.error('[API] Log file not found:', logFilePath);
+        res.json({ logs: [] });
+      }
+    } catch (fileError) {
+      console.error('[API] Error reading log file:', fileError);
+      res.json({ logs: [] });
+    }
   } catch (error) {
     console.error('Error getting CLI logs:', error);
     res.status(500).json({ error: 'Failed to get CLI logs' });
@@ -1927,6 +1779,14 @@ app.post('/api/update-node-data', (req, res) => {
     if (!cardKey || !field) {
       return res.status(400).json({ error: 'cardKey and field are required' });
     }
+    
+    // 使用统一的日志模块
+    logToSystem('update_node_data', {
+      cardKey: cardKey,
+      field: field,
+      value: value
+    });
+    
     
     // 查找并更新节点
     let nodeUpdated = false;

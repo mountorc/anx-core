@@ -3,6 +3,7 @@
 let buttonTap;
 let triggerDeal;
 let fileUploadUtils;
+let postCore;
 
 // 添加全局buttonTap占位符
 window.buttonTap = function(element) {
@@ -53,19 +54,94 @@ window.removeFile = function(cardKey, kind, index) {
   }
 };
 
+// 添加全局节点数据更新函数占位符
+window.updateNodeData = function(element) {
+  console.log('ANXView: updateNodeData placeholder called');
+  const cardKey = element.getAttribute('data-card-key');
+  const field = element.getAttribute('data-field');
+  const value = element.value;
+  
+  // 使用postCore发送消息
+  if (postCore) {
+    postCore.sendNodeDataUpdate(cardKey, field, value);
+    postCore.dispatchNodeDataChanged(cardKey, field, value);
+  } else {
+    // 备用方案：直接发送事件
+    const event = new CustomEvent('nodeDataChanged', {
+      detail: {
+        cardKey: cardKey,
+        field: field,
+        value: value
+      }
+    });
+    window.dispatchEvent(event);
+  }
+};
+
+// 添加全局复选框数据更新函数占位符
+window.updateCheckboxData = function(element) {
+  console.log('ANXView: updateCheckboxData placeholder called');
+  const cardKey = element.getAttribute('data-card-key');
+  const field = element.getAttribute('data-field');
+  
+  // 获取当前所有选中的值
+  const checkboxes = document.querySelectorAll('[data-card-key="' + cardKey + '"][data-field="' + field + '"]');
+  const values = [];
+  checkboxes.forEach(function(cb) {
+    if (cb.checked) {
+      values.push(cb.getAttribute('data-option-value'));
+    }
+  });
+  
+  // 使用postCore发送消息
+  if (postCore) {
+    postCore.sendNodeDataUpdate(cardKey, field, values);
+    postCore.dispatchNodeDataChanged(cardKey, field, values);
+  } else {
+    // 备用方案：直接发送事件
+    const event = new CustomEvent('nodeDataChanged', {
+      detail: {
+        cardKey: cardKey,
+        field: field,
+        value: values
+      }
+    });
+    window.dispatchEvent(event);
+  }
+};
+
+// 处理tap事件
+window.handleTapSet = function(tapSet, node, button) {
+  console.log('ANXView: handleTapSet called:', tapSet);
+  console.log('Node:', node);
+  
+  // 模拟处理过程
+  setTimeout(() => {
+    console.log('Tap set processed');
+    // 可以在这里添加实际的处理逻辑
+    // 例如导航、API调用等
+  }, 1500);
+};
+
 
 // 定义全局的节点更新函数
 window.anxNodeUpdate = function(cardKey, field, value) {
   console.log('ANXView: anxNodeUpdate called:', cardKey, field, value);
-  // 发送自定义事件到ANXView组件
-  const event = new CustomEvent('nodeDataChanged', {
-    detail: {
-      cardKey: cardKey,
-      field: field,
-      value: value
-    }
-  });
-  window.dispatchEvent(event);
+  // 使用postCore发送消息
+  if (postCore) {
+    postCore.sendNodeDataUpdate(cardKey, field, value);
+    postCore.dispatchNodeDataChanged(cardKey, field, value);
+  } else {
+    // 备用方案：直接发送事件
+    const event = new CustomEvent('nodeDataChanged', {
+      detail: {
+        cardKey: cardKey,
+        field: field,
+        value: value
+      }
+    });
+    window.dispatchEvent(event);
+  }
 };
 
 // 定义全局的获取节点值函数
@@ -101,6 +177,17 @@ window.anxGetNodeValue = function(cardKey) {
     console.log('ANXView: File upload utils loaded successfully from fileUpload.js');
   } catch (error) {
     console.error('ANXView: Error loading file upload utils:', error);
+  }
+})();
+
+// 异步加载postCore工具函数
+(async () => {
+  try {
+    const postCoreModule = await import('../utils/postCore.js');
+    postCore = postCoreModule;
+    console.log('ANXView: PostCore utils loaded successfully from postCore.js');
+  } catch (error) {
+    console.error('ANXView: Error loading postCore utils:', error);
   }
 })();
 
@@ -253,6 +340,27 @@ class ANXView extends HTMLElement {
       delete window.triggerFileInput;
       console.log('ANXView: triggerFileInput removed from global scope');
     }
+    // 清理节点数据更新相关全局函数
+    if (window.updateNodeData) {
+      delete window.updateNodeData;
+      console.log('ANXView: updateNodeData removed from global scope');
+    }
+    if (window.updateCheckboxData) {
+      delete window.updateCheckboxData;
+      console.log('ANXView: updateCheckboxData removed from global scope');
+    }
+    if (window.handleTapSet) {
+      delete window.handleTapSet;
+      console.log('ANXView: handleTapSet removed from global scope');
+    }
+    if (window.anxNodeUpdate) {
+      delete window.anxNodeUpdate;
+      console.log('ANXView: anxNodeUpdate removed from global scope');
+    }
+    if (window.anxGetNodeValue) {
+      delete window.anxGetNodeValue;
+      console.log('ANXView: anxGetNodeValue removed from global scope');
+    }
   }
   
   // 设置事件监听器
@@ -283,7 +391,45 @@ class ANXView extends HTMLElement {
   // 处理节点数据变化
   handleNodeDataChanged(event) {
     console.log('ANXView: nodeDataChanged received:', event.detail);
-    // 可以在这里处理节点数据变化
+    
+    const { cardKey, field, value } = event.detail;
+    
+    // 同步到后端
+    this.updateNodeDataInBackend(cardKey, field, value);
+  }
+  
+  // 同步节点数据到后端
+  async updateNodeDataInBackend(cardKey, field, value) {
+    console.log('ANXView: Updating node data in backend:', cardKey, field, value);
+    
+    try {
+      if (postCore) {
+        const result = await postCore.updateNodeDataToBackend(cardKey, field, value);
+        console.log('ANXView: Node data updated successfully:', result);
+      } else {
+        // 备用方案：直接调用fetch
+        const response = await fetch('http://localhost:7887/api/update-node-data', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            cardKey: cardKey,
+            field: field,
+            value: value
+          })
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          console.log('ANXView: Node data updated successfully:', result);
+        } else {
+          console.error('ANXView: Error updating node data:', response.statusText);
+        }
+      }
+    } catch (error) {
+      console.error('ANXView: Network error updating node data:', error);
+    }
   }
   
   // 触发处理函数

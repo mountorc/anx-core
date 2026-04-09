@@ -370,62 +370,8 @@ export default {
         oldScript.remove();
       }
       
-      // 创建新的脚本标签
-      const script = document.createElement('script');
-      script.id = 'visualization-dynamic-script';
-      script.textContent = `
-        // 更新节点数据
-        window.updateNodeData = function(element) {
-          const cardKey = element.getAttribute('data-card-key');
-          const field = element.getAttribute('data-field');
-          const value = element.value;
-          
-          // 发送消息到父窗口
-          window.parent.postMessage({
-            type: 'UPDATE_NODE_DATA',
-            cardKey: cardKey,
-            field: field,
-            value: value
-          }, '*');
-        };
-        
-        // 更新复选框数据
-        window.updateCheckboxData = function(element) {
-          const cardKey = element.getAttribute('data-card-key');
-          const field = element.getAttribute('data-field');
-          
-          // 获取当前所有选中的值
-          const checkboxes = document.querySelectorAll('[data-card-key="' + cardKey + '"][data-field="' + field + '"]');
-          const values = [];
-          checkboxes.forEach(function(cb) {
-            if (cb.checked) {
-              values.push(cb.getAttribute('data-option-value'));
-            }
-          });
-          
-          // 发送消息到父窗口
-          window.parent.postMessage({
-            type: 'UPDATE_NODE_DATA',
-            cardKey: cardKey,
-            field: field,
-            value: values
-          }, '*');
-        };
-        
-        // 处理tap事件
-        window.handleTapSet = function(tapSet, node, button) {
-          console.log('Handling tap set:', tapSet);
-          console.log('Node:', node);
-          
-          // 模拟处理过程
-          setTimeout(() => {
-            console.log('Tap set processed');
-            // 可以在这里添加实际的处理逻辑
-            // 例如导航、API调用等
-          }, 1500);
-        };
-      `;
-      document.head.appendChild(script);
+      // 脚本已经在ANXView组件中处理
+      console.log('Visualization JS injected through ANXView component');
     },
     injectVisualizationCSS(css) {
       if (!css) return;
@@ -508,14 +454,6 @@ export default {
         const { cardKey } = event.data;
         console.log('Trigger card key from visualization:', cardKey);
         
-        // 记录日志
-        this.addViewLog({
-          timestamp: new Date().toISOString(),
-          action: 'trigger_card_key',
-          details: { cardKey: cardKey },
-          message: `Card key triggered: ${cardKey}`
-        });
-        
         try {
           // 调用后端 API 触发 cardKey 节点点击
           const response = await fetch('/api/trigger-card-key', {
@@ -565,8 +503,8 @@ export default {
         });
         
         try {
-          // 调用后端 API 处理 tapSet 动作
-          const response = await fetch('/api/handle-tap-set', {
+          // 调用后端 API 触发卡片点击，由它处理 tapSet 动作
+          const response = await fetch('/api/trigger-card-key', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

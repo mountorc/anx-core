@@ -1,0 +1,294 @@
+[
+  {
+    "type": "system",
+    "action": "handleTapSet",
+    "timestamp": "2026-04-09T15:17:40.991Z",
+    "details": {
+      "actionType": "",
+      "actionConfig": {},
+      "timestamp": "2026-04-09T15:17:40.991Z"
+    },
+    "message": "[System] handleTapSet: {\"actionType\":\"\",\"actionConfig\":{},\"timestamp\":\"2026-04-09T15:17:40.991Z\"}"
+  },
+  {
+    "type": "system",
+    "action": "handleTapSet-start",
+    "timestamp": "2026-04-09T15:17:40.990Z",
+    "details": {
+      "cardKey": "button-1775747820388-45rzju4qc"
+    },
+    "message": "[System] handleTapSet-start: {\"cardKey\":\"button-1775747820388-45rzju4qc\"}"
+  },
+  {
+    "type": "system",
+    "action": "trigger_card_key",
+    "timestamp": "2026-04-09T15:17:40.988Z",
+    "details": {
+      "cardKey": "button-1775747820388-45rzju4qc",
+      "tapSet": {
+        "requestSet": {
+          "method": "POST",
+          "url": "http://localhost:3002/api/run-workflow",
+          "paramMap": {
+            "workflowId": "2028318219441803266",
+            "image1": "images[0]",
+            "image2": "images[1]",
+            "image3": "images[2]",
+            "image4": "images[3]",
+            "image5": "images[4]",
+            "image6": "images[5]",
+            "image7": "images[6]",
+            "image8": "images[7]",
+            "text": "system_prompt",
+            "seed": "seed"
+          }
+        }
+      },
+      "triggerSet": null
+    },
+    "message": "[System] trigger_card_key: {\"cardKey\":\"button-1775747820388-45rzju4qc\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"2028318219441803266\",\"image1\":\"images[0]\",\"image2\":\"images[1]\",\"image3\":\"images[2]\",\"image4\":\"images[3]\",\"image5\":\"images[4]\",\"image6\":\"images[5]\",\"image7\":\"images[6]\",\"image8\":\"images[7]\",\"text\":\"system_prompt\",\"seed\":\"seed\"}}},\"triggerSet\":null}"
+  },
+  {
+    "type": "system",
+    "action": "handleTapSet",
+    "timestamp": "2026-04-09T15:17:03.616Z",
+    "details": {
+      "actionType": "",
+      "actionConfig": {},
+      "timestamp": "2026-04-09T15:17:03.616Z"
+    },
+    "message": "[System] handleTapSet: {\"actionType\":\"\",\"actionConfig\":{},\"timestamp\":\"2026-04-09T15:17:03.616Z\"}"
+  },
+  {
+    "type": "system",
+    "action": "handleTapSet-start",
+    "timestamp": "2026-04-09T15:17:03.616Z",
+    "details": {
+      "cardKey": "button-1775747820388-45rzju4qc"
+    },
+    "message": "[System] handleTapSet-start: {\"cardKey\":\"button-1775747820388-45rzju4qc\"}"
+  },
+  {
+    "type": "system",
+    "action": "trigger_card_key",
+    "timestamp": "2026-04-09T15:17:03.613Z",
+    "details": {
+      "cardKey": "button-1775747820388-45rzju4qc",
+      "tapSet": {
+        "requestSet": {
+          "method": "POST",
+          "url": "http://localhost:3002/api/run-workflow",
+          "paramMap": {
+            "workflowId": "2028318219441803266",
+            "image1": "images[0]",
+            "image2": "images[1]",
+            "image3": "images[2]",
+            "image4": "images[3]",
+            "image5": "images[4]",
+            "image6": "images[5]",
+            "image7": "images[6]",
+            "image8": "images[7]",
+            "text": "system_prompt",
+            "seed": "seed"
+          }
+        }
+      },
+      "triggerSet": null
+    },
+    "message": "[System] trigger_card_key: {\"cardKey\":\"button-1775747820388-45rzju4qc\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"2028318219441803266\",\"image1\":\"images[0]\",\"image2\":\"images[1]\",\"image3\":\"images[2]\",\"image4\":\"images[3]\",\"image5\":\"images[4]\",\"image6\":\"images[5]\",\"image7\":\"images[6]\",\"image8\":\"images[7]\",\"text\":\"system_prompt\",\"seed\":\"seed\"}}},\"triggerSet\":null}"
+  },
+  {
+    "type": "system",
+    "action": "handleTapSet-error",
+    "timestamp": "2026-04-09T15:15:47.103Z",
+    "details": {
+      "tapError": {}
+    },
+    "message": "[System] handleTapSet-error: {\"tapError\":{}}"
+  },
+  {
+    "type": "system",
+    "action": "handleTapSet-start",
+    "timestamp": "2026-04-09T15:15:47.103Z",
+    "details": {
+      "cardKey": "button-1775747743676-bb0x2p6xp"
+    },
+    "message": "[System] handleTapSet-start: {\"cardKey\":\"button-1775747743676-bb0x2p6xp\"}"
+  },
+  {
+    "type": "system",
+    "action": "trigger_card_key",
+    "timestamp": "2026-04-09T15:15:47.099Z",
+    "details": {
+      "cardKey": "button-1775747743676-bb0x2p6xp",
+      "tapSet": {
+        "requestSet": {
+          "method": "POST",
+          "url": "http://localhost:3002/api/run-workflow",
+          "paramMap": {
+            "workflowId": "2028318219441803266",
+            "image1": "images[0]",
+            "image2": "images[1]",
+            "image3": "images[2]",
+            "image4": "images[3]",
+            "image5": "images[4]",
+            "image6": "images[5]",
+            "image7": "images[6]",
+            "image8": "images[7]",
+            "text": "system_prompt",
+            "seed": "seed"
+          }
+        }
+      },
+      "triggerSet": null
+    },
+    "message": "[System] trigger_card_key: {\"cardKey\":\"button-1775747743676-bb0x2p6xp\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"2028318219441803266\",\"image1\":\"images[0]\",\"image2\":\"images[1]\",\"image3\":\"images[2]\",\"image4\":\"images[3]\",\"image5\":\"images[4]\",\"image6\":\"images[5]\",\"image7\":\"images[6]\",\"image8\":\"images[7]\",\"text\":\"system_prompt\",\"seed\":\"seed\"}}},\"triggerSet\":null}"
+  },
+  {
+    "type": "system",
+    "action": "handleTapSet-start",
+    "timestamp": "2026-04-09T15:14:16.960Z",
+    "details": {
+      "cardKey": "button-1775747653867-ze2sjop1n"
+    },
+    "message": "[System] handleTapSet-start: {\"cardKey\":\"button-1775747653867-ze2sjop1n\"}"
+  },
+  {
+    "type": "system",
+    "action": "trigger_card_key",
+    "timestamp": "2026-04-09T15:14:16.955Z",
+    "details": {
+      "cardKey": "button-1775747653867-ze2sjop1n",
+      "tapSet": {
+        "requestSet": {
+          "method": "POST",
+          "url": "http://localhost:3002/api/run-workflow",
+          "paramMap": {
+            "workflowId": "2028318219441803266",
+            "image1": "images[0]",
+            "image2": "images[1]",
+            "image3": "images[2]",
+            "image4": "images[3]",
+            "image5": "images[4]",
+            "image6": "images[5]",
+            "image7": "images[6]",
+            "image8": "images[7]",
+            "text": "system_prompt",
+            "seed": "seed"
+          }
+        }
+      },
+      "triggerSet": null
+    },
+    "message": "[System] trigger_card_key: {\"cardKey\":\"button-1775747653867-ze2sjop1n\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"2028318219441803266\",\"image1\":\"images[0]\",\"image2\":\"images[1]\",\"image3\":\"images[2]\",\"image4\":\"images[3]\",\"image5\":\"images[4]\",\"image6\":\"images[5]\",\"image7\":\"images[6]\",\"image8\":\"images[7]\",\"text\":\"system_prompt\",\"seed\":\"seed\"}}},\"triggerSet\":null}"
+  },
+  {
+    "type": "system",
+    "action": "trigger_card_key",
+    "timestamp": "2026-04-09T15:00:24.425Z",
+    "details": {
+      "cardKey": "button-1775744913924-l5hcmy968",
+      "tapSet": {
+        "requestSet": {
+          "method": "POST",
+          "url": "http://localhost:3002/api/run-workflow",
+          "paramMap": {
+            "workflowId": "2028318219441803266",
+            "image1": "images[0]",
+            "image2": "images[1]",
+            "image3": "images[2]",
+            "image4": "images[3]",
+            "image5": "images[4]",
+            "image6": "images[5]",
+            "image7": "images[6]",
+            "image8": "images[7]",
+            "text": "system_prompt",
+            "seed": "seed"
+          }
+        }
+      },
+      "triggerSet": null
+    },
+    "message": "[System] trigger_card_key: {\"cardKey\":\"button-1775744913924-l5hcmy968\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"2028318219441803266\",\"image1\":\"images[0]\",\"image2\":\"images[1]\",\"image3\":\"images[2]\",\"image4\":\"images[3]\",\"image5\":\"images[4]\",\"image6\":\"images[5]\",\"image7\":\"images[6]\",\"image8\":\"images[7]\",\"text\":\"system_prompt\",\"seed\":\"seed\"}}},\"triggerSet\":null}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-09T15:00:07.739Z",
+    "details": {
+      "cardKey": "card_1775744913766_7565",
+      "field": "value",
+      "value": "333444"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1775744913766_7565\",\"field\":\"value\",\"value\":\"333444\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-09T14:52:54.399Z",
+    "details": {
+      "cardKey": "card_1775746267076_5623",
+      "field": "value",
+      "value": "333"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1775746267076_5623\",\"field\":\"value\",\"value\":\"333\"}"
+  },
+  {
+    "type": "system",
+    "action": "trigger_card_key",
+    "timestamp": "2026-04-09T14:52:39.607Z",
+    "details": {
+      "cardKey": "button-1775746355443-3xwnuuo98",
+      "tapSet": {
+        "requestSet": {
+          "method": "POST",
+          "url": "http://localhost:3002/api/run-workflow",
+          "paramMap": {
+            "workflowId": "2028318219441803266",
+            "image1": "images[0]",
+            "image2": "images[1]",
+            "image3": "images[2]",
+            "image4": "images[3]",
+            "image5": "images[4]",
+            "image6": "images[5]",
+            "image7": "images[6]",
+            "image8": "images[7]",
+            "text": "system_prompt",
+            "seed": "seed"
+          }
+        }
+      },
+      "triggerSet": null
+    },
+    "message": "[System] trigger_card_key: {\"cardKey\":\"button-1775746355443-3xwnuuo98\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"2028318219441803266\",\"image1\":\"images[0]\",\"image2\":\"images[1]\",\"image3\":\"images[2]\",\"image4\":\"images[3]\",\"image5\":\"images[4]\",\"image6\":\"images[5]\",\"image7\":\"images[6]\",\"image8\":\"images[7]\",\"text\":\"system_prompt\",\"seed\":\"seed\"}}},\"triggerSet\":null}"
+  },
+  {
+    "type": "system",
+    "action": "trigger_card_key",
+    "timestamp": "2026-04-09T14:51:13.768Z",
+    "details": {
+      "cardKey": "button-1775746267090-eqyoqj75u",
+      "tapSet": {
+        "requestSet": {
+          "method": "POST",
+          "url": "http://localhost:3002/api/run-workflow",
+          "paramMap": {
+            "workflowId": "2028318219441803266",
+            "image1": "images[0]",
+            "image2": "images[1]",
+            "image3": "images[2]",
+            "image4": "images[3]",
+            "image5": "images[4]",
+            "image6": "images[5]",
+            "image7": "images[6]",
+            "image8": "images[7]",
+            "text": "system_prompt",
+            "seed": "seed"
+          }
+        }
+      },
+      "triggerSet": null
+    },
+    "message": "[System] trigger_card_key: {\"cardKey\":\"button-1775746267090-eqyoqj75u\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"2028318219441803266\",\"image1\":\"images[0]\",\"image2\":\"images[1]\",\"image3\":\"images[2]\",\"image4\":\"images[3]\",\"image5\":\"images[4]\",\"image6\":\"images[5]\",\"image7\":\"images[6]\",\"image8\":\"images[7]\",\"text\":\"system_prompt\",\"seed\":\"seed\"}}},\"triggerSet\":null}"
+  }
+]
