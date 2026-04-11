@@ -19,8 +19,9 @@ const PORT = 7887;
 
 // 存储cardKey及其对应的config信息
 const cardStorage = new Map();
-// 存储完整的节点结构
-const nodeStorage = new Map();
+// 导入节点存储模块
+const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('../../core/utils/node.js');
+const { setHubAnxMap, processAnxContent } = require('../../core/utils/tile.js');
 // 存储基于ANX内容的哈希值到节点结构的映射
 const anxHashToNodeMap = new Map();
 // 存储hub中的anx config
@@ -29,9 +30,6 @@ const hubAnxMap = new Map();
 // 导入日志模块
 const { logToSystem, logError, readLogs } = require('../../core/utils/log.js');
 
-// 存储CLI命令执行记录的日志缓存（保持兼容性）
-const cliLogs = [];
-const MAX_LOGS = 1000; // 最大日志条数
 
 // 生成ANX内容的哈希值
 function generateAnxHash(anxContent) {
@@ -65,6 +63,8 @@ function loadHubFiles() {
         }
       });
       console.log(`Loaded ${hubAnxMap.size} hub files`);
+      // 将 hubAnxMap 设置到 tile.js 模块中
+      setHubAnxMap(hubAnxMap);
     }
   } catch (error) {
     console.error('Error loading hub files:', error);
@@ -311,7 +311,7 @@ async function nodesToMarkup(nodesStructure) {
   }
   
   // 先检查是否有存储的节点数据
-  const storedNode = nodeStorage.get(nodesStructure.cardKey);
+  const storedNode = getNode(nodesStructure.cardKey);
   if (storedNode) {
     nodesStructure = storedNode;
   }
@@ -365,7 +365,7 @@ async function nodesToMarkup(nodesStructure) {
               // 更新node.config.data，以便后续使用
               node.config.data = boxData;
               // 更新存储中的节点数据
-              nodeStorage.set(node.cardKey, node);
+              setNode(node.cardKey, node);
             } catch (error) {
               console.error('Error fetching box dataset:', error);
             }
@@ -401,9 +401,7 @@ async function nodesToMarkup(nodesStructure) {
                 });
                 
                 // 用<x 0>这样的标签包裹每个box项
-                nodeMarkup += `<x ${i}>
-${parsedTemplate}
-</x>\n\n`;
+                nodeMarkup += `<x ${i}>${parsedTemplate}</x>\n\n`;
               }
             }
           } else if (node.config.html || node.config.template) {
@@ -545,7 +543,7 @@ ${parsedTemplate}
           }
           node.data.options = optionsData;
           // 更新存储中的节点数据
-          nodeStorage.set(node.cardKey, node);
+          setNode(node.cardKey, node);
           
           nodeMarkup = optionsContent;
           break;
@@ -573,7 +571,7 @@ ${parsedTemplate}
               // 更新node.config.data，以便后续使用
               node.config.data = tableData;
               // 更新存储中的节点数据
-              nodeStorage.set(node.cardKey, node);
+              setNode(node.cardKey, node);
             } catch (error) {
               console.error('Error fetching table dataset:', error);
             }
@@ -754,15 +752,12 @@ app.post('/api/convert', async (req, res) => {
   try {
     let { anxContent, uuid_tile } = req.body;
     
-    // 如果提供了uuid_tile，则从hub中获取anx config
-    if (uuid_tile) {
-      const hubFile = hubAnxMap.get(uuid_tile);
-      if (hubFile) {
-        anxContent = hubFile.anxContent;
-      } else {
-        return res.status(404).json({ error: 'ANX config not found for the given uuid_tile' });
-      }
+    // 使用 tile.js 模块处理 anxContent
+    const anxResult = processAnxContent(anxContent, uuid_tile);
+    if (!anxResult.success) {
+      return res.status(404).json({ error: anxResult.error });
     }
+    anxContent = anxResult.anxContent;
     
     // 生成ANX内容的哈希值
     const anxHash = generateAnxHash(anxContent);
@@ -778,10 +773,15 @@ app.post('/api/convert', async (req, res) => {
     }
     
     // 检查根节点是否有存储的数据
-    const storedRootNode = nodeStorage.get(nodesStructure.cardKey);
+    const storedRootNode = getNode(nodesStructure.cardKey);
     if (storedRootNode) {
-      // 使用存储中的数据更新根节点
-      Object.assign(nodesStructure, storedRootNode);
+      // 只更新数据部分，保持节点结构完整
+      if (storedRootNode.data) {
+        nodesStructure.data = { ...nodesStructure.data, ...storedRootNode.data };
+      }
+      if (storedRootNode.config) {
+        nodesStructure.config = { ...nodesStructure.config, ...storedRootNode.config };
+      }
     }
     
     // 更新子节点，使用存储中的数据
@@ -833,10 +833,15 @@ app.get('/api/convert', async (req, res) => {
     }
     
     // 检查根节点是否有存储的数据
-    const storedRootNode = nodeStorage.get(nodesStructure.cardKey);
+    const storedRootNode = getNode(nodesStructure.cardKey);
     if (storedRootNode) {
-      // 使用存储中的数据更新根节点
-      Object.assign(nodesStructure, storedRootNode);
+      // 只更新数据部分，保持节点结构完整
+      if (storedRootNode.data) {
+        nodesStructure.data = { ...nodesStructure.data, ...storedRootNode.data };
+      }
+      if (storedRootNode.config) {
+        nodesStructure.config = { ...nodesStructure.config, ...storedRootNode.config };
+      }
     }
     
     // 更新子节点，使用存储中的数据
@@ -888,10 +893,15 @@ app.get('/anxCore/getMarkup', async (req, res) => {
     }
     
     // 检查根节点是否有存储的数据
-    const storedRootNode = nodeStorage.get(nodesStructure.cardKey);
+    const storedRootNode = getNode(nodesStructure.cardKey);
     if (storedRootNode) {
-      // 使用存储中的数据更新根节点
-      Object.assign(nodesStructure, storedRootNode);
+      // 只更新数据部分，保持节点结构完整
+      if (storedRootNode.data) {
+        nodesStructure.data = { ...nodesStructure.data, ...storedRootNode.data };
+      }
+      if (storedRootNode.config) {
+        nodesStructure.config = { ...nodesStructure.config, ...storedRootNode.config };
+      }
     }
     
     // 更新子节点，使用存储中的数据
@@ -914,15 +924,12 @@ app.post('/anxCore/getMarkup', async (req, res) => {
   try {
     let { anxContent, uuid_tile } = req.body;
     
-    // 如果提供了uuid_tile，则从hub中获取anx config
-    if (uuid_tile) {
-      const hubFile = hubAnxMap.get(uuid_tile);
-      if (hubFile) {
-        anxContent = hubFile.anxContent;
-      } else {
-        return res.status(404).json({ error: 'ANX config not found for the given uuid_tile' });
-      }
+    // 使用 tile.js 模块处理 anxContent
+    const anxResult = processAnxContent(anxContent, uuid_tile);
+    if (!anxResult.success) {
+      return res.status(404).json({ error: anxResult.error });
     }
+    anxContent = anxResult.anxContent;
     
     // 生成ANX内容的哈希值
     const anxHash = generateAnxHash(anxContent);
@@ -938,10 +945,15 @@ app.post('/anxCore/getMarkup', async (req, res) => {
     }
     
     // 检查根节点是否有存储的数据
-    const storedRootNode = nodeStorage.get(nodesStructure.cardKey);
+    const storedRootNode = getNode(nodesStructure.cardKey);
     if (storedRootNode) {
-      // 使用存储中的数据更新根节点
-      Object.assign(nodesStructure, storedRootNode);
+      // 只更新数据部分，保持节点结构完整
+      if (storedRootNode.data) {
+        nodesStructure.data = { ...nodesStructure.data, ...storedRootNode.data };
+      }
+      if (storedRootNode.config) {
+        nodesStructure.config = { ...nodesStructure.config, ...storedRootNode.config };
+      }
     }
     
     // 更新子节点，使用存储中的数据
@@ -965,10 +977,16 @@ function updateNodesWithStoredData(nodes) {
   
   nodes.forEach(node => {
     // 检查是否有存储的节点数据
-    const storedNode = nodeStorage.get(node.cardKey);
+    const storedNode = getNode(node.cardKey);
     if (storedNode) {
-      // 使用存储中的数据更新节点
-      Object.assign(node, storedNode);
+      // 只更新数据部分，保持节点结构完整
+      if (storedNode.data) {
+        node.data = { ...node.data, ...storedNode.data };
+      }
+      // 如果存储的节点有其他属性，也进行合并
+      if (storedNode.config) {
+        node.config = { ...node.config, ...storedNode.config };
+      }
     }
     // 递归更新子节点
     if (node.nodes && node.nodes.length > 0) {
@@ -985,7 +1003,7 @@ function storeCardNodes(nodes) {
     // 存储当前节点
     if (node.cardKey && node.config) {
       cardStorage.set(node.cardKey, node.config);
-      nodeStorage.set(node.cardKey, node); // 存储完整的节点结构
+      setNode(node.cardKey, node); // 存储完整的节点结构
     }
     // 递归存储子节点
     if (node.nodes && node.nodes.length > 0) {
@@ -999,15 +1017,12 @@ app.post('/api/convert-to-nodes', async (req, res) => {
   try {
     let { anxContent, uuid_tile } = req.body;
     
-    // 如果提供了uuid_tile，则从hub中获取anx config
-    if (uuid_tile) {
-      const hubFile = hubAnxMap.get(uuid_tile);
-      if (hubFile) {
-        anxContent = hubFile.anxContent;
-      } else {
-        return res.status(404).json({ error: 'ANX config not found for the given uuid_tile' });
-      }
+    // 使用 tile.js 模块处理 anxContent
+    const anxResult = processAnxContent(anxContent, uuid_tile);
+    if (!anxResult.success) {
+      return res.status(404).json({ error: anxResult.error });
     }
+    anxContent = anxResult.anxContent;
     
     // 生成ANX内容的哈希值
     const anxHash = generateAnxHash(anxContent);
@@ -1048,7 +1063,7 @@ app.post('/api/convert-to-nodes', async (req, res) => {
           // 更新node.config.data，以便后续使用
           node.config.data = processedData;
           // 更新存储中的节点数据
-          nodeStorage.set(node.cardKey, node);
+          setNode(node.cardKey, node);
           console.log('Updated node data:', node.data);
         } catch (error) {
           console.error('Error fetching node dataset:', error);
@@ -1059,7 +1074,7 @@ app.post('/api/convert-to-nodes', async (req, res) => {
             }
             node.data.data = node.config.data;
             // 更新存储中的节点数据
-            nodeStorage.set(node.cardKey, node);
+            setNode(node.cardKey, node);
             console.log('Using original data due to dataset fetch error:', node.data);
           }
         }
@@ -1074,10 +1089,15 @@ app.post('/api/convert-to-nodes', async (req, res) => {
     }
     
     // 检查根节点是否有存储的数据
-    const storedRootNode = nodeStorage.get(nodesStructure.cardKey);
+    const storedRootNode = getNode(nodesStructure.cardKey);
     if (storedRootNode) {
-      // 使用存储中的数据更新根节点
-      Object.assign(nodesStructure, storedRootNode);
+      // 只更新数据部分，保持节点结构完整
+      if (storedRootNode.data) {
+        nodesStructure.data = { ...nodesStructure.data, ...storedRootNode.data };
+      }
+      if (storedRootNode.config) {
+        nodesStructure.config = { ...nodesStructure.config, ...storedRootNode.config };
+      }
     }
     
     // 更新子节点，使用存储中的数据
@@ -1091,7 +1111,7 @@ app.post('/api/convert-to-nodes', async (req, res) => {
     // 存储根节点
     if (nodesStructure.cardKey && nodesStructure.config) {
       cardStorage.set(nodesStructure.cardKey, nodesStructure.config);
-      nodeStorage.set(nodesStructure.cardKey, nodesStructure); // 存储完整的根节点结构
+      setNode(nodesStructure.cardKey, nodesStructure); // 存储完整的根节点结构
     }
     
     // 存储子节点
@@ -1154,7 +1174,7 @@ app.post('/api/execute-cli', (req, res) => {
         break;
       case 'get_node':
         // 从存储中获取cardKey对应的完整节点结构
-        const node = nodeStorage.get(cardKey);
+        const node = getNode(cardKey);
         if (node) {
           result = node; // 直接返回完整的节点结构
         } else {
@@ -1163,7 +1183,7 @@ app.post('/api/execute-cli', (req, res) => {
         break;
       case 'get_form':
         // 从存储中获取cardKey对应的节点
-        const getFormNode = nodeStorage.get(cardKey);
+        const getFormNode = getNode(cardKey);
         if (getFormNode) {
           // 返回表单的完整数据
           result = getFormNode.data || { value: {} };
@@ -1173,7 +1193,7 @@ app.post('/api/execute-cli', (req, res) => {
         break;
       case 'set_form':
         // 从存储中获取cardKey对应的节点
-        const formNode = nodeStorage.get(cardKey);
+        const formNode = getNode(cardKey);
         if (formNode) {
           try {
             // 检查是否有--replace参数
@@ -1225,7 +1245,7 @@ app.post('/api/execute-cli', (req, res) => {
             updateFormulas(formNode);
             
             // 更新存储
-            nodeStorage.set(cardKey, formNode);
+            setNode(cardKey, formNode);
             
             // 同步更新 anxHashToNodeMap 中的节点
             for (let [anxHash, rootNode] of anxHashToNodeMap) {
@@ -1283,7 +1303,7 @@ app.post('/api/execute-cli', (req, res) => {
         break;
       case 'fill':
         // 从存储中获取cardKey对应的节点
-        const fillNode = nodeStorage.get(cardKey);
+        const fillNode = getNode(cardKey);
         if (fillNode) {
           // 获取填充值
           const value = params.join(' ');
@@ -1293,7 +1313,7 @@ app.post('/api/execute-cli', (req, res) => {
           }
           fillNode.data.value = value;
           // 更新存储
-          nodeStorage.set(cardKey, fillNode);
+          setNode(cardKey, fillNode);
           result = { message: 'Value filled successfully', value: value };
         } else {
           result = `No node found for cardKey: ${cardKey}`;
@@ -1301,7 +1321,7 @@ app.post('/api/execute-cli', (req, res) => {
         break;
       case 'input':
         // 从存储中获取cardKey对应的节点
-        const inputNode = nodeStorage.get(cardKey);
+        const inputNode = getNode(cardKey);
         if (inputNode) {
           // 获取输入值
           const value = params.join(' ');
@@ -1316,7 +1336,7 @@ app.post('/api/execute-cli', (req, res) => {
             inputNode.data.value = value;
           }
           // 更新存储
-          nodeStorage.set(cardKey, inputNode);
+          setNode(cardKey, inputNode);
           result = { message: 'Input added successfully', value: inputNode.data.value };
         } else {
           result = `No node found for cardKey: ${cardKey}`;
@@ -1324,7 +1344,7 @@ app.post('/api/execute-cli', (req, res) => {
         break;
       case 'tap':
         // 从存储中获取cardKey对应的节点
-        const tapNode = nodeStorage.get(cardKey);
+        const tapNode = getNode(cardKey);
         if (tapNode) {
           // 检查节点是否有tapSet配置
           const tapSet = tapNode.config.tapSet;
@@ -1402,7 +1422,7 @@ app.post('/api/execute-cli', (req, res) => {
         break;
       case 'clear_form':
         // 从存储中获取cardKey对应的节点
-        const clearFormNode = nodeStorage.get(cardKey);
+        const clearFormNode = getNode(cardKey);
         if (clearFormNode) {
           // 清空表单的data.value
           if (!clearFormNode.data) {
@@ -1428,7 +1448,7 @@ app.post('/api/execute-cli', (req, res) => {
           }
           
           // 更新存储
-          nodeStorage.set(cardKey, clearFormNode);
+          setNode(cardKey, clearFormNode);
           
           // 同步更新 anxHashToNodeMap 中的节点
           for (let [anxHash, rootNode] of anxHashToNodeMap) {
@@ -1591,7 +1611,7 @@ app.post('/api/visualize-node', (req, res) => {
     let nodeToVisualize = { ...node };
     
     // 检查根节点是否有存储的数据
-    const storedRootNode = nodeStorage.get(node.cardKey);
+    const storedRootNode = getNode(node.cardKey);
     if (storedRootNode) {
       nodeToVisualize = storedRootNode;
     }
@@ -1630,13 +1650,16 @@ app.post('/api/trigger-card-key', async (req, res) => {
     });
     
     // 获取存储中的节点数据
-    const storedNode = nodeStorage.get(cardKey);
+    const storedNode = getNode(cardKey);
     
     // 调用 trigger-and-tap.js 中的函数
     if (tapSet) {
       try {
         // 调用 handleTapSet
-        handleTapSet(tapSet, data || {}, null);
+        handleTapSet({
+          cardKey:cardKey,
+          node:storedNode,
+          data});
       } catch (tapError) {
         logToSystem('handleTapSet-error', {
           cardKey: cardKey,
@@ -1648,23 +1671,8 @@ app.post('/api/trigger-card-key', async (req, res) => {
     if (triggerSet) {
       console.log('[API] Calling handleTriggerSet');
       try {
-        // 模拟一个元素对象
-        const mockElement = {
-          addEventListener: (eventType, handler) => {
-            console.log(`[Mock Element] Added ${eventType} event listener`);
-          }
-        };
-        
         // 调用 handleTriggerSet
-        const triggerHandlers = handleTriggerSet(triggerSet, data || {}, mockElement);
-        
-        // 模拟触发第一个触发事件
-        if (Object.keys(triggerHandlers).length > 0) {
-          const firstTriggerType = Object.keys(triggerHandlers)[0];
-          const firstHandler = triggerHandlers[firstTriggerType];
-          console.log(`[API] Simulating ${firstTriggerType} event`);
-          await firstHandler({ type: firstTriggerType });
-        }
+        handleTriggerSet(triggerSet, data || {}, null);
       } catch (triggerError) {
         console.error('[API] Error handling triggerSet:', triggerError);
       }
@@ -1834,17 +1842,17 @@ app.post('/api/update-node-data', (req, res) => {
           rootNode.data = {};
         }
         rootNode.data[field] = value;
-        // 更新nodeStorage中的节点
-        nodeStorage.set(cardKey, rootNode);
-        nodeUpdated = true;
-        updatedRootNode = rootNode;
-        break;
-      }
-      
-      if (rootNode.nodes && rootNode.nodes.length > 0) {
-        if (updateNodeInStructure(rootNode.nodes, rootNode)) {
-          // 更新nodeStorage中的节点
-          nodeStorage.set(cardKey, updatedChildNode);
+        // 更新nodeStorage中的节点数据
+          updateNodeData(cardKey, { [field]: value });
+          nodeUpdated = true;
+          updatedRootNode = rootNode;
+          break;
+        }
+        
+        if (rootNode.nodes && rootNode.nodes.length > 0) {
+          if (updateNodeInStructure(rootNode.nodes, rootNode)) {
+            // 更新nodeStorage中的节点数据
+            updateNodeData(cardKey, { [field]: value });
           nodeUpdated = true;
           updatedRootNode = rootNode;
           break;

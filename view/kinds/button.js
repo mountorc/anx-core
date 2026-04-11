@@ -3,7 +3,7 @@ function renderButton(node) {
   const label = config.title || config.label || 'Button';
   const buttonId = 'button-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
   const tapSet = node.tapSet || node.config.tapSet || {};
-  const cardKey = node.config.key || node.config.id || buttonId;
+  const cardKey = node.cardKey;
   
   // 将 tapSet、label 和 node 转换为 JSON 字符串，用于存储在 data- 属性中
   const tapSetJson = JSON.stringify(tapSet).replace(/"/g, '&quot;');

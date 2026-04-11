@@ -3,17 +3,20 @@
  * Handles HTTP requests and logs them to system log
  */
 
+const { logToSystem, logError } = require('./log.js');
+const { buildParams } = require('./param.js');
+
 /**
  * Execute an HTTP request
  * @param {Object} config - Request configuration
  * @param {Object} data - Data object for parameter mapping
  * @returns {Promise} - Request result
  */
-export async function executeRequest(config, data = {}) {
+async function executeRequest(config, data = {}) {
   const { method = 'GET', url, paramMap = {}, headers = {} } = config;
   
   // Log request start
-  logRequest('request_start', {
+  logToSystem('request_start', {
     method,
     url,
     paramMap,
@@ -22,33 +25,25 @@ export async function executeRequest(config, data = {}) {
   
   if (!url) {
     const error = new Error('Request URL is required');
-    logRequest('request_error', {
-      error: error.message,
+    logError('request_error', error.message, {
       timestamp: new Date().toISOString()
     });
     throw error;
   }
   
   try {
+    // Log parameters
+    logToSystem('request_params-start', {
+      timestamp: new Date().toISOString()
+    });
     // Build parameters
-    const params = {};
-    if (paramMap && typeof paramMap === 'object') {
-      Object.keys(paramMap).forEach(targetParam => {
-        const sourceField = paramMap[targetParam];
-        // Check if sourceField is a field path or a literal value
-        const value = getDataValue(data, sourceField);
-        if (value !== undefined) {
-          params[targetParam] = value;
-        } else {
-          // If not found in data, use the sourceField as literal value
-          params[targetParam] = sourceField;
-        }
-      });
-    }
+    const params = buildParams(paramMap, data);
     
     // Log parameters
-    logRequest('request_params', {
+    logToSystem('request_params', {
       params,
+      paramMap,
+      data,
       timestamp: new Date().toISOString()
     });
     
@@ -61,6 +56,7 @@ export async function executeRequest(config, data = {}) {
       }
     };
     
+    /*
     let requestUrl = url;
     
     // Handle GET request parameters
@@ -79,7 +75,7 @@ export async function executeRequest(config, data = {}) {
     }
     
     // Log request details
-    logRequest('request_send', {
+    logToSystem('request_send', {
       url: requestUrl,
       method: fetchOptions.method,
       headers: fetchOptions.headers,
@@ -91,7 +87,7 @@ export async function executeRequest(config, data = {}) {
     const response = await fetch(requestUrl, fetchOptions);
     
     // Log response status
-    logRequest('request_response', {
+    logToSystem('request_response', {
       status: response.status,
       statusText: response.statusText,
       timestamp: new Date().toISOString()
@@ -105,7 +101,9 @@ export async function executeRequest(config, data = {}) {
     const responseData = await response.json();
     
     // Log request success
-    logRequest('request_success', {
+    logToSystem('request_success', {
+      url: url,
+      method: method,
       status: response.status,
       data: responseData,
       timestamp: new Date().toISOString()
@@ -116,11 +114,13 @@ export async function executeRequest(config, data = {}) {
       status: response.status,
       data: responseData
     };
+    */
     
   } catch (error) {
     // Log request error
-    logRequest('request_error', {
-      error: error.message,
+    logError('request_error', error.message, {
+      url: url,
+      method: method,
       stack: error.stack,
       timestamp: new Date().toISOString()
     });
@@ -129,104 +129,9 @@ export async function executeRequest(config, data = {}) {
   }
 }
 
-/**
- * Log request activity to system log
- * @param {string} action - Action type
- * @param {Object} details - Log details
- */
-function logRequest(action, details) {
-  const logEntry = {
-    type: 'system',
-    action: `request_${action}`,
-    timestamp: details.timestamp || new Date().toISOString(),
-    details: details,
-    message: `[Request] ${action}: ${JSON.stringify(details)}`
-  };
-  
-  // Log to console
-  console.log(`[Request] ${action}:`, details);
-  
-  // Dispatch global event for external logging
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('systemLog', {
-      detail: logEntry
-    }));
-  }
-  
-  // Store in localStorage for persistence
-  if (typeof localStorage !== 'undefined') {
-    try {
-      const logs = JSON.parse(localStorage.getItem('systemLogs') || '[]');
-      logs.unshift(logEntry);
-      // Keep only last 100 logs
-      const limitedLogs = logs.slice(0, 100);
-      localStorage.setItem('systemLogs', JSON.stringify(limitedLogs));
-    } catch (e) {
-      console.error('Failed to store log:', e);
-    }
-  }
-}
 
-/**
- * Get data value from object by field path
- * @param {Object} data - Data object
- * @param {string} fieldPath - Field path (e.g., "user.name" or "images[0]")
- * @returns {*} - Field value or undefined
- */
-function getDataValue(data, fieldPath) {
-  if (!data || !fieldPath) return undefined;
-  
-  // Handle array index notation like "images[0]"
-  const arrayIndexRegex = /^(\w+)\[(\d+)\]$/;
-  
-  if (arrayIndexRegex.test(fieldPath)) {
-    const match = fieldPath.match(arrayIndexRegex);
-    const arrayName = match[1];
-    const index = parseInt(match[2]);
-    
-    if (data[arrayName] && Array.isArray(data[arrayName])) {
-      return data[arrayName][index];
-    }
-    return undefined;
-  }
-  
-  // Handle dot notation like "user.name"
-  const parts = fieldPath.split('.');
-  let value = data;
-  
-  for (const part of parts) {
-    if (value === undefined || value === null) return undefined;
-    value = value[part];
-  }
-  
-  return value;
-}
 
-/**
- * Get all system logs
- * @returns {Array} - Array of log entries
- */
-export function getSystemLogs() {
-  if (typeof localStorage !== 'undefined') {
-    try {
-      return JSON.parse(localStorage.getItem('systemLogs') || '[]');
-    } catch (e) {
-      console.error('Failed to get logs:', e);
-      return [];
-    }
-  }
-  return [];
-}
-
-/**
- * Clear system logs
- */
-export function clearSystemLogs() {
-  if (typeof localStorage !== 'undefined') {
-    try {
-      localStorage.removeItem('systemLogs');
-    } catch (e) {
-      console.error('Failed to clear logs:', e);
-    }
-  }
-}
+// 导出模块
+module.exports = {
+  executeRequest
+};

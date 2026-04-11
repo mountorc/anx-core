@@ -1,5 +1,7 @@
 const { executeRequest } = require('./request.js');
 const { logToSystem, logError } = require('./log.js');
+const { getDataValue } = require('./param.js');
+const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('./node.js');
 
 /**
  * Log to system log
@@ -14,31 +16,34 @@ const { logToSystem, logError } = require('./log.js');
  * @param {Object} details - Log details
  */
 
-function handleTapSet(tapSet, data, element) {
+function handleTapSet(dealSet) {
+  const {cardKey,node} = dealSet;
+  let nodeData=getNodeData(cardKey);
   // 记录到系统日志
-  logToSystem('handleTapSet', {
-    actionType: "",
-    actionConfig: {},
+  logToSystem('handleTapSet-deal', {
+    cardKey: cardKey,
+    node: node,
+    nodeData,
     timestamp: new Date().toISOString()
   });
+  let tapSet = node.config.tapSet;
   if (!tapSet || typeof tapSet !== 'object') return;
+  logToSystem('handleTapSet-tapSet', {
+    cardKey: cardKey,
+    tapSet: tapSet,
+    timestamp: new Date().toISOString()
+  });
+  data=node.data;
 
-  const tapHandler = async (event) => {
-    for (const actionType of Object.keys(tapSet)) {
+    for (let actionType in tapSet) {
       const actionConfig = tapSet[actionType];
-      await handleAction(actionType, actionConfig, data, event, element);
+      handleAction({
+        cardKey,
+        actionType, 
+        actionConfig, 
+        data
+      });
     }
-  };
-
-  // Frontend event listener
-  if (typeof window !== 'undefined' && element && element.addEventListener) {
-    element.addEventListener('click', tapHandler);
-    console.log('[Trigger] Tap handler added to element');
-  } else {
-    // Backend simulation
-    console.log('[Backend] Tap handler created (simulated)');
-    // In a real backend environment, this could be a function that gets called directly
-  }
   return tapHandler;
 }
 
@@ -51,11 +56,6 @@ function handleTriggerSet(triggerSet, data, element) {
   });
   
   if (!triggerSet || typeof triggerSet !== 'object') return {};
-
-  console.log('[Trigger] Setting up trigger handlers', {
-    triggerSet: triggerSet,
-    timestamp: new Date().toISOString()
-  });
 
   const handlers = {};
 
@@ -75,7 +75,11 @@ function handleTriggerSet(triggerSet, data, element) {
           timestamp: new Date().toISOString()
         });
         for (const actionType of Object.keys(actionConfig)) {
-          await handleAction(actionType, actionConfig[actionType], data, event, element);
+          await handleAction({
+            actionType, 
+            actionConfig:actionConfig[actionType], 
+            data
+          });
         }
       };
 
@@ -135,44 +139,38 @@ function mapTriggerTypeToEvent(triggerType) {
   return eventMap[triggerType] || null;
 }
 
-async function handleAction(actionType, actionConfig, data, event, element) {
+async function handleAction(dealSet) {
+  const {cardKey,actionType, actionConfig, data} = dealSet;
   // 记录操作开始
-  console.log(`[Action] Starting ${actionType} action`, {
-    actionType: actionType,
-    actionConfig: actionConfig,
-    timestamp: new Date().toISOString()
-  });
 
-  // 记录到系统日志
-  logToSystem('action_start', {
+  logToSystem('handleAction-start', {
+    cardKey: cardKey,
     actionType: actionType,
-    actionConfig: actionConfig,
+    actionConfig:actionConfig,
+    data:data,
     timestamp: new Date().toISOString()
   });
 
   try {
     switch (actionType) {
       case 'navigateTo':
-        handleNavigateTo(actionConfig, data, event);
+        handleNavigateTo(actionConfig, data);
         break;
       case 'navigateBack':
-        handleNavigateBack(actionConfig, event);
+        handleNavigateBack(actionConfig);
         break;
       case 'updateData':
-        handleUpdateData(actionConfig, data, event);
+        handleUpdateData(actionConfig, data);
         break;
       case 'setTimeout':
-        handleSetTimeout(actionConfig, data, event, element);
+        handleSetTimeout(actionConfig, data);
         break;
       case 'requestSet':
-        await handleRequestSet(actionConfig, data, event);
+        handleRequestSet({cardKey, config:actionConfig, data});
         break;
       default:
         console.warn(`[Action] Unknown action type: ${actionType}`);
     }
-    // 记录操作成功
-    console.log(`[Action] ${actionType} action completed successfully`);
-
     // 记录到系统日志
     logToSystem('action_success', {
       actionType: actionType,
@@ -285,31 +283,29 @@ function handleSetTimeout(config, data, event, element) {
   setTimeout(() => {
     console.log('[Action] SetTimeout - Executing delayed action');
     if (config.action) {
-      handleAction(config.action.type, config.action.config, data, event, element);
+      handleAction({
+        actionType:config.action.type, 
+        actionConfig:config.action.config, 
+        data
+      });
     } else {
       console.warn('[Action] SetTimeout - No action specified for timeout');
     }
   }, config.delay);
 }
 
-async function handleRequestSet(config, data, event) {
+function handleRequestSet(dealSet) {
+  const {cardKey,config, data} = dealSet;
   // Log to system
   logToSystem('request_start', {
+    cardKey: cardKey,
     url: config.url,
     method: config.method,
     paramMap: config.paramMap,
     timestamp: new Date().toISOString()
   });
 
-  console.log('[Action] RequestSet - Preparing API request', {
-    url: config.url,
-    method: config.method,
-    paramMap: config.paramMap,
-    data: data
-  });
-
   if (!config.url) {
-    console.warn('[Action] RequestSet - No URL specified');
     logToSystem('request_error', {
       error: 'No URL specified',
       timestamp: new Date().toISOString()
@@ -317,62 +313,34 @@ async function handleRequestSet(config, data, event) {
     return;
   }
 
-  try {
-    // Use the new executeRequest function from request.js
-    const result = await executeRequest(config, data);
-    console.log('[Action] RequestSet - Request completed successfully:', result);
+  // Use the new executeRequest function from request.js
+  return executeRequest(config, data)
+    .then(result => {
+      // Log success to system
+      logToSystem('request_success', {
+        url: config.url,
+        method: config.method,
+        result: result,
+        timestamp: new Date().toISOString()
+      });
 
-    // Log success to system
-    logToSystem('request_success', {
-      url: config.url,
-      method: config.method,
-      status: result.status,
-      timestamp: new Date().toISOString()
+      return result;
+    })
+    .catch(error => {
+      console.error('[Action] RequestSet - Request error:', error);
+
+      // Log error to system
+      logError('request_error', error.message, {
+        url: config.url,
+        method: config.method,
+        timestamp: new Date().toISOString()
+      });
+
+      throw error;
     });
-
-    return result;
-  } catch (error) {
-    console.error('[Action] RequestSet - Request error:', error);
-
-    // Log error to system
-    logError('request_error', error.message, {
-      url: config.url,
-      method: config.method,
-      timestamp: new Date().toISOString()
-    });
-
-    throw error;
-  }
 }
 
-function getDataValue(data, fieldPath) {
-  if (!data || !fieldPath) return undefined;
 
-  // 处理数组索引，如 images[0]
-  const arrayIndexRegex = /^(\w+)\[(\d+)\]$/;
-  
-  if (arrayIndexRegex.test(fieldPath)) {
-    const match = fieldPath.match(arrayIndexRegex);
-    const arrayName = match[1];
-    const index = parseInt(match[2]);
-    
-    if (data[arrayName] && Array.isArray(data[arrayName])) {
-      return data[arrayName][index];
-    }
-    return undefined;
-  }
-
-  // 处理点号分隔的路径，如 user.name
-  const parts = fieldPath.split('.');
-  let value = data;
-
-  for (const part of parts) {
-    if (value === undefined || value === null) return undefined;
-    value = value[part];
-  }
-
-  return value;
-}
 
 // 导出模块
 module.exports = {
