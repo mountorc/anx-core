@@ -1,6 +1,133 @@
 [
   {
     "type": "system",
+    "action": "handleTapSet-error",
+    "timestamp": "2026-04-11T02:37:06.802Z",
+    "details": {
+      "cardKey": "card_1775875015839_5490",
+      "tapError": {}
+    },
+    "message": "[System] handleTapSet-error: {\"cardKey\":\"card_1775875015839_5490\",\"tapError\":{}}"
+  },
+  {
+    "type": "system",
+    "action": "trigger_card_key",
+    "timestamp": "2026-04-11T02:37:06.799Z",
+    "details": {
+      "cardKey": "card_1775875015839_5490",
+      "tapSet": {
+        "requestSet": {
+          "method": "POST",
+          "url": "http://localhost:3002/api/run-workflow",
+          "paramMap": {
+            "workflowId": "2028318219441803266",
+            "image1": "images[0]",
+            "image2": "images[1]",
+            "image3": "images[2]",
+            "image4": "images[3]",
+            "image5": "images[4]",
+            "image6": "images[5]",
+            "image7": "images[6]",
+            "image8": "images[7]",
+            "text": "system_prompt",
+            "seed": "seed"
+          }
+        }
+      },
+      "triggerSet": null
+    },
+    "message": "[System] trigger_card_key: {\"cardKey\":\"card_1775875015839_5490\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"2028318219441803266\",\"image1\":\"images[0]\",\"image2\":\"images[1]\",\"image3\":\"images[2]\",\"image4\":\"images[3]\",\"image5\":\"images[4]\",\"image6\":\"images[5]\",\"image7\":\"images[6]\",\"image8\":\"images[7]\",\"text\":\"system_prompt\",\"seed\":\"seed\"}}},\"triggerSet\":null}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-11T02:36:59.345Z",
+    "details": {
+      "cardKey": "card_1775875015839_3142",
+      "field": "value",
+      "value": "2222233"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1775875015839_3142\",\"field\":\"value\",\"value\":\"2222233\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-11T02:25:34.975Z",
+    "details": {
+      "cardKey": "card_1775874329670_7362",
+      "field": "value",
+      "value": "787878"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1775874329670_7362\",\"field\":\"value\",\"value\":\"787878\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-11T02:12:05.827Z",
+    "details": {
+      "cardKey": "card_1775873519338_1900",
+      "field": "value",
+      "value": "222"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1775873519338_1900\",\"field\":\"value\",\"value\":\"222\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-11T01:48:36.921Z",
+    "details": {
+      "cardKey": "card_1775872114179_1463",
+      "field": "value",
+      "value": "2222"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1775872114179_1463\",\"field\":\"value\",\"value\":\"2222\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-11T01:47:47.575Z",
+    "details": {
+      "cardKey": "card_1775871859895_4668",
+      "field": "value",
+      "value": "222"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1775871859895_4668\",\"field\":\"value\",\"value\":\"222\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-11T01:47:25.967Z",
+    "details": {
+      "cardKey": "card_1775871859895_4668",
+      "field": "value",
+      "value": "222"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1775871859895_4668\",\"field\":\"value\",\"value\":\"222\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-11T01:44:39.960Z",
+    "details": {
+      "cardKey": "card_1775871859895_4668",
+      "field": "value",
+      "value": "3444"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1775871859895_4668\",\"field\":\"value\",\"value\":\"3444\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-11T01:44:27.024Z",
+    "details": {
+      "cardKey": "card_1775871859895_4668",
+      "field": "value",
+      "value": "344"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1775871859895_4668\",\"field\":\"value\",\"value\":\"344\"}"
+  },
+  {
+    "type": "system",
     "action": "request_success",
     "timestamp": "2026-04-10T17:51:41.306Z",
     "details": {

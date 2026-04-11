@@ -22,8 +22,8 @@ const cardStorage = new Map();
 // 导入节点存储模块
 const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('../../core/utils/node.js');
 const { setHubAnxMap, processAnxContent } = require('../../core/utils/tile.js');
-// 存储基于ANX内容的哈希值到节点结构的映射
-const anxHashToNodeMap = new Map();
+const { processNodeDataset } = require('../../core/utils/dataset-processor.js');
+const { generateAnxHash, getNodesByHash, setNodesByHash, anxHashToNodeMap } = require('../../core/utils/hashNode.js');
 // 存储hub中的anx config
 const hubAnxMap = new Map();
 
@@ -31,12 +31,7 @@ const hubAnxMap = new Map();
 const { logToSystem, logError, readLogs } = require('../../core/utils/log.js');
 
 
-// 生成ANX内容的哈希值
-function generateAnxHash(anxContent) {
-  const crypto = require('crypto');
-  const jsonString = JSON.stringify(anxContent);
-  return crypto.createHash('md5').update(jsonString).digest('hex');
-}
+
 
 // 加载hub文件
 function loadHubFiles() {
@@ -763,13 +758,13 @@ app.post('/api/convert', async (req, res) => {
     const anxHash = generateAnxHash(anxContent);
     
     // 检查是否已经为相同的ANX内容生成过节点结构
-    let nodesStructure = anxHashToNodeMap.get(anxHash);
+    let nodesStructure = getNodesByHash(anxHash);
     
     if (!nodesStructure) {
       // 首次生成节点结构
       nodesStructure = anxToNodes(anxContent);
       // 存储到哈希映射中
-      anxHashToNodeMap.set(anxHash, nodesStructure);
+      setNodesByHash(anxHash, nodesStructure);
     }
     
     // 检查根节点是否有存储的数据
@@ -823,13 +818,13 @@ app.get('/api/convert', async (req, res) => {
     const anxHash = generateAnxHash(anxContent);
     
     // 检查是否已经为相同的ANX内容生成过节点结构
-    let nodesStructure = anxHashToNodeMap.get(anxHash);
+    let nodesStructure = getNodesByHash(anxHash);
     
     if (!nodesStructure) {
       // 首次生成节点结构
       nodesStructure = anxToNodes(anxContent);
       // 存储到哈希映射中
-      anxHashToNodeMap.set(anxHash, nodesStructure);
+      setNodesByHash(anxHash, nodesStructure);
     }
     
     // 检查根节点是否有存储的数据
@@ -883,13 +878,13 @@ app.get('/anxCore/getMarkup', async (req, res) => {
     const anxHash = generateAnxHash(anxContent);
     
     // 检查是否已经为相同的ANX内容生成过节点结构
-    let nodesStructure = anxHashToNodeMap.get(anxHash);
+    let nodesStructure = getNodesByHash(anxHash);
     
     if (!nodesStructure) {
       // 首次生成节点结构
       nodesStructure = anxToNodes(anxContent);
       // 存储到哈希映射中
-      anxHashToNodeMap.set(anxHash, nodesStructure);
+      setNodesByHash(anxHash, nodesStructure);
     }
     
     // 检查根节点是否有存储的数据
@@ -935,13 +930,13 @@ app.post('/anxCore/getMarkup', async (req, res) => {
     const anxHash = generateAnxHash(anxContent);
     
     // 检查是否已经为相同的ANX内容生成过节点结构
-    let nodesStructure = anxHashToNodeMap.get(anxHash);
+    let nodesStructure = getNodesByHash(anxHash);
     
     if (!nodesStructure) {
       // 首次生成节点结构
       nodesStructure = anxToNodes(anxContent);
       // 存储到哈希映射中
-      anxHashToNodeMap.set(anxHash, nodesStructure);
+      setNodesByHash(anxHash, nodesStructure);
     }
     
     // 检查根节点是否有存储的数据
@@ -1028,64 +1023,13 @@ app.post('/api/convert-to-nodes', async (req, res) => {
     const anxHash = generateAnxHash(anxContent);
     
     // 检查是否已经为相同的ANX内容生成过节点结构
-    let nodesStructure = anxHashToNodeMap.get(anxHash);
+    let nodesStructure = getNodesByHash(anxHash);
     
     if (!nodesStructure) {
       // 首次生成节点结构
       nodesStructure = anxToNodes(anxContent);
       // 存储到哈希映射中
-      anxHashToNodeMap.set(anxHash, nodesStructure);
-    }
-    
-    // 处理节点中的 dataset
-    async function processNodeDataset(node) {
-      if (node.config && node.config.dataset) {
-        try {
-          // 直接使用dataset作为配置，支持url_dataset和uuid_dataset
-          const { fetchDataset } = require('../../core/utils/dataset.js');
-          console.log('Processing dataset for node:', node.cardKey, 'with config:', node.config.dataset);
-          const datasetData = await fetchDataset(node.config.dataset);
-          // 直接使用返回的数组，因为fetchDataset已经返回了正确的数据格式
-          let processedData = datasetData || [];
-          console.log('Fetched dataset data:', processedData);
-          
-          // 如果dataset获取失败且节点有原始数据，则使用原始数据
-          if (processedData.length === 0 && node.config.data && Array.isArray(node.config.data)) {
-            processedData = node.config.data;
-            console.log('Using original data instead of empty dataset:', processedData);
-          }
-          
-          // 将数据存储到node的data.data中
-          if (!node.data) {
-            node.data = {};
-          }
-          node.data.data = processedData;
-          // 更新node.config.data，以便后续使用
-          node.config.data = processedData;
-          // 更新存储中的节点数据
-          setNode(node.cardKey, node);
-          console.log('Updated node data:', node.data);
-        } catch (error) {
-          console.error('Error fetching node dataset:', error);
-          // 如果获取dataset时出错且节点有原始数据，则使用原始数据
-          if (node.config.data && Array.isArray(node.config.data)) {
-            if (!node.data) {
-              node.data = {};
-            }
-            node.data.data = node.config.data;
-            // 更新存储中的节点数据
-            setNode(node.cardKey, node);
-            console.log('Using original data due to dataset fetch error:', node.data);
-          }
-        }
-      }
-      
-      // 递归处理子节点
-      if (node.nodes && node.nodes.length > 0) {
-        for (const childNode of node.nodes) {
-          await processNodeDataset(childNode);
-        }
-      }
+      setNodesByHash(anxHash, nodesStructure);
     }
     
     // 检查根节点是否有存储的数据

@@ -56,7 +56,6 @@ export async function triggerDeal(cardKey, tapSet = null) {
  * @param {HTMLElement} buttonElement - 按钮元素
  */
 export async function buttonTap(buttonElement) {
-  console.log("buttonTap called3");
   const cardKey = buttonElement.getAttribute("data-card-key");
   const tapSetJson = buttonElement.getAttribute("data-tap-set");
   const labelJson = buttonElement.getAttribute("data-label");

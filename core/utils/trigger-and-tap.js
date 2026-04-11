@@ -18,12 +18,11 @@ const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, g
 
 function handleTapSet(dealSet) {
   const {cardKey,node} = dealSet;
-  let nodeData=getNodeData(cardKey);
+  node=getNode(cardKey);
   // 记录到系统日志
   logToSystem('handleTapSet-deal', {
     cardKey: cardKey,
     node: node,
-    nodeData,
     timestamp: new Date().toISOString()
   });
   let tapSet = node.config.tapSet;
