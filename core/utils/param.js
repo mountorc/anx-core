@@ -5,6 +5,7 @@
 
 // 导入 autoVar 模块
 const { autoVar } = require('./autoVar.js');
+const { getCardData,getParentCardKey} = require('./card.js');
 
 /**
  * Build parameters from paramMap
@@ -12,18 +13,15 @@ const { autoVar } = require('./autoVar.js');
  * @param {Object} data - Data object for parameter mapping
  * @returns {Promise<Object>} - Built parameters
  */
-function buildParams(paramMap, data = {}) {
+function buildParams(paramMap, cardKey) {
   const params = {};
   if (paramMap && typeof paramMap === 'object') {
     for (let targetParam in paramMap) {
       const sourceField = paramMap[targetParam];
       // Check if sourceField is a field path or a literal value
-      const value = autoVar(sourceField, data, false);
-      if (value !== null && value !== undefined) {
+      const value = getCardData(cardKey,sourceField)//||autoVar(sourceField, data, false);
+      if (value !== undefined) {
         params[targetParam] = value;
-      } else {
-        // If not found in data, use the sourceField as literal value
-        params[targetParam] = sourceField;
       }
     }
   }

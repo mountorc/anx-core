@@ -52,7 +52,7 @@ function getCard(cardKey) {
   return getNode(cardKey);
 }
 //xmz改的不要动
-function getCardData(cardKey, nick = null) {
+function getCardData(cardKey, nick) {
   if (nick) {
     const cardData = getNodeData(cardKey);
     if (!cardData) {
@@ -63,6 +63,9 @@ function getCardData(cardKey, nick = null) {
     let value;
     if (cardData.value && typeof cardData.value === 'object') {
       value = cardData.value[nick];
+    }
+    if(value===undefined){
+      value = cardData[nick];
     }
     // 如果当前卡片没有找到，尝试从父卡片获取
     if (value === undefined) {

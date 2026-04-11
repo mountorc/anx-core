@@ -114,9 +114,9 @@ function updateNodeData(cardKey, data) {
  * @returns {Object|null} 节点数据或null
  */
 function getNodeData(cardKey) {
-  const node = nodeStorage.get(cardKey);
+  const node = getNode(cardKey);
   if (node && node.data) {
-    return JSON.parse(JSON.stringify(node.data));
+    return node.data;
   }
   return null;
 }

@@ -61,7 +61,7 @@ function getWasmInstance() {
  * @param {Object} data - 数据源
  * @returns {*} - 获取的值
  */
-function getValue(nick, data) {
+function getValue(nick, data,autoSet) {
   if (!wasmInstance) {
     console.warn('WASM 实例未加载');
     return null;
@@ -135,9 +135,15 @@ function getValue(nick, data) {
  */
 function autoVar(nick, data, autoSet) {
   try {
-    
     // 调用 getValue 函数
-    return getValue(nick, data);
+    let res=getValue(nick, data);
+    if(res==undefined){
+        let cardKey=autoSet?.cardKey;
+        if(cardKey){
+          res=getCardData(cardKey,nick);
+        }
+    }
+    return res;
   } catch (error) {
     console.error('autoVar 函数执行失败:', error);
     return null;

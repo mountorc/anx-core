@@ -3,7 +3,7 @@ const { logToSystem, logError } = require('./log.js');
 const { getDataValue } = require('./param.js');
 const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('./node.js');
 const { getCardData,getParentCardKey} = require('./card.js');
-
+const { autoVar} = require('./autoVar.js');
 /**
  * Log to system log
  * @param {string} action - Action type
@@ -18,21 +18,26 @@ const { getCardData,getParentCardKey} = require('./card.js');
  */
 
 function handleTapSet(dealSet) {
-  const {cardKey,node} = dealSet;
+  const {cardKey} = dealSet;
   let parentCardKey=getParentCardKey(cardKey);
+  let testValue=getCardData(parentCardKey,"user_prompt")||'none';
+  let testValue1=getCardData(cardKey,"user_prompt")||'none';
+  let testValue2=autoVar("user_prompt",{},{cardKey:parentCardKey})||'none';
   node=getNode(cardKey);
+  let parentNode=getNode(parentCardKey);
+
   // 记录到系统日志
-  logToSystem('handleTapSet-deal', {
-    cardKey: cardKey,
-    parentCardKey,
-    node: node,
-    timestamp: new Date().toISOString()
-  });
   let tapSet = node.config.tapSet;
   if (!tapSet || typeof tapSet !== 'object') return;
   logToSystem('handleTapSet-tapSet', {
     cardKey: cardKey,
+    parentCardKey,
+    testValue,
+    testValue1,
+    testValue2,
     tapSet: tapSet,
+    node,
+    parentNode,
     timestamp: new Date().toISOString()
   });
   data=node.data;
@@ -297,7 +302,7 @@ function handleSetTimeout(config, data, event, element) {
 }
 
 function handleRequestSet(dealSet) {
-  const {cardKey,config, data} = dealSet;
+  const {cardKey,config} = dealSet;
   // Log to system
   logToSystem('request_start', {
     cardKey: cardKey,
@@ -316,7 +321,7 @@ function handleRequestSet(dealSet) {
   }
 
   // Use the new executeRequest function from request.js
-  return executeRequest(config, data)
+  return executeRequest({config, cardKey})
     .then(result => {
       // Log success to system
       logToSystem('request_success', {

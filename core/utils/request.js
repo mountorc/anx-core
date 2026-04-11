@@ -12,7 +12,8 @@ const { buildParams } = require('./param.js');
  * @param {Object} data - Data object for parameter mapping
  * @returns {Promise} - Request result
  */
-async function executeRequest(config, data = {}) {
+async function executeRequest(dealSet) {
+  let {config, cardKey} = dealSet;
   const { method = 'GET', url, paramMap = {}, headers = {} } = config;
   
   // Log request start
@@ -37,13 +38,12 @@ async function executeRequest(config, data = {}) {
       timestamp: new Date().toISOString()
     });
     // Build parameters
-    const params = buildParams(paramMap, data);
+    const params = buildParams(paramMap, cardKey);
     
     // Log parameters
     logToSystem('request_params', {
       params,
       paramMap,
-      data,
       timestamp: new Date().toISOString()
     });
     

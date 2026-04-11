@@ -1009,6 +1009,23 @@ function storeCardNodes(nodes, parentCardKey = null) {
   });
 }
 
+// API endpoint for getting node by cardKey
+app.get('/api/get-node', (req, res) => {
+  const { cardKey } = req.query;
+  
+  if (!cardKey) {
+    return res.status(400).json({ success: false, error: 'cardKey is required' });
+  }
+  
+  const node = getNode(cardKey);
+  
+  if (node) {
+    res.json({ success: true, node });
+  } else {
+    res.status(404).json({ success: false, error: 'Node not found' });
+  }
+});
+
 // API endpoint for converting ANX to nodes structure
 app.post('/api/convert-to-nodes', async (req, res) => {
   try {
@@ -1601,11 +1618,12 @@ app.post('/api/trigger-card-key', async (req, res) => {
     // 调用 trigger-and-tap.js 中的函数
     if (tapSet) {
       try {
+        logToSystem('handleTapSet-try', {
+          cardKey: cardKey,
+          handleTapSet:handleTapSet?true:false
+        });
         // 调用 handleTapSet
-        handleTapSet({
-          cardKey:cardKey,
-          node:storedNode,
-          data});
+        handleTapSet({cardKey});
       } catch (tapError) {
         logToSystem('handleTapSet-error', {
           cardKey: cardKey,
