@@ -51,7 +51,7 @@ function createOrUpdateCard(cardKey, cardData = {}, cardConfig = {}) {
 function getCard(cardKey) {
   return getNode(cardKey);
 }
-
+//xmz改的不要动
 function getCardData(cardKey, nick = null) {
   if (nick) {
     const cardData = getNodeData(cardKey);

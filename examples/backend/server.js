@@ -991,18 +991,20 @@ function updateNodesWithStoredData(nodes) {
 }
 
 // 递归存储所有节点的cardKey和config，以及完整的节点结构
-function storeCardNodes(nodes) {
+function storeCardNodes(nodes, parentCardKey = null) {
   if (!Array.isArray(nodes)) return;
   
   nodes.forEach(node => {
+    // 设置父节点的 cardKey
+    node.parentCardKey = parentCardKey;
     // 存储当前节点
     if (node.cardKey && node.config) {
       cardStorage.set(node.cardKey, node.config);
       setNode(node.cardKey, node); // 存储完整的节点结构
     }
-    // 递归存储子节点
+    // 递归存储子节点，传递当前节点的 cardKey 作为父节点
     if (node.nodes && node.nodes.length > 0) {
-      storeCardNodes(node.nodes);
+      storeCardNodes(node.nodes, node.cardKey);
     }
   });
 }
@@ -1058,9 +1060,9 @@ app.post('/api/convert-to-nodes', async (req, res) => {
       setNode(nodesStructure.cardKey, nodesStructure); // 存储完整的根节点结构
     }
     
-    // 存储子节点
+    // 存储子节点，传递根节点的 cardKey 作为父节点
     if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
-      storeCardNodes(nodesStructure.nodes);
+      storeCardNodes(nodesStructure.nodes, nodesStructure.cardKey);
     }
     
     res.json({ nodes: nodesStructure });

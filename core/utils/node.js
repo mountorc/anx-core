@@ -58,6 +58,10 @@ loadNodesFromFile();
  */
 function setNode(cardKey, node) {
   if (cardKey && node && typeof node === 'object') {
+    // 确保节点具有 parentCardKey 字段
+    if (node.parentCardKey === undefined) {
+      node.parentCardKey = null;
+    }
     // 确保存储的是完整的节点结构（深拷贝）
     nodeStorage.set(cardKey, JSON.parse(JSON.stringify(node)));
     // 保存到文件

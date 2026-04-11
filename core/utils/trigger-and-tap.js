@@ -2,6 +2,7 @@ const { executeRequest } = require('./request.js');
 const { logToSystem, logError } = require('./log.js');
 const { getDataValue } = require('./param.js');
 const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('./node.js');
+const { getCardData,getParentCardKey} = require('./card.js');
 
 /**
  * Log to system log
@@ -18,10 +19,12 @@ const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, g
 
 function handleTapSet(dealSet) {
   const {cardKey,node} = dealSet;
+  let parentCardKey=getParentCardKey(cardKey);
   node=getNode(cardKey);
   // 记录到系统日志
   logToSystem('handleTapSet-deal', {
     cardKey: cardKey,
+    parentCardKey,
     node: node,
     timestamp: new Date().toISOString()
   });
