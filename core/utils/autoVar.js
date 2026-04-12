@@ -2,6 +2,7 @@
  * autoVar.js - 自动变量处理工具
  */
 
+const { getCardData } = require('./card.js');
 // 类型标记常量
 const TYPE_NUMBER = 1;
 const TYPE_STRING = 2;
@@ -9,10 +10,14 @@ const TYPE_JSON = 3;
 
 // WASM 实例
 let wasmInstance = null;
-// 确保 WASM 模块已加载
-if (!wasmInstance) {
-  loadWasm();
-}
+loadWasm();
+/*
+async function getValue(nick, data, autoSet) {
+  if (!wasmInstance) {
+    console.debug('WASM 实例未加载，自动加载...');
+    await loadWasm();
+  }
+    */
 /**
  * 加载 WASM 模块
  * @returns {Promise} - 加载结果
@@ -61,68 +66,48 @@ function getWasmInstance() {
  * @param {Object} data - 数据源
  * @returns {*} - 获取的值
  */
-function getValue(nick, data,autoSet) {
+function getValue(nick, data, autoSet) {
   if (!wasmInstance) {
     console.warn('WASM 实例未加载');
-    return null;
+    return undefined;
   }
 
-  const getValueFn = wasmInstance.exports.get_value;
-  const memory = wasmInstance.exports.memory;
+  const { get_value: getValueFn, memory } = wasmInstance.exports;
   
   if (!getValueFn || !memory) {
     console.warn('WASM 模块未导出 get_value 或 memory');
-    return null;
+    return undefined;
   }
 
   try {
-    const dataStr = JSON.stringify(data);
-    const dataBytes = new TextEncoder().encode(dataStr);
+    const dataBytes = new TextEncoder().encode(JSON.stringify(data));
     const nickBytes = new TextEncoder().encode(nick);
     
-    // 内存偏移量
-    let offset = 1000; // 从较大的偏移量开始，避免覆盖
-    const nickOffset = offset;
+    const nickOffset = 1000;
     const dataOffset = nickOffset + nickBytes.length + 1;
     const outOffset = dataOffset + dataBytes.length + 10;
-    const outLenOffset = outOffset + 200; // 预留足够空间
 
-    // 写入 nick 到内存
-    const memView = new Uint8Array(memory.buffer);
+    let memView = new Uint8Array(memory.buffer);
     memView.set(nickBytes, nickOffset);
-    
-    // 写入 data 到内存
     memView.set(dataBytes, dataOffset);
     
-    // 初始化输出长度为0
-    new DataView(memory.buffer).setUint32(outLenOffset, 0, true);
+    const result = getValueFn(nickOffset, nickBytes.length, dataOffset, dataBytes.length, outOffset, outOffset + 200);
     
-    // 调用 WASM 函数
-    const result = getValueFn(
-      nickOffset, nickBytes.length,
-      dataOffset, dataBytes.length,
-      outOffset, outLenOffset
-    );
-    
-    // 读取结果
-    let returnValue;
     if (result > 0) {
-      // 数字类型
-      returnValue = result;
+      return result;
     } else if (result < 0) {
-      // 字符串类型（长度为负的绝对值）
       const strLen = -result;
-      const strBytes = memView.subarray(outOffset, outOffset + strLen);
-      returnValue = new TextDecoder().decode(strBytes);
+      memView = new Uint8Array(memory.buffer);
+      const strBytes = new Uint8Array(strLen);
+      for (let i = 0; i < strLen; i++) {
+        strBytes[i] = memView[outOffset + i];
+      }
+      return new TextDecoder().decode(strBytes);
     } else {
-      // 其他类型或错误
-      returnValue = null;
+      return undefined;
     }
-    
-    return returnValue;
   } catch (error) {
-    console.error('执行 getValue 函数失败:', error);
-    return null;
+    return undefined;
   }
 }
 
@@ -135,18 +120,18 @@ function getValue(nick, data,autoSet) {
  */
 function autoVar(nick, data, autoSet) {
   try {
-    // 调用 getValue 函数
-    let res=getValue(nick, data);
-    if(res==undefined){
-        let cardKey=autoSet?.cardKey;
-        if(cardKey){
-          res=getCardData(cardKey,nick);
-        }
+    let res = getValue(nick, data, autoSet);
+    if (res == undefined) {
+      const cardKey = autoSet?.cardKey;
+      if (cardKey) {
+        res = getCardData(cardKey, nick);
+      }
+      return res;
+    }else{
+      return res;
     }
-    return res;
   } catch (error) {
-    console.error('autoVar 函数执行失败:', error);
-    return null;
+    return "err:"+error;
   }
 }
 

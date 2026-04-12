@@ -336,10 +336,6 @@ class ANXView extends HTMLElement {
       delete window.removeFile;
       console.log('ANXView: removeFile removed from global scope');
     }
-    if (window.triggerFileInput) {
-      delete window.triggerFileInput;
-      console.log('ANXView: triggerFileInput removed from global scope');
-    }
     // 清理节点数据更新相关全局函数
     if (window.updateNodeData) {
       delete window.updateNodeData;
@@ -464,8 +460,7 @@ class ANXView extends HTMLElement {
         console.log('ANXView: showType:', showType);
         
         // 强制使用左右布局进行测试
-        const useRightLayout = true;
-        console.log('ANXView: useRightLayout:', useRightLayout);
+        const useRightLayout = showType=='right'?true:false;
         
         // 根据resultSet配置决定布局
         if (useRightLayout) {

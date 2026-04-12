@@ -19,7 +19,8 @@ function buildParams(paramMap, cardKey) {
     for (let targetParam in paramMap) {
       const sourceField = paramMap[targetParam];
       // Check if sourceField is a field path or a literal value
-      const value = getCardData(cardKey,sourceField)//||autoVar(sourceField, data, false);
+      //const value = getCardData(cardKey,sourceField)
+      const value = autoVar(sourceField, {},{cardKey});
       if (value !== undefined) {
         params[targetParam] = value;
       }

@@ -172,7 +172,7 @@
             "method": "POST",
             "url": "http://localhost:3002/api/run-workflow",
             "paramMap": {
-              "workflowId": "2028318219441803266",
+              "workflowId": "'2028318219441803266'",
               "image1": "images[0]",
               "image2": "images[1]",
               "image3": "images[2]",
@@ -181,8 +181,19 @@
               "image6": "images[5]",
               "image7": "images[6]",
               "image8": "images[7]",
-              "text": "system_prompt",
-              "seed": "seed"
+              "system_prompt": "system_prompt",
+              "user_prompt": "user_prompt",
+              "display_style":"display_style",
+              "remove_parts":"remove_parts",
+              "aspect_ratio":"aspect_ratio",
+              "resolution":"resolution",
+              "seed":"seed",
+              "skip_error":"skip_error",
+              "rmbg_model":"rmbg_model",
+              "sensitivity":"sensitivity",
+              "process_res":"process_res",
+              "background":"background",
+              "background_color":"background_color"
             }
           }
         }

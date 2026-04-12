@@ -595,10 +595,6 @@ export default {
         event.target.value = '';
       };
       
-      window.triggerFileInput = (inputId) => {
-        document.getElementById(inputId).click();
-      };
-      
       window.removeFile = (cardKey, kind, index) => {
         if (kind === 'image' || kind === 'file') {
           this.updateNodeDataForFile(cardKey, '');

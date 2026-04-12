@@ -12,18 +12,42 @@
  * @param {boolean} preview - 是否预览
  */
 export function handleFileChange(event, cardKey, kind, maxSize, maxCount, preview) {
+  console.log('FileUpload: handleFileChange called', {
+    event: event ? 'event object exists' : 'no event',
+    cardKey: cardKey,
+    kind: kind,
+    maxSize: maxSize,
+    maxCount: maxCount,
+    preview: preview
+  });
+  
+  if (!event || !event.target) {
+    console.error('FileUpload: handleFileChange - event or event.target is null');
+    return;
+  }
+  
   const files = event.target.files;
-  if (!files || files.length === 0) return;
+  console.log('FileUpload: Files selected:', files ? files.length : 0);
+  
+  if (!files || files.length === 0) {
+    console.warn('FileUpload: No files selected');
+    return;
+  }
   
   // 处理文件验证和上传
   if (kind === 'image' || kind === 'file') {
+    console.log('FileUpload: Handling single file upload');
     handleSingleFile(files[0], cardKey, kind, maxSize, preview);
   } else if (kind === 'images') {
+    console.log('FileUpload: Handling multiple files upload');
     handleMultipleFiles(files, cardKey, maxSize, maxCount, preview);
+  } else {
+    console.warn('FileUpload: Unknown kind:', kind);
   }
   
   // 重置文件输入
   event.target.value = '';
+  console.log('FileUpload: File input reset');
 }
 
 /**
@@ -166,27 +190,44 @@ export function triggerFileInput(inputId) {
   
   // 首先尝试在主文档中查找
   let input = document.getElementById(inputId);
+  console.log('FileUpload: Found in main document:', !!input);
   
   // 如果在主文档中找不到，尝试在所有ANXView组件的Shadow DOM中查找
   if (!input) {
     const anxViews = document.querySelectorAll('anx-view');
-    for (const anxView of anxViews) {
+    console.log('FileUpload: Number of anx-view elements:', anxViews.length);
+    
+    for (let i = 0; i < anxViews.length; i++) {
+      const anxView = anxViews[i];
       try {
-        input = anxView.shadowRoot.getElementById(inputId);
-        if (input) {
-          console.log('FileUpload: Found file input in Shadow DOM');
-          break;
+        if (anxView.shadowRoot) {
+          input = anxView.shadowRoot.getElementById(inputId);
+          if (input) {
+            console.log('FileUpload: Found file input in Shadow DOM of anx-view index:', i);
+            break;
+          } else {
+            console.log('FileUpload: anx-view index', i, 'Shadow DOM exists but input not found');
+          }
+        } else {
+          console.log('FileUpload: anx-view index', i, 'has no Shadow DOM');
         }
       } catch (error) {
-        console.warn('FileUpload: Error accessing Shadow DOM:', error);
+        console.warn('FileUpload: Error accessing Shadow DOM of anx-view index', i, ':', error);
       }
     }
   }
   
   if (input) {
+    console.log('FileUpload: File input element:', input);
     input.click();
     console.log('FileUpload: File input clicked successfully');
   } else {
     console.error('FileUpload: File input not found:', inputId);
+    // 尝试查找所有可能的文件输入元素
+    const allInputs = document.querySelectorAll('input[type="file"]');
+    console.log('FileUpload: All file inputs found:', allInputs.length);
+    allInputs.forEach((inp, idx) => {
+      console.log('FileUpload: File input', idx, '- ID:', inp.id);
+    });
   }
 }
