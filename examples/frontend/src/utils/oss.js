@@ -46,7 +46,7 @@ async function getOSSToken() {
     return 'de12b5548a2b401eb62094d837cc36a1';
   } catch (error) {
     console.error('Error getting OSS token:', error);
-    // 出错时返回默认token
+    // 出错时返回默认token作为备用
     return 'de12b5548a2b401eb62094d837cc36a1';
   }
 }

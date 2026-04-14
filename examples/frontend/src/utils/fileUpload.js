@@ -1,6 +1,9 @@
 /**
  * 文件上传工具函数
+ * 使用 OSS 方式上传
  */
+
+import { uploadImageToOSS } from './oss.js';
 
 /**
  * 处理文件选择事件
@@ -59,6 +62,7 @@ export function handleFileChange(event, cardKey, kind, maxSize, maxCount, previe
  * @param {boolean} preview - 是否预览
  */
 export function handleSingleFile(file, cardKey, kind, maxSize, preview) {
+  console.log('handleSingleFile');
   // 验证文件大小
   if (file.size > maxSize) {
     alert('文件大小超过限制');
@@ -125,41 +129,77 @@ export function handleMultipleFiles(files, cardKey, maxSize, maxCount, preview) 
  * @param {number} index - 多文件上传时的索引
  */
 export async function uploadFile(file, cardKey, kind, index) {
+  console.log('FileUpload: uploadFile called', {
+    fileName: file.name,
+    fileSize: file.size,
+    cardKey: cardKey,
+    kind: kind,
+    index: index
+  });
+  
+  try {
+    console.log('FileUpload: Using OSS upload method');
+    
+    // 使用 OSS 上传
+    const fileUrl = await uploadImageToOSS(file, 'anx-core/');
+    
+    console.log('FileUpload: OSS upload successful, fileUrl:', fileUrl);
+    
+    if (window.anxNodeUpdate) {
+      if (kind === 'image' || kind === 'file') {
+        // 更新为 OSS URL
+        window.anxNodeUpdate(cardKey, 'value', fileUrl);
+      } else if (kind === 'images') {
+        // 更新特定索引的 OSS URL
+        const currentValue = window.anxGetNodeValue ? window.anxGetNodeValue(cardKey) : [];
+        const newValues = [...currentValue];
+        newValues[index] = fileUrl;
+        window.anxNodeUpdate(cardKey, 'value', newValues);
+      }
+    }
+  } catch (error) {
+    console.error('文件上传错误:', error);
+    
+    // OSS 上传失败时，回退到本地上传
+    console.log('FileUpload: OSS upload failed, falling back to local upload');
+    await uploadFileLocal(file, cardKey, kind, index);
+    
+    alert('文件上传失败，已尝试本地备份上传');
+  }
+}
+
+/**
+ * 本地上传（作为 OSS 上传失败的备用方案）
+ */
+async function uploadFileLocal(file, cardKey, kind, index) {
   try {
     const formData = new FormData();
     formData.append('file', file);
     
-    // 上传到后端
     const response = await fetch('/api/upload', {
       method: 'POST',
       body: formData
     });
     
     if (!response.ok) {
-      throw new Error('上传失败');
+      throw new Error(`本地上传失败: ${response.status}`);
     }
     
     const data = await response.json();
     
-    if (data.success) {
+    if (data.success && window.anxNodeUpdate) {
       const fileUrl = data.fileUrl;
-      
-      if (window.anxNodeUpdate) {
-        if (kind === 'image' || kind === 'file') {
-          // 更新为服务器URL
-          window.anxNodeUpdate(cardKey, 'value', fileUrl);
-        } else if (kind === 'images') {
-          // 更新特定索引的服务器URL
-          const currentValue = window.anxGetNodeValue ? window.anxGetNodeValue(cardKey) : [];
-          const newValues = [...currentValue];
-          newValues[index] = fileUrl;
-          window.anxNodeUpdate(cardKey, 'value', newValues);
-        }
+      if (kind === 'image' || kind === 'file') {
+        window.anxNodeUpdate(cardKey, 'value', fileUrl);
+      } else if (kind === 'images') {
+        const currentValue = window.anxGetNodeValue ? window.anxGetNodeValue(cardKey) : [];
+        const newValues = [...currentValue];
+        newValues[index] = fileUrl;
+        window.anxNodeUpdate(cardKey, 'value', newValues);
       }
     }
   } catch (error) {
-    console.error('文件上传错误:', error);
-    alert('文件上传失败');
+    console.error('本地上传也失败:', error);
   }
 }
 

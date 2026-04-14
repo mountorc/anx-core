@@ -1715,6 +1715,24 @@ app.get('/api/cli/logs', (req, res) => {
   }
 });
 
+// API endpoint for getting dataset root (handles url_dataset requests)
+app.get('/dataset', (req, res) => {
+  try {
+    // 返回示例表格数据
+    const sampleData = [
+      { id: 1, name: '笔记本电脑', price: 5999, stock: 50 },
+      { id: 2, name: '智能手机', price: 3999, stock: 100 },
+      { id: 3, name: '平板电脑', price: 2999, stock: 30 }
+    ];
+    
+    console.log('[API] Returning sample dataset data');
+    res.json(sampleData);
+  } catch (error) {
+    console.error('Error getting dataset:', error);
+    res.status(500).json({ error: 'Failed to get dataset' });
+  }
+});
+
 // API endpoint for getting dataset files
 app.get('/dataset/:filename', (req, res) => {
   try {
@@ -1922,9 +1940,23 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
     
-    // 为了测试，返回一个模拟的文件URL
-    // 实际生产环境中，这里应该使用OSS上传工具上传文件
-    const fileUrl = `https://example.com/uploads/${Date.now()}_${req.file.originalname}`;
+    // 创建上传目录
+    const uploadDir = path.join(__dirname, '../frontend/public/uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    
+    // 生成唯一文件名
+    const fileName = `${Date.now()}_${req.file.originalname}`;
+    const filePath = path.join(uploadDir, fileName);
+    
+    // 将文件写入磁盘
+    fs.writeFileSync(filePath, req.file.buffer);
+    
+    console.log('[API] File uploaded:', filePath);
+    
+    // 返回可访问的文件URL（前端可以直接访问）
+    const fileUrl = `/uploads/${fileName}`;
     
     res.json({
       success: true,

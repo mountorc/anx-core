@@ -172,7 +172,7 @@ export default {
   "kind": "box",
   "title": "测试Box组件 dataset url",
   "dataset": {
-    "url_dataset": "http://localhost:4665/dataset"
+    "url_dataset": "http://localhost:7887/dataset"
   },
   "template": "商品名称: {{name}}, 价格: {{price}}",
   "tapSet": {
@@ -698,7 +698,7 @@ export default {
   "value": "", 
   "optionsSet": { 
     "dataset": { 
-      "url_dataset": "http://localhost:4665/dataset" 
+      "url_dataset": "http://localhost:7887/dataset" 
     }, 
     "titleNick": "name", 
     "valueNick": "name" 
@@ -993,7 +993,7 @@ export default {
         { "nick": "price", "title": "价格", "width": 100 }
       ],
       "dataset": {
-        "url_dataset": "http://localhost:4665/dataset"
+        "url_dataset": "http://localhost:7887/dataset"
       }
     },
     {
