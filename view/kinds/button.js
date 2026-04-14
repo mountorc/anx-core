@@ -13,7 +13,7 @@ function renderButton(node) {
   let html = `
     <div class="button-visualization">
       <button id="${buttonId}" onclick="buttonTap(this);" class="anx-button" data-card-key="${cardKey}" data-tap-set="${tapSetJson}" data-label="${labelJson}" data-node="${nodeJson}">
-        <span class="button-text">${label}33</span>
+        <span class="button-text">${label}</span>
       </button>
     </div>
   `;

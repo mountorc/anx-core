@@ -15,6 +15,10 @@ export default defineConfig({
         target: 'http://localhost:17888',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/core/, '')
+      },
+      '/autoDataSource': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
       }
     }
   }

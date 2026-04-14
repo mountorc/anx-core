@@ -234,7 +234,7 @@ class ANXView extends HTMLElement {
       }
       
       .form-right {
-        width: 300px;
+        width: 500px;
         border-left: 1px solid #ddd;
         background-color: #f9f9f9;
         overflow-y: auto;
@@ -467,7 +467,7 @@ class ANXView extends HTMLElement {
           // 左右布局
           const layoutHTML = `
             <div class="form-layout">
-              <div class="form-left">
+              <div class="form-left" style="min-width: 380px;">
                 ${this.visualizationHTML}
               </div>
               <div class="form-right">

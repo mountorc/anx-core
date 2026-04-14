@@ -9,6 +9,8 @@ const { anxToMarkup, anxToNodes, anxCLI } = require('../../core/index.js');
 const { generateNodeVisualization, generateVisualizationCSS } = require('../../view/index.js');
 const { uploadImageToOSS } = require('../../view/utils/oss.js');
 const { handleTapSet, handleTriggerSet } = require('../../core/utils/trigger-and-tap.js');
+// Import hub module for tile management
+const { getAllTiles, getTileByUuid, getTileConfig } = require('../hub/hub.js');
 
 // 配置multer用于文件上传
 const storage = multer.memoryStorage();
@@ -33,34 +35,33 @@ const { logToSystem, logError, readLogs } = require('../../core/utils/log.js');
 
 
 
+// 从URL或本地加载tile配置
+async function loadTileFromUrl(uuid) {
+  const result = await getTileConfig(uuid);
+  if (result.success) {
+    hubAnxMap.set(result.data.uuid, result.data);
+    console.log(`Loaded tile from ${result.source}: ${result.data.name || 'Unknown'} (${result.data.uuid})`);
+    return true;
+  }
+  return false;
+}
+
 // 加载hub文件
-function loadHubFiles() {
-  const fs = require('fs');
-  const path = require('path');
-  const hubDir = path.join(__dirname, '../../examples/hub');
-  
+async function loadHubFiles() {
   try {
-    if (fs.existsSync(hubDir)) {
-      const files = fs.readdirSync(hubDir);
-      files.forEach(file => {
-        if (file.endsWith('.json') && file !== 'index.json') {
-          const filePath = path.join(hubDir, file);
-          const content = fs.readFileSync(filePath, 'utf8');
-          try {
-            const hubFile = JSON.parse(content);
-            if (hubFile.uuid && hubFile.anxContent) {
-              hubAnxMap.set(hubFile.uuid, hubFile);
-              console.log(`Loaded hub file: ${hubFile.name} (${hubFile.uuid})`);
-            }
-          } catch (error) {
-            console.error(`Error parsing hub file ${file}:`, error);
-          }
-        }
-      });
-      console.log(`Loaded ${hubAnxMap.size} hub files`);
-      // 将 hubAnxMap 设置到 tile.js 模块中
-      setHubAnxMap(hubAnxMap);
+    const tiles = getAllTiles();
+    for (const tile of tiles) {
+      if (hubAnxMap.has(tile.uuid)) {
+        continue;
+      }
+      const result = await getTileConfig(tile.uuid);
+      if (result.success) {
+        hubAnxMap.set(result.data.uuid, result.data);
+        console.log(`Loaded hub file from ${result.source}: ${tile.name} (${tile.uuid})`);
+      }
     }
+    console.log(`Loaded ${hubAnxMap.size} hub files`);
+    setHubAnxMap(hubAnxMap);
   } catch (error) {
     console.error('Error loading hub files:', error);
   }
@@ -1031,6 +1032,11 @@ app.post('/api/convert-to-nodes', async (req, res) => {
   try {
     let { anxContent, uuid_tile } = req.body;
     
+    // 如果提供了 uuid_tile 但本地没有找到，尝试从 URL 动态加载
+    if (uuid_tile && !hubAnxMap.has(uuid_tile)) {
+      await loadTileFromUrl(uuid_tile);
+    }
+    
     // 使用 tile.js 模块处理 anxContent
     const anxResult = processAnxContent(anxContent, uuid_tile);
     if (!anxResult.success) {
@@ -1933,6 +1939,160 @@ app.get('/api/hub', (req, res) => {
   }
 });
 
+// 获取所有tiles列表（包含hub.json和index.json中的所有项）
+app.get('/api/tiles/list', (req, res) => {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const hubDir = path.join(__dirname, '../../examples/hub');
+    
+    const tiles = [];
+    const loadedUuids = new Set();
+    
+    // 读取 hub.json
+    const hubPath = path.join(hubDir, 'hub.json');
+    if (fs.existsSync(hubPath)) {
+      const hubContent = fs.readFileSync(hubPath, 'utf8');
+      const hubData = JSON.parse(hubContent);
+      if (hubData.tiles && Array.isArray(hubData.tiles)) {
+        hubData.tiles.forEach(item => {
+          if (item.uuid && item.name) {
+            tiles.push({
+              uuid: item.uuid,
+              name: item.name,
+              url: item.url,
+              loaded: hubAnxMap.has(item.uuid)
+            });
+            loadedUuids.add(item.uuid);
+          }
+        });
+      }
+    }
+    
+    // 读取 index.json（补充hub.json中没有的项）
+    const indexPath = path.join(hubDir, 'index.json');
+    if (fs.existsSync(indexPath)) {
+      const indexContent = fs.readFileSync(indexPath, 'utf8');
+      const indexData = JSON.parse(indexContent);
+      if (Array.isArray(indexData)) {
+        indexData.forEach(item => {
+          if (item.uuid && item.name && !loadedUuids.has(item.uuid)) {
+            tiles.push({
+              uuid: item.uuid,
+              name: item.name,
+              url: item.url,
+              loaded: hubAnxMap.has(item.uuid)
+            });
+            loadedUuids.add(item.uuid);
+          }
+        });
+      }
+    }
+    
+    res.json({
+      success: true,
+      data: tiles
+    });
+  } catch (error) {
+    console.error('Error loading tiles list:', error);
+    res.status(500).json({ error: 'Failed to load tiles list' });
+  }
+});
+
+// 获取tile详情（支持从URL动态加载）
+app.get('/api/tiles/:uuid', async (req, res) => {
+  try {
+    const { uuid } = req.params;
+    const fs = require('fs');
+    const path = require('path');
+    const fetch = require('node-fetch');
+    const hubDir = path.join(__dirname, '../../examples/hub');
+    
+    // 首先检查是否已加载
+    if (hubAnxMap.has(uuid)) {
+      res.json({
+        success: true,
+        data: hubAnxMap.get(uuid)
+      });
+      return;
+    }
+    
+    // 尝试从 hub.json 获取URL
+    let configUrl = null;
+    const hubPath = path.join(hubDir, 'hub.json');
+    if (fs.existsSync(hubPath)) {
+      const hubContent = fs.readFileSync(hubPath, 'utf8');
+      const hubData = JSON.parse(hubContent);
+      if (hubData.tiles && Array.isArray(hubData.tiles)) {
+        const tile = hubData.tiles.find(item => item.uuid === uuid);
+        if (tile && tile.url) {
+          configUrl = tile.url;
+        }
+      }
+    }
+    
+    // 如果 hub.json 中没有，尝试从 index.json 获取
+    if (!configUrl) {
+      const indexPath = path.join(hubDir, 'index.json');
+      if (fs.existsSync(indexPath)) {
+        const indexContent = fs.readFileSync(indexPath, 'utf8');
+        const indexData = JSON.parse(indexContent);
+        if (Array.isArray(indexData)) {
+          const item = indexData.find(item => item.uuid === uuid);
+          if (item && item.url) {
+            configUrl = item.url;
+          }
+        }
+      }
+    }
+    
+    // 如果有URL，尝试从URL获取配置
+    if (configUrl) {
+      try {
+        const response = await fetch(configUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const hubFile = await response.json();
+        if (hubFile.uuid && hubFile.anxContent) {
+          // 缓存到 hubAnxMap
+          hubAnxMap.set(hubFile.uuid, hubFile);
+          res.json({
+            success: true,
+            data: hubFile
+          });
+          return;
+        }
+      } catch (error) {
+        console.error(`Error loading tile config from URL ${configUrl}:`, error);
+      }
+    }
+    
+    // 尝试从本地文件加载
+    const filePath = path.join(hubDir, `${uuid}.json`);
+    if (fs.existsSync(filePath)) {
+      const content = fs.readFileSync(filePath, 'utf8');
+      const hubFile = JSON.parse(content);
+      if (hubFile.uuid && hubFile.anxContent) {
+        hubAnxMap.set(hubFile.uuid, hubFile);
+        res.json({
+          success: true,
+          data: hubFile
+        });
+        return;
+      }
+    }
+    
+    res.json({
+      success: false,
+      message: 'Tile config not found for the given uuid'
+    });
+  } catch (error) {
+    console.error('Error loading tile config:', error);
+    res.status(500).json({ error: 'Failed to load tile config' });
+  }
+});
+
 // 文件上传API
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   try {
@@ -1987,10 +2147,14 @@ app.post('/api/job-form/submit', (req, res) => {
   }
 });
 
-// 加载hub文件
-loadHubFiles();
+// 加载hub文件并启动服务器
+async function startServer() {
+  await loadHubFiles();
+  
+  // Start the server
+  app.listen(PORT, () => {
+    console.log(`Backend server running on port ${PORT}`);
+  });
+}
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Backend server running on port ${PORT}`);
-});
+startServer();

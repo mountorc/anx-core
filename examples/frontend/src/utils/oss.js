@@ -3,7 +3,7 @@
  * 基于 AutoDataSource OSS 上传文件（Token方式）
  */
 
-const BASE_URL = 'http://localhost:8080/autoDataSource';
+const BASE_URL = '/autoDataSource';
 
 /**
  * 使用token上传文件

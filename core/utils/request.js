@@ -6,6 +6,9 @@
 const { logToSystem, logError } = require('./log.js');
 const { buildParams } = require('./param.js');
 
+// Use native fetch (available in Node.js 18+ and browsers)
+const fetch = typeof window !== 'undefined' ? window.fetch : global.fetch;
+
 /**
  * Execute an HTTP request
  * @param {Object} config - Request configuration
@@ -33,10 +36,6 @@ async function executeRequest(dealSet) {
   }
   
   try {
-    // Log parameters
-    logToSystem('request_params-start', {
-      timestamp: new Date().toISOString()
-    });
     // Build parameters
     const params = buildParams(paramMap, cardKey);
     
@@ -56,7 +55,6 @@ async function executeRequest(dealSet) {
       }
     };
     
-    /*
     let requestUrl = url;
     
     // Handle GET request parameters
@@ -114,7 +112,6 @@ async function executeRequest(dealSet) {
       status: response.status,
       data: responseData
     };
-    */
     
   } catch (error) {
     // Log request error

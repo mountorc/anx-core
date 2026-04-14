@@ -447,8 +447,8 @@ function generateVisualizationCSS() {
   return `
     .node-visualization {
       background-color: white;
-      border-radius: 8px;
-      padding: 15px;
+      border-radius: 0px;
+      padding: 0px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     
@@ -576,11 +576,10 @@ function generateVisualizationCSS() {
     }
     
     .form-visualization {
+      max-height:100vh;
       background-color: white;
-      border-radius: 8px;
+      border-radius: 0px;
       padding: 15px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      border: 1px solid #e0e0e0;
     }
     
     .form-title {

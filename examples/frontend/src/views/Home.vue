@@ -1277,7 +1277,7 @@ export default {
 .node-visualization {
   background-color: white;
   border-radius: 8px;
-  padding: 15px;
+  padding: 0px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
