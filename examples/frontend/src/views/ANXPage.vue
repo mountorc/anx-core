@@ -34,22 +34,63 @@ export default {
     };
   },
   mounted() {
-    const uuid = this.$route.params.uuid_tile;
-    if (uuid) {
-      this.fetchNodeVisualization(uuid);
-    }
+    this.initTile();
     
     // 加载ANXView web component
     import('../webComponents/ANXView.js');
   },
   watch: {
-    '$route.params.uuid_tile'(newUuid) {
-      if (newUuid) {
-        this.fetchNodeVisualization(newUuid);
-      }
+    '$route'(newRoute) {
+      this.initTile();
     }
   },
   methods: {
+    initTile() {
+      const uuid = this.$route.params.uuid_tile;
+      const urlTile = this.$route.query.url_tile;
+      
+      if (urlTile) {
+        this.fetchNodeVisualizationFromUrl(urlTile);
+      } else if (uuid) {
+        this.fetchNodeVisualization(uuid);
+      }
+    },
+    async fetchNodeVisualizationFromUrl(url) {
+      this.loading = true;
+      this.error = '';
+      this.nodesStructure = null;
+      this.visualizationHTML = '';
+      this.visualizationCSS = '';
+
+      try {
+        // 获取节点结构（通过URL）
+        const nodesResponse = await fetch('/api/convert-to-nodes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url_tile: url })
+        });
+
+        if (!nodesResponse.ok) {
+          throw new Error('Failed to fetch nodes structure');
+        }
+
+        const nodesResult = await nodesResponse.json();
+        if (!nodesResult.nodes) {
+          throw new Error('Failed to get nodes structure from response');
+        }
+        this.nodesStructure = nodesResult.nodes;
+
+        // 获取可视化数据
+        await this.generateNodeVisualization(this.nodesStructure);
+      } catch (err) {
+        console.error('Error fetching visualization:', err);
+        this.error = err.message;
+      } finally {
+        this.loading = false;
+      }
+    },
     async fetchNodeVisualization(uuid) {
       this.loading = true;
       this.error = '';

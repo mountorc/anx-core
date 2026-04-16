@@ -1030,10 +1030,36 @@ app.get('/api/get-node', (req, res) => {
 // API endpoint for converting ANX to nodes structure
 app.post('/api/convert-to-nodes', async (req, res) => {
   try {
-    let { anxContent, uuid_tile } = req.body;
+    let { anxContent, uuid_tile, url_tile } = req.body;
     
-    // 如果提供了 uuid_tile 但本地没有找到，尝试从 URL 动态加载
-    if (uuid_tile && !hubAnxMap.has(uuid_tile)) {
+    // 如果提供了 url_tile，从指定URL获取配置
+    if (url_tile) {
+      try {
+        const response = await fetch(url_tile);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        const config = result.config || result;
+        // 支持两种格式：
+        // 1. {uuid: "...", anxContent: {...}}
+        // 2. {kind: "...", kinds: [...]} - 直接是 anxContent
+        if (config.anxContent) {
+          anxContent = config.anxContent;
+          uuid_tile = config.uuid || url_tile;
+        } else if (config.kind) {
+          // 直接是 anxContent 格式
+          anxContent = config;
+          uuid_tile = null; // 不设置 uuid_tile，让 processAnxContent 使用 anxContent
+        } else {
+          throw new Error('Invalid tile config format');
+        }
+      } catch (error) {
+        console.error(`Error loading tile config from URL ${url_tile}:`, error);
+        return res.status(404).json({ error: 'Failed to load tile config from URL' });
+      }
+    } else if (uuid_tile && !hubAnxMap.has(uuid_tile)) {
+      // 如果提供了 uuid_tile 但本地没有找到，尝试从 URL 动态加载
       await loadTileFromUrl(uuid_tile);
     }
     

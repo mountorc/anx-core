@@ -12,6 +12,11 @@ const routes = [
     path: '/anx/view/:uuid_tile',
     name: 'ANXPage',
     component: ANXPage
+  },
+  {
+    path: '/anx/view',
+    name: 'ANXPageUrl',
+    component: ANXPage
   }
 ]
 

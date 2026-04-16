@@ -20,7 +20,7 @@ export default {
   name: 'App',
   computed: {
     isNodeVisualizationPage() {
-      return this.$route.path.startsWith('/anx/view/')
+      return this.$route.path.startsWith('/anx/view')
     }
   },
   methods: {

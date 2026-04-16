@@ -74349,7 +74349,29 @@
           ]
         },
         "data": {
-          "value": "randomize"
+          "value": "randomize",
+          "options": [
+            {
+              "title": "随机",
+              "value": "randomize",
+              "selected": true
+            },
+            {
+              "title": "1:1",
+              "value": "1:1",
+              "selected": false
+            },
+            {
+              "title": "4:3",
+              "value": "4:3",
+              "selected": false
+            },
+            {
+              "title": "16:9",
+              "value": "16:9",
+              "selected": false
+            }
+          ]
         },
         "logs": [],
         "nodes": [],
@@ -74385,7 +74407,29 @@
           ]
         },
         "data": {
-          "value": "auto"
+          "value": "auto",
+          "options": [
+            {
+              "title": "自动",
+              "value": "auto",
+              "selected": true
+            },
+            {
+              "title": "1K",
+              "value": "1k",
+              "selected": false
+            },
+            {
+              "title": "2K",
+              "value": "2k",
+              "selected": false
+            },
+            {
+              "title": "4K",
+              "value": "4k",
+              "selected": false
+            }
+          ]
         },
         "logs": [],
         "nodes": [],
@@ -74537,7 +74581,29 @@
       ]
     },
     "data": {
-      "value": "randomize"
+      "value": "randomize",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize",
+          "selected": true
+        },
+        {
+          "title": "1:1",
+          "value": "1:1",
+          "selected": false
+        },
+        {
+          "title": "4:3",
+          "value": "4:3",
+          "selected": false
+        },
+        {
+          "title": "16:9",
+          "value": "16:9",
+          "selected": false
+        }
+      ]
     },
     "logs": [],
     "nodes": [],
@@ -74573,7 +74639,29 @@
       ]
     },
     "data": {
-      "value": "auto"
+      "value": "auto",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto",
+          "selected": true
+        },
+        {
+          "title": "1K",
+          "value": "1k",
+          "selected": false
+        },
+        {
+          "title": "2K",
+          "value": "2k",
+          "selected": false
+        },
+        {
+          "title": "4K",
+          "value": "4k",
+          "selected": false
+        }
+      ]
     },
     "logs": [],
     "nodes": [],
@@ -77445,7 +77533,29 @@
           ]
         },
         "data": {
-          "value": "randomize"
+          "value": "randomize",
+          "options": [
+            {
+              "title": "随机",
+              "value": "randomize",
+              "selected": true
+            },
+            {
+              "title": "1:1",
+              "value": "1:1",
+              "selected": false
+            },
+            {
+              "title": "4:3",
+              "value": "4:3",
+              "selected": false
+            },
+            {
+              "title": "16:9",
+              "value": "16:9",
+              "selected": false
+            }
+          ]
         },
         "logs": [],
         "nodes": [],
@@ -77656,7 +77766,29 @@
       ]
     },
     "data": {
-      "value": "randomize"
+      "value": "randomize",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize",
+          "selected": true
+        },
+        {
+          "title": "1:1",
+          "value": "1:1",
+          "selected": false
+        },
+        {
+          "title": "4:3",
+          "value": "4:3",
+          "selected": false
+        },
+        {
+          "title": "16:9",
+          "value": "16:9",
+          "selected": false
+        }
+      ]
     },
     "logs": [],
     "nodes": [],
@@ -81487,7 +81619,8 @@
         },
         "data": {},
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232158_8362"
       },
       {
         "cardKey": "card_1776185232158_3088",
@@ -81506,7 +81639,8 @@
           "value": ""
         },
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232158_8362"
       },
       {
         "cardKey": "card_1776185232158_4358",
@@ -81525,7 +81659,8 @@
           "value": ""
         },
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232158_8362"
       },
       {
         "cardKey": "card_1776185232158_2620",
@@ -81560,7 +81695,8 @@
           "value": "randomize"
         },
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232158_8362"
       },
       {
         "cardKey": "card_1776185232158_930",
@@ -81595,7 +81731,8 @@
           "value": "auto"
         },
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232158_8362"
       },
       {
         "cardKey": "card_1776185232158_9363",
@@ -81612,7 +81749,8 @@
           "value": 984153546
         },
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232158_8362"
       },
       {
         "cardKey": "card_1776185232158_494",
@@ -81648,7 +81786,8 @@
         },
         "data": {},
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232158_8362"
       }
     ],
     "parentCardKey": null
@@ -81996,7 +82135,8 @@
         },
         "data": {},
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232673_949"
       },
       {
         "cardKey": "card_1776185232673_6401",
@@ -82015,7 +82155,8 @@
           "value": ""
         },
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232673_949"
       },
       {
         "cardKey": "card_1776185232673_7480",
@@ -82034,7 +82175,8 @@
           "value": ""
         },
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232673_949"
       },
       {
         "cardKey": "card_1776185232673_5772",
@@ -82069,7 +82211,8 @@
           "value": "randomize"
         },
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232673_949"
       },
       {
         "cardKey": "card_1776185232673_2975",
@@ -82104,7 +82247,8 @@
           "value": "auto"
         },
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232673_949"
       },
       {
         "cardKey": "card_1776185232673_8331",
@@ -82121,7 +82265,8 @@
           "value": 55272915
         },
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232673_949"
       },
       {
         "cardKey": "card_1776185232674_2062",
@@ -82157,7 +82302,8 @@
         },
         "data": {},
         "logs": [],
-        "nodes": []
+        "nodes": [],
+        "parentCardKey": "card_1776185232673_949"
       }
     ],
     "parentCardKey": null
@@ -84926,5 +85072,4458 @@
     "logs": [],
     "nodes": [],
     "parentCardKey": "card_1776185350665_1076"
+  },
+  "card_1776185938840_7629": {
+    "cardKey": "card_1776185938840_7629",
+    "config": {
+      "kind": "box",
+      "title": "测试Box组件",
+      "data": [
+        {
+          "name": "张三",
+          "age": 25
+        },
+        {
+          "name": "李四",
+          "age": 30
+        }
+      ],
+      "template": "姓名: {{name}}, 年龄: {{age}}",
+      "tapSet": {
+        "title": "detail",
+        "navigateTo": {
+          "path": "/test",
+          "paramMap": {
+            "name": "name",
+            "age": "age"
+          }
+        }
+      }
+    },
+    "data": {
+      "data": [
+        {
+          "name": "张三",
+          "age": 25
+        },
+        {
+          "name": "李四",
+          "age": 30
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": null
+  },
+  "card_1776188895672_8662": {
+    "cardKey": "card_1776188895672_8662",
+    "config": {
+      "kind": "form",
+      "type": "object",
+      "nick": "实物转线稿图",
+      "title": "实物转线稿图",
+      "kinds": [
+        {
+          "kind": "file",
+          "type": "array",
+          "nick": "images",
+          "title": "上传图像",
+          "must": true,
+          "description": "支持上传多张图像（最多8张）",
+          "accept": "image/*",
+          "multiple": true,
+          "maxCount": 8
+        },
+        {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "system_prompt",
+          "title": "系统提示词",
+          "value": "",
+          "must": false,
+          "description": "系统级别的处理指令",
+          "placeholder": "请输入系统提示词",
+          "maxLength": 500
+        },
+        {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "user_prompt",
+          "title": "用户提示词",
+          "value": "",
+          "must": false,
+          "description": "用户的自定义提示词",
+          "placeholder": "请输入用户提示词（可选）",
+          "maxLength": 500
+        },
+        {
+          "kind": "options",
+          "type": "string",
+          "nick": "aspect_ratio",
+          "title": "宽高比",
+          "value": "randomize",
+          "must": false,
+          "description": "输出图像的宽高比",
+          "options": [
+            {
+              "title": "随机",
+              "value": "randomize"
+            },
+            {
+              "title": "1:1",
+              "value": "1:1"
+            },
+            {
+              "title": "4:3",
+              "value": "4:3"
+            },
+            {
+              "title": "16:9",
+              "value": "16:9"
+            }
+          ]
+        },
+        {
+          "kind": "options",
+          "type": "string",
+          "nick": "resolution",
+          "title": "分辨率",
+          "value": "auto",
+          "must": false,
+          "description": "输出图像的分辨率",
+          "options": [
+            {
+              "title": "自动",
+              "value": "auto"
+            },
+            {
+              "title": "1K",
+              "value": "1k"
+            },
+            {
+              "title": "2K",
+              "value": "2k"
+            },
+            {
+              "title": "4K",
+              "value": "4k"
+            }
+          ]
+        },
+        {
+          "kind": "input",
+          "type": "number",
+          "nick": "seed",
+          "title": "随机种子",
+          "value": 505705024,
+          "must": false,
+          "description": "随机种子值，用于可重复的结果"
+        },
+        {
+          "kind": "button",
+          "type": "string",
+          "nick": "submit",
+          "title": "开始处理",
+          "description": "提交表单并开始处理",
+          "tapSet": {
+            "requestSet": {
+              "method": "POST",
+              "url": "http://localhost:3002/api/run-workflow",
+              "paramMap": {
+                "workflowId": "'2028318219441803266'",
+                "image": "images",
+                "system_prompt": "system_prompt",
+                "user_prompt": "user_prompt",
+                "display_style": "display_style",
+                "remove_parts": "remove_parts",
+                "aspect_ratio": "aspect_ratio",
+                "resolution": "resolution",
+                "seed": "seed",
+                "skip_error": "skip_error",
+                "rmbg_model": "rmbg_model",
+                "sensitivity": "sensitivity",
+                "process_res": "process_res",
+                "background": "background",
+                "background_color": "background_color"
+              }
+            }
+          }
+        }
+      ],
+      "resultSet": {
+        "showType": "right",
+        "items": []
+      }
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [
+      {
+        "cardKey": "card_1776188895689_9175",
+        "config": {
+          "kind": "file",
+          "type": "array",
+          "nick": "images",
+          "title": "上传图像",
+          "must": true,
+          "description": "支持上传多张图像（最多8张）",
+          "accept": "image/*",
+          "multiple": true,
+          "maxCount": 8
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776188895672_8662"
+      },
+      {
+        "cardKey": "card_1776188895689_2017",
+        "config": {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "system_prompt",
+          "title": "系统提示词",
+          "value": "",
+          "must": false,
+          "description": "系统级别的处理指令",
+          "placeholder": "请输入系统提示词",
+          "maxLength": 500
+        },
+        "data": {
+          "value": ""
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776188895672_8662"
+      },
+      {
+        "cardKey": "card_1776188895689_2242",
+        "config": {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "user_prompt",
+          "title": "用户提示词",
+          "value": "",
+          "must": false,
+          "description": "用户的自定义提示词",
+          "placeholder": "请输入用户提示词（可选）",
+          "maxLength": 500
+        },
+        "data": {
+          "value": ""
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776188895672_8662"
+      },
+      {
+        "cardKey": "card_1776188895689_2327",
+        "config": {
+          "kind": "options",
+          "type": "string",
+          "nick": "aspect_ratio",
+          "title": "宽高比",
+          "value": "randomize",
+          "must": false,
+          "description": "输出图像的宽高比",
+          "options": [
+            {
+              "title": "随机",
+              "value": "randomize"
+            },
+            {
+              "title": "1:1",
+              "value": "1:1"
+            },
+            {
+              "title": "4:3",
+              "value": "4:3"
+            },
+            {
+              "title": "16:9",
+              "value": "16:9"
+            }
+          ]
+        },
+        "data": {
+          "value": "randomize"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776188895672_8662"
+      },
+      {
+        "cardKey": "card_1776188895689_1507",
+        "config": {
+          "kind": "options",
+          "type": "string",
+          "nick": "resolution",
+          "title": "分辨率",
+          "value": "auto",
+          "must": false,
+          "description": "输出图像的分辨率",
+          "options": [
+            {
+              "title": "自动",
+              "value": "auto"
+            },
+            {
+              "title": "1K",
+              "value": "1k"
+            },
+            {
+              "title": "2K",
+              "value": "2k"
+            },
+            {
+              "title": "4K",
+              "value": "4k"
+            }
+          ]
+        },
+        "data": {
+          "value": "auto"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776188895672_8662"
+      },
+      {
+        "cardKey": "card_1776188895689_1343",
+        "config": {
+          "kind": "input",
+          "type": "number",
+          "nick": "seed",
+          "title": "随机种子",
+          "value": 505705024,
+          "must": false,
+          "description": "随机种子值，用于可重复的结果"
+        },
+        "data": {
+          "value": 505705024
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776188895672_8662"
+      },
+      {
+        "cardKey": "card_1776188895689_8972",
+        "config": {
+          "kind": "button",
+          "type": "string",
+          "nick": "submit",
+          "title": "开始处理",
+          "description": "提交表单并开始处理",
+          "tapSet": {
+            "requestSet": {
+              "method": "POST",
+              "url": "http://localhost:3002/api/run-workflow",
+              "paramMap": {
+                "workflowId": "'2028318219441803266'",
+                "image": "images",
+                "system_prompt": "system_prompt",
+                "user_prompt": "user_prompt",
+                "display_style": "display_style",
+                "remove_parts": "remove_parts",
+                "aspect_ratio": "aspect_ratio",
+                "resolution": "resolution",
+                "seed": "seed",
+                "skip_error": "skip_error",
+                "rmbg_model": "rmbg_model",
+                "sensitivity": "sensitivity",
+                "process_res": "process_res",
+                "background": "background",
+                "background_color": "background_color"
+              }
+            }
+          }
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776188895672_8662"
+      }
+    ],
+    "parentCardKey": null
+  },
+  "card_1776188895689_9175": {
+    "cardKey": "card_1776188895689_9175",
+    "config": {
+      "kind": "file",
+      "type": "array",
+      "nick": "images",
+      "title": "上传图像",
+      "must": true,
+      "description": "支持上传多张图像（最多8张）",
+      "accept": "image/*",
+      "multiple": true,
+      "maxCount": 8
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776188895672_8662"
+  },
+  "card_1776188895689_2017": {
+    "cardKey": "card_1776188895689_2017",
+    "config": {
+      "kind": "textarea",
+      "type": "string",
+      "nick": "system_prompt",
+      "title": "系统提示词",
+      "value": "",
+      "must": false,
+      "description": "系统级别的处理指令",
+      "placeholder": "请输入系统提示词",
+      "maxLength": 500
+    },
+    "data": {
+      "value": ""
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776188895672_8662"
+  },
+  "card_1776188895689_2242": {
+    "cardKey": "card_1776188895689_2242",
+    "config": {
+      "kind": "textarea",
+      "type": "string",
+      "nick": "user_prompt",
+      "title": "用户提示词",
+      "value": "",
+      "must": false,
+      "description": "用户的自定义提示词",
+      "placeholder": "请输入用户提示词（可选）",
+      "maxLength": 500
+    },
+    "data": {
+      "value": ""
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776188895672_8662"
+  },
+  "card_1776188895689_2327": {
+    "cardKey": "card_1776188895689_2327",
+    "config": {
+      "kind": "options",
+      "type": "string",
+      "nick": "aspect_ratio",
+      "title": "宽高比",
+      "value": "randomize",
+      "must": false,
+      "description": "输出图像的宽高比",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize"
+        },
+        {
+          "title": "1:1",
+          "value": "1:1"
+        },
+        {
+          "title": "4:3",
+          "value": "4:3"
+        },
+        {
+          "title": "16:9",
+          "value": "16:9"
+        }
+      ]
+    },
+    "data": {
+      "value": "randomize"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776188895672_8662"
+  },
+  "card_1776188895689_1507": {
+    "cardKey": "card_1776188895689_1507",
+    "config": {
+      "kind": "options",
+      "type": "string",
+      "nick": "resolution",
+      "title": "分辨率",
+      "value": "auto",
+      "must": false,
+      "description": "输出图像的分辨率",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto"
+        },
+        {
+          "title": "1K",
+          "value": "1k"
+        },
+        {
+          "title": "2K",
+          "value": "2k"
+        },
+        {
+          "title": "4K",
+          "value": "4k"
+        }
+      ]
+    },
+    "data": {
+      "value": "auto"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776188895672_8662"
+  },
+  "card_1776188895689_1343": {
+    "cardKey": "card_1776188895689_1343",
+    "config": {
+      "kind": "input",
+      "type": "number",
+      "nick": "seed",
+      "title": "随机种子",
+      "value": 505705024,
+      "must": false,
+      "description": "随机种子值，用于可重复的结果"
+    },
+    "data": {
+      "value": 505705024
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776188895672_8662"
+  },
+  "card_1776188895689_8972": {
+    "cardKey": "card_1776188895689_8972",
+    "config": {
+      "kind": "button",
+      "type": "string",
+      "nick": "submit",
+      "title": "开始处理",
+      "description": "提交表单并开始处理",
+      "tapSet": {
+        "requestSet": {
+          "method": "POST",
+          "url": "http://localhost:3002/api/run-workflow",
+          "paramMap": {
+            "workflowId": "'2028318219441803266'",
+            "image": "images",
+            "system_prompt": "system_prompt",
+            "user_prompt": "user_prompt",
+            "display_style": "display_style",
+            "remove_parts": "remove_parts",
+            "aspect_ratio": "aspect_ratio",
+            "resolution": "resolution",
+            "seed": "seed",
+            "skip_error": "skip_error",
+            "rmbg_model": "rmbg_model",
+            "sensitivity": "sensitivity",
+            "process_res": "process_res",
+            "background": "background",
+            "background_color": "background_color"
+          }
+        }
+      }
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776188895672_8662"
+  },
+  "card_1776265654019_7504": {
+    "cardKey": "card_1776265654019_7504",
+    "config": {
+      "kind": "form",
+      "title": "创建求职账户",
+      "description": "加入我们，发现更多职业机会",
+      "kinds": [
+        {
+          "kind": "text",
+          "value": "加入我们，发现更多职业机会"
+        },
+        {
+          "kind": "input",
+          "nick": "lastName",
+          "title": "姓",
+          "placeholder": "请输入姓"
+        },
+        {
+          "kind": "input",
+          "nick": "firstName",
+          "title": "名",
+          "placeholder": "请输入名"
+        },
+        {
+          "kind": "input",
+          "nick": "email",
+          "title": "电子邮箱",
+          "placeholder": "请输入电子邮箱",
+          "type": "email"
+        },
+        {
+          "kind": "input",
+          "nick": "phone",
+          "title": "手机号码",
+          "placeholder": "请输入手机号码",
+          "type": "tel"
+        },
+        {
+          "kind": "date",
+          "nick": "birthdate",
+          "title": "出生日期",
+          "placeholder": "年 / 月 / 日"
+        },
+        {
+          "kind": "input",
+          "nick": "city",
+          "title": "所在城市",
+          "placeholder": "请输入所在城市"
+        },
+        {
+          "kind": "options",
+          "nick": "education",
+          "title": "最高学历",
+          "options": [
+            {
+              "value": "",
+              "title": "请选择学历"
+            },
+            {
+              "value": "highSchool",
+              "title": "高中及以下"
+            },
+            {
+              "value": "college",
+              "title": "大专"
+            },
+            {
+              "value": "bachelor",
+              "title": "本科"
+            },
+            {
+              "value": "master",
+              "title": "硕士"
+            },
+            {
+              "value": "phd",
+              "title": "博士"
+            }
+          ]
+        },
+        {
+          "kind": "options",
+          "nick": "experience",
+          "title": "工作年限",
+          "options": [
+            {
+              "value": "",
+              "title": "请选择"
+            },
+            {
+              "value": "fresh",
+              "title": "应届毕业生"
+            },
+            {
+              "value": "1-3",
+              "title": "1-3年"
+            },
+            {
+              "value": "3-5",
+              "title": "3-5年"
+            },
+            {
+              "value": "5-10",
+              "title": "5-10年"
+            },
+            {
+              "value": "10+",
+              "title": "10年以上"
+            }
+          ]
+        },
+        {
+          "kind": "options",
+          "nick": "industry",
+          "title": "行业选择",
+          "optionsSet": {
+            "dataset": {
+              "url_dataset": "http://localhost:7887/dataset/industries"
+            },
+            "titleNick": "name",
+            "valueNick": "id"
+          }
+        },
+        {
+          "kind": "options",
+          "nick": "occupation",
+          "title": "职业选择",
+          "optionsSet": {
+            "dataset": {
+              "url_dataset": "http://localhost:7887/dataset/occupation"
+            },
+            "titleNick": "name",
+            "valueNick": "id"
+          }
+        },
+        {
+          "kind": "checkbox",
+          "nick": "jobType",
+          "title": "期望职位类型",
+          "options": [
+            {
+              "value": "fulltime",
+              "title": "全职"
+            },
+            {
+              "value": "parttime",
+              "title": "兼职"
+            },
+            {
+              "value": "internship",
+              "title": "实习"
+            },
+            {
+              "value": "remote",
+              "title": "远程"
+            }
+          ]
+        },
+        {
+          "kind": "button",
+          "label": "创建账户",
+          "action": "/create-account",
+          "style": "primary",
+          "size": "large"
+        }
+      ]
+    },
+    "data": {
+      "value": {
+        "lastName": "xu"
+      }
+    },
+    "logs": [],
+    "nodes": [
+      {
+        "cardKey": "card_1776265654019_3269",
+        "config": {
+          "kind": "text",
+          "value": "加入我们，发现更多职业机会"
+        },
+        "data": {
+          "value": "加入我们，发现更多职业机会"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776265654019_7504"
+      },
+      {
+        "cardKey": "card_1776265654019_2041",
+        "config": {
+          "kind": "input",
+          "nick": "lastName",
+          "title": "姓",
+          "placeholder": "请输入姓"
+        },
+        "data": {
+          "value": "xu"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776265654019_7504"
+      },
+      {
+        "cardKey": "card_1776265654019_7090",
+        "config": {
+          "kind": "input",
+          "nick": "firstName",
+          "title": "名",
+          "placeholder": "请输入名"
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776265654019_7504"
+      },
+      {
+        "cardKey": "card_1776265654019_2759",
+        "config": {
+          "kind": "input",
+          "nick": "email",
+          "title": "电子邮箱",
+          "placeholder": "请输入电子邮箱",
+          "type": "email"
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776265654019_7504"
+      },
+      {
+        "cardKey": "card_1776265654019_3759",
+        "config": {
+          "kind": "input",
+          "nick": "phone",
+          "title": "手机号码",
+          "placeholder": "请输入手机号码",
+          "type": "tel"
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776265654019_7504"
+      },
+      {
+        "cardKey": "card_1776265654019_1492",
+        "config": {
+          "kind": "date",
+          "nick": "birthdate",
+          "title": "出生日期",
+          "placeholder": "年 / 月 / 日"
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776265654019_7504"
+      },
+      {
+        "cardKey": "card_1776265654019_2652",
+        "config": {
+          "kind": "input",
+          "nick": "city",
+          "title": "所在城市",
+          "placeholder": "请输入所在城市"
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776265654019_7504"
+      },
+      {
+        "cardKey": "card_1776265654019_1206",
+        "config": {
+          "kind": "options",
+          "nick": "education",
+          "title": "最高学历",
+          "options": [
+            {
+              "value": "",
+              "title": "请选择学历"
+            },
+            {
+              "value": "highSchool",
+              "title": "高中及以下"
+            },
+            {
+              "value": "college",
+              "title": "大专"
+            },
+            {
+              "value": "bachelor",
+              "title": "本科"
+            },
+            {
+              "value": "master",
+              "title": "硕士"
+            },
+            {
+              "value": "phd",
+              "title": "博士"
+            }
+          ]
+        },
+        "data": {
+          "options": [
+            {
+              "title": "请选择学历",
+              "value": "",
+              "selected": false
+            },
+            {
+              "title": "高中及以下",
+              "value": "highSchool",
+              "selected": false
+            },
+            {
+              "title": "大专",
+              "value": "college",
+              "selected": false
+            },
+            {
+              "title": "本科",
+              "value": "bachelor",
+              "selected": false
+            },
+            {
+              "title": "硕士",
+              "value": "master",
+              "selected": false
+            },
+            {
+              "title": "博士",
+              "value": "phd",
+              "selected": false
+            }
+          ]
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776265654019_7504"
+      },
+      {
+        "cardKey": "card_1776265654019_5132",
+        "config": {
+          "kind": "options",
+          "nick": "experience",
+          "title": "工作年限",
+          "options": [
+            {
+              "value": "",
+              "title": "请选择"
+            },
+            {
+              "value": "fresh",
+              "title": "应届毕业生"
+            },
+            {
+              "value": "1-3",
+              "title": "1-3年"
+            },
+            {
+              "value": "3-5",
+              "title": "3-5年"
+            },
+            {
+              "value": "5-10",
+              "title": "5-10年"
+            },
+            {
+              "value": "10+",
+              "title": "10年以上"
+            }
+          ]
+        },
+        "data": {
+          "options": [
+            {
+              "title": "请选择",
+              "value": "",
+              "selected": false
+            },
+            {
+              "title": "应届毕业生",
+              "value": "fresh",
+              "selected": false
+            },
+            {
+              "title": "1-3年",
+              "value": "1-3",
+              "selected": false
+            },
+            {
+              "title": "3-5年",
+              "value": "3-5",
+              "selected": false
+            },
+            {
+              "title": "5-10年",
+              "value": "5-10",
+              "selected": false
+            },
+            {
+              "title": "10年以上",
+              "value": "10+",
+              "selected": false
+            }
+          ]
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776265654019_7504"
+      },
+      {
+        "cardKey": "card_1776265654019_6403",
+        "config": {
+          "kind": "options",
+          "nick": "industry",
+          "title": "行业选择",
+          "optionsSet": {
+            "dataset": {
+              "url_dataset": "http://localhost:7887/dataset/industries"
+            },
+            "titleNick": "name",
+            "valueNick": "id"
+          }
+        },
+        "data": {
+          "options": [
+            {
+              "title": "信息技术",
+              "value": "it",
+              "selected": false
+            },
+            {
+              "title": "金融",
+              "value": "finance",
+              "selected": false
+            },
+            {
+              "title": "教育",
+              "value": "education",
+              "selected": false
+            },
+            {
+              "title": "医疗健康",
+              "value": "healthcare",
+              "selected": false
+            },
+            {
+              "title": "零售",
+              "value": "retail",
+              "selected": false
+            },
+            {
+              "title": "制造业",
+              "value": "manufacturing",
+              "selected": false
+            },
+            {
+              "title": "房地产",
+              "value": "realestate",
+              "selected": false
+            },
+            {
+              "title": "交通运输",
+              "value": "transportation",
+              "selected": false
+            },
+            {
+              "title": "能源",
+              "value": "energy",
+              "selected": false
+            },
+            {
+              "title": "农业",
+              "value": "agriculture",
+              "selected": false
+            },
+            {
+              "title": "娱乐",
+              "value": "entertainment",
+              "selected": false
+            },
+            {
+              "title": "旅游",
+              "value": "tourism",
+              "selected": false
+            },
+            {
+              "title": "餐饮",
+              "value": "food",
+              "selected": false
+            },
+            {
+              "title": "咨询",
+              "value": "consulting",
+              "selected": false
+            },
+            {
+              "title": "法律",
+              "value": "legal",
+              "selected": false
+            },
+            {
+              "title": "其他",
+              "value": "other",
+              "selected": false
+            }
+          ]
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776265654019_7504"
+      },
+      {
+        "cardKey": "card_1776265654019_8822",
+        "config": {
+          "kind": "options",
+          "nick": "occupation",
+          "title": "职业选择",
+          "optionsSet": {
+            "dataset": {
+              "url_dataset": "http://localhost:7887/dataset/occupation"
+            },
+            "titleNick": "name",
+            "valueNick": "id"
+          }
+        },
+        "data": {
+          "options": [
+            {
+              "title": "开发工程师",
+              "value": "developer",
+              "selected": false
+            },
+            {
+              "title": "设计师",
+              "value": "designer",
+              "selected": false
+            },
+            {
+              "title": "产品经理",
+              "value": "product",
+              "selected": false
+            },
+            {
+              "title": "市场营销",
+              "value": "marketing",
+              "selected": false
+            },
+            {
+              "title": "人力资源",
+              "value": "hr",
+              "selected": false
+            },
+            {
+              "title": "其他",
+              "value": "other",
+              "selected": false
+            }
+          ]
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776265654019_7504"
+      },
+      {
+        "cardKey": "card_1776265654019_8583",
+        "config": {
+          "kind": "checkbox",
+          "nick": "jobType",
+          "title": "期望职位类型",
+          "options": [
+            {
+              "value": "fulltime",
+              "title": "全职"
+            },
+            {
+              "value": "parttime",
+              "title": "兼职"
+            },
+            {
+              "value": "internship",
+              "title": "实习"
+            },
+            {
+              "value": "remote",
+              "title": "远程"
+            }
+          ]
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776265654019_7504"
+      },
+      {
+        "cardKey": "card_1776265654019_9671",
+        "config": {
+          "kind": "button",
+          "label": "创建账户",
+          "action": "/create-account",
+          "style": "primary",
+          "size": "large"
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776265654019_7504"
+      }
+    ],
+    "parentCardKey": null
+  },
+  "card_1776265654019_3269": {
+    "cardKey": "card_1776265654019_3269",
+    "config": {
+      "kind": "text",
+      "value": "加入我们，发现更多职业机会"
+    },
+    "data": {
+      "value": "加入我们，发现更多职业机会"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776265654019_7504"
+  },
+  "card_1776265654019_2041": {
+    "cardKey": "card_1776265654019_2041",
+    "config": {
+      "kind": "input",
+      "nick": "lastName",
+      "title": "姓",
+      "placeholder": "请输入姓"
+    },
+    "data": {
+      "value": "xu"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776265654019_7504"
+  },
+  "card_1776265654019_7090": {
+    "cardKey": "card_1776265654019_7090",
+    "config": {
+      "kind": "input",
+      "nick": "firstName",
+      "title": "名",
+      "placeholder": "请输入名"
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776265654019_7504"
+  },
+  "card_1776265654019_2759": {
+    "cardKey": "card_1776265654019_2759",
+    "config": {
+      "kind": "input",
+      "nick": "email",
+      "title": "电子邮箱",
+      "placeholder": "请输入电子邮箱",
+      "type": "email"
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776265654019_7504"
+  },
+  "card_1776265654019_3759": {
+    "cardKey": "card_1776265654019_3759",
+    "config": {
+      "kind": "input",
+      "nick": "phone",
+      "title": "手机号码",
+      "placeholder": "请输入手机号码",
+      "type": "tel"
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776265654019_7504"
+  },
+  "card_1776265654019_1492": {
+    "cardKey": "card_1776265654019_1492",
+    "config": {
+      "kind": "date",
+      "nick": "birthdate",
+      "title": "出生日期",
+      "placeholder": "年 / 月 / 日"
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776265654019_7504"
+  },
+  "card_1776265654019_2652": {
+    "cardKey": "card_1776265654019_2652",
+    "config": {
+      "kind": "input",
+      "nick": "city",
+      "title": "所在城市",
+      "placeholder": "请输入所在城市"
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776265654019_7504"
+  },
+  "card_1776265654019_1206": {
+    "cardKey": "card_1776265654019_1206",
+    "config": {
+      "kind": "options",
+      "nick": "education",
+      "title": "最高学历",
+      "options": [
+        {
+          "value": "",
+          "title": "请选择学历"
+        },
+        {
+          "value": "highSchool",
+          "title": "高中及以下"
+        },
+        {
+          "value": "college",
+          "title": "大专"
+        },
+        {
+          "value": "bachelor",
+          "title": "本科"
+        },
+        {
+          "value": "master",
+          "title": "硕士"
+        },
+        {
+          "value": "phd",
+          "title": "博士"
+        }
+      ]
+    },
+    "data": {
+      "options": [
+        {
+          "title": "请选择学历",
+          "value": "",
+          "selected": false
+        },
+        {
+          "title": "高中及以下",
+          "value": "highSchool",
+          "selected": false
+        },
+        {
+          "title": "大专",
+          "value": "college",
+          "selected": false
+        },
+        {
+          "title": "本科",
+          "value": "bachelor",
+          "selected": false
+        },
+        {
+          "title": "硕士",
+          "value": "master",
+          "selected": false
+        },
+        {
+          "title": "博士",
+          "value": "phd",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776265654019_7504"
+  },
+  "card_1776265654019_5132": {
+    "cardKey": "card_1776265654019_5132",
+    "config": {
+      "kind": "options",
+      "nick": "experience",
+      "title": "工作年限",
+      "options": [
+        {
+          "value": "",
+          "title": "请选择"
+        },
+        {
+          "value": "fresh",
+          "title": "应届毕业生"
+        },
+        {
+          "value": "1-3",
+          "title": "1-3年"
+        },
+        {
+          "value": "3-5",
+          "title": "3-5年"
+        },
+        {
+          "value": "5-10",
+          "title": "5-10年"
+        },
+        {
+          "value": "10+",
+          "title": "10年以上"
+        }
+      ]
+    },
+    "data": {
+      "options": [
+        {
+          "title": "请选择",
+          "value": "",
+          "selected": false
+        },
+        {
+          "title": "应届毕业生",
+          "value": "fresh",
+          "selected": false
+        },
+        {
+          "title": "1-3年",
+          "value": "1-3",
+          "selected": false
+        },
+        {
+          "title": "3-5年",
+          "value": "3-5",
+          "selected": false
+        },
+        {
+          "title": "5-10年",
+          "value": "5-10",
+          "selected": false
+        },
+        {
+          "title": "10年以上",
+          "value": "10+",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776265654019_7504"
+  },
+  "card_1776265654019_6403": {
+    "cardKey": "card_1776265654019_6403",
+    "config": {
+      "kind": "options",
+      "nick": "industry",
+      "title": "行业选择",
+      "optionsSet": {
+        "dataset": {
+          "url_dataset": "http://localhost:7887/dataset/industries"
+        },
+        "titleNick": "name",
+        "valueNick": "id"
+      }
+    },
+    "data": {
+      "options": [
+        {
+          "title": "信息技术",
+          "value": "it",
+          "selected": false
+        },
+        {
+          "title": "金融",
+          "value": "finance",
+          "selected": false
+        },
+        {
+          "title": "教育",
+          "value": "education",
+          "selected": false
+        },
+        {
+          "title": "医疗健康",
+          "value": "healthcare",
+          "selected": false
+        },
+        {
+          "title": "零售",
+          "value": "retail",
+          "selected": false
+        },
+        {
+          "title": "制造业",
+          "value": "manufacturing",
+          "selected": false
+        },
+        {
+          "title": "房地产",
+          "value": "realestate",
+          "selected": false
+        },
+        {
+          "title": "交通运输",
+          "value": "transportation",
+          "selected": false
+        },
+        {
+          "title": "能源",
+          "value": "energy",
+          "selected": false
+        },
+        {
+          "title": "农业",
+          "value": "agriculture",
+          "selected": false
+        },
+        {
+          "title": "娱乐",
+          "value": "entertainment",
+          "selected": false
+        },
+        {
+          "title": "旅游",
+          "value": "tourism",
+          "selected": false
+        },
+        {
+          "title": "餐饮",
+          "value": "food",
+          "selected": false
+        },
+        {
+          "title": "咨询",
+          "value": "consulting",
+          "selected": false
+        },
+        {
+          "title": "法律",
+          "value": "legal",
+          "selected": false
+        },
+        {
+          "title": "其他",
+          "value": "other",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776265654019_7504"
+  },
+  "card_1776265654019_8822": {
+    "cardKey": "card_1776265654019_8822",
+    "config": {
+      "kind": "options",
+      "nick": "occupation",
+      "title": "职业选择",
+      "optionsSet": {
+        "dataset": {
+          "url_dataset": "http://localhost:7887/dataset/occupation"
+        },
+        "titleNick": "name",
+        "valueNick": "id"
+      }
+    },
+    "data": {
+      "options": [
+        {
+          "title": "开发工程师",
+          "value": "developer",
+          "selected": false
+        },
+        {
+          "title": "设计师",
+          "value": "designer",
+          "selected": false
+        },
+        {
+          "title": "产品经理",
+          "value": "product",
+          "selected": false
+        },
+        {
+          "title": "市场营销",
+          "value": "marketing",
+          "selected": false
+        },
+        {
+          "title": "人力资源",
+          "value": "hr",
+          "selected": false
+        },
+        {
+          "title": "其他",
+          "value": "other",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776265654019_7504"
+  },
+  "card_1776265654019_8583": {
+    "cardKey": "card_1776265654019_8583",
+    "config": {
+      "kind": "checkbox",
+      "nick": "jobType",
+      "title": "期望职位类型",
+      "options": [
+        {
+          "value": "fulltime",
+          "title": "全职"
+        },
+        {
+          "value": "parttime",
+          "title": "兼职"
+        },
+        {
+          "value": "internship",
+          "title": "实习"
+        },
+        {
+          "value": "remote",
+          "title": "远程"
+        }
+      ]
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776265654019_7504"
+  },
+  "card_1776265654019_9671": {
+    "cardKey": "card_1776265654019_9671",
+    "config": {
+      "kind": "button",
+      "label": "创建账户",
+      "action": "/create-account",
+      "style": "primary",
+      "size": "large"
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776265654019_7504"
+  },
+  "card_1776328376217_2937": {
+    "cardKey": "card_1776328376217_2937",
+    "config": {
+      "kind": "form",
+      "type": "object",
+      "nick": "模特换脸",
+      "title": "模特换脸",
+      "kinds": [
+        {
+          "kind": "file",
+          "type": "array",
+          "nick": "images",
+          "title": "上传图像",
+          "must": true,
+          "description": "支持上传多张图像（最多8张）",
+          "accept": "image/*",
+          "multiple": true,
+          "maxCount": 8
+        },
+        {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "system_prompt",
+          "title": "系统提示词",
+          "value": "",
+          "must": false,
+          "description": "系统级别的处理指令",
+          "placeholder": "请输入系统提示词",
+          "maxLength": 500
+        },
+        {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "user_prompt",
+          "title": "用户提示词",
+          "value": "",
+          "must": false,
+          "description": "用户的自定义提示词",
+          "placeholder": "请输入用户提示词（可选）",
+          "maxLength": 500
+        },
+        {
+          "kind": "options",
+          "type": "string",
+          "nick": "aspect_ratio",
+          "title": "宽高比",
+          "value": "randomize",
+          "must": false,
+          "description": "输出图像的宽高比",
+          "options": [
+            {
+              "title": "随机",
+              "value": "randomize"
+            },
+            {
+              "title": "1:1",
+              "value": "1:1"
+            },
+            {
+              "title": "4:3",
+              "value": "4:3"
+            },
+            {
+              "title": "16:9",
+              "value": "16:9"
+            }
+          ]
+        },
+        {
+          "kind": "options",
+          "type": "string",
+          "nick": "resolution",
+          "title": "分辨率",
+          "value": "auto",
+          "must": false,
+          "description": "输出图像的分辨率",
+          "options": [
+            {
+              "title": "自动",
+              "value": "auto"
+            },
+            {
+              "title": "1K",
+              "value": "1k"
+            },
+            {
+              "title": "2K",
+              "value": "2k"
+            },
+            {
+              "title": "4K",
+              "value": "4k"
+            }
+          ]
+        },
+        {
+          "kind": "input",
+          "type": "number",
+          "nick": "seed",
+          "title": "随机种子",
+          "value": 984737570,
+          "must": false,
+          "description": "随机种子值，用于可重复的结果"
+        },
+        {
+          "kind": "button",
+          "type": "string",
+          "nick": "submit",
+          "title": "开始处理",
+          "description": "提交表单并开始处理",
+          "tapSet": {
+            "requestSet": {
+              "method": "POST",
+              "url": "http://localhost:3002/api/run-workflow",
+              "paramMap": {
+                "workflowId": "'2028320369806942209'",
+                "image": "images",
+                "system_prompt": "system_prompt",
+                "user_prompt": "user_prompt",
+                "display_style": "display_style",
+                "remove_parts": "remove_parts",
+                "aspect_ratio": "aspect_ratio",
+                "resolution": "resolution",
+                "seed": "seed",
+                "skip_error": "skip_error",
+                "rmbg_model": "rmbg_model",
+                "sensitivity": "sensitivity",
+                "process_res": "process_res",
+                "background": "background",
+                "background_color": "background_color"
+              }
+            }
+          }
+        }
+      ],
+      "resultSet": {
+        "showType": "right",
+        "items": []
+      }
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [
+      {
+        "cardKey": "card_1776328376217_8828",
+        "config": {
+          "kind": "file",
+          "type": "array",
+          "nick": "images",
+          "title": "上传图像",
+          "must": true,
+          "description": "支持上传多张图像（最多8张）",
+          "accept": "image/*",
+          "multiple": true,
+          "maxCount": 8
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328376217_2937"
+      },
+      {
+        "cardKey": "card_1776328376217_8562",
+        "config": {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "system_prompt",
+          "title": "系统提示词",
+          "value": "",
+          "must": false,
+          "description": "系统级别的处理指令",
+          "placeholder": "请输入系统提示词",
+          "maxLength": 500
+        },
+        "data": {
+          "value": ""
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328376217_2937"
+      },
+      {
+        "cardKey": "card_1776328376217_7752",
+        "config": {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "user_prompt",
+          "title": "用户提示词",
+          "value": "",
+          "must": false,
+          "description": "用户的自定义提示词",
+          "placeholder": "请输入用户提示词（可选）",
+          "maxLength": 500
+        },
+        "data": {
+          "value": ""
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328376217_2937"
+      },
+      {
+        "cardKey": "card_1776328376217_5564",
+        "config": {
+          "kind": "options",
+          "type": "string",
+          "nick": "aspect_ratio",
+          "title": "宽高比",
+          "value": "randomize",
+          "must": false,
+          "description": "输出图像的宽高比",
+          "options": [
+            {
+              "title": "随机",
+              "value": "randomize"
+            },
+            {
+              "title": "1:1",
+              "value": "1:1"
+            },
+            {
+              "title": "4:3",
+              "value": "4:3"
+            },
+            {
+              "title": "16:9",
+              "value": "16:9"
+            }
+          ]
+        },
+        "data": {
+          "value": "randomize"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328376217_2937"
+      },
+      {
+        "cardKey": "card_1776328376217_3150",
+        "config": {
+          "kind": "options",
+          "type": "string",
+          "nick": "resolution",
+          "title": "分辨率",
+          "value": "auto",
+          "must": false,
+          "description": "输出图像的分辨率",
+          "options": [
+            {
+              "title": "自动",
+              "value": "auto"
+            },
+            {
+              "title": "1K",
+              "value": "1k"
+            },
+            {
+              "title": "2K",
+              "value": "2k"
+            },
+            {
+              "title": "4K",
+              "value": "4k"
+            }
+          ]
+        },
+        "data": {
+          "value": "auto"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328376217_2937"
+      },
+      {
+        "cardKey": "card_1776328376217_633",
+        "config": {
+          "kind": "input",
+          "type": "number",
+          "nick": "seed",
+          "title": "随机种子",
+          "value": 984737570,
+          "must": false,
+          "description": "随机种子值，用于可重复的结果"
+        },
+        "data": {
+          "value": 984737570
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328376217_2937"
+      },
+      {
+        "cardKey": "card_1776328376217_8193",
+        "config": {
+          "kind": "button",
+          "type": "string",
+          "nick": "submit",
+          "title": "开始处理",
+          "description": "提交表单并开始处理",
+          "tapSet": {
+            "requestSet": {
+              "method": "POST",
+              "url": "http://localhost:3002/api/run-workflow",
+              "paramMap": {
+                "workflowId": "'2028320369806942209'",
+                "image": "images",
+                "system_prompt": "system_prompt",
+                "user_prompt": "user_prompt",
+                "display_style": "display_style",
+                "remove_parts": "remove_parts",
+                "aspect_ratio": "aspect_ratio",
+                "resolution": "resolution",
+                "seed": "seed",
+                "skip_error": "skip_error",
+                "rmbg_model": "rmbg_model",
+                "sensitivity": "sensitivity",
+                "process_res": "process_res",
+                "background": "background",
+                "background_color": "background_color"
+              }
+            }
+          }
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328376217_2937"
+      }
+    ],
+    "parentCardKey": null
+  },
+  "card_1776328376217_8828": {
+    "cardKey": "card_1776328376217_8828",
+    "config": {
+      "kind": "file",
+      "type": "array",
+      "nick": "images",
+      "title": "上传图像",
+      "must": true,
+      "description": "支持上传多张图像（最多8张）",
+      "accept": "image/*",
+      "multiple": true,
+      "maxCount": 8
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328376217_2937"
+  },
+  "card_1776328376217_8562": {
+    "cardKey": "card_1776328376217_8562",
+    "config": {
+      "kind": "textarea",
+      "type": "string",
+      "nick": "system_prompt",
+      "title": "系统提示词",
+      "value": "",
+      "must": false,
+      "description": "系统级别的处理指令",
+      "placeholder": "请输入系统提示词",
+      "maxLength": 500
+    },
+    "data": {
+      "value": ""
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328376217_2937"
+  },
+  "card_1776328376217_7752": {
+    "cardKey": "card_1776328376217_7752",
+    "config": {
+      "kind": "textarea",
+      "type": "string",
+      "nick": "user_prompt",
+      "title": "用户提示词",
+      "value": "",
+      "must": false,
+      "description": "用户的自定义提示词",
+      "placeholder": "请输入用户提示词（可选）",
+      "maxLength": 500
+    },
+    "data": {
+      "value": ""
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328376217_2937"
+  },
+  "card_1776328376217_5564": {
+    "cardKey": "card_1776328376217_5564",
+    "config": {
+      "kind": "options",
+      "type": "string",
+      "nick": "aspect_ratio",
+      "title": "宽高比",
+      "value": "randomize",
+      "must": false,
+      "description": "输出图像的宽高比",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize"
+        },
+        {
+          "title": "1:1",
+          "value": "1:1"
+        },
+        {
+          "title": "4:3",
+          "value": "4:3"
+        },
+        {
+          "title": "16:9",
+          "value": "16:9"
+        }
+      ]
+    },
+    "data": {
+      "value": "randomize"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328376217_2937"
+  },
+  "card_1776328376217_3150": {
+    "cardKey": "card_1776328376217_3150",
+    "config": {
+      "kind": "options",
+      "type": "string",
+      "nick": "resolution",
+      "title": "分辨率",
+      "value": "auto",
+      "must": false,
+      "description": "输出图像的分辨率",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto"
+        },
+        {
+          "title": "1K",
+          "value": "1k"
+        },
+        {
+          "title": "2K",
+          "value": "2k"
+        },
+        {
+          "title": "4K",
+          "value": "4k"
+        }
+      ]
+    },
+    "data": {
+      "value": "auto"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328376217_2937"
+  },
+  "card_1776328376217_633": {
+    "cardKey": "card_1776328376217_633",
+    "config": {
+      "kind": "input",
+      "type": "number",
+      "nick": "seed",
+      "title": "随机种子",
+      "value": 984737570,
+      "must": false,
+      "description": "随机种子值，用于可重复的结果"
+    },
+    "data": {
+      "value": 984737570
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328376217_2937"
+  },
+  "card_1776328376217_8193": {
+    "cardKey": "card_1776328376217_8193",
+    "config": {
+      "kind": "button",
+      "type": "string",
+      "nick": "submit",
+      "title": "开始处理",
+      "description": "提交表单并开始处理",
+      "tapSet": {
+        "requestSet": {
+          "method": "POST",
+          "url": "http://localhost:3002/api/run-workflow",
+          "paramMap": {
+            "workflowId": "'2028320369806942209'",
+            "image": "images",
+            "system_prompt": "system_prompt",
+            "user_prompt": "user_prompt",
+            "display_style": "display_style",
+            "remove_parts": "remove_parts",
+            "aspect_ratio": "aspect_ratio",
+            "resolution": "resolution",
+            "seed": "seed",
+            "skip_error": "skip_error",
+            "rmbg_model": "rmbg_model",
+            "sensitivity": "sensitivity",
+            "process_res": "process_res",
+            "background": "background",
+            "background_color": "background_color"
+          }
+        }
+      }
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328376217_2937"
+  },
+  "card_1776328381461_208": {
+    "cardKey": "card_1776328381461_208",
+    "config": {
+      "kind": "box",
+      "title": "测试Box组件",
+      "data": [
+        {
+          "name": "张三",
+          "age": 25
+        },
+        {
+          "name": "李四",
+          "age": 30
+        }
+      ],
+      "template": "姓名: {{name}}, 年龄: {{age}}",
+      "tapSet": {
+        "title": "detail",
+        "navigateTo": {
+          "path": "/test",
+          "paramMap": {
+            "name": "name",
+            "age": "age"
+          }
+        }
+      }
+    },
+    "data": {
+      "data": [
+        {
+          "name": "张三",
+          "age": 25
+        },
+        {
+          "name": "李四",
+          "age": 30
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": null
+  },
+  "card_1776328686034_8024": {
+    "cardKey": "card_1776328686034_8024",
+    "config": {
+      "kind": "form",
+      "kinds": [
+        {
+          "title": "上传图像",
+          "desc": "",
+          "nick": "images",
+          "autoItemID": "",
+          "kind": "file",
+          "mode": "",
+          "type": "array",
+          "must": true,
+          "placeholder": "",
+          "options": null,
+          "value": null,
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        },
+        {
+          "title": "系统提示词",
+          "desc": "",
+          "nick": "system_prompt",
+          "autoItemID": "",
+          "kind": "textarea",
+          "mode": "",
+          "type": "string",
+          "must": false,
+          "placeholder": "请输入系统提示词",
+          "options": null,
+          "value": "",
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        },
+        {
+          "title": "用户提示词",
+          "desc": "",
+          "nick": "user_prompt",
+          "autoItemID": "",
+          "kind": "textarea",
+          "mode": "",
+          "type": "string",
+          "must": false,
+          "placeholder": "请输入用户提示词（可选）",
+          "options": null,
+          "value": "",
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        },
+        {
+          "title": "宽高比",
+          "desc": "",
+          "nick": "aspect_ratio",
+          "autoItemID": "",
+          "kind": "options",
+          "mode": "",
+          "type": "string",
+          "must": false,
+          "placeholder": "",
+          "options": [
+            {
+              "v": "",
+              "t": ""
+            },
+            {
+              "v": "",
+              "t": ""
+            },
+            {
+              "v": "",
+              "t": ""
+            },
+            {
+              "v": "",
+              "t": ""
+            }
+          ],
+          "value": "randomize",
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        },
+        {
+          "title": "分辨率",
+          "desc": "",
+          "nick": "resolution",
+          "autoItemID": "",
+          "kind": "options",
+          "mode": "",
+          "type": "string",
+          "must": false,
+          "placeholder": "",
+          "options": [
+            {
+              "v": "",
+              "t": ""
+            },
+            {
+              "v": "",
+              "t": ""
+            },
+            {
+              "v": "",
+              "t": ""
+            },
+            {
+              "v": "",
+              "t": ""
+            }
+          ],
+          "value": "auto",
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        },
+        {
+          "title": "随机种子",
+          "desc": "",
+          "nick": "seed",
+          "autoItemID": "",
+          "kind": "input",
+          "mode": "",
+          "type": "number",
+          "must": false,
+          "placeholder": "",
+          "options": null,
+          "value": 984153546,
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        },
+        {
+          "title": "开始处理",
+          "desc": "",
+          "nick": "submit",
+          "autoItemID": "",
+          "kind": "button",
+          "mode": "",
+          "type": "string",
+          "must": false,
+          "placeholder": "",
+          "options": null,
+          "value": null,
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        }
+      ]
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [
+      {
+        "cardKey": "card_1776328686034_7460",
+        "config": {
+          "title": "上传图像",
+          "desc": "",
+          "nick": "images",
+          "autoItemID": "",
+          "kind": "file",
+          "mode": "",
+          "type": "array",
+          "must": true,
+          "placeholder": "",
+          "options": null,
+          "value": null,
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        },
+        "data": {
+          "value": null
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328686034_8024"
+      },
+      {
+        "cardKey": "card_1776328686034_1791",
+        "config": {
+          "title": "系统提示词",
+          "desc": "",
+          "nick": "system_prompt",
+          "autoItemID": "",
+          "kind": "textarea",
+          "mode": "",
+          "type": "string",
+          "must": false,
+          "placeholder": "请输入系统提示词",
+          "options": null,
+          "value": "",
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        },
+        "data": {
+          "value": ""
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328686034_8024"
+      },
+      {
+        "cardKey": "card_1776328686034_5384",
+        "config": {
+          "title": "用户提示词",
+          "desc": "",
+          "nick": "user_prompt",
+          "autoItemID": "",
+          "kind": "textarea",
+          "mode": "",
+          "type": "string",
+          "must": false,
+          "placeholder": "请输入用户提示词（可选）",
+          "options": null,
+          "value": "",
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        },
+        "data": {
+          "value": ""
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328686034_8024"
+      },
+      {
+        "cardKey": "card_1776328686034_2523",
+        "config": {
+          "title": "宽高比",
+          "desc": "",
+          "nick": "aspect_ratio",
+          "autoItemID": "",
+          "kind": "options",
+          "mode": "",
+          "type": "string",
+          "must": false,
+          "placeholder": "",
+          "options": [
+            {
+              "v": "",
+              "t": ""
+            },
+            {
+              "v": "",
+              "t": ""
+            },
+            {
+              "v": "",
+              "t": ""
+            },
+            {
+              "v": "",
+              "t": ""
+            }
+          ],
+          "value": "randomize",
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        },
+        "data": {
+          "value": "randomize"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328686034_8024"
+      },
+      {
+        "cardKey": "card_1776328686034_2989",
+        "config": {
+          "title": "分辨率",
+          "desc": "",
+          "nick": "resolution",
+          "autoItemID": "",
+          "kind": "options",
+          "mode": "",
+          "type": "string",
+          "must": false,
+          "placeholder": "",
+          "options": [
+            {
+              "v": "",
+              "t": ""
+            },
+            {
+              "v": "",
+              "t": ""
+            },
+            {
+              "v": "",
+              "t": ""
+            },
+            {
+              "v": "",
+              "t": ""
+            }
+          ],
+          "value": "auto",
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        },
+        "data": {
+          "value": "auto"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328686034_8024"
+      },
+      {
+        "cardKey": "card_1776328686034_9795",
+        "config": {
+          "title": "随机种子",
+          "desc": "",
+          "nick": "seed",
+          "autoItemID": "",
+          "kind": "input",
+          "mode": "",
+          "type": "number",
+          "must": false,
+          "placeholder": "",
+          "options": null,
+          "value": 984153546,
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        },
+        "data": {
+          "value": 984153546
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328686034_8024"
+      },
+      {
+        "cardKey": "card_1776328686034_649",
+        "config": {
+          "title": "开始处理",
+          "desc": "",
+          "nick": "submit",
+          "autoItemID": "",
+          "kind": "button",
+          "mode": "",
+          "type": "string",
+          "must": false,
+          "placeholder": "",
+          "options": null,
+          "value": null,
+          "titleType": 0,
+          "styleSet": null,
+          "titleHeight": 0,
+          "lineHeight": 0,
+          "style": "",
+          "instyle": "",
+          "titleStyle": "",
+          "showType": "",
+          "scan": false,
+          "button": "",
+          "background": "",
+          "lineEdit": 0,
+          "state": null
+        },
+        "data": {
+          "value": null
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328686034_8024"
+      }
+    ],
+    "parentCardKey": null
+  },
+  "card_1776328686034_7460": {
+    "cardKey": "card_1776328686034_7460",
+    "config": {
+      "title": "上传图像",
+      "desc": "",
+      "nick": "images",
+      "autoItemID": "",
+      "kind": "file",
+      "mode": "",
+      "type": "array",
+      "must": true,
+      "placeholder": "",
+      "options": null,
+      "value": null,
+      "titleType": 0,
+      "styleSet": null,
+      "titleHeight": 0,
+      "lineHeight": 0,
+      "style": "",
+      "instyle": "",
+      "titleStyle": "",
+      "showType": "",
+      "scan": false,
+      "button": "",
+      "background": "",
+      "lineEdit": 0,
+      "state": null
+    },
+    "data": {
+      "value": null
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328686034_8024"
+  },
+  "card_1776328686034_1791": {
+    "cardKey": "card_1776328686034_1791",
+    "config": {
+      "title": "系统提示词",
+      "desc": "",
+      "nick": "system_prompt",
+      "autoItemID": "",
+      "kind": "textarea",
+      "mode": "",
+      "type": "string",
+      "must": false,
+      "placeholder": "请输入系统提示词",
+      "options": null,
+      "value": "",
+      "titleType": 0,
+      "styleSet": null,
+      "titleHeight": 0,
+      "lineHeight": 0,
+      "style": "",
+      "instyle": "",
+      "titleStyle": "",
+      "showType": "",
+      "scan": false,
+      "button": "",
+      "background": "",
+      "lineEdit": 0,
+      "state": null
+    },
+    "data": {
+      "value": ""
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328686034_8024"
+  },
+  "card_1776328686034_5384": {
+    "cardKey": "card_1776328686034_5384",
+    "config": {
+      "title": "用户提示词",
+      "desc": "",
+      "nick": "user_prompt",
+      "autoItemID": "",
+      "kind": "textarea",
+      "mode": "",
+      "type": "string",
+      "must": false,
+      "placeholder": "请输入用户提示词（可选）",
+      "options": null,
+      "value": "",
+      "titleType": 0,
+      "styleSet": null,
+      "titleHeight": 0,
+      "lineHeight": 0,
+      "style": "",
+      "instyle": "",
+      "titleStyle": "",
+      "showType": "",
+      "scan": false,
+      "button": "",
+      "background": "",
+      "lineEdit": 0,
+      "state": null
+    },
+    "data": {
+      "value": ""
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328686034_8024"
+  },
+  "card_1776328686034_2523": {
+    "cardKey": "card_1776328686034_2523",
+    "config": {
+      "title": "宽高比",
+      "desc": "",
+      "nick": "aspect_ratio",
+      "autoItemID": "",
+      "kind": "options",
+      "mode": "",
+      "type": "string",
+      "must": false,
+      "placeholder": "",
+      "options": [
+        {
+          "v": "",
+          "t": ""
+        },
+        {
+          "v": "",
+          "t": ""
+        },
+        {
+          "v": "",
+          "t": ""
+        },
+        {
+          "v": "",
+          "t": ""
+        }
+      ],
+      "value": "randomize",
+      "titleType": 0,
+      "styleSet": null,
+      "titleHeight": 0,
+      "lineHeight": 0,
+      "style": "",
+      "instyle": "",
+      "titleStyle": "",
+      "showType": "",
+      "scan": false,
+      "button": "",
+      "background": "",
+      "lineEdit": 0,
+      "state": null
+    },
+    "data": {
+      "value": "randomize"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328686034_8024"
+  },
+  "card_1776328686034_2989": {
+    "cardKey": "card_1776328686034_2989",
+    "config": {
+      "title": "分辨率",
+      "desc": "",
+      "nick": "resolution",
+      "autoItemID": "",
+      "kind": "options",
+      "mode": "",
+      "type": "string",
+      "must": false,
+      "placeholder": "",
+      "options": [
+        {
+          "v": "",
+          "t": ""
+        },
+        {
+          "v": "",
+          "t": ""
+        },
+        {
+          "v": "",
+          "t": ""
+        },
+        {
+          "v": "",
+          "t": ""
+        }
+      ],
+      "value": "auto",
+      "titleType": 0,
+      "styleSet": null,
+      "titleHeight": 0,
+      "lineHeight": 0,
+      "style": "",
+      "instyle": "",
+      "titleStyle": "",
+      "showType": "",
+      "scan": false,
+      "button": "",
+      "background": "",
+      "lineEdit": 0,
+      "state": null
+    },
+    "data": {
+      "value": "auto"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328686034_8024"
+  },
+  "card_1776328686034_9795": {
+    "cardKey": "card_1776328686034_9795",
+    "config": {
+      "title": "随机种子",
+      "desc": "",
+      "nick": "seed",
+      "autoItemID": "",
+      "kind": "input",
+      "mode": "",
+      "type": "number",
+      "must": false,
+      "placeholder": "",
+      "options": null,
+      "value": 984153546,
+      "titleType": 0,
+      "styleSet": null,
+      "titleHeight": 0,
+      "lineHeight": 0,
+      "style": "",
+      "instyle": "",
+      "titleStyle": "",
+      "showType": "",
+      "scan": false,
+      "button": "",
+      "background": "",
+      "lineEdit": 0,
+      "state": null
+    },
+    "data": {
+      "value": 984153546
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328686034_8024"
+  },
+  "card_1776328686034_649": {
+    "cardKey": "card_1776328686034_649",
+    "config": {
+      "title": "开始处理",
+      "desc": "",
+      "nick": "submit",
+      "autoItemID": "",
+      "kind": "button",
+      "mode": "",
+      "type": "string",
+      "must": false,
+      "placeholder": "",
+      "options": null,
+      "value": null,
+      "titleType": 0,
+      "styleSet": null,
+      "titleHeight": 0,
+      "lineHeight": 0,
+      "style": "",
+      "instyle": "",
+      "titleStyle": "",
+      "showType": "",
+      "scan": false,
+      "button": "",
+      "background": "",
+      "lineEdit": 0,
+      "state": null
+    },
+    "data": {
+      "value": null
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328686034_8024"
+  },
+  "card_1776328990433_446": {
+    "cardKey": "card_1776328990433_446",
+    "config": {
+      "kind": "box",
+      "title": "测试Box组件",
+      "data": [
+        {
+          "name": "张三",
+          "age": 25
+        },
+        {
+          "name": "李四",
+          "age": 30
+        }
+      ],
+      "template": "姓名: {{name}}, 年龄: {{age}}",
+      "tapSet": {
+        "title": "detail",
+        "navigateTo": {
+          "path": "/test",
+          "paramMap": {
+            "name": "name",
+            "age": "age"
+          }
+        }
+      }
+    },
+    "data": {
+      "data": [
+        {
+          "name": "张三",
+          "age": 25
+        },
+        {
+          "name": "李四",
+          "age": 30
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": null
+  },
+  "card_1776328990452_3506": {
+    "cardKey": "card_1776328990452_3506",
+    "config": {
+      "kind": "form",
+      "type": "object",
+      "nick": "clothing_image_processing",
+      "title": "服装图像处理",
+      "kinds": [
+        {
+          "kind": "file",
+          "type": "array",
+          "nick": "images",
+          "title": "上传图像",
+          "must": true,
+          "description": "支持上传多张服装图像（最多8张）",
+          "accept": "image/*",
+          "multiple": true,
+          "maxCount": 8
+        },
+        {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "system_prompt",
+          "title": "系统提示词",
+          "value": "对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景",
+          "must": true,
+          "description": "系统级别的处理指令",
+          "placeholder": "请输入系统提示词",
+          "maxLength": 500
+        },
+        {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "user_prompt",
+          "title": "用户提示词",
+          "value": "",
+          "must": false,
+          "description": "用户的自定义提示词",
+          "placeholder": "请输入用户提示词（可选）",
+          "maxLength": 500
+        },
+        {
+          "kind": "input",
+          "type": "string",
+          "nick": "display_style",
+          "title": "展示风格",
+          "value": "",
+          "must": false,
+          "description": "图像展示风格",
+          "placeholder": "请输入展示风格"
+        },
+        {
+          "kind": "input",
+          "type": "string",
+          "nick": "remove_parts",
+          "title": "去除部位",
+          "value": "",
+          "must": false,
+          "description": "需要去除的部位",
+          "placeholder": "请输入需要去除的部位"
+        },
+        {
+          "kind": "options",
+          "type": "string",
+          "nick": "aspect_ratio",
+          "title": "宽高比",
+          "value": "randomize",
+          "must": false,
+          "description": "输出图像的宽高比",
+          "options": [
+            {
+              "title": "随机",
+              "value": "randomize"
+            },
+            {
+              "title": "1:1",
+              "value": "1:1"
+            },
+            {
+              "title": "4:3",
+              "value": "4:3"
+            },
+            {
+              "title": "16:9",
+              "value": "16:9"
+            }
+          ]
+        },
+        {
+          "kind": "options",
+          "type": "string",
+          "nick": "resolution",
+          "title": "分辨率",
+          "value": "auto",
+          "must": false,
+          "description": "输出图像的分辨率",
+          "options": [
+            {
+              "title": "自动",
+              "value": "auto"
+            },
+            {
+              "title": "1K",
+              "value": "1k"
+            },
+            {
+              "title": "2K",
+              "value": "2k"
+            },
+            {
+              "title": "4K",
+              "value": "4k"
+            }
+          ]
+        },
+        {
+          "kind": "input",
+          "type": "number",
+          "nick": "seed",
+          "title": "随机种子",
+          "value": 1424685757,
+          "must": false,
+          "description": "随机种子值，用于可重复的结果"
+        },
+        {
+          "kind": "checkbox",
+          "type": "boolean",
+          "nick": "skip_error",
+          "title": "跳过错误",
+          "value": false,
+          "must": false,
+          "description": "是否跳过处理中的错误"
+        },
+        {
+          "kind": "options",
+          "type": "string",
+          "nick": "rmbg_model",
+          "title": "背景移除模型",
+          "value": "RMBG-2.0",
+          "must": false,
+          "description": "使用的背景移除模型",
+          "options": [
+            {
+              "title": "RMBG-2.0",
+              "value": "RMBG-2.0"
+            }
+          ]
+        },
+        {
+          "kind": "input",
+          "type": "number",
+          "nick": "sensitivity",
+          "title": "敏感度",
+          "value": 1,
+          "must": false,
+          "description": "背景移除的敏感度（0-1）"
+        },
+        {
+          "kind": "input",
+          "type": "number",
+          "nick": "process_res",
+          "title": "处理分辨率",
+          "value": 1024,
+          "must": false,
+          "description": "处理时的分辨率"
+        },
+        {
+          "kind": "options",
+          "type": "string",
+          "nick": "background",
+          "title": "背景类型",
+          "value": "Color",
+          "must": false,
+          "description": "背景类型",
+          "options": [
+            {
+              "title": "纯色",
+              "value": "Color"
+            },
+            {
+              "title": "透明",
+              "value": "Transparent"
+            },
+            {
+              "title": "模糊",
+              "value": "Blur"
+            }
+          ]
+        },
+        {
+          "kind": "input",
+          "type": "string",
+          "nick": "background_color",
+          "title": "背景颜色",
+          "value": "#222222",
+          "must": false,
+          "description": "纯色背景的颜色值"
+        },
+        {
+          "kind": "button",
+          "type": "string",
+          "nick": "submit",
+          "title": "开始处理",
+          "description": "提交表单并开始图像处理",
+          "tapSet": {
+            "requestSet": {
+              "method": "POST",
+              "url": "http://localhost:3002/api/run-workflow",
+              "paramMap": {
+                "workflowId": "'2028318219441803266'",
+                "image": "images",
+                "system_prompt": "system_prompt",
+                "user_prompt": "user_prompt",
+                "display_style": "display_style",
+                "remove_parts": "remove_parts",
+                "aspect_ratio": "aspect_ratio",
+                "resolution": "resolution",
+                "seed": "seed",
+                "skip_error": "skip_error",
+                "rmbg_model": "rmbg_model",
+                "sensitivity": "sensitivity",
+                "process_res": "process_res",
+                "background": "background",
+                "background_color": "background_color"
+              }
+            }
+          }
+        }
+      ],
+      "resultSet": {
+        "showType": "right",
+        "items": []
+      }
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [
+      {
+        "cardKey": "card_1776328990452_7060",
+        "config": {
+          "kind": "file",
+          "type": "array",
+          "nick": "images",
+          "title": "上传图像",
+          "must": true,
+          "description": "支持上传多张服装图像（最多8张）",
+          "accept": "image/*",
+          "multiple": true,
+          "maxCount": 8
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_5989",
+        "config": {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "system_prompt",
+          "title": "系统提示词",
+          "value": "对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景",
+          "must": true,
+          "description": "系统级别的处理指令",
+          "placeholder": "请输入系统提示词",
+          "maxLength": 500
+        },
+        "data": {
+          "value": "对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_2366",
+        "config": {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "user_prompt",
+          "title": "用户提示词",
+          "value": "",
+          "must": false,
+          "description": "用户的自定义提示词",
+          "placeholder": "请输入用户提示词（可选）",
+          "maxLength": 500
+        },
+        "data": {
+          "value": ""
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_3119",
+        "config": {
+          "kind": "input",
+          "type": "string",
+          "nick": "display_style",
+          "title": "展示风格",
+          "value": "",
+          "must": false,
+          "description": "图像展示风格",
+          "placeholder": "请输入展示风格"
+        },
+        "data": {
+          "value": ""
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_1652",
+        "config": {
+          "kind": "input",
+          "type": "string",
+          "nick": "remove_parts",
+          "title": "去除部位",
+          "value": "",
+          "must": false,
+          "description": "需要去除的部位",
+          "placeholder": "请输入需要去除的部位"
+        },
+        "data": {
+          "value": ""
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_4426",
+        "config": {
+          "kind": "options",
+          "type": "string",
+          "nick": "aspect_ratio",
+          "title": "宽高比",
+          "value": "randomize",
+          "must": false,
+          "description": "输出图像的宽高比",
+          "options": [
+            {
+              "title": "随机",
+              "value": "randomize"
+            },
+            {
+              "title": "1:1",
+              "value": "1:1"
+            },
+            {
+              "title": "4:3",
+              "value": "4:3"
+            },
+            {
+              "title": "16:9",
+              "value": "16:9"
+            }
+          ]
+        },
+        "data": {
+          "value": "randomize"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_8099",
+        "config": {
+          "kind": "options",
+          "type": "string",
+          "nick": "resolution",
+          "title": "分辨率",
+          "value": "auto",
+          "must": false,
+          "description": "输出图像的分辨率",
+          "options": [
+            {
+              "title": "自动",
+              "value": "auto"
+            },
+            {
+              "title": "1K",
+              "value": "1k"
+            },
+            {
+              "title": "2K",
+              "value": "2k"
+            },
+            {
+              "title": "4K",
+              "value": "4k"
+            }
+          ]
+        },
+        "data": {
+          "value": "auto"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_7770",
+        "config": {
+          "kind": "input",
+          "type": "number",
+          "nick": "seed",
+          "title": "随机种子",
+          "value": 1424685757,
+          "must": false,
+          "description": "随机种子值，用于可重复的结果"
+        },
+        "data": {
+          "value": 1424685757
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_1302",
+        "config": {
+          "kind": "checkbox",
+          "type": "boolean",
+          "nick": "skip_error",
+          "title": "跳过错误",
+          "value": false,
+          "must": false,
+          "description": "是否跳过处理中的错误"
+        },
+        "data": {
+          "value": false
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_3181",
+        "config": {
+          "kind": "options",
+          "type": "string",
+          "nick": "rmbg_model",
+          "title": "背景移除模型",
+          "value": "RMBG-2.0",
+          "must": false,
+          "description": "使用的背景移除模型",
+          "options": [
+            {
+              "title": "RMBG-2.0",
+              "value": "RMBG-2.0"
+            }
+          ]
+        },
+        "data": {
+          "value": "RMBG-2.0"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_6414",
+        "config": {
+          "kind": "input",
+          "type": "number",
+          "nick": "sensitivity",
+          "title": "敏感度",
+          "value": 1,
+          "must": false,
+          "description": "背景移除的敏感度（0-1）"
+        },
+        "data": {
+          "value": 1
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_2663",
+        "config": {
+          "kind": "input",
+          "type": "number",
+          "nick": "process_res",
+          "title": "处理分辨率",
+          "value": 1024,
+          "must": false,
+          "description": "处理时的分辨率"
+        },
+        "data": {
+          "value": 1024
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_4275",
+        "config": {
+          "kind": "options",
+          "type": "string",
+          "nick": "background",
+          "title": "背景类型",
+          "value": "Color",
+          "must": false,
+          "description": "背景类型",
+          "options": [
+            {
+              "title": "纯色",
+              "value": "Color"
+            },
+            {
+              "title": "透明",
+              "value": "Transparent"
+            },
+            {
+              "title": "模糊",
+              "value": "Blur"
+            }
+          ]
+        },
+        "data": {
+          "value": "Color"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_8703",
+        "config": {
+          "kind": "input",
+          "type": "string",
+          "nick": "background_color",
+          "title": "背景颜色",
+          "value": "#222222",
+          "must": false,
+          "description": "纯色背景的颜色值"
+        },
+        "data": {
+          "value": "#222222"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      },
+      {
+        "cardKey": "card_1776328990452_9044",
+        "config": {
+          "kind": "button",
+          "type": "string",
+          "nick": "submit",
+          "title": "开始处理",
+          "description": "提交表单并开始图像处理",
+          "tapSet": {
+            "requestSet": {
+              "method": "POST",
+              "url": "http://localhost:3002/api/run-workflow",
+              "paramMap": {
+                "workflowId": "'2028318219441803266'",
+                "image": "images",
+                "system_prompt": "system_prompt",
+                "user_prompt": "user_prompt",
+                "display_style": "display_style",
+                "remove_parts": "remove_parts",
+                "aspect_ratio": "aspect_ratio",
+                "resolution": "resolution",
+                "seed": "seed",
+                "skip_error": "skip_error",
+                "rmbg_model": "rmbg_model",
+                "sensitivity": "sensitivity",
+                "process_res": "process_res",
+                "background": "background",
+                "background_color": "background_color"
+              }
+            }
+          }
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328990452_3506"
+      }
+    ],
+    "parentCardKey": null
+  },
+  "card_1776328990452_7060": {
+    "cardKey": "card_1776328990452_7060",
+    "config": {
+      "kind": "file",
+      "type": "array",
+      "nick": "images",
+      "title": "上传图像",
+      "must": true,
+      "description": "支持上传多张服装图像（最多8张）",
+      "accept": "image/*",
+      "multiple": true,
+      "maxCount": 8
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_5989": {
+    "cardKey": "card_1776328990452_5989",
+    "config": {
+      "kind": "textarea",
+      "type": "string",
+      "nick": "system_prompt",
+      "title": "系统提示词",
+      "value": "对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景",
+      "must": true,
+      "description": "系统级别的处理指令",
+      "placeholder": "请输入系统提示词",
+      "maxLength": 500
+    },
+    "data": {
+      "value": "对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_2366": {
+    "cardKey": "card_1776328990452_2366",
+    "config": {
+      "kind": "textarea",
+      "type": "string",
+      "nick": "user_prompt",
+      "title": "用户提示词",
+      "value": "",
+      "must": false,
+      "description": "用户的自定义提示词",
+      "placeholder": "请输入用户提示词（可选）",
+      "maxLength": 500
+    },
+    "data": {
+      "value": ""
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_3119": {
+    "cardKey": "card_1776328990452_3119",
+    "config": {
+      "kind": "input",
+      "type": "string",
+      "nick": "display_style",
+      "title": "展示风格",
+      "value": "",
+      "must": false,
+      "description": "图像展示风格",
+      "placeholder": "请输入展示风格"
+    },
+    "data": {
+      "value": ""
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_1652": {
+    "cardKey": "card_1776328990452_1652",
+    "config": {
+      "kind": "input",
+      "type": "string",
+      "nick": "remove_parts",
+      "title": "去除部位",
+      "value": "",
+      "must": false,
+      "description": "需要去除的部位",
+      "placeholder": "请输入需要去除的部位"
+    },
+    "data": {
+      "value": ""
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_4426": {
+    "cardKey": "card_1776328990452_4426",
+    "config": {
+      "kind": "options",
+      "type": "string",
+      "nick": "aspect_ratio",
+      "title": "宽高比",
+      "value": "randomize",
+      "must": false,
+      "description": "输出图像的宽高比",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize"
+        },
+        {
+          "title": "1:1",
+          "value": "1:1"
+        },
+        {
+          "title": "4:3",
+          "value": "4:3"
+        },
+        {
+          "title": "16:9",
+          "value": "16:9"
+        }
+      ]
+    },
+    "data": {
+      "value": "randomize"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_8099": {
+    "cardKey": "card_1776328990452_8099",
+    "config": {
+      "kind": "options",
+      "type": "string",
+      "nick": "resolution",
+      "title": "分辨率",
+      "value": "auto",
+      "must": false,
+      "description": "输出图像的分辨率",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto"
+        },
+        {
+          "title": "1K",
+          "value": "1k"
+        },
+        {
+          "title": "2K",
+          "value": "2k"
+        },
+        {
+          "title": "4K",
+          "value": "4k"
+        }
+      ]
+    },
+    "data": {
+      "value": "auto"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_7770": {
+    "cardKey": "card_1776328990452_7770",
+    "config": {
+      "kind": "input",
+      "type": "number",
+      "nick": "seed",
+      "title": "随机种子",
+      "value": 1424685757,
+      "must": false,
+      "description": "随机种子值，用于可重复的结果"
+    },
+    "data": {
+      "value": 1424685757
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_1302": {
+    "cardKey": "card_1776328990452_1302",
+    "config": {
+      "kind": "checkbox",
+      "type": "boolean",
+      "nick": "skip_error",
+      "title": "跳过错误",
+      "value": false,
+      "must": false,
+      "description": "是否跳过处理中的错误"
+    },
+    "data": {
+      "value": false
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_3181": {
+    "cardKey": "card_1776328990452_3181",
+    "config": {
+      "kind": "options",
+      "type": "string",
+      "nick": "rmbg_model",
+      "title": "背景移除模型",
+      "value": "RMBG-2.0",
+      "must": false,
+      "description": "使用的背景移除模型",
+      "options": [
+        {
+          "title": "RMBG-2.0",
+          "value": "RMBG-2.0"
+        }
+      ]
+    },
+    "data": {
+      "value": "RMBG-2.0"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_6414": {
+    "cardKey": "card_1776328990452_6414",
+    "config": {
+      "kind": "input",
+      "type": "number",
+      "nick": "sensitivity",
+      "title": "敏感度",
+      "value": 1,
+      "must": false,
+      "description": "背景移除的敏感度（0-1）"
+    },
+    "data": {
+      "value": 1
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_2663": {
+    "cardKey": "card_1776328990452_2663",
+    "config": {
+      "kind": "input",
+      "type": "number",
+      "nick": "process_res",
+      "title": "处理分辨率",
+      "value": 1024,
+      "must": false,
+      "description": "处理时的分辨率"
+    },
+    "data": {
+      "value": 1024
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_4275": {
+    "cardKey": "card_1776328990452_4275",
+    "config": {
+      "kind": "options",
+      "type": "string",
+      "nick": "background",
+      "title": "背景类型",
+      "value": "Color",
+      "must": false,
+      "description": "背景类型",
+      "options": [
+        {
+          "title": "纯色",
+          "value": "Color"
+        },
+        {
+          "title": "透明",
+          "value": "Transparent"
+        },
+        {
+          "title": "模糊",
+          "value": "Blur"
+        }
+      ]
+    },
+    "data": {
+      "value": "Color"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_8703": {
+    "cardKey": "card_1776328990452_8703",
+    "config": {
+      "kind": "input",
+      "type": "string",
+      "nick": "background_color",
+      "title": "背景颜色",
+      "value": "#222222",
+      "must": false,
+      "description": "纯色背景的颜色值"
+    },
+    "data": {
+      "value": "#222222"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328990452_9044": {
+    "cardKey": "card_1776328990452_9044",
+    "config": {
+      "kind": "button",
+      "type": "string",
+      "nick": "submit",
+      "title": "开始处理",
+      "description": "提交表单并开始图像处理",
+      "tapSet": {
+        "requestSet": {
+          "method": "POST",
+          "url": "http://localhost:3002/api/run-workflow",
+          "paramMap": {
+            "workflowId": "'2028318219441803266'",
+            "image": "images",
+            "system_prompt": "system_prompt",
+            "user_prompt": "user_prompt",
+            "display_style": "display_style",
+            "remove_parts": "remove_parts",
+            "aspect_ratio": "aspect_ratio",
+            "resolution": "resolution",
+            "seed": "seed",
+            "skip_error": "skip_error",
+            "rmbg_model": "rmbg_model",
+            "sensitivity": "sensitivity",
+            "process_res": "process_res",
+            "background": "background",
+            "background_color": "background_color"
+          }
+        }
+      }
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328990452_3506"
+  },
+  "card_1776328991182_5960": {
+    "cardKey": "card_1776328991182_5960",
+    "config": {
+      "kind": "form",
+      "type": "object",
+      "nick": "模特换脸",
+      "title": "模特换脸",
+      "kinds": [
+        {
+          "kind": "file",
+          "type": "array",
+          "nick": "images",
+          "title": "上传图像",
+          "must": true,
+          "description": "支持上传多张图像（最多8张）",
+          "accept": "image/*",
+          "multiple": true,
+          "maxCount": 8
+        },
+        {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "system_prompt",
+          "title": "系统提示词",
+          "value": "",
+          "must": false,
+          "description": "系统级别的处理指令",
+          "placeholder": "请输入系统提示词",
+          "maxLength": 500
+        },
+        {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "user_prompt",
+          "title": "用户提示词",
+          "value": "",
+          "must": false,
+          "description": "用户的自定义提示词",
+          "placeholder": "请输入用户提示词（可选）",
+          "maxLength": 500
+        },
+        {
+          "kind": "options",
+          "type": "string",
+          "nick": "aspect_ratio",
+          "title": "宽高比",
+          "value": "randomize",
+          "must": false,
+          "description": "输出图像的宽高比",
+          "options": [
+            {
+              "title": "随机",
+              "value": "randomize"
+            },
+            {
+              "title": "1:1",
+              "value": "1:1"
+            },
+            {
+              "title": "4:3",
+              "value": "4:3"
+            },
+            {
+              "title": "16:9",
+              "value": "16:9"
+            }
+          ]
+        },
+        {
+          "kind": "options",
+          "type": "string",
+          "nick": "resolution",
+          "title": "分辨率",
+          "value": "auto",
+          "must": false,
+          "description": "输出图像的分辨率",
+          "options": [
+            {
+              "title": "自动",
+              "value": "auto"
+            },
+            {
+              "title": "1K",
+              "value": "1k"
+            },
+            {
+              "title": "2K",
+              "value": "2k"
+            },
+            {
+              "title": "4K",
+              "value": "4k"
+            }
+          ]
+        },
+        {
+          "kind": "input",
+          "type": "number",
+          "nick": "seed",
+          "title": "随机种子",
+          "value": 984737570,
+          "must": false,
+          "description": "随机种子值，用于可重复的结果"
+        },
+        {
+          "kind": "button",
+          "type": "string",
+          "nick": "submit",
+          "title": "开始处理",
+          "description": "提交表单并开始处理",
+          "tapSet": {
+            "requestSet": {
+              "method": "POST",
+              "url": "http://localhost:3002/api/run-workflow",
+              "paramMap": {
+                "workflowId": "'2028320369806942209'",
+                "image": "images",
+                "system_prompt": "system_prompt",
+                "user_prompt": "user_prompt",
+                "display_style": "display_style",
+                "remove_parts": "remove_parts",
+                "aspect_ratio": "aspect_ratio",
+                "resolution": "resolution",
+                "seed": "seed",
+                "skip_error": "skip_error",
+                "rmbg_model": "rmbg_model",
+                "sensitivity": "sensitivity",
+                "process_res": "process_res",
+                "background": "background",
+                "background_color": "background_color"
+              }
+            }
+          }
+        }
+      ],
+      "resultSet": {
+        "showType": "right",
+        "items": []
+      }
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [
+      {
+        "cardKey": "card_1776328991182_9836",
+        "config": {
+          "kind": "file",
+          "type": "array",
+          "nick": "images",
+          "title": "上传图像",
+          "must": true,
+          "description": "支持上传多张图像（最多8张）",
+          "accept": "image/*",
+          "multiple": true,
+          "maxCount": 8
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328991182_5960"
+      },
+      {
+        "cardKey": "card_1776328991182_4143",
+        "config": {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "system_prompt",
+          "title": "系统提示词",
+          "value": "",
+          "must": false,
+          "description": "系统级别的处理指令",
+          "placeholder": "请输入系统提示词",
+          "maxLength": 500
+        },
+        "data": {
+          "value": ""
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328991182_5960"
+      },
+      {
+        "cardKey": "card_1776328991182_3258",
+        "config": {
+          "kind": "textarea",
+          "type": "string",
+          "nick": "user_prompt",
+          "title": "用户提示词",
+          "value": "",
+          "must": false,
+          "description": "用户的自定义提示词",
+          "placeholder": "请输入用户提示词（可选）",
+          "maxLength": 500
+        },
+        "data": {
+          "value": ""
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328991182_5960"
+      },
+      {
+        "cardKey": "card_1776328991182_5776",
+        "config": {
+          "kind": "options",
+          "type": "string",
+          "nick": "aspect_ratio",
+          "title": "宽高比",
+          "value": "randomize",
+          "must": false,
+          "description": "输出图像的宽高比",
+          "options": [
+            {
+              "title": "随机",
+              "value": "randomize"
+            },
+            {
+              "title": "1:1",
+              "value": "1:1"
+            },
+            {
+              "title": "4:3",
+              "value": "4:3"
+            },
+            {
+              "title": "16:9",
+              "value": "16:9"
+            }
+          ]
+        },
+        "data": {
+          "value": "randomize"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328991182_5960"
+      },
+      {
+        "cardKey": "card_1776328991182_4134",
+        "config": {
+          "kind": "options",
+          "type": "string",
+          "nick": "resolution",
+          "title": "分辨率",
+          "value": "auto",
+          "must": false,
+          "description": "输出图像的分辨率",
+          "options": [
+            {
+              "title": "自动",
+              "value": "auto"
+            },
+            {
+              "title": "1K",
+              "value": "1k"
+            },
+            {
+              "title": "2K",
+              "value": "2k"
+            },
+            {
+              "title": "4K",
+              "value": "4k"
+            }
+          ]
+        },
+        "data": {
+          "value": "auto"
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328991182_5960"
+      },
+      {
+        "cardKey": "card_1776328991182_9423",
+        "config": {
+          "kind": "input",
+          "type": "number",
+          "nick": "seed",
+          "title": "随机种子",
+          "value": 984737570,
+          "must": false,
+          "description": "随机种子值，用于可重复的结果"
+        },
+        "data": {
+          "value": 984737570
+        },
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328991182_5960"
+      },
+      {
+        "cardKey": "card_1776328991182_1489",
+        "config": {
+          "kind": "button",
+          "type": "string",
+          "nick": "submit",
+          "title": "开始处理",
+          "description": "提交表单并开始处理",
+          "tapSet": {
+            "requestSet": {
+              "method": "POST",
+              "url": "http://localhost:3002/api/run-workflow",
+              "paramMap": {
+                "workflowId": "'2028320369806942209'",
+                "image": "images",
+                "system_prompt": "system_prompt",
+                "user_prompt": "user_prompt",
+                "display_style": "display_style",
+                "remove_parts": "remove_parts",
+                "aspect_ratio": "aspect_ratio",
+                "resolution": "resolution",
+                "seed": "seed",
+                "skip_error": "skip_error",
+                "rmbg_model": "rmbg_model",
+                "sensitivity": "sensitivity",
+                "process_res": "process_res",
+                "background": "background",
+                "background_color": "background_color"
+              }
+            }
+          }
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "parentCardKey": "card_1776328991182_5960"
+      }
+    ],
+    "parentCardKey": null
+  },
+  "card_1776328991182_9836": {
+    "cardKey": "card_1776328991182_9836",
+    "config": {
+      "kind": "file",
+      "type": "array",
+      "nick": "images",
+      "title": "上传图像",
+      "must": true,
+      "description": "支持上传多张图像（最多8张）",
+      "accept": "image/*",
+      "multiple": true,
+      "maxCount": 8
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328991182_5960"
+  },
+  "card_1776328991182_4143": {
+    "cardKey": "card_1776328991182_4143",
+    "config": {
+      "kind": "textarea",
+      "type": "string",
+      "nick": "system_prompt",
+      "title": "系统提示词",
+      "value": "",
+      "must": false,
+      "description": "系统级别的处理指令",
+      "placeholder": "请输入系统提示词",
+      "maxLength": 500
+    },
+    "data": {
+      "value": ""
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328991182_5960"
+  },
+  "card_1776328991182_3258": {
+    "cardKey": "card_1776328991182_3258",
+    "config": {
+      "kind": "textarea",
+      "type": "string",
+      "nick": "user_prompt",
+      "title": "用户提示词",
+      "value": "",
+      "must": false,
+      "description": "用户的自定义提示词",
+      "placeholder": "请输入用户提示词（可选）",
+      "maxLength": 500
+    },
+    "data": {
+      "value": ""
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328991182_5960"
+  },
+  "card_1776328991182_5776": {
+    "cardKey": "card_1776328991182_5776",
+    "config": {
+      "kind": "options",
+      "type": "string",
+      "nick": "aspect_ratio",
+      "title": "宽高比",
+      "value": "randomize",
+      "must": false,
+      "description": "输出图像的宽高比",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize"
+        },
+        {
+          "title": "1:1",
+          "value": "1:1"
+        },
+        {
+          "title": "4:3",
+          "value": "4:3"
+        },
+        {
+          "title": "16:9",
+          "value": "16:9"
+        }
+      ]
+    },
+    "data": {
+      "value": "randomize"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328991182_5960"
+  },
+  "card_1776328991182_4134": {
+    "cardKey": "card_1776328991182_4134",
+    "config": {
+      "kind": "options",
+      "type": "string",
+      "nick": "resolution",
+      "title": "分辨率",
+      "value": "auto",
+      "must": false,
+      "description": "输出图像的分辨率",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto"
+        },
+        {
+          "title": "1K",
+          "value": "1k"
+        },
+        {
+          "title": "2K",
+          "value": "2k"
+        },
+        {
+          "title": "4K",
+          "value": "4k"
+        }
+      ]
+    },
+    "data": {
+      "value": "auto"
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328991182_5960"
+  },
+  "card_1776328991182_9423": {
+    "cardKey": "card_1776328991182_9423",
+    "config": {
+      "kind": "input",
+      "type": "number",
+      "nick": "seed",
+      "title": "随机种子",
+      "value": 984737570,
+      "must": false,
+      "description": "随机种子值，用于可重复的结果"
+    },
+    "data": {
+      "value": 984737570
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328991182_5960"
+  },
+  "card_1776328991182_1489": {
+    "cardKey": "card_1776328991182_1489",
+    "config": {
+      "kind": "button",
+      "type": "string",
+      "nick": "submit",
+      "title": "开始处理",
+      "description": "提交表单并开始处理",
+      "tapSet": {
+        "requestSet": {
+          "method": "POST",
+          "url": "http://localhost:3002/api/run-workflow",
+          "paramMap": {
+            "workflowId": "'2028320369806942209'",
+            "image": "images",
+            "system_prompt": "system_prompt",
+            "user_prompt": "user_prompt",
+            "display_style": "display_style",
+            "remove_parts": "remove_parts",
+            "aspect_ratio": "aspect_ratio",
+            "resolution": "resolution",
+            "seed": "seed",
+            "skip_error": "skip_error",
+            "rmbg_model": "rmbg_model",
+            "sensitivity": "sensitivity",
+            "process_res": "process_res",
+            "background": "background",
+            "background_color": "background_color"
+          }
+        }
+      }
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1776328991182_5960"
   }
 }
