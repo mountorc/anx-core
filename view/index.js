@@ -596,7 +596,86 @@ function generateVisualizationCSS() {
       flex-direction: column;
       gap: 15px;
     }
-    
+
+    .form-with-result-right {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .form-with-result-right .form-main {
+      display: flex;
+      flex: 1;
+      gap: 20px;
+      overflow: hidden;
+    }
+
+    .form-with-result-right .form-content {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    .form-with-result-right .form-result {
+      width: 400px;
+      border-left: 2px solid #e0e0e0;
+      padding-left: 20px;
+      overflow-y: auto;
+    }
+
+    .form-result-bottom {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid #e0e0e0;
+    }
+
+    .result-area {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .result-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .result-content {
+      flex: 1;
+      min-height: 200px;
+      background-color: #fafafa;
+      border-radius: 8px;
+      padding: 15px;
+      overflow: hidden;
+    }
+
+    .result-placeholder {
+      color: #999;
+      text-align: center;
+      padding: 40px 20px;
+      font-style: italic;
+    }
+
+    .result-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .result-json {
+      white-space: pre-wrap;
+      word-break: break-all;
+      font-size: 12px;
+      color: #333;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
     .input-visualization,
     .textarea-visualization,
     .date-visualization,

@@ -77,10 +77,100 @@ function renderForm(node, renderNode) {
     content += renderNode(submitNode);
   }
 
+  // 渲染结果区域
+  const resultSet = config.resultSet;
+  const resultData = node.data && node.data.result ? node.data.result : null;
+  let resultContent = '';
+  
+  if (resultSet) {
+    resultContent = renderResultArea(resultData);
+  }
+
+  // 根据 showType 决定布局
+  const showType = resultSet && resultSet.showType || 'bottom';
+  
+  if (showType === 'right') {
+    return `
+      <div class="form-visualization form-with-result-right">
+        <div class="form-title">${title}</div>
+        <div class="form-main">
+          <div class="form-content">${content}</div>
+          <div class="form-result">${resultContent}</div>
+        </div>
+      </div>
+    `;
+  } else {
+    return `
+      <div class="form-visualization">
+        <div class="form-title">${title}</div>
+        <div class="form-content">${content}</div>
+        ${resultContent ? `<div class="form-result-bottom">${resultContent}</div>` : ''}
+      </div>
+    `;
+  }
+}
+
+/**
+ * 渲染结果区域
+ * @param {any} resultData - 结果数据
+ * @returns {string} - 渲染后的HTML
+ */
+function renderResultArea(resultData) {
+  if (!resultData) {
+    return `
+      <div class="result-area">
+        <div class="result-title">结果区域</div>
+        <div class="result-content">
+          <div class="result-placeholder">结果将显示在这里</div>
+        </div>
+      </div>
+    `;
+  }
+  
+  // 如果是图片URL，显示图片
+  if (typeof resultData === 'string' && (resultData.startsWith('http://') || resultData.startsWith('https://'))) {
+    return `
+      <div class="result-area">
+        <div class="result-title">结果区域</div>
+        <div class="result-content">
+          <img src="${resultData}" alt="Result" class="result-image" />
+        </div>
+      </div>
+    `;
+  }
+  
+  // 如果是对象且包含图片URL字段
+  if (typeof resultData === 'object') {
+    // 尝试找到图片URL字段
+    const imageFields = ['url', 'image', 'imageUrl', 'result', 'data'];
+    let imageUrl = null;
+    for (const field of imageFields) {
+      if (resultData[field] && typeof resultData[field] === 'string' && 
+          (resultData[field].startsWith('http://') || resultData[field].startsWith('https://'))) {
+        imageUrl = resultData[field];
+        break;
+      }
+    }
+    
+    if (imageUrl) {
+      return `
+        <div class="result-area">
+          <div class="result-title">结果区域</div>
+          <div class="result-content">
+            <img src="${imageUrl}" alt="Result" class="result-image" />
+          </div>
+        </div>
+      `;
+    }
+  }
+  
+  // 默认显示JSON格式的结果
   return `
-    <div class="form-visualization">
-      <div class="form-title">${title}</div>
-      <div class="form-content">${content}</div>
+    <div class="result-area">
+      <div class="result-title">结果区域</div>
+      <div class="result-content">
+        <pre class="result-json">${JSON.stringify(resultData, null, 2)}</pre>
+      </div>
     </div>
   `;
 }
