@@ -160,46 +160,30 @@ export async function uploadFile(file, cardKey, kind, index) {
   } catch (error) {
     console.error('文件上传错误:', error);
     
-    // OSS 上传失败时，回退到本地上传
-    console.log('FileUpload: OSS upload failed, falling back to local upload');
-    await uploadFileLocal(file, cardKey, kind, index);
-    
-    alert('文件上传失败，已尝试本地备份上传');
+    // OSS 上传失败，清除预览 URL
+    console.log('FileUpload: OSS upload failed, clearing preview URL');
+    clearPreviewUrl(cardKey, kind, index);
+    alert('文件上传失败');
   }
 }
 
 /**
- * 本地上传（作为 OSS 上传失败的备用方案）
+ * 清除预览 URL（当上传失败时调用）
+ * @param {string} cardKey - 节点的cardKey
+ * @param {string} kind - 文件类型（file, image, images）
+ * @param {number} index - 多文件上传时的索引
  */
-async function uploadFileLocal(file, cardKey, kind, index) {
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
-    
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData
-    });
-    
-    if (!response.ok) {
-      throw new Error(`本地上传失败: ${response.status}`);
+function clearPreviewUrl(cardKey, kind, index) {
+  if (window.anxNodeUpdate) {
+    if (kind === 'image' || kind === 'file') {
+      // 清除单个文件的预览 URL
+      window.anxNodeUpdate(cardKey, 'value', '');
+    } else if (kind === 'images') {
+      // 清除多文件上传中特定索引的预览 URL
+      const currentValue = window.anxGetNodeValue ? window.anxGetNodeValue(cardKey) : [];
+      const newValues = currentValue.filter((_, i) => i !== index);
+      window.anxNodeUpdate(cardKey, 'value', newValues);
     }
-    
-    const data = await response.json();
-    
-    if (data.success && window.anxNodeUpdate) {
-      const fileUrl = data.fileUrl;
-      if (kind === 'image' || kind === 'file') {
-        window.anxNodeUpdate(cardKey, 'value', fileUrl);
-      } else if (kind === 'images') {
-        const currentValue = window.anxGetNodeValue ? window.anxGetNodeValue(cardKey) : [];
-        const newValues = [...currentValue];
-        newValues[index] = fileUrl;
-        window.anxNodeUpdate(cardKey, 'value', newValues);
-      }
-    }
-  } catch (error) {
-    console.error('本地上传也失败:', error);
   }
 }
 

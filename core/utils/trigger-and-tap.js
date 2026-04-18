@@ -46,12 +46,17 @@ function handleTapSet(dealSet) {
       const actionConfig = tapSet[actionType];
       handleAction({
         cardKey,
+        parentCardKey,
         actionType, 
         actionConfig, 
         data
       });
     }
-  return tapHandler;
+
+    logToSystem('tapSet-end', {
+      timestamp: new Date().toISOString()
+    });
+  return true;
 }
 
 function handleTriggerSet(triggerSet, data, element) {
@@ -147,11 +152,12 @@ function mapTriggerTypeToEvent(triggerType) {
 }
 
 async function handleAction(dealSet) {
-  const {cardKey,actionType, actionConfig, data} = dealSet;
+  const {cardKey, parentCardKey, actionType, actionConfig, data} = dealSet;
   // 记录操作开始
 
   logToSystem('handleAction-start', {
     cardKey: cardKey,
+    parentCardKey,
     actionType: actionType,
     actionConfig:actionConfig,
     data:data,
@@ -173,7 +179,7 @@ async function handleAction(dealSet) {
         handleSetTimeout(actionConfig, data);
         break;
       case 'requestSet':
-        handleRequestSet({cardKey, config:actionConfig, data});
+        handleRequestSet({cardKey, parentCardKey:parentCardKey,config:actionConfig, data});
         break;
       default:
         console.warn(`[Action] Unknown action type: ${actionType}`);
@@ -291,6 +297,8 @@ function handleSetTimeout(config, data, event, element) {
     console.log('[Action] SetTimeout - Executing delayed action');
     if (config.action) {
       handleAction({
+        cardKey: cardKey,
+        parentCardKey: parentCardKey,
         actionType:config.action.type, 
         actionConfig:config.action.config, 
         data
@@ -302,7 +310,7 @@ function handleSetTimeout(config, data, event, element) {
 }
 
 function handleRequestSet(dealSet) {
-  const {cardKey,config} = dealSet;
+  const {cardKey, parentCardKey, config} = dealSet;
   // Log to system
   logToSystem('request_start', {
     cardKey: cardKey,
@@ -330,6 +338,56 @@ function handleRequestSet(dealSet) {
         result: result,
         timestamp: new Date().toISOString()
       });
+
+      // If resultSet is defined and not null/false, store result to node's data.result
+      if (config.resultSet !== undefined && config.resultSet !== null && config.resultSet !== false) {
+        try {
+          // 检查 cardKey 是否有效
+          if (!cardKey || typeof cardKey !== 'string') {
+            console.warn('[Action] RequestSet - Invalid cardKey for storing result:', cardKey);
+            logToSystem('request_result_stored_error', {
+              cardKey: cardKey,
+              error: 'Invalid cardKey',
+              timestamp: new Date().toISOString()
+            });
+          } else {
+            // 检查节点是否存在
+            const existingNode = getNode(cardKey);
+            if (!existingNode) {
+              console.warn('[Action] RequestSet - Node not found for storing result:', cardKey);
+              logToSystem('request_result_stored_error', {
+                cardKey: cardKey,
+                error: 'Node not found',
+                timestamp: new Date().toISOString()
+              });
+            } else {
+              // 安全地存储结果，处理result或result.data为空的情况
+              let resultValue = null;
+              if (result && result.data && result.data.data !== undefined) {
+                resultValue = result.data.data;
+              } else if (result && result.data !== undefined) {
+                resultValue = result.data;
+              } else if (result !== undefined) {
+                resultValue = result;
+              }
+              updateNodeData(parentCardKey, { result: resultValue });
+              logToSystem('request_result_stored', {
+                cardKey: cardKey,
+                resultSet: config.resultSet,
+                timestamp: new Date().toISOString()
+              });
+            }
+          }
+        } catch (storeError) {
+          // 捕获存储过程中的任何异常，确保不会导致系统崩溃
+          console.error('[Action] RequestSet - Error storing result:', storeError);
+          logError('request_result_stored_error', storeError.message, {
+            cardKey: cardKey,
+            timestamp: new Date().toISOString()
+          });
+          // 不抛出异常，继续返回结果
+        }
+      }
 
       return result;
     })

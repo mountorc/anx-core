@@ -67,7 +67,10 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h3>System Logs</h3>
-                <button @click="showLogsModal = false" class="close-btn">×</button>
+                <div class="modal-header-actions">
+                  <button @click="refreshLogs" class="refresh-btn">↻ Refresh</button>
+                  <button @click="showLogsModal = false" class="close-btn">×</button>
+                </div>
               </div>
               <div class="modal-body">
                 <div v-if="allLogs.length === 0" class="no-logs">
@@ -236,12 +239,17 @@ export default {
     // 监听 message 事件（来自可视化 iframe）
     window.addEventListener('message', this.handleVisualizationMessage);
     
+    // 监听全局日志打开事件
+    this.$eventBus.on('openLogs', this.handleOpenLogs);
+    
     // 加载ANXView web component
     import('../webComponents/ANXView.js');
   },
   beforeUnmount() {
     // 移除事件监听
     window.removeEventListener('message', this.handleVisualizationMessage);
+    // 移除日志事件监听
+    window.removeEventListener('openLogs', this.handleOpenLogs);
   },
   methods: {
     // 检查URL参数中是否包含uuid_tile
@@ -260,16 +268,16 @@ export default {
         this.convertAnxToMarkup();
       }, 300); // 300毫秒的防抖延迟
     },
-    // 加载hub中的tile case列表
+    // 加载所有tile case列表（包括hub.json和tiles.json）
     async loadHubList() {
       try {
-        const response = await fetch('/api/hub');
+        const response = await fetch('/api/tiles/list');
         const data = await response.json();
         if (data.success) {
           this.hubList = data.data;
         }
       } catch (error) {
-        console.error('Error loading hub list:', error);
+        console.error('Error loading tiles list:', error);
       }
     },
     // 加载指定的tile case
@@ -1103,6 +1111,9 @@ export default {
         alert('Failed to load logs. Please try again.');
       }
     },
+    handleOpenLogs() {
+      this.showCliLogs();
+    },
     async refreshLogs() {
       try {
         // 获取CLI日志
@@ -1491,6 +1502,26 @@ export default {
   margin: 0;
   font-size: 18px;
   color: #333;
+}
+
+.modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.refresh-btn {
+  padding: 6px 12px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.refresh-btn:hover {
+  background-color: #0b7dda;
 }
 
 .close-btn {

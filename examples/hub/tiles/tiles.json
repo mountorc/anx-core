@@ -31,5 +31,9 @@
   {
     "uuid": "3a7f5c2e-8b9d-4e6f-a1c2-3d4e5f6a7b8c",
     "name": "Employee Leave Request Workflow"
+  },
+  {
+    "uuid": "submit-set-test-001",
+    "name": "Submit Set Test"
   }
 ]

@@ -1,0 +1,30 @@
+{
+  "uuid": "submit-set-test-001",
+  "name": "Submit Set Test",
+  "anxContent": {
+    "kind": "form",
+    "title": "测试 SubmitSet",
+    "kinds": [
+      {
+        "kind": "input",
+        "type": "string",
+        "nick": "username",
+        "title": "用户名",
+        "must": true
+      },
+      {
+        "kind": "input",
+        "type": "string",
+        "nick": "email",
+        "title": "邮箱",
+        "type": "email",
+        "must": true
+      }
+    ],
+    "submitSet": {
+      "url": "http://localhost:3002/api/submit-form",
+      "method": "POST",
+      "title": "提交表单"
+    }
+  }
+}

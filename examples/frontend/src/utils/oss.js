@@ -3,37 +3,8 @@
  * 基于 AutoDataSource OSS 上传文件（Token方式）
  */
 
-const BASE_URL = '/autoDataSource';
+const BASE_URL = 'http://localhost:8080/autoDataSource';
 
-/**
- * 使用token上传文件
- * @param {string} token - 上传token
- * @param {File} file - 要上传的文件
- * @param {string} fileName - 文件名
- * @returns {Promise<Object>} - 包含文件URL的响应对象
- */
-async function uploadFileByToken(token, file, fileName) {
-  try {
-    const formData = new FormData();
-    formData.append('token', token);
-    formData.append('file', file);
-    formData.append('fileName', fileName);
-    
-    const response = await fetch(`${BASE_URL}/api/oss/upload-by-token`, {
-      method: 'POST',
-      body: formData
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    throw error;
-  }
-}
 
 /**
  * 获取OSS上传token
@@ -43,11 +14,11 @@ async function getOSSToken() {
   try {
     // 这里应该调用获取token的API
     // 由于目前API可能有问题，暂时返回用户提供的有效token
-    return 'de12b5548a2b401eb62094d837cc36a1';
+    return '956bcd3eba8346218776dd9f48c5548c554c9';
   } catch (error) {
     console.error('Error getting OSS token:', error);
     // 出错时返回默认token作为备用
-    return 'de12b5548a2b401eb62094d837cc36a1';
+    return '956bcd3eba8346218776dd9f48c5548c554c9';
   }
 }
 
@@ -83,4 +54,35 @@ async function uploadImageToOSS(file, basePath = 'anx-core/') {
   }
 }
 
+
+
+/**
+ * 使用token上传文件
+ * @param {string} token - 上传token
+ * @param {File} file - 要上传的文件
+ * @param {string} fileName - 文件名
+ * @returns {Promise<Object>} - 包含文件URL的响应对象
+ */
+async function uploadFileByToken(token, file, fileName) {
+  try {
+    const formData = new FormData();
+    formData.append('token', token);
+    formData.append('file', file);
+    formData.append('fileName', fileName);
+    
+    const response = await fetch(`${BASE_URL}/api/oss/upload-by-token`, {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    throw error;
+  }
+}
 export { uploadFileByToken, uploadImageToOSS };

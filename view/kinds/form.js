@@ -43,6 +43,40 @@ function renderForm(node, renderNode) {
     });
   }
 
+  // 如果配置了 submitSet，自动生成提交按钮
+  if (config.submitSet && config.submitSet.url) {
+    const submitButtonConfig = {
+      kind: 'button',
+      type: 'string',
+      nick: 'submit',
+      title: config.submitSet.title || '提交',
+      tapSet: {
+        requestSet: {
+          method: config.submitSet.method || 'POST',
+          url: config.submitSet.url,
+          paramMap: {}
+        }
+      }
+    };
+    
+    // 自动收集 form 中的所有字段作为参数
+    if (config.kinds && config.kinds.length > 0) {
+      config.kinds.forEach((subConfig) => {
+        if (subConfig.nick && subConfig.nick !== 'submit') {
+          submitButtonConfig.tapSet.requestSet.paramMap[subConfig.nick] = subConfig.nick;
+        }
+      });
+    }
+    
+    const submitNode = {
+      config: submitButtonConfig,
+      data: { value: '' },
+      nodes: [],
+      tapSet: submitButtonConfig.tapSet
+    };
+    content += renderNode(submitNode);
+  }
+
   return `
     <div class="form-visualization">
       <div class="form-title">${title}</div>

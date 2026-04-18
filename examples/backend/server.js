@@ -1121,6 +1121,68 @@ app.post('/api/convert-to-nodes', async (req, res) => {
   }
 });
 
+// API endpoint for converting ANX to markup
+app.post('/api/convert-to-markup', async (req, res) => {
+  try {
+    let { anxContent, uuid_tile, url_tile } = req.body;
+    
+    // 如果提供了 url_tile，从指定URL获取配置
+    if (url_tile) {
+      try {
+        const response = await fetch(url_tile);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        const config = result.config || result;
+        // 支持两种格式：
+        // 1. {uuid: "...", anxContent: {...}}
+        // 2. {kind: "...", kinds: [...]} - 直接是 anxContent
+        if (config.anxContent) {
+          anxContent = config.anxContent;
+          uuid_tile = config.uuid || url_tile;
+        } else if (config.kind) {
+          // 直接是 anxContent 格式
+          anxContent = config;
+          uuid_tile = null;
+        } else {
+          throw new Error('Invalid tile config format');
+        }
+      } catch (error) {
+        console.error(`Error loading tile config from URL ${url_tile}:`, error);
+        return res.status(404).json({ error: 'Failed to load tile config from URL' });
+      }
+    } else if (uuid_tile && !hubAnxMap.has(uuid_tile)) {
+      // 如果提供了 uuid_tile 但本地没有找到，尝试从 URL 动态加载
+      await loadTileFromUrl(uuid_tile);
+    }
+    
+    // 如果提供了 uuid_tile，从 hubAnxMap 中获取 anxContent
+    if (uuid_tile && hubAnxMap.has(uuid_tile)) {
+      anxContent = hubAnxMap.get(uuid_tile).anxContent;
+    }
+    
+    if (!anxContent) {
+      return res.status(404).json({ error: 'ANX config not found for the given uuid_tile' });
+    }
+    
+    // 使用 tile.js 模块处理 anxContent
+    const anxResult = processAnxContent(anxContent, uuid_tile);
+    if (!anxResult.success) {
+      return res.status(404).json({ error: anxResult.error });
+    }
+    anxContent = anxResult.anxContent;
+    
+    // 转换为 markup（anxToMarkup 是异步函数）
+    const markup = await anxToMarkup(anxContent);
+    
+    res.json({ markup });
+  } catch (error) {
+    console.error('Error converting ANX to markup:', error);
+    res.status(400).json({ error: 'Invalid ANX content. Please check your input.' });
+  }
+});
+
 // API endpoint for executing CLI commands
 app.post('/api/execute-cli', (req, res) => {
   try {
@@ -1656,6 +1718,8 @@ app.post('/api/trigger-card-key', async (req, res) => {
         });
         // 调用 handleTapSet
         handleTapSet({cardKey});
+        logToSystem('handleTapSet-finish', {
+        });
       } catch (tapError) {
         logToSystem('handleTapSet-error', {
           cardKey: cardKey,
@@ -1892,6 +1956,14 @@ app.post('/api/update-node-data', (req, res) => {
       if (childNick) {
         parentFormNode.data.value[childNick] = value;
       }
+
+      logToSystem('parentFormNode', {
+        cardKey: cardKey,
+        formValue: parentFormNode.data.value
+      });
+      
+      // 同步更新父 form 组件到 storage
+      updateNodeData(parentFormNode.cardKey, { value: parentFormNode.data.value });
       
       // 触发formula更新
       updateFormulas(parentFormNode);
@@ -1907,6 +1979,8 @@ app.post('/api/update-node-data', (req, res) => {
                 node.data = {};
               }
               node.data.value = formulaValue;
+              // 同步更新formula子组件到storage
+              updateNodeData(node.cardKey, { value: formulaValue });
             }
           }
         }
@@ -1995,13 +2069,13 @@ app.get('/api/tiles/list', (req, res) => {
       }
     }
     
-    // 读取 index.json（补充hub.json中没有的项）
-    const indexPath = path.join(hubDir, 'index.json');
-    if (fs.existsSync(indexPath)) {
-      const indexContent = fs.readFileSync(indexPath, 'utf8');
-      const indexData = JSON.parse(indexContent);
-      if (Array.isArray(indexData)) {
-        indexData.forEach(item => {
+    // 读取 tiles/tiles.json（补充hub.json中没有的项）
+    const tilesPath = path.join(hubDir, 'tiles', 'tiles.json');
+    if (fs.existsSync(tilesPath)) {
+      const tilesContent = fs.readFileSync(tilesPath, 'utf8');
+      const tilesData = JSON.parse(tilesContent);
+      if (Array.isArray(tilesData)) {
+        tilesData.forEach(item => {
           if (item.uuid && item.name && !loadedUuids.has(item.uuid)) {
             tiles.push({
               uuid: item.uuid,

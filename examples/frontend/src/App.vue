@@ -1,9 +1,10 @@
 <template>
   <div class="app">
     <header v-if="!isNodeVisualizationPage" class="header">
-      <h1>ANX to Markup Converter</h1>
+      <h1>ANX DEMO</h1>
       <nav class="nav">
         <button @click="goToCorePage" class="nav-btn">Core Page</button>
+        <button @click="openLogs" class="nav-btn logs-btn">Logs</button>
       </nav>
     </header>
     <main :class="{ 'main-full': isNodeVisualizationPage, 'main': !isNodeVisualizationPage }">
@@ -20,12 +21,16 @@ export default {
   name: 'App',
   computed: {
     isNodeVisualizationPage() {
-      return this.$route.path.startsWith('/anx/view')
+      return this.$route.path.startsWith('/anx/view') || this.$route.path.startsWith('/anx/markup')
     }
   },
   methods: {
     goToCorePage() {
       window.open('http://localhost:17888/', '_blank')
+    },
+    openLogs() {
+      // 通过事件总线触发日志弹窗
+      this.$eventBus.emit('openLogs')
     }
   }
 }
@@ -53,8 +58,10 @@ body {
 .header {
   background-color: #4CAF50;
   color: white;
-  padding: 0.5rem;
-  text-align: center;
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .header h1 {
@@ -63,7 +70,7 @@ body {
 }
 
 .nav {
-  margin-top: 5px;
+  margin-top: 0;
 }
 
 .nav-btn {

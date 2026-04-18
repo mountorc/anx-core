@@ -13,4 +13,16 @@ window.uploadFile = uploadFile;
 window.removeFile = removeFile;
 window.triggerFileInput = triggerFileInput;
 
-createApp(App).use(router).mount('#app')
+const app = createApp(App).use(router)
+
+// 创建全局事件总线
+app.config.globalProperties.$eventBus = {
+  on: function(event, callback) {
+    window.addEventListener(event, (e) => callback(e.detail))
+  },
+  emit: function(event, data) {
+    window.dispatchEvent(new CustomEvent(event, { detail: data }))
+  }
+}
+
+app.mount('#app')
