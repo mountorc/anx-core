@@ -452,39 +452,7 @@ class ANXView extends HTMLElement {
       this.htmlContainer.innerHTML = '';
       
       try {
-        // 检查是否有resultSet配置
-        console.log('ANXView: nodesStructure:', this.nodesStructure);
-        const hasResultSet = this.nodesStructure && this.nodesStructure.config && this.nodesStructure.config.resultSet;
-        const showType = hasResultSet ? this.nodesStructure.config.resultSet.showType : null;
-        console.log('ANXView: hasResultSet:', hasResultSet);
-        console.log('ANXView: showType:', showType);
-        
-        // 强制使用左右布局进行测试
-        const useRightLayout = showType=='right'?true:false;
-        
-        // 根据resultSet配置决定布局
-        if (useRightLayout) {
-          // 左右布局
-          const layoutHTML = `
-            <div class="form-layout">
-              <div class="form-left" style="min-width: 380px;">
-                ${this.visualizationHTML}
-              </div>
-              <div class="form-right">
-                <h3 style="padding: 15px; margin: 0; border-bottom: 1px solid #ddd;">结果区域</h3>
-                <div style="padding: 15px;">
-                  <p>结果将显示在这里</p>
-                </div>
-              </div>
-            </div>
-          `;
-          this.htmlContainer.innerHTML = layoutHTML;
-          console.log('ANXView: Applied right layout');
-        } else {
-          // 默认布局
-          this.htmlContainer.innerHTML = this.visualizationHTML;
-          console.log('ANXView: Applied default layout');
-        }
+        this.htmlContainer.innerHTML = this.visualizationHTML;
         
         // 执行脚本标签
         const scripts = this.htmlContainer.querySelectorAll('script');

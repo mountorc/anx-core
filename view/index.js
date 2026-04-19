@@ -576,7 +576,8 @@ function generateVisualizationCSS() {
     }
     
     .form-visualization {
-      max-height:100vh;
+      max-height:calc(100vh - 30px);
+      height:calc(100vh - 30px);
       background-color: white;
       border-radius: 0px;
       padding: 15px;
@@ -592,6 +593,7 @@ function generateVisualizationCSS() {
     }
     
     .form-content {
+      min-width:300px;
       display: flex;
       flex-direction: column;
       gap: 15px;
