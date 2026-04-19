@@ -80,10 +80,11 @@ function renderForm(node, renderNode) {
   // 渲染结果区域
   const resultSet = config.resultSet;
   const resultData = node.data && node.data.result ? node.data.result : null;
+  const processing = node.data && node.data.processing ? node.data.processing : false;
   let resultContent = '';
   
   if (resultSet) {
-    resultContent = renderResultArea(resultData);
+    resultContent = renderResultArea(resultData, resultSet, renderNode, processing);
   }
 
   // 根据 showType 决定布局
@@ -113,15 +114,69 @@ function renderForm(node, renderNode) {
 /**
  * 渲染结果区域
  * @param {any} resultData - 结果数据
+ * @param {Object} resultSet - resultSet配置
+ * @param {Function} renderNode - 渲染子节点的函数
+ * @param {boolean} processing - 是否正在处理中
  * @returns {string} - 渲染后的HTML
  */
-function renderResultArea(resultData) {
+function renderResultArea(resultData, resultSet, renderNode, processing) {
+  // 如果正在处理中，显示加载状态
+  if (processing) {
+    return `
+      <div class="result-area processing">
+        <div class="result-title">结果区域</div>
+        <div class="result-content">
+          <div class="processing-indicator">
+            <div class="spinner"></div>
+            <div class="processing-text">处理中...</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
   if (!resultData) {
     return `
       <div class="result-area">
         <div class="result-title">结果区域</div>
         <div class="result-content">
           <div class="result-placeholder">结果将显示在这里</div>
+        </div>
+      </div>
+    `;
+  }
+  
+  // 如果resultSet定义了kind和items，渲染自定义组件
+  if (resultSet && resultSet.kind && resultSet.items && resultSet.items.length > 0) {
+    const boardConfig = {
+      kind: resultSet.kind,
+      items: resultSet.items.map(item => {
+        // 如果item有nick，尝试从resultData中获取对应的值
+        if (item.nick && resultData[item.nick] !== undefined) {
+          return {
+            ...item,
+            value: resultData[item.nick]
+          };
+        }
+        return item;
+      })
+    };
+    
+    const boardNode = {
+      config: boardConfig,
+      data: { 
+        result: resultData[0],
+        resultData:resultData[0]
+      },
+      nodes: [],
+      tapSet: null
+    };
+    
+    return `
+      <div class="result-area">
+        <div class="result-title">结果区域</div>
+        <div class="result-content">
+          ${renderNode(boardNode)}
         </div>
       </div>
     `;

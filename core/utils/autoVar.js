@@ -31,11 +31,11 @@ async function loadWasm() {
       // Node.js 环境
       const fs = require('fs');
       const path = require('path');
-      const wasmPath = path.join(__dirname, '../../examples/frontend/src/utils/wasm/rust.wasm');
+      const wasmPath = path.join(__dirname, '../wasm/autoVar.wasm');
       wasmBuffer = fs.readFileSync(wasmPath);
     } else {
       // 浏览器环境
-      const wasmUrl = '/src/utils/wasm/rust.wasm';
+      const wasmUrl = '/core/wasm/autoVar.wasm';
       const response = await fetch(wasmUrl);
       wasmBuffer = await response.arrayBuffer();
     }
@@ -112,6 +112,23 @@ function getValue(nick, data, autoSet) {
 }
 
 /**
+ * 使用 JavaScript 解析路径获取值
+ * @param {string} nick - 路径字符串，如 "res.url"
+ * @param {Object} data - 数据源对象
+ * @returns {*} - 获取的值
+ */
+function getValueByPath(nick, data) {
+  if (!nick || !data) return undefined;
+  const keys = nick.split('.');
+  let result = data;
+  for (const key of keys) {
+    if (result === null || result === undefined) return undefined;
+    result = result[key];
+  }
+  return result;
+}
+
+/**
  * 全局 autoVar 函数，提供向后兼容
  * @param {string} nick - 要获取的值的路径
  * @param {Object} data - 数据源
@@ -120,16 +137,22 @@ function getValue(nick, data, autoSet) {
  */
 function autoVar(nick, data, autoSet) {
   try {
+    // 如果 nick 是单引号包裹的字符串，直接返回去掉引号的内容
+    if (nick && typeof nick === 'string') {
+      const singleQuoteMatch = nick.match(/^'(.*)'$/);
+      if (singleQuoteMatch) {
+        return singleQuoteMatch[1];
+      }
+    }
+    
     let res = getValue(nick, data, autoSet);
     if (res == undefined) {
       const cardKey = autoSet?.cardKey;
       if (cardKey) {
         res = getCardData(cardKey, nick);
       }
-      return res;
-    }else{
-      return res;
     }
+    return res;
   } catch (error) {
     return "err:"+error;
   }

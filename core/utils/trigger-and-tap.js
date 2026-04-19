@@ -328,6 +328,22 @@ function handleRequestSet(dealSet) {
     return;
   }
 
+  // 如果有 resultSet，在请求开始时设置处理中状态
+  if (config.resultSet !== undefined && config.resultSet !== null && config.resultSet !== false) {
+    try {
+      if (cardKey && typeof cardKey === 'string') {
+        updateNodeData(parentCardKey, { processing: true });
+        logToSystem('request_processing', {
+          cardKey: cardKey,
+          parentCardKey: parentCardKey,
+          timestamp: new Date().toISOString()
+        });
+      }
+    } catch (error) {
+      console.warn('[Action] RequestSet - Error setting processing state:', error);
+    }
+  }
+
   // Use the new executeRequest function from request.js
   return executeRequest({config, cardKey})
     .then(result => {
@@ -370,7 +386,7 @@ function handleRequestSet(dealSet) {
               } else if (result !== undefined) {
                 resultValue = result;
               }
-              updateNodeData(parentCardKey, { result: resultValue });
+              updateNodeData(parentCardKey, { result: resultValue, processing: false });
               logToSystem('request_result_stored', {
                 cardKey: cardKey,
                 resultSet: config.resultSet,
@@ -387,12 +403,34 @@ function handleRequestSet(dealSet) {
           });
           // 不抛出异常，继续返回结果
         }
+      } else {
+        // 如果没有 resultSet，也清除可能存在的处理中状态
+        try {
+          updateNodeData(parentCardKey, { processing: false });
+        } catch (error) {
+          console.warn('[Action] RequestSet - Error clearing processing state:', error);
+        }
       }
 
       return result;
     })
     .catch(error => {
       console.error('[Action] RequestSet - Request error:', error);
+
+      // 清除处理中状态
+      if (config.resultSet !== undefined && config.resultSet !== null && config.resultSet !== false) {
+        try {
+          updateNodeData(parentCardKey, { processing: false });
+          logToSystem('request_processing_ended', {
+            cardKey: cardKey,
+            parentCardKey: parentCardKey,
+            error: error.message,
+            timestamp: new Date().toISOString()
+          });
+        } catch (clearError) {
+          console.warn('[Action] RequestSet - Error clearing processing state on error:', clearError);
+        }
+      }
 
       // Log error to system
       logError('request_error', error.message, {

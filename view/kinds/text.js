@@ -2,6 +2,8 @@
  * Text 组件渲染器
  */
 
+const { autoVar } = require('../../core/utils/autoVar.js');
+
 /**
  * 渲染 Text 组件
  * @param {Object} node - 节点结构
@@ -9,8 +11,11 @@
  */
 function renderText(node) {
   const config = node.config;
-  const value = node.data && node.data.value ? node.data.value : config.value || '';
-  const title = config.title || config.nick || '';
+  // 优先级：data.value > config.value > config.text
+  let value = node.data && node.data.value ? node.data.value : config.value || config.text || '';
+  
+  //value=config.nick+":"+value
+  const title = config.title || '';
 
   if (title) {
     return `

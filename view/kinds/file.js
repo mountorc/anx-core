@@ -8,12 +8,22 @@
  */
 function renderFile(node, onUpdate) {
   const { config, data } = node;
-  const { kind = 'file', title, description, accept = 'image/*', multiple = false, maxSize = 5 * 1024 * 1024, preview = true, maxCount = 9 } = config;
+  const { kind = 'file', title, description, accept = 'image/*', multiple = false, maxSize = 5 * 1024 * 1024, preview = true, maxCount = 9, editState = 1 } = config;
   const value = data?.value || '';
   
   const cardKey = node.cardKey;
   const isImageType = kind === 'image' || kind === 'images';
   const isMultiple = kind === 'images' || multiple;
+  
+  // 如果是不可编辑状态（editState=1）且 kind 为 image，直接显示图片
+  if (editState === 1 && kind === 'image' && value) {
+    return `
+      <div class="anx-file-component">
+        ${title ? `<label class="anx-file-label">${title}</label>` : ''}
+        <img src="${value}" alt="Image" class="anx-static-image" />
+      </div>
+    `;
+  }
   
   // Generate unique ID for the file input
   const inputId = `file-${cardKey}`;
