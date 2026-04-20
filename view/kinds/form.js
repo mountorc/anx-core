@@ -37,7 +37,8 @@ function renderForm(node, renderNode) {
         config: subConfig,
         data: { value: childValue },
         nodes: [],
-        tapSet: subConfig.tapSet
+        tapSet: subConfig.tapSet,
+        editState: subConfig.editState || 2
       };
       content += renderNode(childNode);
     });

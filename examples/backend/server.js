@@ -22,7 +22,8 @@ const PORT = 7887;
 // 存储cardKey及其对应的config信息
 const cardStorage = new Map();
 // 导入节点存储模块
-const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('../../core/utils/node.js');
+const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('../../core/app/node.js');
+const { generateUuidPage, generateCardKey, addPage, getPage, getPageWithNodes, savePageNodes, getPagesByTile, getAllPages, updatePage, deletePage, getPageCount } = require('../../core/app/pageManager.js');
 const { setHubAnxMap, processAnxContent } = require('../../core/utils/tile.js');
 const { processNodeDataset } = require('../../core/utils/dataset-processor.js');
 const { generateAnxHash, getNodesByHash, setNodesByHash, anxHashToNodeMap } = require('../../core/utils/hashNode.js');
@@ -1030,7 +1031,24 @@ app.get('/api/get-node', (req, res) => {
 // API endpoint for converting ANX to nodes structure
 app.post('/api/convert-to-nodes', async (req, res) => {
   try {
-    let { anxContent, uuid_tile, url_tile } = req.body;
+    let { anxContent, uuid_tile, url_tile, uuid_page } = req.body;
+    
+    // 如果提供了 uuid_page，先检查是否有已保存的页面实例
+    if (uuid_page) {
+      const existingPage = getPageWithNodes(uuid_page);
+      if (existingPage && existingPage.nodes) {
+        console.log(`[Page Manager] Loading existing page instance: ${uuid_page}`);
+        // 返回已保存的节点结构
+        res.json({ nodes: existingPage.nodes, isExisting: true });
+        return;
+      }
+    }
+    
+    // 如果没有提供 uuid_page，生成一个新的
+    if (!uuid_page) {
+      uuid_page = generateUuidPage();
+      console.log(`[Page Manager] Generated new uuid_page: ${uuid_page}`);
+    }
     
     // 如果提供了 url_tile，从指定URL获取配置
     if (url_tile) {
@@ -1070,23 +1088,37 @@ app.post('/api/convert-to-nodes', async (req, res) => {
     }
     anxContent = anxResult.anxContent;
     
+    // 生成唯一的 cardKey
+    const cardKey = generateCardKey();
+    
     // 生成ANX内容的哈希值
     const anxHash = generateAnxHash(anxContent);
     
-    // 检查是否已经为相同的ANX内容生成过节点结构
+    // 检查是否已经为相同的ANX内容生成过节点结构（模板）
     let nodesStructure = getNodesByHash(anxHash);
     
     if (!nodesStructure) {
-      // 首次生成节点结构
+      // 首次生成节点结构（模板）
       nodesStructure = anxToNodes(anxContent);
-      // 存储到哈希映射中
+      // 存储到哈希映射中（模板）
       setNodesByHash(anxHash, nodesStructure);
+    } else {
+      // 深拷贝模板，创建新实例
+      nodesStructure = JSON.parse(JSON.stringify(nodesStructure));
     }
     
-    // 检查根节点是否有存储的数据
-    const storedRootNode = getNode(nodesStructure.cardKey);
+    // 设置新的 cardKey
+    nodesStructure.cardKey = cardKey;
+    nodesStructure.uuid_page = uuid_page;
+    
+    // 更新所有子节点的 cardKey 和 parentCardKey
+    if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+      updateNodeCardKeys(nodesStructure.nodes, cardKey, uuid_page);
+    }
+    
+    // 检查根节点是否有存储的数据（从持久化存储）
+    const storedRootNode = getNode(cardKey);
     if (storedRootNode) {
-      // 只更新数据部分，保持节点结构完整
       if (storedRootNode.data) {
         nodesStructure.data = { ...nodesStructure.data, ...storedRootNode.data };
       }
@@ -1103,10 +1135,27 @@ app.post('/api/convert-to-nodes', async (req, res) => {
     // 处理根节点和子节点的 dataset
     await processNodeDataset(nodesStructure);
     
-    // 存储根节点
+    // 设置页面状态
+    const pageData = {};
+    if (nodesStructure.config?.kind === 'form') {
+      pageData.submitStatus = 'pending';
+    }
+    
+    // 保存页面信息到 pages.json（包含完整节点结构）
+    addPage({
+      uuid_page: uuid_page,
+      uuid_tile: uuid_tile,
+      url_tile: url_tile,
+      title: nodesStructure.config?.title || '',
+      cardKey: cardKey,
+      nodes: nodesStructure,
+      data: pageData
+    });
+    
+    // 存储根节点到 node.js（持久化）
     if (nodesStructure.cardKey && nodesStructure.config) {
       cardStorage.set(nodesStructure.cardKey, nodesStructure.config);
-      setNode(nodesStructure.cardKey, nodesStructure); // 存储完整的根节点结构
+      setNode(nodesStructure.cardKey, nodesStructure);
     }
     
     // 存储子节点，传递根节点的 cardKey 作为父节点
@@ -1114,12 +1163,29 @@ app.post('/api/convert-to-nodes', async (req, res) => {
       storeCardNodes(nodesStructure.nodes, nodesStructure.cardKey);
     }
     
-    res.json({ nodes: nodesStructure });
+    res.json({ nodes: nodesStructure, uuid_page: uuid_page, isExisting: false });
   } catch (error) {
     console.error('Error converting ANX to nodes structure:', error);
     res.status(400).json({ error: 'Invalid ANX content. Please check your input.' });
   }
 });
+
+// 更新节点的 cardKey 和 parentCardKey
+function updateNodeCardKeys(nodes, parentCardKey, uuid_page) {
+  nodes.forEach(node => {
+    // 生成新的 cardKey
+    node.cardKey = generateCardKey();
+    // 设置父节点 cardKey
+    node.parentCardKey = parentCardKey;
+    // 设置 uuid_page
+    node.uuid_page = uuid_page;
+    
+    // 递归处理子节点
+    if (node.nodes && node.nodes.length > 0) {
+      updateNodeCardKeys(node.nodes, node.cardKey, uuid_page);
+    }
+  });
+}
 
 // API endpoint for converting ANX to markup
 app.post('/api/convert-to-markup', async (req, res) => {
@@ -2096,6 +2162,95 @@ app.get('/api/tiles/list', (req, res) => {
   } catch (error) {
     console.error('Error loading tiles list:', error);
     res.status(500).json({ error: 'Failed to load tiles list' });
+  }
+});
+
+// 获取所有页面列表
+app.get('/api/pages/list', (req, res) => {
+  try {
+    const pages = getAllPages();
+    res.json({
+      success: true,
+      data: pages,
+      count: getPageCount()
+    });
+  } catch (error) {
+    console.error('Error loading pages list:', error);
+    res.status(500).json({ error: 'Failed to load pages list' });
+  }
+});
+
+// 获取单个页面详情
+app.get('/api/pages/:uuid_page', (req, res) => {
+  try {
+    const { uuid_page } = req.params;
+    const page = getPage(uuid_page);
+    if (page) {
+      res.json({
+        success: true,
+        data: page
+      });
+    } else {
+      res.status(404).json({ success: false, error: 'Page not found' });
+    }
+  } catch (error) {
+    console.error('Error loading page:', error);
+    res.status(500).json({ error: 'Failed to load page' });
+  }
+});
+
+// 获取指定tile的所有页面
+app.get('/api/pages/by-tile/:uuid_tile', (req, res) => {
+  try {
+    const { uuid_tile } = req.params;
+    const pages = getPagesByTile(uuid_tile);
+    res.json({
+      success: true,
+      data: pages,
+      count: pages.length
+    });
+  } catch (error) {
+    console.error('Error loading pages by tile:', error);
+    res.status(500).json({ error: 'Failed to load pages by tile' });
+  }
+});
+
+// 更新页面信息
+app.put('/api/pages/:uuid_page', (req, res) => {
+  try {
+    const { uuid_page } = req.params;
+    const updates = req.body;
+    const updatedPage = updatePage(uuid_page, updates);
+    if (updatedPage) {
+      res.json({
+        success: true,
+        data: updatedPage
+      });
+    } else {
+      res.status(404).json({ success: false, error: 'Page not found' });
+    }
+  } catch (error) {
+    console.error('Error updating page:', error);
+    res.status(500).json({ error: 'Failed to update page' });
+  }
+});
+
+// 删除页面
+app.delete('/api/pages/:uuid_page', (req, res) => {
+  try {
+    const { uuid_page } = req.params;
+    const deletedPage = deletePage(uuid_page);
+    if (deletedPage) {
+      res.json({
+        success: true,
+        data: deletedPage
+      });
+    } else {
+      res.status(404).json({ success: false, error: 'Page not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting page:', error);
+    res.status(500).json({ error: 'Failed to delete page' });
   }
 });
 

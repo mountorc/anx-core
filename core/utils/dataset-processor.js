@@ -3,7 +3,7 @@
  */
 
 const { fetchDataset } = require('./dataset.js');
-const { setNode } = require('./node.js');
+const { setNode } = require('../app/node.js');
 
 /**
  * 处理单个节点的数据集

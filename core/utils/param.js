@@ -3,9 +3,10 @@
  * Handles parameter mapping and value extraction
  */
 
-// 导入 autoVar 模块
+// 导入模块
 const { autoVar } = require('./autoVar.js');
-const { getCardData,getParentCardKey} = require('./card.js');
+const { getCardData, getParentCardKey } = require('./card.js');
+const { getUuidPageByCardKey } = require('../app/node.js');
 
 /**
  * Build parameters from paramMap
@@ -18,9 +19,12 @@ function buildParams(paramMap, cardKey) {
   if (paramMap && typeof paramMap === 'object') {
     for (let targetParam in paramMap) {
       const sourceField = paramMap[targetParam];
-      // Check if sourceField is a field path or a literal value
-      //const value = getCardData(cardKey,sourceField)
-      const value = autoVar(sourceField, {},{cardKey});
+      let value = undefined;
+      if (sourceField === 'uuid_page'||sourceField === 'uuid_node') {
+        value = getUuidPageByCardKey(cardKey);
+      } else {
+        value = autoVar(sourceField, {}, { cardKey });
+      }
       if (value !== undefined) {
         params[targetParam] = value;
       }

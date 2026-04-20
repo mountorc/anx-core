@@ -1,5 +1,11 @@
 <template>
   <div class="visual-section">
+    <div class="visual-header">
+      <button class="new-tile-btn" @click="handleNewTile">
+        <span class="btn-icon">➕</span>
+        <span class="btn-text">新建</span>
+      </button>
+    </div>
     <div class="visual-output">
       <div class="node-visualization" v-if="nodesStructure" ref="visualizationContainer">
         <div ref="htmlContainer"></div>
@@ -52,6 +58,67 @@ export default {
     window.buttonTap = buttonTap;
   },
   methods: {
+    handleNewTile() {
+      console.log('=== Handle New Tile ===');
+      
+      if (!this.nodesStructure) {
+        console.warn('No nodesStructure available to create new tile');
+        alert('无法创建新 tile：没有可用的节点结构');
+        return;
+      }
+      
+      // 生成新的 cardKey
+      const newCardKey = 'card_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      
+      // 深拷贝原始节点结构
+      const newNode = JSON.parse(JSON.stringify(this.nodesStructure));
+      
+      // 更新 cardKey
+      newNode.cardKey = newCardKey;
+      
+      // 更新子节点
+      if (newNode.children && Array.isArray(newNode.children)) {
+        newNode.children = newNode.children.map(child => {
+          const childCopy = JSON.parse(JSON.stringify(child));
+          childCopy.cardKey = 'card_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          childCopy.parentCardKey = newCardKey;
+          return childCopy;
+        });
+      }
+      
+      // 重置数据
+      if (newNode.data) {
+        Object.keys(newNode.data).forEach(key => {
+          if (key !== 'config' && key !== 'schema') {
+            delete newNode.data[key];
+          }
+        });
+      }
+      
+      newNode.rebuildTime = new Date().toISOString();
+      
+      console.log('New tile node created:', newNode);
+      
+      // 触发新建事件
+      this.$emit('newTile', {
+        originalCardKey: this.nodesStructure.cardKey,
+        newCardKey: newCardKey,
+        node: newNode
+      });
+      
+      // 发送消息到父窗口
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'NEW_TILE',
+          originalCardKey: this.nodesStructure.cardKey,
+          newCardKey: newCardKey,
+          node: newNode,
+          timestamp: new Date().toISOString()
+        }, '*');
+      }
+      
+      alert('新 Tile 创建成功！\ncardKey: ' + newCardKey);
+    },
     setupEventListeners() {
       // 监听来自可视化内容的事件
       window.addEventListener('triggerEvent', this.handleTriggerEvent);
@@ -118,10 +185,48 @@ export default {
   height: 100%;
 }
 
+.visual-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 16px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.new-tile-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.new-tile-btn:hover {
+  background: #45a049;
+}
+
+.new-tile-btn:active {
+  background: #3d8b40;
+}
+
+.btn-icon {
+  font-size: 16px;
+}
+
+.btn-text {
+  font-weight: 500;
+}
+
 .visual-output {
   overflow-y: auto;
   min-height: 0;
-  height: 100%;
+  flex: 1;
 }
 
 .node-visualization {

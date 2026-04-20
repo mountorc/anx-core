@@ -3,7 +3,7 @@
  * 封装与卡片相关的高级操作
  */
 
-const { setNode, getNode, updateNodeData, getNodeData, deleteNode, hasNode, getAllNodes } = require('./node.js');
+const { setNode, getNode, updateNodeData, getNodeData, deleteNode, hasNode, getAllNodes } = require('../app/node.js');
 
 
 

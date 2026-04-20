@@ -213,7 +213,7 @@ class ANXView extends HTMLElement {
       .visual-output {
         overflow-y: auto;
         min-height: 0;
-        height: 100%;
+        flex: 1;
       }
       
       .node-visualization {
@@ -254,7 +254,7 @@ class ANXView extends HTMLElement {
     this.template = document.createElement('template');
     this.template.innerHTML = `
       <style>${this.styles}</style>
-      <div class="visual-section">
+      <div class="visual-section" id="visualSection">
         <div class="visual-output">
           <div class="node-visualization" id="visualizationContainer">
             <div id="htmlContainer"></div>
@@ -271,6 +271,7 @@ class ANXView extends HTMLElement {
     this.visualizationContainer = this.shadowRoot.getElementById('visualizationContainer');
     this.htmlContainer = this.shadowRoot.getElementById('htmlContainer');
     this.noData = this.shadowRoot.getElementById('noData');
+    this.visualSection = this.shadowRoot.getElementById('visualSection');
   }
   
   // 定义可观察的属性
@@ -432,6 +433,72 @@ class ANXView extends HTMLElement {
   triggerDeal(cardKey) {
     console.log('ANXView: triggerDeal called with cardKey:', cardKey);
     // 这里可以添加处理逻辑
+  }
+  
+  // 处理新建 tile
+  handleNewTile() {
+    console.log('=== ANXView: Handle New Tile ===');
+    
+    if (!this.nodesStructure) {
+      console.warn('ANXView: No nodesStructure available to create new tile');
+      alert('无法创建新 tile：没有可用的节点结构');
+      return;
+    }
+    
+    // 生成新的 cardKey
+    const newCardKey = 'card_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    // 深拷贝原始节点结构
+    const newNode = JSON.parse(JSON.stringify(this.nodesStructure));
+    
+    // 更新 cardKey
+    newNode.cardKey = newCardKey;
+    
+    // 更新子节点
+    if (newNode.children && Array.isArray(newNode.children)) {
+      newNode.children = newNode.children.map(child => {
+        const childCopy = JSON.parse(JSON.stringify(child));
+        childCopy.cardKey = 'card_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        childCopy.parentCardKey = newCardKey;
+        return childCopy;
+      });
+    }
+    
+    // 重置数据
+    if (newNode.data) {
+      Object.keys(newNode.data).forEach(key => {
+        if (key !== 'config' && key !== 'schema') {
+          delete newNode.data[key];
+        }
+      });
+    }
+    
+    newNode.rebuildTime = new Date().toISOString();
+    
+    console.log('ANXView: New tile node created:', newNode);
+    
+    // 触发自定义事件
+    const event = new CustomEvent('newTile', {
+      detail: {
+        originalCardKey: this.nodesStructure.cardKey,
+        newCardKey: newCardKey,
+        node: newNode
+      }
+    });
+    this.dispatchEvent(event);
+    
+    // 发送消息到父窗口
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'NEW_TILE',
+        originalCardKey: this.nodesStructure.cardKey,
+        newCardKey: newCardKey,
+        node: newNode,
+        timestamp: new Date().toISOString()
+      }, '*');
+    }
+    
+    alert('新 Tile 创建成功！\ncardKey: ' + newCardKey);
   }
   
   // 更新可见性

@@ -38,7 +38,9 @@ function renderBoard(node, renderNode) {
       else if (subConfig.value !== undefined) {
         childData.value = subConfig.value;
       }
-      
+      if(subConfig.editState==undefined){
+        subConfig.editState=1;
+      }
       const childNode = {
         config: subConfig,
         data: childData,

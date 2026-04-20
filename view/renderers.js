@@ -8,6 +8,7 @@ const { renderText } = require('./kinds/text.js');
 const { renderInput } = require('./kinds/input.js');
 const { renderTextarea } = require('./kinds/textarea.js');
 const { renderButton } = require('./kinds/button.js');
+const { renderRebuildButton } = require('./kinds/rebuildButton.js');
 const { renderForm } = require('./kinds/form.js');
 const { renderNavigation } = require('./kinds/navigation.js');
 const { renderDate } = require('./kinds/date.js');
@@ -50,6 +51,9 @@ function renderNode(node) {
       break;
     case 'button':
       renderedContent = renderButton(node);
+      break;
+    case 'rebuildButton':
+      renderedContent = renderRebuildButton(node);
       break;
     case 'form':
       renderedContent = renderForm(node, renderNode);

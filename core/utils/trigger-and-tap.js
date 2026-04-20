@@ -1,7 +1,7 @@
 const { executeRequest } = require('./request.js');
 const { logToSystem, logError } = require('./log.js');
 const { getDataValue } = require('./param.js');
-const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('./node.js');
+const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('../app/node.js');
 const { getCardData,getParentCardKey} = require('./card.js');
 const { autoVar} = require('./autoVar.js');
 /**
@@ -332,7 +332,7 @@ function handleRequestSet(dealSet) {
   if (config.resultSet !== undefined && config.resultSet !== null && config.resultSet !== false) {
     try {
       if (cardKey && typeof cardKey === 'string') {
-        updateNodeData(parentCardKey, { processing: true });
+        updateNodeData(parentCardKey, { processing: true, submitStatus: 'running' });
         logToSystem('request_processing', {
           cardKey: cardKey,
           parentCardKey: parentCardKey,
@@ -386,7 +386,7 @@ function handleRequestSet(dealSet) {
               } else if (result !== undefined) {
                 resultValue = result;
               }
-              updateNodeData(parentCardKey, { result: resultValue, processing: false });
+              updateNodeData(parentCardKey, { result: resultValue, processing: false, submitStatus: 'submitted' });
               logToSystem('request_result_stored', {
                 cardKey: cardKey,
                 resultSet: config.resultSet,
@@ -417,10 +417,10 @@ function handleRequestSet(dealSet) {
     .catch(error => {
       console.error('[Action] RequestSet - Request error:', error);
 
-      // 清除处理中状态
+      // 清除处理中状态，恢复为待提交状态
       if (config.resultSet !== undefined && config.resultSet !== null && config.resultSet !== false) {
         try {
-          updateNodeData(parentCardKey, { processing: false });
+          updateNodeData(parentCardKey, { processing: false, submitStatus: 'pending' });
           logToSystem('request_processing_ended', {
             cardKey: cardKey,
             parentCardKey: parentCardKey,

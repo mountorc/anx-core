@@ -8,7 +8,7 @@
  */
 function renderFile(node, onUpdate) {
   const { config, data } = node;
-  const { kind = 'file', title, description, accept = 'image/*', multiple = false, maxSize = 5 * 1024 * 1024, preview = true, maxCount = 9, editState = 1 } = config;
+  const { kind = 'file', title, description, accept = 'image/*', multiple = false, maxSize = 5 * 1024 * 1024, preview = true, maxCount = 9, editState} = config;
   const value = data?.value || '';
   
   const cardKey = node.cardKey;
@@ -20,7 +20,7 @@ function renderFile(node, onUpdate) {
     return `
       <div class="anx-file-component">
         ${title ? `<label class="anx-file-label">${title}</label>` : ''}
-        <img src="${value}" alt="Image" class="anx-static-image" />
+        <img src="${value}" alt="Image" class="anx-static-image"/>
       </div>
     `;
   }
@@ -75,19 +75,22 @@ function renderSingleImageUpload(node, inputId) {
   
   return `
     <div class="anx-image-upload">
-      <div class="anx-upload-area" onclick="triggerFileInput('${inputId}')">
-        ${value ? `
+      ${value ? `
+        <div class="anx-image-preview-container">
           <div class="anx-image-preview">
-            <img src="${value}" alt="Preview" class="anx-preview-image" />
-            <button class="anx-remove-btn" onclick="event.stopPropagation(); removeFile('${node.cardKey}', 'image')">✕</button>
+            <img src="${value}" alt="Preview" class="anx-preview-image" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2212%22 x=%2250%22 y=%2255%22 text-anchor=%22middle%22%3E%E2%97%8F%3C/text%3E%3C/svg%3E'" />
+            <button class="anx-remove-btn" onclick="removeFile('${node.cardKey}', 'image')">×</button>
           </div>
-        ` : `
+          <button class="anx-change-btn" onclick="triggerFileInput('${inputId}')">更换</button>
+        </div>
+      ` : `
+        <div class="anx-upload-area" onclick="triggerFileInput('${inputId}')">
           <div class="anx-upload-placeholder">
             <div class="anx-upload-icon">📷</div>
             <div class="anx-upload-text">点击上传图片</div>
           </div>
-        `}
-      </div>
+        </div>
+      `}
     </div>
   `;
 }
@@ -108,17 +111,12 @@ function renderMultipleImagesUpload(node, inputId, maxCount) {
       <div class="anx-upload-grid">
         ${value.map((imageUrl, index) => `
           <div class="anx-image-preview-item">
-            <img src="${imageUrl}" alt="Preview" class="anx-preview-image" />
+            <img src="${imageUrl}" alt="Preview" class="anx-preview-image" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2212%22 x=%2250%22 y=%2255%22 text-anchor=%22middle%22%3E%E2%97%8F%3C/text%3E%3C/svg%3E'" />
             <button class="anx-remove-btn" onclick="removeFile('${node.cardKey}', 'images', ${index})">✕</button>
           </div>
         `).join('')}
         ${value.length < maxCount ? `
-          <div class="anx-upload-item" onclick="triggerFileInput('${inputId}')">
-            <div class="anx-upload-placeholder">
-              <div class="anx-upload-icon">📷</div>
-              <div class="anx-upload-text">点击上传</div>
-            </div>
-          </div>
+          <div class="anx-add-btn" onclick="triggerFileInput('${inputId}')">+</div>
         ` : ''}
       </div>
     </div>

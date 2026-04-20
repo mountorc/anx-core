@@ -576,20 +576,19 @@ function generateVisualizationCSS() {
     }
     
     .form-visualization {
-      max-height:calc(100vh - 30px);
-      height:calc(100vh - 30px);
+      max-height:calc(100vh - 0px);
+      height:calc(100vh - 0px);
       background-color: white;
       border-radius: 0px;
-      padding: 15px;
+      padding: 0px;
     }
     
     .form-title {
-      margin: 0 0 15px 0;
       color: #333;
       font-size: 18px;
       font-weight: 600;
       border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
+      padding: 10px 18px;
     }
     
     .form-content {
@@ -597,6 +596,7 @@ function generateVisualizationCSS() {
       display: flex;
       flex-direction: column;
       gap: 15px;
+      padding:18px;
     }
 
     .form-with-result-right {
@@ -621,20 +621,21 @@ function generateVisualizationCSS() {
     .form-with-result-right .form-result {
       width: 400px;
       border-left: 2px solid #e0e0e0;
-      padding-left: 20px;
+      padding-left: 0px;
       overflow-y: auto;
     }
 
     .form-result-bottom {
       margin-top: 20px;
       padding-top: 20px;
-      border-top: 2px solid #e0e0e0;
+      border-top: 1px solid #e0e0e0;
     }
 
     .result-area {
       display: flex;
       flex-direction: column;
       height: 100%;
+      padding:18px;
     }
 
     .result-title {
@@ -938,36 +939,86 @@ function generateVisualizationCSS() {
       color: #666;
     }
     
+    .anx-image-preview-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
     .anx-image-preview {
       position: relative;
-      display: inline-block;
+      width: 100px;
+      height: 100px;
+      border-radius: 4px;
+      overflow: hidden;
     }
     
     .anx-preview-image {
-      max-width: 100px;
-      max-height: 100px;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover;
+    }
+    
+    .anx-change-btn {
+      background-color: #1890ff;
+      color: white;
+      border: none;
       border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    
+    .anx-change-btn:hover {
+      background-color: #40a9ff;
     }
     
     .anx-remove-btn {
       position: absolute;
-      top: -8px;
-      right: -8px;
-      background-color: #ff4d4f;
-      color: white;
+      top: 2px;
+      right: 2px;
+      background-color: #999;
+      color: #000;
       border: none;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
+      border-radius: 4px;
+      width: 20px;
+      height: 20px;
       font-size: 14px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      line-height: 1;
+    }
+    
+    .anx-image-preview:hover .anx-remove-btn {
+      display: flex;
+    }
+    
+    .anx-remove-btn:hover {
+      background-color: #666;
+    }
+    
+    .anx-add-btn {
+      width: 100px;
+      height: 100px;
+      border: 2px dashed #d9d9d9;
+      border-radius: 4px;
+      background-color: #fafafa;
+      color: #999;
+      font-size: 32px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     
-    .anx-remove-btn:hover {
-      background-color: #ff7875;
+    .anx-add-btn:hover {
+      border-color: #1890ff;
+      color: #1890ff;
+      background-color: #e6f7ff;
     }
     
     .anx-images-upload {

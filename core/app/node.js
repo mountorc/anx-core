@@ -173,6 +173,46 @@ function hasNode(cardKey) {
   return nodeStorage.has(cardKey);
 }
 
+/**
+ * 通过 cardKey 获取对应的 uuid_page
+ * @param {string} cardKey - 节点卡键
+ * @returns {string|null} - uuid_page 或 null
+ */
+function getUuidPageByCardKey(cardKey) {
+  if (!cardKey || typeof cardKey !== 'string') {
+    return null;
+  }
+  try {
+    const node = getNode(cardKey);
+    if (node && node.uuid_page) {
+      return node.uuid_page;
+    }
+    // 如果当前节点没有 uuid_page，遍历所有节点查找父节点
+    for (const [key, storedNode] of nodeStorage) {
+      if (storedNode.nodes && storedNode.nodes.length > 0) {
+        const findInNodes = (nodes) => {
+          for (const childNode of nodes) {
+            if (childNode.cardKey === cardKey) {
+              return storedNode.uuid_page;
+            }
+            if (childNode.nodes && childNode.nodes.length > 0) {
+              const found = findInNodes(childNode.nodes);
+              if (found) return found;
+            }
+          }
+          return null;
+        };
+        const result = findInNodes(storedNode.nodes);
+        if (result) return result;
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error('[Node Storage] Error getting uuid_page by cardKey:', error);
+    return null;
+  }
+}
+
 module.exports = {
   setNode,
   getNode,
@@ -182,5 +222,6 @@ module.exports = {
   clearNodes,
   getAllNodes,
   getNodeCount,
-  hasNode
+  hasNode,
+  getUuidPageByCardKey
 };
