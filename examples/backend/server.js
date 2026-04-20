@@ -1249,6 +1249,76 @@ app.post('/api/convert-to-markup', async (req, res) => {
   }
 });
 
+// API endpoint for converting ANX to markup (GET version)
+// Supports: /api/markup?url_tile=xxx or /api/markup?uuid_tile=xxx
+app.get('/api/markup', async (req, res) => {
+  try {
+    const { url_tile, uuid_tile } = req.query;
+    
+    if (!url_tile && !uuid_tile) {
+      return res.status(400).send('Error: Either url_tile or uuid_tile parameter is required');
+    }
+    
+    let anxContent = null;
+    
+    // 如果提供了 url_tile，从指定URL获取配置
+    if (url_tile) {
+      try {
+        const response = await fetch(url_tile);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        const config = result.config || result;
+        // 支持两种格式：
+        // 1. {uuid: "...", anxContent: {...}}
+        // 2. {kind: "...", kinds: [...]} - 直接是 anxContent
+        if (config.anxContent) {
+          anxContent = config.anxContent;
+        } else if (config.kind) {
+          // 直接是 anxContent 格式
+          anxContent = config;
+        } else {
+          throw new Error('Invalid tile config format');
+        }
+      } catch (error) {
+        console.error(`Error loading tile config from URL ${url_tile}:`, error);
+        return res.status(404).send('Error: Failed to load tile config from URL');
+      }
+    } else if (uuid_tile) {
+      // 如果提供了 uuid_tile 但本地没有找到，尝试从 URL 动态加载
+      if (!hubAnxMap.has(uuid_tile)) {
+        await loadTileFromUrl(uuid_tile);
+      }
+      
+      // 如果提供了 uuid_tile，从 hubAnxMap 中获取 anxContent
+      if (hubAnxMap.has(uuid_tile)) {
+        anxContent = hubAnxMap.get(uuid_tile).anxContent;
+      }
+    }
+    
+    if (!anxContent) {
+      return res.status(404).send('Error: ANX config not found');
+    }
+    
+    // 使用 tile.js 模块处理 anxContent
+    const anxResult = processAnxContent(anxContent, uuid_tile);
+    if (!anxResult.success) {
+      return res.status(404).send(`Error: ${anxResult.error}`);
+    }
+    anxContent = anxResult.anxContent;
+    
+    // 转换为 markup（anxToMarkup 是异步函数）
+    const markup = await anxToMarkup(anxContent);
+    
+    res.setHeader('Content-Type', 'text/plain');
+    res.send(markup);
+  } catch (error) {
+    console.error('Error converting ANX to markup:', error);
+    res.status(400).send('Error: Invalid ANX content. Please check your input.');
+  }
+});
+
 // API endpoint for executing CLI commands
 app.post('/api/execute-cli', (req, res) => {
   try {
