@@ -13,10 +13,12 @@ function renderInput(node) {
   const value = node.data.value || config.value || '';
   const nick = config.nick || '';
   const cardKey = node.cardKey;
+  const required = config.required || false;
+  const requiredMark = required ? '<span class="required-mark">*</span>' : '';
 
   return `
     <div class="input-visualization">
-      <div class="input-label">${nick || 'Input'}</div>
+      <div class="input-label">${nick || 'Input'}${requiredMark}</div>
       <input 
         type="text" 
         placeholder="${placeholder}" 

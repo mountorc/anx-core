@@ -1,14 +1,14 @@
 <template>
   <div class="anx-page">
-    <div v-if="loading" class="loading">
+    <div v-if="loading" class="loading-overlay">
       <p>Loading visualization...</p>
     </div>
 
-    <div v-else-if="error" class="error">
+    <div v-if="error" class="error">
       <p>{{ error }}</p>
     </div>
 
-    <div v-else-if="nodesStructure && visualizationHTML" class="anx-page-layout">
+    <div v-show="!error && nodesStructure && visualizationHTML" class="anx-page-layout">
       <div :class="['page-list-sidebar', { hidden: isSidebarHidden }]">
         <div class="sidebar-header">
           <h3>页面列表</h3>
@@ -52,7 +52,7 @@
       </div>
     </div>
 
-    <div v-else class="no-data">
+    <div v-if="!(!error && nodesStructure && visualizationHTML)" class="no-data">
       <p>No visualization data available</p>
     </div>
   </div>
@@ -251,7 +251,7 @@ export default {
         }
       });
     },
-    createNewPage() {
+    async createNewPage() {
       const newUuid = 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       this.uuidPage = newUuid;
       this.$router.replace({
@@ -261,6 +261,15 @@ export default {
           uuid_page: newUuid
         }
       });
+      
+      // 更新页面列表
+      const uuid = this.$route.params.uuid_tile;
+      const urlTile = this.$route.query.url_tile;
+      if (uuid) {
+        await this.fetchPageList(uuid);
+      } else if (urlTile) {
+        await this.fetchPageListByUrl(urlTile);
+      }
     },
     toggleSidebar() {
       this.isSidebarHidden = !this.isSidebarHidden;
@@ -306,9 +315,6 @@ export default {
     async fetchNodeVisualizationFromUrl(url) {
       this.loading = true;
       this.error = '';
-      this.nodesStructure = null;
-      this.visualizationHTML = '';
-      this.visualizationCSS = '';
 
       try {
         // 获取节点结构（通过URL）
@@ -346,9 +352,6 @@ export default {
     async fetchNodeVisualization(uuid) {
       this.loading = true;
       this.error = '';
-      this.nodesStructure = null;
-      this.visualizationHTML = '';
-      this.visualizationCSS = '';
 
       try {
         // 获取节点结构
@@ -674,6 +677,21 @@ export default {
 .empty-list p {
   margin: 0;
   font-size: 13px;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 1000;
+  color: #666;
+  font-size: 18px;
 }
 
 .loading {

@@ -13,10 +13,12 @@ function renderDate(node) {
   const value = node.data.value || config.value || '';
   const nick = config.nick || '';
   const cardKey = node.cardKey;
+  const required = config.required || false;
+  const requiredMark = required ? '<span class="required-mark">*</span>' : '';
 
   return `
     <div class="date-visualization">
-      <div class="date-label">${nick || 'Date'}</div>
+      <div class="date-label">${nick || 'Date'}${requiredMark}</div>
       <input 
         type="date" 
         placeholder="${placeholder}" 

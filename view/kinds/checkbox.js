@@ -13,11 +13,12 @@ function renderCheckbox(node) {
   const options = config.options || [];
   const value = node.data.value || config.value || [];
   const cardKey = node.cardKey;
+  const required = config.required || false;
+  const requiredMark = required ? '<span class="required-mark">*</span>' : '';
 
   let html = `
     <div class="checkbox-visualization">
-      <div class="checkbox-title">${title}</div>
-  `;
+      <div class="checkbox-title">${title}${requiredMark}</div>`;
 
   options.forEach((option, index) => {
     const isChecked = Array.isArray(value) && value.includes(option.value);

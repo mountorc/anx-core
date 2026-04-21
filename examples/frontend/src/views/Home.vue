@@ -343,6 +343,11 @@ export default {
           body: JSON.stringify({ node })
         });
         
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Server error: ${response.status} - ${errorText}`);
+        }
+        
         const result = await response.json();
         this.visualizationHTML = result.html;
         this.visualizationCSS = result.css;
@@ -1052,6 +1057,11 @@ export default {
           body: JSON.stringify({ command: this.cliCommand })
         });
 
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Server error: ${response.status} - ${errorText}`);
+        }
+
         const result = await response.json();
         // 格式化输出，显示cardKey、action和result
         this.cliOutput = `cardKey: ${result.cardKey}\naction: ${result.action}\nresult: ${JSON.stringify(result.result, null, 2)}`;
@@ -1094,6 +1104,12 @@ export default {
       try {
         // 获取CLI命令集
         const response = await fetch('http://localhost:7887/api/cli/commands');
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Server error: ${response.status} - ${errorText}`);
+        }
+        
         const data = await response.json();
         this.cliCommands = data.commands;
         this.showCommandsModal = true;

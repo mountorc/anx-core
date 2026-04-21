@@ -106,4 +106,10 @@ body {
   text-align: center;
   margin-top: auto;
 }
+
+.required-mark {
+  color: #dc3545;
+  margin-left: 2px;
+  font-weight: bold;
+}
 </style>

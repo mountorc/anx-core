@@ -92,18 +92,58 @@ async function executeRequest(dealSet) {
     });
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      // 获取错误响应体
+      let errorBody;
+      try {
+        errorBody = await response.json();
+      } catch (e) {
+        errorBody = await response.text();
+      }
+      
+      const errorMessage = typeof errorBody === 'object' && errorBody.error 
+        ? errorBody.error 
+        : `HTTP error! status: ${response.status}`;
+      
+      const error = new Error(errorMessage);
+      error.status = response.status;
+      error.responseBody = errorBody;
+      
+      logError('request_error', errorMessage, {
+        url: url,
+        method: method,
+        status: response.status,
+        responseBody: errorBody,
+        timestamp: new Date().toISOString()
+      });
+      
+      return {
+        success: false,
+        status: response.status,
+        error: errorMessage,
+        details: errorBody
+      };
     }
     
     // Parse response
-    const responseData = await response.json();
+    let responseData;
+    try {
+      responseData = await response.json();
+    } catch (parseError) {
+      // 如果响应不是有效的JSON，尝试作为文本处理
+      responseData = await response.text();
+      logToSystem('request_response_non_json', {
+        url: url,
+        method: method,
+        timestamp: new Date().toISOString()
+      });
+    }
     
     // Log request success
     logToSystem('request_success', {
       url: url,
       method: method,
       status: response.status,
-      data: responseData,
+      data: typeof responseData === 'string' ? '(text response)' : responseData,
       timestamp: new Date().toISOString()
     });
     
@@ -122,7 +162,12 @@ async function executeRequest(dealSet) {
       timestamp: new Date().toISOString()
     });
     
-    throw error;
+    return {
+      success: false,
+      status: 0,
+      error: error.message,
+      details: error.stack
+    };
   }
 }
 

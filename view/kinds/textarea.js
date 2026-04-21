@@ -14,10 +14,12 @@ function renderTextarea(node) {
   const nick = config.nick || '';
   const rows = config.rows || 4;
   const cardKey = node.cardKey;
+  const required = config.required || false;
+  const requiredMark = required ? '<span class="required-mark">*</span>' : '';
 
   return `
     <div class="textarea-visualization">
-      <div class="textarea-label">${nick || 'Textarea'}</div>
+      <div class="textarea-label">${nick || 'Textarea'}${requiredMark}</div>
       <textarea 
         placeholder="${placeholder}" 
         rows="${rows}" 

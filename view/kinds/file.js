@@ -8,18 +8,19 @@
  */
 function renderFile(node, onUpdate) {
   const { config, data } = node;
-  const { kind = 'file', title, description, accept = 'image/*', multiple = false, maxSize = 5 * 1024 * 1024, preview = true, maxCount = 9, editState} = config;
+  const { kind = 'file', title, description, accept = 'image/*', multiple = false, maxSize = 5 * 1024 * 1024, preview = true, maxCount = 9, editState, required = false} = config;
   const value = data?.value || '';
   
   const cardKey = node.cardKey;
   const isImageType = kind === 'image' || kind === 'images';
   const isMultiple = kind === 'images' || multiple;
+  const requiredMark = required ? '<span class="required-mark">*</span>' : '';
   
   // 如果是不可编辑状态（editState=1）且 kind 为 image，直接显示图片
   if (editState === 1 && kind === 'image' && value) {
     return `
       <div class="anx-file-component">
-        ${title ? `<label class="anx-file-label">${title}</label>` : ''}
+        ${title ? `<label class="anx-file-label">${title}${requiredMark}</label>` : ''}
         <img src="${value}" alt="Image" class="anx-static-image"/>
       </div>
     `;
@@ -30,7 +31,7 @@ function renderFile(node, onUpdate) {
   
   let html = `
     <div class="anx-file-component">
-      ${title ? `<label class="anx-file-label">${title}</label>` : ''}
+      ${title ? `<label class="anx-file-label">${title}${requiredMark}</label>` : ''}
       ${description ? `<div class="anx-file-description">${description}</div>` : ''}
       
       <!-- Hidden file input -->

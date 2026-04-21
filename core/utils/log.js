@@ -10,6 +10,21 @@ const LOG_FILE_PATH = path.resolve(__dirname, '../../log/system-logs.json');
 const MAX_LOGS = 1000;
 
 /**
+ * 格式化时间戳为 YYYY-MM-DD HH:MM:SS 格式
+ * @returns {string} 格式化的时间字符串
+ */
+function formatTimestamp() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+/**
  * 确保日志目录和文件存在
  */
 function ensureLogFileExists() {
@@ -89,7 +104,7 @@ function logToSystem(action, details) {
   const logEntry = {
     type: 'system',
     action: action,
-    timestamp: new Date().toISOString(),
+    timestamp: formatTimestamp(),
     details: details,
     message: `[System] ${action}: ${JSON.stringify(details)}`
   };
@@ -134,7 +149,7 @@ function logError(action, error, details = {}) {
     type: 'error',
     action: action,
     error: error,
-    timestamp: new Date().toISOString(),
+    timestamp: formatTimestamp(),
     details: details,
     message: `[Error] ${action}: ${error}`
   };

@@ -13,10 +13,12 @@ function renderOptions(node) {
   const options = node.data.options || config.options || [];
   const value = node.data.value || config.value || '';
   const cardKey = node.cardKey;
+  const required = config.required || false;
+  const requiredMark = required ? '<span class="required-mark">*</span>' : '';
 
   let html = `
     <div class="options-visualization">
-      <div class="options-title">${title}</div>
+      <div class="options-title">${title}${requiredMark}</div>
       <select 
         data-card-key="${cardKey}"
         data-field="value"
