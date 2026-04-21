@@ -38,20 +38,13 @@ export default {
       this.error = '';
       
       try {
-        const response = await fetch('/api/convert-to-markup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ url_tile: url })
-        });
+        const encodedUrl = encodeURIComponent(url);
+        const response = await fetch(`/api/markup?url_tile=${encodedUrl}`);
         
-        const result = await response.json();
-        
-        if (result.markup) {
-          this.markup = result.markup;
+        if (response.ok) {
+          this.markup = await response.text();
         } else {
-          this.error = result.error || 'Failed to load markup';
+          this.error = await response.text() || 'Failed to load markup';
         }
       } catch (error) {
         this.error = 'Error loading markup: ' + error.message;
@@ -64,20 +57,12 @@ export default {
       this.error = '';
       
       try {
-        const response = await fetch('/api/convert-to-markup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ uuid_tile: uuid })
-        });
+        const response = await fetch(`/api/markup?uuid_tile=${uuid}`);
         
-        const result = await response.json();
-        
-        if (result.markup) {
-          this.markup = result.markup;
+        if (response.ok) {
+          this.markup = await response.text();
         } else {
-          this.error = result.error || 'Failed to load markup';
+          this.error = await response.text() || 'Failed to load markup';
         }
       } catch (error) {
         this.error = 'Error loading markup: ' + error.message;

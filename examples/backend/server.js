@@ -1308,8 +1308,9 @@ app.get('/api/markup', async (req, res) => {
     }
     anxContent = anxResult.anxContent;
     
-    // 转换为 markup（anxToMarkup 是异步函数）
-    const markup = await anxToMarkup(anxContent);
+    // 路径二：先生成节点结构，再转换为 markup
+    const nodesStructure = anxToNodes(anxContent);
+    const markup = await nodesToMarkup(nodesStructure);
     
     res.setHeader('Content-Type', 'text/plain');
     res.send(markup);
