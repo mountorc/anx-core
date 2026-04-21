@@ -23,7 +23,7 @@ const PORT = 7887;
 const cardStorage = new Map();
 // 导入节点存储模块
 const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('../../core/app/node.js');
-const { generateUuidPage, generateCardKey, addPage, getPage, getPageWithNodes, savePageNodes, getPagesByTile, getAllPages, updatePage, deletePage, getPageCount, getLastPageForVisitor, getTilePageUUID, getTilePage } = require('../../core/app/pageManager.js');
+const { generateUuidPage, generateCardKey, addPage, getPage, getPageWithNodes, savePageNodes, getPagesByTile, getPagesByUrlTile, getAllPages, updatePage, deletePage, getPageCount, getLastPageForVisitor, getTilePageUUID, getTilePage } = require('../../core/app/pageManager.js');
 const { setHubAnxMap, processAnxContent } = require('../../core/utils/tile.js');
 const { processNodeDataset } = require('../../core/utils/dataset-processor.js');
 const { generateAnxHash, getNodesByHash, setNodesByHash, anxHashToNodeMap } = require('../../core/utils/hashNode.js');
@@ -1869,6 +1869,41 @@ app.get('/api/pages/last', (req, res) => {
   }
 });
 
+// 获取指定tile的所有页面
+app.get('/api/pages/by-tile/:uuid_tile', (req, res) => {
+  try {
+    const { uuid_tile } = req.params;
+    const pages = getPagesByTile(uuid_tile);
+    res.json({
+      success: true,
+      data: pages,
+      count: pages.length
+    });
+  } catch (error) {
+    console.error('Error loading pages by tile:', error);
+    res.status(500).json({ error: 'Failed to load pages by tile' });
+  }
+});
+
+// 通过 url_tile 获取页面列表
+app.get('/api/pages/by-url-tile', (req, res) => {
+  try {
+    const { url_tile } = req.query;
+    if (!url_tile) {
+      return res.status(400).json({ error: 'url_tile parameter is required' });
+    }
+    const pages = getPagesByUrlTile(url_tile);
+    res.json({
+      success: true,
+      data: pages,
+      count: pages.length
+    });
+  } catch (error) {
+    console.error('Error loading pages by url_tile:', error);
+    res.status(500).json({ error: 'Failed to load pages by url_tile' });
+  }
+});
+
 // 获取单个页面详情
 app.get('/api/pages/:uuid_page', (req, res) => {
   try {
@@ -1885,22 +1920,6 @@ app.get('/api/pages/:uuid_page', (req, res) => {
   } catch (error) {
     console.error('Error loading page:', error);
     res.status(500).json({ error: 'Failed to load page' });
-  }
-});
-
-// 获取指定tile的所有页面
-app.get('/api/pages/by-tile/:uuid_tile', (req, res) => {
-  try {
-    const { uuid_tile } = req.params;
-    const pages = getPagesByTile(uuid_tile);
-    res.json({
-      success: true,
-      data: pages,
-      count: pages.length
-    });
-  } catch (error) {
-    console.error('Error loading pages by tile:', error);
-    res.status(500).json({ error: 'Failed to load pages by tile' });
   }
 });
 

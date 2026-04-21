@@ -109,6 +109,14 @@ function getPagesByTile(uuid_tile) {
   ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
+function getPagesByUrlTile(url_tile) {
+  return pagesData.pages.filter(p => 
+    p && typeof p === 'object' && 
+    p.uuid_page && typeof p.uuid_page === 'string' &&
+    p.url_tile === url_tile
+  ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
 function getAllPages() {
   return [...pagesData.pages];
 }
@@ -279,6 +287,7 @@ module.exports = {
   getPageWithNodes,
   savePageNodes,
   getPagesByTile,
+  getPagesByUrlTile,
   getAllPages,
   updatePage,
   deletePage,

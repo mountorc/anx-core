@@ -132,13 +132,13 @@ export default {
       return { success: true, uuid_visitor: uuid };
     },
     async generateUuidPage() {
-      // 检查 URL 参数中是否已有 uuid_page
       if (this.$route.query.uuid_page) {
         return this.$route.query.uuid_page;
       }
       
-      // 获取当前 tile 的所有页面实例
       const uuid = this.$route.params.uuid_tile;
+      const urlTile = this.$route.query.url_tile;
+      
       if (uuid) {
         try {
           const response = await fetch(`/api/pages/by-tile/${uuid}`);
@@ -146,18 +146,31 @@ export default {
             const result = await response.json();
             const pages = result.data || [];
             if (pages.length > 0) {
-              // 使用第一个（最新创建的）页面（后端已按时间倒序排序）
               const lastPage = pages[0];
-              console.log(`[ANXPage] Using last existing page: ${lastPage.uuid_page}`);
+              console.log(`[ANXPage] Using last existing page by uuid_tile: ${lastPage.uuid_page}`);
               return lastPage.uuid_page;
             }
           }
         } catch (error) {
           console.error('Error fetching page list for default:', error);
         }
+      } else if (urlTile) {
+        try {
+          const response = await fetch(`/api/pages/by-url-tile?url_tile=${encodeURIComponent(urlTile)}`);
+          if (response.ok) {
+            const result = await response.json();
+            const pages = result.data || [];
+            if (pages.length > 0) {
+              const lastPage = pages[0];
+              console.log(`[ANXPage] Using last existing page by url_tile: ${lastPage.uuid_page}`);
+              return lastPage.uuid_page;
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching page list by url_tile:', error);
+        }
       }
       
-      // 没有找到现有页面，生成新的 UUID
       const newUuid = 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       console.log(`[ANXPage] Creating new page: ${newUuid}`);
       return newUuid;
@@ -182,20 +195,18 @@ export default {
       const uuid = this.$route.params.uuid_tile;
       const urlTile = this.$route.query.url_tile;
       
-      // 保存 uuid_tile
       this.uuidTile = uuid;
       
-      // 确保 uuidPage 已生成（路由变化时可能未初始化）
       if (!this.uuidPage) {
         this.uuidPage = await this.generateUuidPage();
       }
       
-      // 更新 URL 添加 uuid_page 参数
       await this.updateUrlWithUuidPage();
       
-      // 获取页面列表
       if (uuid) {
         await this.fetchPageList(uuid);
+      } else if (urlTile) {
+        await this.fetchPageListByUrl(urlTile);
       }
       
       if (urlTile) {
@@ -215,6 +226,19 @@ export default {
         }
       } catch (error) {
         console.error('Error fetching page list:', error);
+      }
+    },
+    async fetchPageListByUrl(url_tile) {
+      try {
+        const response = await fetch(`/api/pages/by-url-tile?url_tile=${encodeURIComponent(url_tile)}`);
+        if (response.ok) {
+          const result = await response.json();
+          this.pageList = (result.data || []).sort((a, b) => 
+            new Date(b.createdAt) - new Date(a.createdAt)
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching page list by url_tile:', error);
       }
     },
     switchPage(uuid_page) {

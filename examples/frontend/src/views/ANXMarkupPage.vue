@@ -41,13 +41,13 @@ export default {
   },
   methods: {
     async generateUuidPage() {
-      // 检查 URL 参数中是否已有 uuid_page
       if (this.$route.query.uuid_page) {
         return this.$route.query.uuid_page;
       }
       
-      // 获取当前 tile 的所有页面实例
       const uuid = this.$route.params.uuid_tile;
+      const urlTile = this.$route.query.url_tile;
+      
       if (uuid) {
         try {
           const response = await fetch(`/api/pages/by-tile/${uuid}`);
@@ -55,18 +55,31 @@ export default {
             const result = await response.json();
             const pages = result.data || [];
             if (pages.length > 0) {
-              // 使用第一个（最新创建的）页面（后端已按时间倒序排序）
               const lastPage = pages[0];
-              console.log(`[ANXMarkupPage] Using last existing page: ${lastPage.uuid_page}`);
+              console.log(`[ANXMarkupPage] Using last existing page by uuid_tile: ${lastPage.uuid_page}`);
               return lastPage.uuid_page;
             }
           }
         } catch (error) {
           console.error('Error fetching page list for default:', error);
         }
+      } else if (urlTile) {
+        try {
+          const response = await fetch(`/api/pages/by-url-tile?url_tile=${encodeURIComponent(urlTile)}`);
+          if (response.ok) {
+            const result = await response.json();
+            const pages = result.data || [];
+            if (pages.length > 0) {
+              const lastPage = pages[0];
+              console.log(`[ANXMarkupPage] Using last existing page by url_tile: ${lastPage.uuid_page}`);
+              return lastPage.uuid_page;
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching page list by url_tile:', error);
+        }
       }
       
-      // 没有找到现有页面，生成新的 UUID
       const newUuid = 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       console.log(`[ANXMarkupPage] Creating new page: ${newUuid}`);
       return newUuid;
