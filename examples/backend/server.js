@@ -298,7 +298,11 @@ function updateFormulas(formNode) {
 }
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:17887', 'http://localhost:7887', 'http://127.0.0.1:17887', 'http://127.0.0.1:7887'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true
+}));
 app.use(express.json());
 
 // API endpoint for converting ANX to Markup (POST)

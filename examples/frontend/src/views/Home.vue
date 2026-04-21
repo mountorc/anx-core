@@ -271,7 +271,7 @@ export default {
     // 加载所有tile case列表（包括hub.json和tiles.json）
     async loadHubList() {
       try {
-        const response = await fetch('/api/tiles/list');
+        const response = await fetch('http://localhost:7887/api/tiles/list');
         const data = await response.json();
         if (data.success) {
           this.hubList = data.data;
@@ -283,7 +283,7 @@ export default {
     // 加载指定的tile case
     async loadHubTestCase(uuid) {
       try {
-        const response = await fetch(`/api/hub/${uuid}`);
+        const response = await fetch(`http://localhost:7887/api/hub/${uuid}`);
         const data = await response.json();
         if (data.success) {
           this.anxInput = JSON.stringify(data.data.anxContent, null, 2);
@@ -299,7 +299,7 @@ export default {
         const anxContent = JSON.parse(this.anxInput);
         
         // Get nodes structure from backend
-        const nodesResponse = await fetch('/api/convert-to-nodes', {
+        const nodesResponse = await fetch('http://localhost:7887/api/convert-to-nodes', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -312,7 +312,7 @@ export default {
         this.nodesStructure = nodesResult.nodes;
         
         // Convert ANX to Markup
-        const markupResponse = await fetch('/api/convert', {
+        const markupResponse = await fetch('http://localhost:7887/api/convert', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -335,7 +335,7 @@ export default {
     },
     async generateNodeVisualization(node) {
       try {
-        const response = await fetch('/api/visualize-node', {
+        const response = await fetch('http://localhost:7887/api/visualize-node', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -422,7 +422,7 @@ export default {
         
         try {
           // 调用后端 API 更新节点数据
-          const response = await fetch('/api/update-node-data', {
+          const response = await fetch('http://localhost:7887/api/update-node-data', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -464,7 +464,7 @@ export default {
         
         try {
           // 调用后端 API 触发 cardKey 节点点击
-          const response = await fetch('/api/trigger-card-key', {
+          const response = await fetch('http://localhost:7887/api/trigger-card-key', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -512,7 +512,7 @@ export default {
         
         try {
           // 调用后端 API 触发卡片点击，由它处理 tapSet 动作
-          const response = await fetch('/api/trigger-card-key', {
+          const response = await fetch('http://localhost:7887/api/trigger-card-key', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -553,7 +553,7 @@ export default {
         const anxContent = JSON.parse(this.anxInput);
         
         // 转换ANX到Markup
-        const markupResponse = await fetch('/api/convert', {
+        const markupResponse = await fetch('http://localhost:7887/api/convert', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1044,7 +1044,7 @@ export default {
 
       try {
         // 发送CLI命令到后端
-        const response = await fetch('/api/execute-cli', {
+        const response = await fetch('http://localhost:7887/api/execute-cli', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1069,7 +1069,7 @@ export default {
         const anxContent = JSON.parse(this.anxInput);
         
         // 获取更新后的节点结构
-        const nodesResponse = await fetch('/api/convert-to-nodes', {
+        const nodesResponse = await fetch('http://localhost:7887/api/convert-to-nodes', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1093,7 +1093,7 @@ export default {
     async showCommandsList() {
       try {
         // 获取CLI命令集
-        const response = await fetch('/api/cli/commands');
+        const response = await fetch('http://localhost:7887/api/cli/commands');
         const data = await response.json();
         this.cliCommands = data.commands;
         this.showCommandsModal = true;
@@ -1117,7 +1117,7 @@ export default {
     async refreshLogs() {
       try {
         // 获取CLI日志
-        const cliResponse = await fetch('/api/cli/logs');
+        const cliResponse = await fetch('http://localhost:7887/api/cli/logs');
         const cliData = await cliResponse.json();
         const cliLogs = cliData.logs || [];
         

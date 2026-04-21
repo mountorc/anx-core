@@ -133,13 +133,15 @@ function renderGeneralFileUpload(node, inputId) {
   const { data } = node;
   const value = data?.value || '';
   
+  const fileName = typeof value === 'string' ? value.split('/').pop() : '';
+  
   return `
     <div class="anx-file-upload">
       <div class="anx-upload-area" onclick="triggerFileInput('${inputId}')">
         ${value ? `
           <div class="anx-file-info">
             <div class="anx-file-icon">📄</div>
-            <div class="anx-file-name">${value.split('/').pop()}</div>
+            <div class="anx-file-name">${fileName}</div>
             <button class="anx-remove-btn" onclick="event.stopPropagation(); removeFile('${node.cardKey}', 'file')">✕</button>
           </div>
         ` : `

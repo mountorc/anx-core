@@ -50,7 +50,7 @@ export default {
       
       if (uuid) {
         try {
-          const response = await fetch(`/api/pages/by-tile/${uuid}`);
+          const response = await fetch(`http://localhost:7887/api/pages/by-tile/${uuid}`);
           if (response.ok) {
             const result = await response.json();
             const pages = result.data || [];
@@ -65,7 +65,7 @@ export default {
         }
       } else if (urlTile) {
         try {
-          const response = await fetch(`/api/pages/by-url-tile?url_tile=${encodeURIComponent(urlTile)}`);
+          const response = await fetch(`http://localhost:7887/api/pages/by-url-tile?url_tile=${encodeURIComponent(urlTile)}`);
           if (response.ok) {
             const result = await response.json();
             const pages = result.data || [];
@@ -100,7 +100,7 @@ export default {
       
       try {
         const encodedUrl = encodeURIComponent(url);
-        let apiUrl = `/api/markup?url_tile=${encodedUrl}`;
+        let apiUrl = `http://localhost:7887/api/markup?url_tile=${encodedUrl}`;
         
         // 添加 uuid_page 参数
         if (this.uuidPage) {
@@ -130,7 +130,7 @@ export default {
       this.error = '';
       
       try {
-        let apiUrl = `/api/markup?uuid_tile=${uuid}`;
+        let apiUrl = `http://localhost:7887/api/markup?uuid_tile=${uuid}`;
         
         // 添加 uuid_page 参数
         if (this.uuidPage) {

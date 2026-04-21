@@ -141,7 +141,7 @@ export default {
       
       if (uuid) {
         try {
-          const response = await fetch(`/api/pages/by-tile/${uuid}`);
+          const response = await fetch(`http://localhost:7887/api/pages/by-tile/${uuid}`);
           if (response.ok) {
             const result = await response.json();
             const pages = result.data || [];
@@ -156,7 +156,7 @@ export default {
         }
       } else if (urlTile) {
         try {
-          const response = await fetch(`/api/pages/by-url-tile?url_tile=${encodeURIComponent(urlTile)}`);
+          const response = await fetch(`http://localhost:7887/api/pages/by-url-tile?url_tile=${encodeURIComponent(urlTile)}`);
           if (response.ok) {
             const result = await response.json();
             const pages = result.data || [];
@@ -217,7 +217,7 @@ export default {
     },
     async fetchPageList(uuid_tile) {
       try {
-        const response = await fetch(`/api/pages/by-tile/${uuid_tile}`);
+        const response = await fetch(`http://localhost:7887/api/pages/by-tile/${uuid_tile}`);
         if (response.ok) {
           const result = await response.json();
           this.pageList = (result.data || []).sort((a, b) => 
@@ -230,7 +230,7 @@ export default {
     },
     async fetchPageListByUrl(url_tile) {
       try {
-        const response = await fetch(`/api/pages/by-url-tile?url_tile=${encodeURIComponent(url_tile)}`);
+        const response = await fetch(`http://localhost:7887/api/pages/by-url-tile?url_tile=${encodeURIComponent(url_tile)}`);
         if (response.ok) {
           const result = await response.json();
           this.pageList = (result.data || []).sort((a, b) => 
@@ -312,7 +312,7 @@ export default {
 
       try {
         // 获取节点结构（通过URL）
-        const nodesResponse = await fetch('/api/convert-to-nodes', {
+        const nodesResponse = await fetch('http://localhost:7887/api/convert-to-nodes', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -352,7 +352,7 @@ export default {
 
       try {
         // 获取节点结构
-        const nodesResponse = await fetch('/api/convert-to-nodes', {
+        const nodesResponse = await fetch('http://localhost:7887/api/convert-to-nodes', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -385,7 +385,7 @@ export default {
     },
     async generateNodeVisualization(node) {
       try {
-        const response = await fetch('/api/visualize-node', {
+        const response = await fetch('http://localhost:7887/api/visualize-node', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
