@@ -223,8 +223,25 @@ function getLastPageForVisitor(options) {
 function getTilePageUUID(options) {
   const { uuid_page, uuid_tile, url_tile, uuid_visitor, title } = options;
   
-  // 如果提供了 uuid_page，直接返回
+  // 如果提供了 uuid_page，检查页面是否存在，不存在则创建
   if (uuid_page && uuid_page.trim()) {
+    const existingPage = getPage(uuid_page);
+    if (!existingPage) {
+      // 如果页面不存在，创建新页面记录
+      const pageData = {
+        uuid_page: uuid_page,
+        uuid_tile: uuid_tile || '',
+        url_tile: url_tile || '',
+        title: title || '',
+        cardKey: generateCardKey(),
+        data: {}
+      };
+      if (uuid_visitor) {
+        pageData.data.uuid_visitor = uuid_visitor;
+      }
+      addPage(pageData);
+      console.log(`[Page Manager] Created new page with provided uuid_page: ${uuid_page}`);
+    }
     return uuid_page;
   }
   

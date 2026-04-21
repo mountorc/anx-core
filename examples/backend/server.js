@@ -320,18 +320,32 @@ app.post('/api/convert', async (req, res) => {
     // 生成ANX内容的哈希值
     const anxHash = generateAnxHash(anxContent);
     
-    // 检查是否已经为相同的ANX内容生成过节点结构
+    // 生成唯一的 cardKey
+    const cardKey = generateCardKey();
+    
+    // 检查是否已经为相同的ANX内容生成过节点结构（模板）
     let nodesStructure = getNodesByHash(anxHash);
     
     if (!nodesStructure) {
-      // 首次生成节点结构
+      // 首次生成节点结构（模板）
       nodesStructure = anxToNodes(anxContent);
-      // 存储到哈希映射中
+      // 存储到哈希映射中（模板）
       setNodesByHash(anxHash, nodesStructure);
+    } else {
+      // 深拷贝模板，创建新实例
+      nodesStructure = JSON.parse(JSON.stringify(nodesStructure));
+    }
+    
+    // 设置新的 cardKey
+    nodesStructure.cardKey = cardKey;
+    
+    // 更新所有子节点的 cardKey 和 parentCardKey
+    if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+      updateNodeCardKeys(nodesStructure.nodes, cardKey, null);
     }
     
     // 检查根节点是否有存储的数据
-    const storedRootNode = getNode(nodesStructure.cardKey);
+    const storedRootNode = getNode(cardKey);
     if (storedRootNode) {
       // 只更新数据部分，保持节点结构完整
       if (storedRootNode.data) {
@@ -380,18 +394,32 @@ app.get('/api/convert', async (req, res) => {
     // 生成ANX内容的哈希值
     const anxHash = generateAnxHash(anxContent);
     
-    // 检查是否已经为相同的ANX内容生成过节点结构
+    // 生成唯一的 cardKey
+    const cardKey = generateCardKey();
+    
+    // 检查是否已经为相同的ANX内容生成过节点结构（模板）
     let nodesStructure = getNodesByHash(anxHash);
     
     if (!nodesStructure) {
-      // 首次生成节点结构
+      // 首次生成节点结构（模板）
       nodesStructure = anxToNodes(anxContent);
-      // 存储到哈希映射中
+      // 存储到哈希映射中（模板）
       setNodesByHash(anxHash, nodesStructure);
+    } else {
+      // 深拷贝模板，创建新实例
+      nodesStructure = JSON.parse(JSON.stringify(nodesStructure));
+    }
+    
+    // 设置新的 cardKey
+    nodesStructure.cardKey = cardKey;
+    
+    // 更新所有子节点的 cardKey 和 parentCardKey
+    if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+      updateNodeCardKeys(nodesStructure.nodes, cardKey, null);
     }
     
     // 检查根节点是否有存储的数据
-    const storedRootNode = getNode(nodesStructure.cardKey);
+    const storedRootNode = getNode(cardKey);
     if (storedRootNode) {
       // 只更新数据部分，保持节点结构完整
       if (storedRootNode.data) {
@@ -440,18 +468,32 @@ app.get('/anxCore/getMarkup', async (req, res) => {
     // 生成ANX内容的哈希值
     const anxHash = generateAnxHash(anxContent);
     
-    // 检查是否已经为相同的ANX内容生成过节点结构
+    // 生成唯一的 cardKey
+    const cardKey = generateCardKey();
+    
+    // 检查是否已经为相同的ANX内容生成过节点结构（模板）
     let nodesStructure = getNodesByHash(anxHash);
     
     if (!nodesStructure) {
-      // 首次生成节点结构
+      // 首次生成节点结构（模板）
       nodesStructure = anxToNodes(anxContent);
-      // 存储到哈希映射中
+      // 存储到哈希映射中（模板）
       setNodesByHash(anxHash, nodesStructure);
+    } else {
+      // 深拷贝模板，创建新实例
+      nodesStructure = JSON.parse(JSON.stringify(nodesStructure));
+    }
+    
+    // 设置新的 cardKey
+    nodesStructure.cardKey = cardKey;
+    
+    // 更新所有子节点的 cardKey 和 parentCardKey
+    if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+      updateNodeCardKeys(nodesStructure.nodes, cardKey, null);
     }
     
     // 检查根节点是否有存储的数据
-    const storedRootNode = getNode(nodesStructure.cardKey);
+    const storedRootNode = getNode(cardKey);
     if (storedRootNode) {
       // 只更新数据部分，保持节点结构完整
       if (storedRootNode.data) {
@@ -492,18 +534,32 @@ app.post('/anxCore/getMarkup', async (req, res) => {
     // 生成ANX内容的哈希值
     const anxHash = generateAnxHash(anxContent);
     
-    // 检查是否已经为相同的ANX内容生成过节点结构
+    // 生成唯一的 cardKey
+    const cardKey = generateCardKey();
+    
+    // 检查是否已经为相同的ANX内容生成过节点结构（模板）
     let nodesStructure = getNodesByHash(anxHash);
     
     if (!nodesStructure) {
-      // 首次生成节点结构
+      // 首次生成节点结构（模板）
       nodesStructure = anxToNodes(anxContent);
-      // 存储到哈希映射中
+      // 存储到哈希映射中（模板）
       setNodesByHash(anxHash, nodesStructure);
+    } else {
+      // 深拷贝模板，创建新实例
+      nodesStructure = JSON.parse(JSON.stringify(nodesStructure));
+    }
+    
+    // 设置新的 cardKey
+    nodesStructure.cardKey = cardKey;
+    
+    // 更新所有子节点的 cardKey 和 parentCardKey
+    if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+      updateNodeCardKeys(nodesStructure.nodes, cardKey, null);
     }
     
     // 检查根节点是否有存储的数据
-    const storedRootNode = getNode(nodesStructure.cardKey);
+    const storedRootNode = getNode(cardKey);
     if (storedRootNode) {
       // 只更新数据部分，保持节点结构完整
       if (storedRootNode.data) {
@@ -599,8 +655,42 @@ app.post('/api/convert-to-nodes', async (req, res) => {
       const existingPage = getPageWithNodes(uuid_page);
       if (existingPage && existingPage.nodes) {
         console.log(`[Page Manager] Loading existing page instance: ${uuid_page}`);
-        // 返回已保存的节点结构
-        res.json({ nodes: existingPage.nodes, isExisting: true });
+        
+        // 深拷贝节点结构，避免直接修改
+        const nodesStructure = JSON.parse(JSON.stringify(existingPage.nodes));
+        
+        // 如果是表单节点，从根节点的 data.value 中为子字段节点填充正确的值
+        if (nodesStructure.config && nodesStructure.config.kind === 'form' && 
+            nodesStructure.data && nodesStructure.data.value && 
+            nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+          const formData = nodesStructure.data.value;
+          nodesStructure.nodes.forEach(fieldNode => {
+            const fieldNick = fieldNode.config && fieldNode.config.nick;
+            if (fieldNick && formData[fieldNick] !== undefined) {
+              fieldNode.data = fieldNode.data || {};
+              fieldNode.data.value = formData[fieldNick];
+            }
+          });
+        }
+        
+        // 递归从 nodeStorage 加载所有节点的动态数据（仅在节点没有数据时加载）
+        function loadNodeData(node) {
+          const storedNode = getNode(node.cardKey);
+          if (storedNode && storedNode.data) {
+            // 只有当节点本身没有数据或数据为空时，才从存储加载
+            const nodeHasData = node.data && Object.keys(node.data).length > 0;
+            if (!nodeHasData) {
+              node.data = { ...storedNode.data };
+            }
+          }
+          if (node.nodes && node.nodes.length > 0) {
+            node.nodes.forEach(childNode => loadNodeData(childNode));
+          }
+        }
+        loadNodeData(nodesStructure);
+        
+        // 返回已保存的节点结构（包含动态数据）
+        res.json({ nodes: nodesStructure, isExisting: true });
         return;
       }
     }
@@ -828,6 +918,9 @@ app.get('/api/markup', async (req, res) => {
       uuid_visitor
     });
     
+    // 获取页面实例
+    const page = getPage(resolvedUuidPage);
+    
     let anxContent = null;
     
     // 如果提供了 url_tile，从指定URL获取配置
@@ -877,23 +970,48 @@ app.get('/api/markup', async (req, res) => {
     }
     anxContent = anxResult.anxContent;
     
-    // 生成 ANX 内容的哈希值（用于缓存查找）
-    const anxHash = generateAnxHash(anxContent);
+    // 直接从页面获取或生成节点结构
+    let nodesStructure = null;
     
-    // 检查缓存中是否已有节点结构
-    let nodesStructure = getNodesByHash(anxHash);
-    
-    if (!nodesStructure) {
-      // 如果缓存中没有，生成新的节点结构
-      nodesStructure = anxToNodes(anxContent);
-      // 将节点结构存入缓存
-      setNodesByHash(anxHash, nodesStructure);
-      console.log(`[API/markup] Generated new nodes for hash: ${anxHash}`);
-    } else {
-      console.log(`[API/markup] Using cached nodes for hash: ${anxHash}`);
+    // 检查页面是否已有节点结构
+    if (page && page.nodes) {
+      nodesStructure = JSON.parse(JSON.stringify(page.nodes));
+      console.log(`[API/markup] Using existing nodes from page: ${resolvedUuidPage}`);
     }
     
-    // 使用缓存的节点结构生成 markup
+    if (!nodesStructure) {
+      // 如果页面中没有，生成新的节点结构
+      nodesStructure = anxToNodes(anxContent);
+      // 为每个节点生成唯一的 cardKey（包含时间戳确保唯一性）
+      nodesStructure.cardKey = generateCardKey();
+      if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+        nodesStructure.nodes.forEach(node => {
+          node.cardKey = generateCardKey();
+          if (node.nodes && node.nodes.length > 0) {
+            node.nodes.forEach(grandchild => {
+              grandchild.cardKey = generateCardKey();
+            });
+          }
+        });
+      }
+      // 将节点结构保存到页面
+      savePageNodes(resolvedUuidPage, nodesStructure);
+      console.log(`[API/markup] Generated new nodes and saved to page: ${resolvedUuidPage}`);
+    }
+    
+    // 递归从 nodeStorage 加载所有节点的动态数据
+    function loadNodeData(node) {
+      const storedNode = getNode(node.cardKey);
+      if (storedNode && storedNode.data) {
+        node.data = { ...node.data, ...storedNode.data };
+      }
+      if (node.nodes && node.nodes.length > 0) {
+        node.nodes.forEach(childNode => loadNodeData(childNode));
+      }
+    }
+    loadNodeData(nodesStructure);
+    
+    // 使用节点结构生成 markup
     const markup = await nodesToMarkup(nodesStructure);
     
     // 在 markup 开头添加 uuid_page 和 uuid_visitor
@@ -913,6 +1031,74 @@ app.get('/api/markup', async (req, res) => {
 });
 
 // API endpoint for executing CLI commands
+/**
+ * 从多个来源查找节点（nodeStorage、anxHashToNodeMap、页面）
+ * @param {string} cardKey - 节点的 cardKey
+ * @returns {Object|null} - 节点对象或 null
+ */
+function findNode(cardKey) {
+  // 1. 先从 nodeStorage 中查找
+  const storedNode = getNode(cardKey);
+  if (storedNode) {
+    return storedNode;
+  }
+  
+  // 2. 从哈希映射中查找
+  for (const [anxHash, rootNode] of anxHashToNodeMap) {
+    if (rootNode.cardKey === cardKey) {
+      return JSON.parse(JSON.stringify(rootNode));
+    }
+    
+    function searchInNodes(nodes) {
+      for (const node of nodes) {
+        if (node.cardKey === cardKey) {
+          return JSON.parse(JSON.stringify(node));
+        }
+        if (node.nodes && node.nodes.length > 0) {
+          const found = searchInNodes(node.nodes);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+    
+    if (rootNode.nodes && rootNode.nodes.length > 0) {
+      const found = searchInNodes(rootNode.nodes);
+      if (found) return found;
+    }
+  }
+  
+  // 3. 从页面中查找
+  const allPages = getAllPages();
+  for (const page of allPages) {
+    if (page.nodes) {
+      if (page.nodes.cardKey === cardKey) {
+        return JSON.parse(JSON.stringify(page.nodes));
+      }
+      
+      function searchInPageNodes(nodes) {
+        for (const node of nodes) {
+          if (node.cardKey === cardKey) {
+            return JSON.parse(JSON.stringify(node));
+          }
+          if (node.nodes && node.nodes.length > 0) {
+            const found = searchInPageNodes(node.nodes);
+            if (found) return found;
+          }
+        }
+        return null;
+      }
+      
+      if (page.nodes.nodes && page.nodes.nodes.length > 0) {
+        const found = searchInPageNodes(page.nodes.nodes);
+        if (found) return found;
+      }
+    }
+  }
+  
+  return null;
+}
+
 app.post('/api/execute-cli', (req, res) => {
   try {
     const { command } = req.body;
@@ -959,8 +1145,8 @@ app.post('/api/execute-cli', (req, res) => {
         }
         break;
       case 'get_node':
-        // 从存储中获取cardKey对应的完整节点结构
-        const node = getNode(cardKey);
+        // 从多个来源查找cardKey对应的完整节点结构
+        const node = findNode(cardKey);
         if (node) {
           result = node; // 直接返回完整的节点结构
         } else {
@@ -968,8 +1154,8 @@ app.post('/api/execute-cli', (req, res) => {
         }
         break;
       case 'get_form':
-        // 从存储中获取cardKey对应的节点
-        const getFormNode = getNode(cardKey);
+        // 从多个来源查找cardKey对应的节点
+        const getFormNode = findNode(cardKey);
         if (getFormNode) {
           // 返回表单的完整数据
           result = getFormNode.data || { value: {} };
@@ -978,8 +1164,19 @@ app.post('/api/execute-cli', (req, res) => {
         }
         break;
       case 'set_form':
-        // 从存储中获取cardKey对应的节点
-        const formNode = getNode(cardKey);
+        // 从页面中查找表单节点（确保包含完整的子节点结构）
+        let formNode = null;
+        const allPages = getAllPages();
+        for (const page of allPages) {
+          if (page.nodes && page.nodes.cardKey === cardKey) {
+            formNode = page.nodes;
+            break;
+          }
+        }
+        // 如果页面中没找到，再尝试其他方式
+        if (!formNode) {
+          formNode = findNode(cardKey);
+        }
         if (formNode) {
           try {
             // 检查是否有--replace参数
@@ -1005,6 +1202,17 @@ app.post('/api/execute-cli', (req, res) => {
             } else {
               // 增量更新
               formNode.data.value = { ...formNode.data.value, ...formData };
+            }
+            
+            // 同步更新子字段节点的 data.value
+            if (formNode.nodes && formNode.nodes.length > 0) {
+              formNode.nodes.forEach(fieldNode => {
+                const fieldNick = fieldNode.config && fieldNode.config.nick;
+                if (fieldNick && formNode.data.value[fieldNick] !== undefined) {
+                  fieldNode.data = fieldNode.data || {};
+                  fieldNode.data.value = formNode.data.value[fieldNick];
+                }
+              });
             }
             
             // 同步更新子组件的value
@@ -1088,8 +1296,8 @@ app.post('/api/execute-cli', (req, res) => {
         }
         break;
       case 'fill':
-        // 从存储中获取cardKey对应的节点
-        const fillNode = getNode(cardKey);
+        // 从多个来源查找cardKey对应的节点
+        const fillNode = findNode(cardKey);
         if (fillNode) {
           // 获取填充值
           const value = params.join(' ');
@@ -1106,8 +1314,8 @@ app.post('/api/execute-cli', (req, res) => {
         }
         break;
       case 'input':
-        // 从存储中获取cardKey对应的节点
-        const inputNode = getNode(cardKey);
+        // 从多个来源查找cardKey对应的节点
+        const inputNode = findNode(cardKey);
         if (inputNode) {
           // 获取输入值
           const value = params.join(' ');
@@ -1129,8 +1337,8 @@ app.post('/api/execute-cli', (req, res) => {
         }
         break;
       case 'tap':
-        // 从存储中获取cardKey对应的节点
-        const tapNode = getNode(cardKey);
+        // 从多个来源查找cardKey对应的节点
+        const tapNode = findNode(cardKey);
         if (tapNode) {
           // 检查节点是否有tapSet配置
           const tapSet = tapNode.config.tapSet;
@@ -1396,15 +1604,55 @@ app.post('/api/visualize-node', (req, res) => {
     // 使用存储中的节点数据进行可视化渲染
     let nodeToVisualize = { ...node };
     
-    // 检查根节点是否有存储的数据
-    const storedRootNode = getNode(node.cardKey);
-    if (storedRootNode) {
-      nodeToVisualize = storedRootNode;
+    // 如果是表单节点，从根节点的 data.value 中为子字段节点填充正确的值
+    if (nodeToVisualize.config && nodeToVisualize.config.kind === 'form' && 
+        nodeToVisualize.data && nodeToVisualize.data.value && 
+        nodeToVisualize.nodes && nodeToVisualize.nodes.length > 0) {
+      const formData = nodeToVisualize.data.value;
+      nodeToVisualize.nodes.forEach(fieldNode => {
+        const fieldNick = fieldNode.config && fieldNode.config.nick;
+        if (fieldNick && formData[fieldNick] !== undefined) {
+          fieldNode.data = fieldNode.data || {};
+          fieldNode.data.value = formData[fieldNick];
+        }
+      });
     }
     
-    // 更新子节点，使用存储中的数据
+    // 检查根节点是否有存储的数据，合并数据而不是覆盖
+    const storedRootNode = getNode(node.cardKey);
+    if (storedRootNode) {
+      // 合并数据，保持传入的节点结构，只更新数据部分
+      if (storedRootNode.data) {
+        nodeToVisualize.data = { ...nodeToVisualize.data, ...storedRootNode.data };
+      }
+      if (storedRootNode.logs) {
+        nodeToVisualize.logs = storedRootNode.logs;
+      }
+    }
+    
+    // 更新子节点，使用存储中的数据（仅在节点没有数据时加载）
     if (nodeToVisualize.nodes && nodeToVisualize.nodes.length > 0) {
-      updateNodesWithStoredData(nodeToVisualize.nodes);
+      // 使用自定义逻辑，只在节点没有数据时才从存储加载
+      nodeToVisualize.nodes.forEach(fieldNode => {
+        const storedNode = getNode(fieldNode.cardKey);
+        if (storedNode && storedNode.data) {
+          const nodeHasData = fieldNode.data && Object.keys(fieldNode.data).length > 0;
+          if (!nodeHasData) {
+            fieldNode.data = { ...storedNode.data };
+          }
+        }
+        if (fieldNode.nodes && fieldNode.nodes.length > 0) {
+          fieldNode.nodes.forEach(childNode => {
+            const storedChildNode = getNode(childNode.cardKey);
+            if (storedChildNode && storedChildNode.data) {
+              const childHasData = childNode.data && Object.keys(childNode.data).length > 0;
+              if (!childHasData) {
+                childNode.data = { ...storedChildNode.data };
+              }
+            }
+          });
+        }
+      });
     }
     
     const html = generateNodeVisualization(nodeToVisualize);
@@ -1642,14 +1890,27 @@ app.post('/api/update-node-data', (req, res) => {
       return false;
     }
     
-    // 在所有存储的节点中查找
-    for (let [anxHash, rootNode] of anxHashToNodeMap) {
-      if (rootNode.cardKey === cardKey) {
-        if (!rootNode.data) {
-          rootNode.data = {};
-        }
-        rootNode.data[field] = value;
-        // 更新nodeStorage中的节点数据
+    // 先从 nodeStorage 中查找节点（快速查找）
+    const storedNode = getNode(cardKey);
+    if (storedNode) {
+      if (!storedNode.data) {
+        storedNode.data = {};
+      }
+      storedNode.data[field] = value;
+      updateNodeData(cardKey, { [field]: value });
+      nodeUpdated = true;
+      updatedChildNode = storedNode;
+    }
+    
+    // 如果在 nodeStorage 中没找到，从哈希映射和页面中查找
+    if (!nodeUpdated) {
+      // 在哈希映射中查找
+      for (let [anxHash, rootNode] of anxHashToNodeMap) {
+        if (rootNode.cardKey === cardKey) {
+          if (!rootNode.data) {
+            rootNode.data = {};
+          }
+          rootNode.data[field] = value;
           updateNodeData(cardKey, { [field]: value });
           nodeUpdated = true;
           updatedRootNode = rootNode;
@@ -1658,11 +1919,41 @@ app.post('/api/update-node-data', (req, res) => {
         
         if (rootNode.nodes && rootNode.nodes.length > 0) {
           if (updateNodeInStructure(rootNode.nodes, rootNode)) {
-            // 更新nodeStorage中的节点数据
             updateNodeData(cardKey, { [field]: value });
-          nodeUpdated = true;
-          updatedRootNode = rootNode;
-          break;
+            nodeUpdated = true;
+            updatedRootNode = rootNode;
+            break;
+          }
+        }
+      }
+    }
+    
+    // 如果还是没找到，从所有页面中查找
+    if (!nodeUpdated) {
+      const allPages = getAllPages();
+      for (const page of allPages) {
+        if (page.nodes) {
+          if (page.nodes.cardKey === cardKey) {
+            if (!page.nodes.data) {
+              page.nodes.data = {};
+            }
+            page.nodes.data[field] = value;
+            updateNodeData(cardKey, { [field]: value });
+            savePageNodes(page.uuid_page, page.nodes);
+            nodeUpdated = true;
+            updatedRootNode = page.nodes;
+            break;
+          }
+          
+          if (page.nodes.nodes && page.nodes.nodes.length > 0) {
+            if (updateNodeInStructure(page.nodes.nodes, page.nodes)) {
+              updateNodeData(cardKey, { [field]: value });
+              savePageNodes(page.uuid_page, page.nodes);
+              nodeUpdated = true;
+              updatedRootNode = page.nodes;
+              break;
+            }
+          }
         }
       }
     }
