@@ -82,8 +82,12 @@ export default {
     };
   },
   async mounted() {
-    // 初始化 uuid_visitor（从 props 或外部方法）
-    if (this.uuidVisitor) {
+    // 初始化 uuid_visitor（优先级：URL参数 > props）
+    const urlUuidVisitor = this.$route.query.uuid_visitor;
+    if (urlUuidVisitor) {
+      this.currentUuidVisitor = urlUuidVisitor;
+      console.log(`[ANXPage] uuid_visitor from URL: ${urlUuidVisitor}`);
+    } else if (this.uuidVisitor) {
       this.currentUuidVisitor = this.uuidVisitor;
     }
     
@@ -112,6 +116,12 @@ export default {
   },
   watch: {
     '$route'(newRoute) {
+      // 更新 uuid_visitor（如果URL参数中有变化）
+      const urlUuidVisitor = newRoute.query.uuid_visitor;
+      if (urlUuidVisitor && urlUuidVisitor !== this.currentUuidVisitor) {
+        this.currentUuidVisitor = urlUuidVisitor;
+        console.log(`[ANXPage] uuid_visitor updated from URL: ${urlUuidVisitor}`);
+      }
       this.initTile();
     }
   },

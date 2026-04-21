@@ -11,18 +11,66 @@ export default {
     return {
       loading: true,
       error: '',
-      markup: ''
+      markup: '',
+      uuidPage: '',
+      uuidVisitor: null
     };
   },
-  mounted() {
+  async mounted() {
+    // 初始化 uuid_visitor（从 URL 参数）
+    const urlUuidVisitor = this.$route.query.uuid_visitor;
+    if (urlUuidVisitor) {
+      this.uuidVisitor = urlUuidVisitor;
+      console.log(`[ANXMarkupPage] uuid_visitor from URL: ${urlUuidVisitor}`);
+    }
+    
+    // 生成或获取 uuid_page
+    this.uuidPage = await this.generateUuidPage();
     this.initTile();
   },
   watch: {
     '$route'(newRoute) {
+      // 更新 uuid_visitor（如果URL参数中有变化）
+      const urlUuidVisitor = newRoute.query.uuid_visitor;
+      if (urlUuidVisitor && urlUuidVisitor !== this.uuidVisitor) {
+        this.uuidVisitor = urlUuidVisitor;
+        console.log(`[ANXMarkupPage] uuid_visitor updated from URL: ${urlUuidVisitor}`);
+      }
       this.initTile();
     }
   },
   methods: {
+    async generateUuidPage() {
+      // 检查 URL 参数中是否已有 uuid_page
+      if (this.$route.query.uuid_page) {
+        return this.$route.query.uuid_page;
+      }
+      
+      // 获取当前 tile 的所有页面实例
+      const uuid = this.$route.params.uuid_tile;
+      if (uuid) {
+        try {
+          const response = await fetch(`/api/pages/by-tile/${uuid}`);
+          if (response.ok) {
+            const result = await response.json();
+            const pages = result.data || [];
+            if (pages.length > 0) {
+              // 使用第一个（最新创建的）页面（后端已按时间倒序排序）
+              const lastPage = pages[0];
+              console.log(`[ANXMarkupPage] Using last existing page: ${lastPage.uuid_page}`);
+              return lastPage.uuid_page;
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching page list for default:', error);
+        }
+      }
+      
+      // 没有找到现有页面，生成新的 UUID
+      const newUuid = 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      console.log(`[ANXMarkupPage] Creating new page: ${newUuid}`);
+      return newUuid;
+    },
     initTile() {
       const uuid = this.$route.params.uuid_tile;
       const urlTile = this.$route.query.url_tile;
@@ -39,7 +87,19 @@ export default {
       
       try {
         const encodedUrl = encodeURIComponent(url);
-        const response = await fetch(`/api/markup?url_tile=${encodedUrl}`);
+        let apiUrl = `/api/markup?url_tile=${encodedUrl}`;
+        
+        // 添加 uuid_page 参数
+        if (this.uuidPage) {
+          apiUrl += `&uuid_page=${encodeURIComponent(this.uuidPage)}`;
+        }
+        
+        // 添加 uuid_visitor 参数
+        if (this.uuidVisitor) {
+          apiUrl += `&uuid_visitor=${encodeURIComponent(this.uuidVisitor)}`;
+        }
+        
+        const response = await fetch(apiUrl);
         
         if (response.ok) {
           this.markup = await response.text();
@@ -57,7 +117,19 @@ export default {
       this.error = '';
       
       try {
-        const response = await fetch(`/api/markup?uuid_tile=${uuid}`);
+        let apiUrl = `/api/markup?uuid_tile=${uuid}`;
+        
+        // 添加 uuid_page 参数
+        if (this.uuidPage) {
+          apiUrl += `&uuid_page=${encodeURIComponent(this.uuidPage)}`;
+        }
+        
+        // 添加 uuid_visitor 参数
+        if (this.uuidVisitor) {
+          apiUrl += `&uuid_visitor=${encodeURIComponent(this.uuidVisitor)}`;
+        }
+        
+        const response = await fetch(apiUrl);
         
         if (response.ok) {
           this.markup = await response.text();

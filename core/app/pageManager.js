@@ -139,6 +139,136 @@ function getPageCount() {
   return pagesData.pages.length;
 }
 
+/**
+ * 根据 tile 和 visitor 获取最后一个页面
+ * @param {Object} options - 查询选项
+ * @param {string} [options.uuid_tile] - tile 的 UUID
+ * @param {string} [options.url_tile] - tile 的 URL
+ * @param {string} [options.uuid_visitor] - 访问者标识
+ * @returns {string|null} - 最后一个页面的 uuid_page，不存在则返回 null
+ */
+function getLastPageForVisitor(options) {
+  const { uuid_tile, url_tile, uuid_visitor } = options;
+  
+  // 过滤条件
+  let filteredPages = pagesData.pages.filter(p => {
+    if (!p || typeof p !== 'object' || !p.uuid_page) {
+      return false;
+    }
+    
+    // 匹配 tile（优先匹配 uuid_tile，其次匹配 url_tile）
+    if (uuid_tile) {
+      if (p.uuid_tile !== uuid_tile) {
+        return false;
+      }
+    } else if (url_tile) {
+      if (p.url_tile !== url_tile) {
+        return false;
+      }
+    }
+    
+    return true;
+  });
+  
+  // 如果没有提供 visitor，返回最新的页面
+  if (!uuid_visitor || !uuid_visitor.trim()) {
+    if (filteredPages.length > 0) {
+      filteredPages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      return filteredPages[0].uuid_page;
+    }
+    return null;
+  }
+  
+  // 如果提供了 visitor，优先查找该 visitor 的页面
+  const visitorPages = filteredPages.filter(p => {
+    if (!p.data || typeof p.data !== 'object') {
+      return false;
+    }
+    return p.data.uuid_visitor === uuid_visitor;
+  });
+  
+  if (visitorPages.length > 0) {
+    visitorPages.sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+    return visitorPages[0].uuid_page;
+  }
+  
+  // 如果没有找到该 visitor 的页面，返回最新的页面（用于首次访问）
+  if (filteredPages.length > 0) {
+    filteredPages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    return filteredPages[0].uuid_page;
+  }
+  
+  return null;
+}
+
+/**
+ * 获取或创建 tile 的页面 UUID
+ * 如果提供了 uuid_page，直接返回；否则尝试获取已有页面，没有则创建新页面
+ * @param {Object} options - 查询选项
+ * @param {string} [options.uuid_page] - 页面的 UUID（如果提供，直接使用）
+ * @param {string} [options.uuid_tile] - tile 的 UUID
+ * @param {string} [options.url_tile] - tile 的 URL
+ * @param {string} [options.uuid_visitor] - 访问者标识
+ * @param {string} [options.title] - 页面标题
+ * @returns {string} - 页面的 uuid_page
+ */
+function getTilePageUUID(options) {
+  const { uuid_page, uuid_tile, url_tile, uuid_visitor, title } = options;
+  
+  // 如果提供了 uuid_page，直接返回
+  if (uuid_page && uuid_page.trim()) {
+    return uuid_page;
+  }
+  
+  // 先尝试获取已有的页面
+  const existingPageUUID = getLastPageForVisitor({ uuid_tile, url_tile, uuid_visitor });
+  
+  if (existingPageUUID) {
+    return existingPageUUID;
+  }
+  
+  // 如果没有已有页面，创建新页面
+  const newUUID = generateUuidPage();
+  
+  // 准备页面数据
+  const pageData = {
+    uuid_page: newUUID,
+    uuid_tile: uuid_tile || '',
+    url_tile: url_tile || '',
+    title: title || '',
+    cardKey: generateCardKey(),
+    data: {}
+  };
+  
+  // 如果提供了 visitor，存储到 data 中
+  if (uuid_visitor) {
+    pageData.data.uuid_visitor = uuid_visitor;
+  }
+  
+  // 添加页面
+  addPage(pageData);
+  
+  console.log(`[Page Manager] Created new page for tile: ${newUUID}`);
+  
+  return newUUID;
+}
+
+/**
+ * 获取或创建 tile 的页面实例
+ * 如果提供了 uuid_page，直接使用；否则尝试获取已有页面，没有则创建新页面
+ * @param {Object} options - 查询选项
+ * @param {string} [options.uuid_page] - 页面的 UUID（如果提供，直接使用）
+ * @param {string} [options.uuid_tile] - tile 的 UUID
+ * @param {string} [options.url_tile] - tile 的 URL
+ * @param {string} [options.uuid_visitor] - 访问者标识
+ * @param {string} [options.title] - 页面标题
+ * @returns {Object} - 页面实例
+ */
+function getTilePage(options) {
+  const uuid_page = getTilePageUUID(options);
+  return getPage(uuid_page);
+}
+
 loadPages();
 
 module.exports = {
@@ -152,5 +282,8 @@ module.exports = {
   getAllPages,
   updatePage,
   deletePage,
-  getPageCount
+  getPageCount,
+  getLastPageForVisitor,
+  getTilePageUUID,
+  getTilePage
 };

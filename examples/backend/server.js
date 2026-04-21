@@ -5,7 +5,7 @@ const fs = require('fs');
 const multer = require('multer');
 
 // Import the anxToMarkup, anxToNodes functions and anxCLI from the core module
-const { anxToMarkup, anxToNodes, anxCLI } = require('../../core/index.js');
+const { anxToMarkup, anxToNodes, nodesToMarkup, anxCLI } = require('../../core/index.js');
 const { generateNodeVisualization, generateVisualizationCSS } = require('../../view/index.js');
 const { uploadImageToOSS } = require('../../view/utils/oss.js');
 const { handleTapSet, handleTriggerSet } = require('../../core/utils/trigger-and-tap.js');
@@ -23,7 +23,7 @@ const PORT = 7887;
 const cardStorage = new Map();
 // 导入节点存储模块
 const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('../../core/app/node.js');
-const { generateUuidPage, generateCardKey, addPage, getPage, getPageWithNodes, savePageNodes, getPagesByTile, getAllPages, updatePage, deletePage, getPageCount } = require('../../core/app/pageManager.js');
+const { generateUuidPage, generateCardKey, addPage, getPage, getPageWithNodes, savePageNodes, getPagesByTile, getAllPages, updatePage, deletePage, getPageCount, getLastPageForVisitor, getTilePageUUID, getTilePage } = require('../../core/app/pageManager.js');
 const { setHubAnxMap, processAnxContent } = require('../../core/utils/tile.js');
 const { processNodeDataset } = require('../../core/utils/dataset-processor.js');
 const { generateAnxHash, getNodesByHash, setNodesByHash, anxHashToNodeMap } = require('../../core/utils/hashNode.js');
@@ -300,449 +300,6 @@ function updateFormulas(formNode) {
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-// 从节点结构转换为Markup
-async function nodesToMarkup(nodesStructure) {
-  if (!nodesStructure) {
-    return '';
-  }
-  
-  // 先检查是否有存储的节点数据
-  const storedNode = getNode(nodesStructure.cardKey);
-  if (storedNode) {
-    nodesStructure = storedNode;
-  }
-  
-  // 递归处理节点结构
-  async function processNode(node) {
-    // 提取当前节点的ANX内容
-    const nodeAnxContent = { ...node.config };
-    
-    // 处理子节点
-    let childMarkup = '';
-    if (node.nodes && node.nodes.length > 0) {
-      // 递归处理每个子节点
-      const childContents = await Promise.all(node.nodes.map(child => processNode(child)));
-      childMarkup = childContents.join('\n\n');
-    }
-    
-    // 转换当前节点为Markup
-    let nodeMarkup = '';
-    if (node.config.kind) {
-      // 根据节点类型生成Markup
-      switch (node.config.kind) {
-        case 'form':
-          nodeMarkup = node.config.title ? `## ${node.config.title}\n\n` : '';
-          nodeMarkup += childMarkup;
-          break;
-        case 'board':
-          nodeMarkup = childMarkup;
-          break;
-        case 'box':
-          // 处理box类型，渲染模板内容
-          if (node.config.title) {
-            nodeMarkup = `## ${node.config.title}\n\n`;
-          }
-          
-          // 处理dataset
-          let boxData = node.config.data;
-          if (!boxData && node.config.dataset) {
-            try {
-              // 直接使用dataset作为配置，支持url_dataset和uuid_dataset
-              const { fetchDataset } = require('../../core/utils/dataset.js');
-              const datasetData = await fetchDataset(node.config.dataset);
-              // 直接使用返回的数组，因为fetchDataset已经返回了正确的数据格式
-              boxData = datasetData || [];
-              
-              // 将数据存储到node的data.data中
-              if (!node.data) {
-                node.data = {};
-              }
-              node.data.data = boxData;
-              // 更新node.config.data，以便后续使用
-              node.config.data = boxData;
-              // 更新存储中的节点数据
-              setNode(node.cardKey, node);
-            } catch (error) {
-              console.error('Error fetching box dataset:', error);
-            }
-          }
-          
-          if (boxData && Array.isArray(boxData) && boxData.length > 0) {
-            for (let i = 0; i < boxData.length; i++) {
-              const item = boxData[i];
-              const templateContent = node.config.template || node.config.html;
-              if (templateContent) {
-                // 替换模板中的变量
-                let parsedTemplate = templateContent;
-                
-                // 替换双大括号变量
-                const doubleBracesRegex = /\{\{([^{}]+)\}\}/g;
-                parsedTemplate = parsedTemplate.replace(doubleBracesRegex, (match, variable) => {
-                  const value = getPropertyValue(item, variable.trim());
-                  return value !== undefined ? value : match;
-                });
-                
-                // 替换美元大括号变量
-                const dollarBracesRegex = /\$\{([^{}]+)\}/g;
-                parsedTemplate = parsedTemplate.replace(dollarBracesRegex, (match, variable) => {
-                  const value = getPropertyValue(item, variable.trim());
-                  return value !== undefined ? value : match;
-                });
-                
-                // 替换单大括号变量
-                const singleBracesRegex = /\{([^{}]+)\}/g;
-                parsedTemplate = parsedTemplate.replace(singleBracesRegex, (match, variable) => {
-                  const value = getPropertyValue(item, variable.trim());
-                  return value !== undefined ? value : match;
-                });
-                
-                // 用<x 0>这样的标签包裹每个box项
-                nodeMarkup += `<x ${i}>${parsedTemplate}</x>\n\n`;
-              }
-            }
-          } else if (node.config.html || node.config.template) {
-            const templateContent = node.config.template || node.config.html;
-            // 替换模板中的变量
-            let parsedTemplate = templateContent;
-            
-            // 替换双大括号变量
-            const doubleBracesRegex = /\{\{([^{}]+)\}\}/g;
-            parsedTemplate = parsedTemplate.replace(doubleBracesRegex, (match, variable) => {
-              const value = getPropertyValue(node.config, variable.trim());
-              return value !== undefined ? value : match;
-            });
-            
-            // 替换美元大括号变量
-            const dollarBracesRegex = /\$\{([^{}]+)\}/g;
-            parsedTemplate = parsedTemplate.replace(dollarBracesRegex, (match, variable) => {
-              const value = getPropertyValue(node.config, variable.trim());
-              return value !== undefined ? value : match;
-            });
-            
-            // 替换单大括号变量
-            const singleBracesRegex = /\{([^{}]+)\}/g;
-            parsedTemplate = parsedTemplate.replace(singleBracesRegex, (match, variable) => {
-              const value = getPropertyValue(node.config, variable.trim());
-              return value !== undefined ? value : match;
-            });
-            
-            nodeMarkup += `${parsedTemplate}\n\n`;
-          }
-          break;
-        case 'input':
-          const label = node.config.nick || 'Input';
-          const value = node.data && node.data.value ? node.data.value : node.config.value || node.config.placeholder || '';
-          nodeMarkup = `**${label}:** ${value}`;
-          break;
-        case 'textarea':
-          const textareaLabel = node.config.nick || 'Textarea';
-          const textareaValue = node.data && node.data.value ? node.data.value : node.config.value || node.config.placeholder || '';
-          nodeMarkup = `**${textareaLabel}:**\n\n\`\`\`\n${textareaValue}\n\`\`\``;
-          break;
-        case 'button':
-          const buttonLabel = node.config.label || 'Button';
-          const action = node.config.action || '#';
-          nodeMarkup = `[${buttonLabel}](${action})`;
-          break;
-        case 'text':
-          const textLabel = node.config.title || node.config.nick;
-          const textValue = node.data && node.data.value ? node.data.value : node.config.value || '';
-          nodeMarkup = textLabel ? `**${textLabel}:** ${textValue}` : textValue;
-          break;
-        case 'date':
-          const dateLabel = node.config.nick || 'Date';
-          const dateValue = node.data && node.data.value ? node.data.value : node.config.value || node.config.placeholder || '';
-          nodeMarkup = `**${dateLabel}:** ${dateValue}`;
-          break;
-        case 'checkbox':
-          const checkboxLabel = node.config.nick ? `**${node.config.nick}:**\n\n` : '';
-          let checkboxContent = checkboxLabel;
-          if (node.config.options && Array.isArray(node.config.options)) {
-            const checkboxValue = node.data && node.data.value ? node.data.value : node.config.value || [];
-            node.config.options.forEach((option, index) => {
-              const isChecked = Array.isArray(checkboxValue) && checkboxValue.includes(option.value);
-              const optionTitle = option.title || option.value || 'Unknown';
-              const optionValue = option.value;
-              if (isChecked) {
-                checkboxContent += `<x ${index} ${optionValue} checked>${optionTitle}</x>\n`;
-              } else {
-                checkboxContent += `<x ${index} ${optionValue}>${optionTitle}</x>\n`;
-              }
-            });
-          }
-          nodeMarkup = checkboxContent;
-          break;
-        case 'options':
-          const optionsLabel = node.config.nick || 'Options';
-          let optionsContent = `**${optionsLabel}:**\n\n`;
-          let optionsData = [];
-          
-          // 处理optionsSet中的dataset
-          if (node.config.optionsSet && node.config.optionsSet.dataset) {
-            try {
-              // 直接使用dataset作为配置，支持url_dataset和uuid_dataset
-              const { fetchDataset } = require('../../core/utils/dataset.js');
-              const datasetData = await fetchDataset(node.config.optionsSet.dataset);
-              
-              // 检查datasetData是否有data属性，如果有，使用data属性作为选项数组
-              let processedOptions = datasetData && datasetData.data ? datasetData.data : datasetData;
-              
-              // 确保processedOptions是一个数组
-              if (Array.isArray(processedOptions)) {
-                const selectedValue = node.data && node.data.value ? node.data.value : node.config.value;
-                for (let index = 0; index < processedOptions.length; index++) {
-                  const option = processedOptions[index];
-                  // Get title and value using titleNick and valueNick if provided
-                  const titleNick = node.config.optionsSet?.titleNick || 'title';
-                  const valueNick = node.config.optionsSet?.valueNick || 'value';
-                  const optionTitle = option[titleNick] || option.title || option.label || option.value || 'Unknown';
-                  const optionValue = option[valueNick] || option.value;
-                  const isSelected = selectedValue === optionValue;
-                  
-                  if (isSelected) {
-                    optionsContent += `<x ${index} ${optionValue} selected>${optionTitle}</x>\n`;
-                  } else {
-                    optionsContent += `<x ${index} ${optionValue}>${optionTitle}</x>\n`;
-                  }
-                  optionsData.push({ title: optionTitle, value: optionValue, selected: isSelected });
-                }
-              } else {
-                optionsContent += '- No options available\n';
-              }
-            } catch (error) {
-              console.error('Error fetching options dataset:', error);
-              optionsContent += '- Error fetching options\n';
-            }
-          } else if (node.config.options && Array.isArray(node.config.options)) {
-            // 处理直接提供的options
-            const selectedValue = node.data && node.data.value ? node.data.value : node.config.value;
-            for (let index = 0; index < node.config.options.length; index++) {
-              const option = node.config.options[index];
-              const optionTitle = option.title || option.label || option.value || 'Unknown';
-              const optionValue = option.value;
-              const isSelected = selectedValue === optionValue;
-              
-              if (isSelected) {
-                optionsContent += `<x ${index} ${optionValue} selected>${optionTitle}</x>\n`;
-              } else {
-                optionsContent += `<x ${index} ${optionValue}>${optionTitle}</x>\n`;
-              }
-              optionsData.push({ title: optionTitle, value: optionValue, selected: isSelected });
-            }
-          } else {
-            optionsContent += '- No options available\n';
-          }
-          
-          // 将options数据存储到node的data.options中
-          if (!node.data) {
-            node.data = {};
-          }
-          node.data.options = optionsData;
-          // 更新存储中的节点数据
-          setNode(node.cardKey, node);
-          
-          nodeMarkup = optionsContent;
-          break;
-        case 'table':
-          // 处理table类型，渲染表格内容
-          if (node.config.title) {
-            nodeMarkup = `## ${node.config.title}\n\n`;
-          }
-          
-          // 处理dataset
-          let tableData = node.config.data;
-          if (!tableData && node.config.dataset) {
-            try {
-              // 直接使用dataset作为配置，支持url_dataset和uuid_dataset
-              const { fetchDataset } = require('../../core/utils/dataset.js');
-              const datasetData = await fetchDataset(node.config.dataset);
-              // 直接使用返回的数组，因为fetchDataset已经返回了正确的数据格式
-              tableData = datasetData || [];
-              
-              // 将数据存储到node的data.data中
-              if (!node.data) {
-                node.data = {};
-              }
-              node.data.data = tableData;
-              // 更新node.config.data，以便后续使用
-              node.config.data = tableData;
-              // 更新存储中的节点数据
-              setNode(node.cardKey, node);
-            } catch (error) {
-              console.error('Error fetching table dataset:', error);
-            }
-          }
-          
-          // 生成Markup表格
-          if (node.config.titles && Array.isArray(node.config.titles) && node.config.titles.length > 0) {
-            // 过滤掉隐藏的列
-            const visibleTitles = node.config.titles.filter(title => !title.hide);
-            
-            if (visibleTitles.length > 0) {
-              // 生成表头
-              const headers = visibleTitles.map(title => title.title).join(' | ');
-              const separators = visibleTitles.map(() => '---').join(' | ');
-              
-              nodeMarkup += `| ${headers} |\n`;
-              nodeMarkup += `| ${separators} |\n`;
-              
-              // 生成表格行
-              if (tableData && Array.isArray(tableData)) {
-                tableData.forEach(row => {
-                  let rowContent = '';
-                  
-                  // 处理不同格式的行数据
-                  if (Array.isArray(row)) {
-                    // 处理 [{"nick": "id", "value": 1}, ...] 格式
-                    visibleTitles.forEach(title => {
-                      const cell = row.find(item => item.nick === title.nick);
-                      rowContent += ` ${cell ? cell.value : ''} |`;
-                    });
-                  } else if (typeof row === 'object') {
-                    // 处理 {"id": 1, "name": "John"} 格式
-                    visibleTitles.forEach(title => {
-                      rowContent += ` ${row[title.nick] || ''} |`;
-                    });
-                  }
-                  
-                  nodeMarkup += `|${rowContent}\n`;
-                });
-              } else {
-                // 只有表头，没有数据
-                nodeMarkup += `| ${visibleTitles.map(() => '').join(' | ')} |\n`;
-              }
-              
-              nodeMarkup += '\n';
-            }
-          }
-          break;
-        case 'list':
-          // 处理list类型，渲染列表内容
-          if (node.config.title) {
-            nodeMarkup = `## ${node.config.title}\n\n`;
-          }
-          
-          const itemList = node.config.itemList || [];
-          const listData = node.data && node.data.value ? node.data.value : (node.config.data || []);
-          
-          if (itemList.length > 0 && listData.length > 0) {
-            // 生成表头
-            const headers = itemList.map(item => item.title || item.nick || '').join(' | ');
-            const separators = itemList.map(() => '---').join(' | ');
-            
-            nodeMarkup += `| ${headers} |\n`;
-            nodeMarkup += `| ${separators} |\n`;
-            
-            // 生成数据行
-            for (const row of listData) {
-              const cells = itemList.map(item => {
-                const value = row[item.nick] !== undefined ? row[item.nick] : '';
-                return value;
-              });
-              nodeMarkup += `| ${cells.join(' | ')} |\n`;
-            }
-            
-            nodeMarkup += '\n';
-          } else {
-            nodeMarkup += '*No data*\n\n';
-          }
-          break;
-        case 'sop':
-          // 处理sop类型，渲染工作流内容
-          const sopTitle = node.config.title || 'SOP Workflow';
-          const steps = node.config.steps || [];
-          
-          // Get current step info from data
-          const currentStepUuid = node.data?.currentStepUuid;
-          const claimedStepUuid = node.data?.claimedStepUuid;
-          const nextStepUuid = node.data?.nextStepUuid;
-          const completedSteps = node.data?.completedSteps || [];
-          
-          // Find steps by UUID
-          const currentStep = steps.find(s => s.uuid === currentStepUuid);
-          const claimedStep = steps.find(s => s.uuid === claimedStepUuid);
-          let nextStep = steps.find(s => s.uuid === nextStepUuid);
-          
-          // If no next step specified, find it based on completed steps
-          if (!nextStep) {
-            nextStep = steps.find(s => {
-              if (completedSteps.includes(s.uuid) || s.uuid === claimedStepUuid) {
-                return false;
-              }
-              if (s.sources && s.sources.length > 0) {
-                const sourcesJoin = s.sources_join || 'all';
-                if (sourcesJoin === 'all') {
-                  return s.sources.every(src => completedSteps.includes(src));
-                } else {
-                  return s.sources.some(src => completedSteps.includes(src));
-                }
-              }
-              return s.start === true;
-            });
-          }
-          
-          // Render workflow header
-          nodeMarkup = `## ${sopTitle}\n\n`;
-          
-          // If we have state data, render current/claimed/next steps
-          if (claimedStep || nextStep) {
-            // Render current claimed step (in progress)
-            if (claimedStep) {
-              nodeMarkup += `### 🔄 In Progress: ${claimedStep.nick || claimedStep.uuid}\n\n`;
-              if (claimedStep.action) {
-                nodeMarkup += `**Action:** ${claimedStep.action}\n\n`;
-              }
-              if (claimedStep.sources && claimedStep.sources.length > 0) {
-                nodeMarkup += `**Dependencies:** ${claimedStep.sources.join(', ')}\n\n`;
-              }
-            }
-            
-            // Render next step (to be claimed)
-            if (nextStep) {
-              nodeMarkup += `### ⏳ Next Step: ${nextStep.nick || nextStep.uuid}\n\n`;
-              if (nextStep.action) {
-                nodeMarkup += `**Action:** ${nextStep.action}\n\n`;
-              }
-              if (nextStep.sources && nextStep.sources.length > 0) {
-                nodeMarkup += `**Dependencies:** ${nextStep.sources.join(', ')}\n\n`;
-              }
-            }
-          } else {
-            // No state data - render all steps as overview
-            nodeMarkup += `### Workflow Steps (${steps.length} total)\n\n`;
-            steps.forEach((step, index) => {
-              const stepNick = step.nick || step.uuid;
-              const isStart = step.start ? ' (Start)' : '';
-              const hasApproval = step.approvalRequired ? ' [Approval Required]' : '';
-              nodeMarkup += `${index + 1}. **${stepNick}**${isStart}${hasApproval}\n`;
-              if (step.action) {
-                nodeMarkup += `   - Action: ${step.action}\n`;
-              }
-              if (step.sources && step.sources.length > 0) {
-                nodeMarkup += `   - Dependencies: ${step.sources.join(', ')}\n`;
-              }
-            });
-          }
-          break;
-        default:
-          nodeMarkup = `<!-- ANX Component: ${node.config.kind} -->`;
-      }
-    }
-    
-    // 使用x标签包裹Markup内容，并添加kind和cardKey属性
-    let tapAttribute = '';
-    if (node.config.kind === 'box' && node.config.tapSet) {
-      const tapSetTitle = node.config.tapSet.title || '';
-      tapAttribute = ` tap="${tapSetTitle}"`;
-    }
-    return `<x ${node.config.kind || ''} ${node.cardKey}${tapAttribute}>
-${nodeMarkup}
-</x>`;
-  }
-  
-  return await processNode(nodesStructure);
-}
 
 // API endpoint for converting ANX to Markup (POST)
 app.post('/api/convert', async (req, res) => {
@@ -1253,11 +810,19 @@ app.post('/api/convert-to-markup', async (req, res) => {
 // Supports: /api/markup?url_tile=xxx or /api/markup?uuid_tile=xxx
 app.get('/api/markup', async (req, res) => {
   try {
-    const { url_tile, uuid_tile } = req.query;
+    const { url_tile, uuid_tile, uuid_page: providedUuidPage, uuid_visitor } = req.query;
     
     if (!url_tile && !uuid_tile) {
       return res.status(400).send('Error: Either url_tile or uuid_tile parameter is required');
     }
+    
+    // 使用 getTilePageUUID 获取或创建页面 UUID
+    const resolvedUuidPage = getTilePageUUID({
+      uuid_page: providedUuidPage,
+      uuid_tile,
+      url_tile,
+      uuid_visitor
+    });
     
     let anxContent = null;
     
@@ -1308,12 +873,35 @@ app.get('/api/markup', async (req, res) => {
     }
     anxContent = anxResult.anxContent;
     
-    // 路径二：先生成节点结构，再转换为 markup
-    const nodesStructure = anxToNodes(anxContent);
+    // 生成 ANX 内容的哈希值（用于缓存查找）
+    const anxHash = generateAnxHash(anxContent);
+    
+    // 检查缓存中是否已有节点结构
+    let nodesStructure = getNodesByHash(anxHash);
+    
+    if (!nodesStructure) {
+      // 如果缓存中没有，生成新的节点结构
+      nodesStructure = anxToNodes(anxContent);
+      // 将节点结构存入缓存
+      setNodesByHash(anxHash, nodesStructure);
+      console.log(`[API/markup] Generated new nodes for hash: ${anxHash}`);
+    } else {
+      console.log(`[API/markup] Using cached nodes for hash: ${anxHash}`);
+    }
+    
+    // 使用缓存的节点结构生成 markup
     const markup = await nodesToMarkup(nodesStructure);
     
+    // 在 markup 开头添加 uuid_page 和 uuid_visitor
+    let finalMarkup = `uuid_page: ${resolvedUuidPage}\n`;
+    if (uuid_visitor) {
+      finalMarkup += `uuid_visitor: ${uuid_visitor}\n`;
+    }
+    finalMarkup += '\n';
+    finalMarkup += markup;
+    
     res.setHeader('Content-Type', 'text/plain');
-    res.send(markup);
+    res.send(finalMarkup);
   } catch (error) {
     console.error('Error converting ANX to markup:', error);
     res.status(400).send('Error: Invalid ANX content. Please check your input.');
@@ -2248,6 +1836,36 @@ app.get('/api/pages/list', (req, res) => {
   } catch (error) {
     console.error('Error loading pages list:', error);
     res.status(500).json({ error: 'Failed to load pages list' });
+  }
+});
+
+// 获取指定tile和visitor的最后一个页面
+app.get('/api/pages/last', (req, res) => {
+  try {
+    const { uuid_tile, url_tile, uuid_visitor } = req.query;
+    
+    if (!uuid_tile && !url_tile) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Either uuid_tile or url_tile parameter is required' 
+      });
+    }
+    
+    const uuid_page = getLastPageForVisitor({
+      uuid_tile,
+      url_tile,
+      uuid_visitor
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        uuid_page: uuid_page || null
+      }
+    });
+  } catch (error) {
+    console.error('Error getting last page:', error);
+    res.status(500).json({ success: false, error: 'Failed to get last page' });
   }
 });
 
