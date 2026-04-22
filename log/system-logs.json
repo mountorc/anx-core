@@ -2,6 +2,77 @@
   {
     "type": "system",
     "action": "cli_command_success",
+    "timestamp": "2026-04-22 10:37:53",
+    "details": {
+      "command": "anx card_1776790205039_teav09sfa set_form '{\"system_prompt\": \"保留人物，换背景为居家沙发或落地窗前，自然光，氛围温馨，像淘宝真实买家秀。\"}'",
+      "response": {
+        "cardKey": "card_1776790205039_teav09sfa",
+        "action": "set_form",
+        "result": {
+          "message": "Form data updated successfully",
+          "data": {
+            "system_prompt": "保留人物，换背景为居家沙发或落地窗前，自然光，氛围温馨，像淘宝真实买家秀。"
+          }
+        }
+      }
+    },
+    "message": "[System] cli_command_success: {\"command\":\"anx card_1776790205039_teav09sfa set_form '{\\\"system_prompt\\\": \\\"保留人物，换背景为居家沙发或落地窗前，自然光，氛围温馨，像淘宝真实买家秀。\\\"}'\",\"response\":{\"cardKey\":\"card_1776790205039_teav09sfa\",\"action\":\"set_form\",\"result\":{\"message\":\"Form data updated successfully\",\"data\":{\"system_prompt\":\"保留人物，换背景为居家沙发或落地窗前，自然光，氛围温馨，像淘宝真实买家秀。\"}}}}"
+  },
+  {
+    "type": "system",
+    "action": "cli_command_success",
+    "timestamp": "2026-04-22 09:04:42",
+    "details": {
+      "command": "anx card_1776790205039_teav09sfa set_form '{\"system_prompt\": \"人物保留，背景换成咖啡厅或公园，光线柔和，色调偏暖，像小红书买家晒图。\"}'",
+      "response": {
+        "cardKey": "card_1776790205039_teav09sfa",
+        "action": "set_form",
+        "result": {
+          "message": "Form data updated successfully",
+          "data": {
+            "system_prompt": "人物保留，背景换成咖啡厅或公园，光线柔和，色调偏暖，像小红书买家晒图。",
+            "images": [
+              "https://img2.baidu.com/it/u=2311987631,1003674965&fm=253&app=138&f=JPEG?w=800&h=800"
+            ],
+            "user_prompt": "",
+            "aspect_ratio": "1:1",
+            "resolution": "auto",
+            "seed": 578926338
+          }
+        }
+      }
+    },
+    "message": "[System] cli_command_success: {\"command\":\"anx card_1776790205039_teav09sfa set_form '{\\\"system_prompt\\\": \\\"人物保留，背景换成咖啡厅或公园，光线柔和，色调偏暖，像小红书买家晒图。\\\"}'\",\"response\":{\"cardKey\":\"card_1776790205039_teav09sfa\",\"action\":\"set_form\",\"result\":{\"message\":\"Form data updated successfully\",\"data\":{\"system_prompt\":\"人物保留，背景换成咖啡厅或公园，光线柔和，色调偏暖，像小红书买家晒图。\",\"images\":[\"https://img2.baidu.com/it/u=2311987631,1003674965&fm=253&app=138&f=JPEG?w=800&h=800\"],\"user_prompt\":\"\",\"aspect_ratio\":\"1:1\",\"resolution\":\"auto\",\"seed\":578926338}}}}"
+  },
+  {
+    "type": "system",
+    "action": "cli_command_success",
+    "timestamp": "2026-04-22 09:00:46",
+    "details": {
+      "command": "anx card_1776790205039_teav09sfa set_form '{\"system_prompt\": \"抠出人物，换上真实生活背景（居家、街边、商场），光影自然，边缘融合无痕，像朋友圈随手拍。\"}'",
+      "response": {
+        "cardKey": "card_1776790205039_teav09sfa",
+        "action": "set_form",
+        "result": {
+          "message": "Form data updated successfully",
+          "data": {
+            "system_prompt": "抠出人物，换上真实生活背景（居家、街边、商场），光影自然，边缘融合无痕，像朋友圈随手拍。",
+            "images": [
+              "https://img2.baidu.com/it/u=2311987631,1003674965&fm=253&app=138&f=JPEG?w=800&h=800"
+            ],
+            "user_prompt": "",
+            "aspect_ratio": "1:1",
+            "resolution": "auto",
+            "seed": 578926338
+          }
+        }
+      }
+    },
+    "message": "[System] cli_command_success: {\"command\":\"anx card_1776790205039_teav09sfa set_form '{\\\"system_prompt\\\": \\\"抠出人物，换上真实生活背景（居家、街边、商场），光影自然，边缘融合无痕，像朋友圈随手拍。\\\"}'\",\"response\":{\"cardKey\":\"card_1776790205039_teav09sfa\",\"action\":\"set_form\",\"result\":{\"message\":\"Form data updated successfully\",\"data\":{\"system_prompt\":\"抠出人物，换上真实生活背景（居家、街边、商场），光影自然，边缘融合无痕，像朋友圈随手拍。\",\"images\":[\"https://img2.baidu.com/it/u=2311987631,1003674965&fm=253&app=138&f=JPEG?w=800&h=800\"],\"user_prompt\":\"\",\"aspect_ratio\":\"1:1\",\"resolution\":\"auto\",\"seed\":578926338}}}}"
+  },
+  {
+    "type": "system",
+    "action": "cli_command_success",
     "timestamp": "2026-04-22 01:49:57",
     "details": {
       "command": "anx card_1776790205039_teav09sfa set_form '{\"system_prompt\": \"请将图中人物抠出，放入真实的买家晒图场景中。要求：1）背景随机选择居家客厅、小区楼下、商场走廊、户外草坪等日常生活场景；2）光线自然，匹配场景光源方向；3）人物边缘与背景融合无抠图痕迹，阴影投射自然；4）画面带轻微手机拍摄感，适度景深虚化；5）整体风格接地气，像朋友圈随手拍的真实现场照，不要修图过度。\"}'",
@@ -50023,67 +50094,5 @@
       "handleTapSet": true
     },
     "message": "[System] handleTapSet-try: {\"cardKey\":\"card_1775925638544_127\",\"handleTapSet\":true}"
-  },
-  {
-    "type": "system",
-    "action": "trigger_card_key",
-    "timestamp": "2026-04-11T16:40:44.390Z",
-    "details": {
-      "cardKey": "card_1775925638544_127",
-      "tapSet": {
-        "requestSet": {
-          "method": "POST",
-          "url": "http://localhost:3002/api/run-workflow",
-          "paramMap": {
-            "workflowId": "'2028318219441803266'",
-            "image1": "images[0]",
-            "image2": "images[1]",
-            "image3": "images[2]",
-            "image4": "images[3]",
-            "image5": "images[4]",
-            "image6": "images[5]",
-            "image7": "images[6]",
-            "image8": "images[7]",
-            "system_prompt": "system_prompt",
-            "user_prompt": "user_prompt",
-            "display_style": "display_style",
-            "remove_parts": "remove_parts",
-            "aspect_ratio": "aspect_ratio",
-            "resolution": "resolution",
-            "seed": "seed",
-            "skip_error": "skip_error",
-            "rmbg_model": "rmbg_model",
-            "sensitivity": "sensitivity",
-            "process_res": "process_res",
-            "background": "background",
-            "background_color": "background_color"
-          }
-        }
-      },
-      "triggerSet": null
-    },
-    "message": "[System] trigger_card_key: {\"cardKey\":\"card_1775925638544_127\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images[0]\",\"image2\":\"images[1]\",\"image3\":\"images[2]\",\"image4\":\"images[3]\",\"image5\":\"images[4]\",\"image6\":\"images[5]\",\"image7\":\"images[6]\",\"image8\":\"images[7]\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"}}},\"triggerSet\":null}"
-  },
-  {
-    "type": "system",
-    "action": "update_node_data",
-    "timestamp": "2026-04-11T16:40:40.826Z",
-    "details": {
-      "cardKey": "card_1775925638544_5670",
-      "field": "value",
-      "value": "对图像中的服装进行精3343修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景"
-    },
-    "message": "[System] update_node_data: {\"cardKey\":\"card_1775925638544_5670\",\"field\":\"value\",\"value\":\"对图像中的服装进行精3343修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景\"}"
-  },
-  {
-    "type": "system",
-    "action": "request_success",
-    "timestamp": "2026-04-11T16:38:54.476Z",
-    "details": {
-      "url": "http://localhost:3002/api/run-workflow",
-      "method": "POST",
-      "timestamp": "2026-04-11T16:38:54.476Z"
-    },
-    "message": "[System] request_success: {\"url\":\"http://localhost:3002/api/run-workflow\",\"method\":\"POST\",\"timestamp\":\"2026-04-11T16:38:54.476Z\"}"
   }
 ]

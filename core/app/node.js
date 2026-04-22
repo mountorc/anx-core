@@ -103,8 +103,38 @@ function updateNodeData(cardKey, data) {
     // 保存到文件
     saveNodesToFile();
     console.log('[Node Storage] Node data updated:', cardKey);
+    
+    // 自动更新子节点的 value（如果父节点有 data.value 且包含子节点的 nick）
+    if (existingNode.data && existingNode.data.value && existingNode.nodes && existingNode.nodes.length > 0) {
+      const parentValue = existingNode.data.value;
+      existingNode.nodes.forEach(childNode => {
+        const childNick = childNode.config && childNode.config.nick;
+        if (childNick && parentValue[childNick] !== undefined) {
+          // 递归更新子节点
+          updateChildNodeValue(childNode.cardKey, parentValue[childNick]);
+        }
+      });
+    }
   } else {
     console.warn('[Node Storage] Node not found for update:', cardKey);
+  }
+}
+
+/**
+ * 递归更新子节点的 value
+ * @param {string} childCardKey - 子节点的 cardKey
+ * @param {any} value - 要设置的值
+ */
+function updateChildNodeValue(childCardKey, value) {
+  const childNode = nodeStorage.get(childCardKey);
+  if (childNode) {
+    childNode.data = childNode.data || {};
+    childNode.data.value = value;
+    nodeStorage.set(childCardKey, JSON.parse(JSON.stringify(childNode)));
+    saveNodesToFile();
+    console.log('[Node Storage] Child node data updated:', childCardKey);
+  } else {
+    console.warn('[Node Storage] Child node not found for update:', childCardKey);
   }
 }
 

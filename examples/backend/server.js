@@ -1204,15 +1204,23 @@ app.post('/api/execute-cli', (req, res) => {
               formNode.data.value = { ...formNode.data.value, ...formData };
             }
             
-            // 同步更新子字段节点的 data.value
+            // 同步更新子字段节点的 data.value，并持久化到存储
             if (formNode.nodes && formNode.nodes.length > 0) {
+              console.log('[set_form] 开始更新子节点，共', formNode.nodes.length, '个子节点');
               formNode.nodes.forEach(fieldNode => {
                 const fieldNick = fieldNode.config && fieldNode.config.nick;
+                console.log('[set_form] 子节点:', fieldNode.cardKey, ', nick:', fieldNick);
                 if (fieldNick && formNode.data.value[fieldNick] !== undefined) {
+                  console.log('[set_form] 更新子节点:', fieldNode.cardKey, ', 值:', formNode.data.value[fieldNick]);
                   fieldNode.data = fieldNode.data || {};
                   fieldNode.data.value = formNode.data.value[fieldNick];
+                  // 调用 updateNodeData 持久化子节点数据
+                  updateNodeData(fieldNode.cardKey, { value: fieldNode.data.value });
+                  console.log('[set_form] 子节点', fieldNode.cardKey, '已更新并持久化');
                 }
               });
+            } else {
+              console.log('[set_form] formNode.nodes 为空或不存在');
             }
             
             // 同步更新子组件的value
