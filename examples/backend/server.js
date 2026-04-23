@@ -1412,6 +1412,38 @@ app.post('/api/execute-cli', (req, res) => {
                 delay: delay,
                 actionString: action
               };
+            } else if (tapSet.requestSet) {
+              // 处理requestSet动作
+              const requestSet = tapSet.requestSet;
+              if (requestSet.resultSet !== undefined && requestSet.resultSet !== null && requestSet.resultSet !== false) {
+                // 如果包含resultSet，立即返回running状态
+                // 然后在后台异步执行请求
+                const parentCardKey = tapNode.parentCardKey || cardKey;
+                
+                // 立即设置running状态
+                updateNodeData(parentCardKey, { processing: true, submitStatus: 'running' });
+                
+                // 立即返回running状态
+                result = { 
+                  message: 'Request started', 
+                  action: 'requestSet',
+                  status: 'running',
+                  submitStatus: 'running',
+                  cardKey: cardKey,
+                  parentCardKey: parentCardKey
+                };
+                
+                // 后台异步执行请求
+                handleTapSetRequestSetAsync(cardKey, parentCardKey, requestSet);
+              } else {
+                // 如果没有resultSet，同步执行请求
+                handleTapSetRequestSet(cardKey, tapNode.parentCardKey || cardKey, requestSet);
+                result = { 
+                  message: 'Tap action executed successfully', 
+                  action: 'requestSet',
+                  status: 'completed'
+                };
+              }
             } else {
               result = 'No valid tap action found in tapSet';
             }
@@ -2412,6 +2444,119 @@ app.post('/api/job-form/submit', (req, res) => {
     res.status(500).json({ error: 'Failed to process job form submission' });
   }
 });
+
+// 异步处理tapSet中的requestSet动作
+async function handleTapSetRequestSetAsync(cardKey, parentCardKey, requestSet) {
+  try {
+    logToSystem('request_start', {
+      cardKey: cardKey,
+      url: requestSet.url,
+      method: requestSet.method,
+      paramMap: requestSet.paramMap,
+      timestamp: new Date().toISOString()
+    });
+
+    // 使用executeRequest执行请求
+    const result = await executeRequest({config: requestSet, cardKey});
+
+    // Log success to system
+    logToSystem('request_success', {
+      url: requestSet.url,
+      method: requestSet.method,
+      result: result,
+      timestamp: new Date().toISOString()
+    });
+
+    // 存储结果到节点
+    if (requestSet.resultSet !== undefined && requestSet.resultSet !== null && requestSet.resultSet !== false) {
+      let resultValue = null;
+      if (result && result.data && result.data.data !== undefined) {
+        resultValue = result.data.data;
+      } else if (result && result.data !== undefined) {
+        resultValue = result.data;
+      } else if (result !== undefined) {
+        resultValue = result;
+      }
+      updateNodeData(parentCardKey, { result: resultValue, processing: false, submitStatus: 'submitted' });
+      logToSystem('request_result_stored', {
+        cardKey: cardKey,
+        resultSet: requestSet.resultSet,
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      updateNodeData(parentCardKey, { processing: false });
+    }
+
+    return result;
+  } catch (error) {
+    console.error('[TapSet] RequestSet error:', error);
+    
+    // 清除处理中状态，恢复为待提交状态
+    if (requestSet.resultSet !== undefined && requestSet.resultSet !== null && requestSet.resultSet !== false) {
+      updateNodeData(parentCardKey, { processing: false, submitStatus: 'pending' });
+      logToSystem('request_processing_ended', {
+        cardKey: cardKey,
+        parentCardKey: parentCardKey,
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    logError('request_error', error.message, {
+      url: requestSet.url,
+      method: requestSet.method,
+      timestamp: new Date().toISOString()
+    });
+    
+    throw error;
+  }
+}
+
+// 同步处理tapSet中的requestSet动作
+function handleTapSetRequestSet(cardKey, parentCardKey, requestSet) {
+  logToSystem('request_start', {
+    cardKey: cardKey,
+    url: requestSet.url,
+    method: requestSet.method,
+    paramMap: requestSet.paramMap,
+    timestamp: new Date().toISOString()
+  });
+
+  executeRequest({config: requestSet, cardKey})
+    .then(result => {
+      logToSystem('request_success', {
+        url: requestSet.url,
+        method: requestSet.method,
+        result: result,
+        timestamp: new Date().toISOString()
+      });
+
+      if (requestSet.resultSet !== undefined && requestSet.resultSet !== null && requestSet.resultSet !== false) {
+        let resultValue = null;
+        if (result && result.data && result.data.data !== undefined) {
+          resultValue = result.data.data;
+        } else if (result && result.data !== undefined) {
+          resultValue = result.data;
+        } else if (result !== undefined) {
+          resultValue = result;
+        }
+        updateNodeData(parentCardKey, { result: resultValue });
+        logToSystem('request_result_stored', {
+          cardKey: cardKey,
+          resultSet: requestSet.resultSet,
+          timestamp: new Date().toISOString()
+        });
+      }
+    })
+    .catch(error => {
+      console.error('[TapSet] RequestSet error:', error);
+      logError('request_error', error.message, {
+        url: requestSet.url,
+        method: requestSet.method,
+        timestamp: new Date().toISOString()
+      });
+    });
+}
 
 // 加载hub文件并启动服务器
 async function startServer() {
