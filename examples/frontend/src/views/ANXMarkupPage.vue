@@ -65,7 +65,12 @@ export default {
         }
       } else if (urlTile) {
         try {
-          const response = await fetch(`http://localhost:7887/api/pages/by-url-tile?url_tile=${encodeURIComponent(urlTile)}`);
+          const url = new URL('http://localhost:7887/api/pages/by-url-tile');
+          url.searchParams.set('url_tile', urlTile);
+          if (this.uuidVisitor) {
+            url.searchParams.set('uuid_visitor', this.uuidVisitor);
+          }
+          const response = await fetch(url.toString());
           if (response.ok) {
             const result = await response.json();
             const pages = result.data || [];

@@ -156,7 +156,12 @@ export default {
         }
       } else if (urlTile) {
         try {
-          const response = await fetch(`http://localhost:7887/api/pages/by-url-tile?url_tile=${encodeURIComponent(urlTile)}`);
+          const url = new URL('http://localhost:7887/api/pages/by-url-tile');
+          url.searchParams.set('url_tile', urlTile);
+          if (this.currentUuidVisitor) {
+            url.searchParams.set('uuid_visitor', this.currentUuidVisitor);
+          }
+          const response = await fetch(url.toString());
           if (response.ok) {
             const result = await response.json();
             const pages = result.data || [];
@@ -230,7 +235,12 @@ export default {
     },
     async fetchPageListByUrl(url_tile) {
       try {
-        const response = await fetch(`http://localhost:7887/api/pages/by-url-tile?url_tile=${encodeURIComponent(url_tile)}`);
+        const url = new URL('http://localhost:7887/api/pages/by-url-tile');
+        url.searchParams.set('url_tile', url_tile);
+        if (this.currentUuidVisitor) {
+          url.searchParams.set('uuid_visitor', this.currentUuidVisitor);
+        }
+        const response = await fetch(url.toString());
         if (response.ok) {
           const result = await response.json();
           this.pageList = (result.data || []).sort((a, b) => 

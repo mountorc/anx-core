@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import ANXPage from '../views/ANXPage.vue'
 import ANXMarkupPage from '../views/ANXMarkupPage.vue'
+import VisitorPagesView from '../views/VisitorPagesView.vue'
 
 const routes = [
   {
@@ -28,6 +29,11 @@ const routes = [
     path: '/anx/markup',
     name: 'ANXMarkupPageUrl',
     component: ANXMarkupPage
+  },
+  {
+    path: '/anx/visitor-pages',
+    name: 'VisitorPagesView',
+    component: VisitorPagesView
   }
 ]
 

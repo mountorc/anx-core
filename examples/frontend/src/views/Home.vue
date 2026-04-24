@@ -1,126 +1,174 @@
 <template>
   <div class="converter-container">
-    <div class="tile-cases">
-      <h3>Tile Cases</h3>
-      <div class="tile-grid">
-        <!-- 动态加载的tile case -->
-        <div v-for="item in hubList" :key="item.uuid" class="tile-item" @click="loadHubTestCase(item.uuid)">
-          <div class="tile-icon">
-            <div class="icon-background">{{ item.name.charAt(0) }}</div>
+    <div class="tile-cases-wrapper">
+      <div class="tile-cases">
+        <div class="tile-header">
+          <h3>Tile Cases</h3>
+          <div v-if="currentTileUuid || currentUrlTile" class="tile-info">
+            <span v-if="currentTileUuid" class="tile-uuid">uuid_tile: {{ currentTileUuid }}</span>
+            <span v-if="currentUrlTile" class="tile-url">url_tile: {{ currentUrlTile }}</span>
           </div>
-          <div class="tile-name">{{ item.name }}</div>
+        </div>
+        <div class="tile-grid-wrapper">
+          <div class="tile-grid">
+            <div v-for="item in hubList" :key="item.uuid" class="tile-item" @click="loadHubTestCase(item.uuid)">
+              <div class="tile-icon">
+                <div class="icon-background">{{ item.name.charAt(0) }}</div>
+              </div>
+              <div class="tile-name">{{ item.name }}</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="converter-content">
-      <div class="input-section">
-        <h2>ANX Config</h2>
-        <textarea 
-          v-model="anxInput" 
-          placeholder="Enter ANX format content here..."
-          @input="debouncedConvertAnxToMarkup"
-        ></textarea>
-      </div>
-      <div class="json-section">
-        <h2>Core Nodes</h2>
-        <pre class="json-output">{{ jsonStructure }}</pre>
-        <div class="cli-section">
-          <h3>CLI Command</h3>
-          <div class="cli-input-container">
-            <input 
-              v-model="cliCommand" 
-              placeholder="Enter CLI command here..."
-              @keyup.enter="executeCliCommand"
-            />
-            <button @click="executeCliCommand">Execute</button>
-            <button @click="showCommandsList">Commands</button>
-            <button @click="showCliLogs">Logs</button>
+    
+    <div class="main-layout">
+      <div :class="['page-list-sidebar', { hidden: isSidebarHidden }]">
+        <div class="sidebar-header">
+          <h3>页面列表</h3>
+          <div class="header-right">
+            <span class="page-count">{{ pageList.length }} 个实例</span>
+            <button class="add-page-btn" @click="createNewPage">+</button>
+            <button class="collapse-btn" @click="toggleSidebar">‹</button>
           </div>
-          <!-- Commands list modal -->
-          <div class="modal" v-if="showCommandsModal">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h3>CLI Commands List</h3>
-                <button @click="showCommandsModal = false" class="close-btn">×</button>
-              </div>
-              <div class="modal-body">
-                <div v-for="category in cliCommands" :key="category.category" class="command-category">
-                  <h4>{{ category.category }}</h4>
-                  <ul class="command-list">
-                    <li v-for="command in category.commands" :key="command.name" class="command-item">
-                      <div class="command-name">{{ command.name }}</div>
-                      <div class="command-description">{{ command.description }}</div>
-                      <div class="command-usage">{{ command.usage }}</div>
-                      <div class="command-example">{{ command.example }}</div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button @click="showCommandsModal = false">Close</button>
-              </div>
+        </div>
+        <div class="page-list">
+          <div
+            v-for="page in pageList"
+            :key="page.uuid_page"
+            :class="['page-item', { active: page.uuid_page === currentUuidPage }]"
+            @click="switchPage(page.uuid_page)"
+          >
+            <div class="page-header">
+              <span class="page-name">{{ page.title || '未命名' }}</span>
+              <span :class="['page-status', getPageStatusClass(page)]">{{ getPageStatusText(page) }}</span>
             </div>
+            <span class="page-uuid">{{ page.uuid_page }}</span>
+            <span class="page-date">{{ formatDate(page.createdAt) }}</span>
           </div>
-          
-          <!-- Unified Logs modal -->
-          <div class="modal" v-if="showLogsModal">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h3>System Logs</h3>
-                <div class="modal-header-actions">
-                  <button @click="refreshLogs" class="refresh-btn">↻ Refresh</button>
-                  <button @click="showLogsModal = false" class="close-btn">×</button>
-                </div>
-              </div>
-              <div class="modal-body">
-                <div v-if="allLogs.length === 0" class="no-logs">
-                  No logs available.
-                </div>
-                <div v-else class="logs-list">
-                  <div v-for="(log, index) in allLogs" :key="index" class="log-item" :class="[log.status, log.type]">
-                    <div class="log-header">
-                      <span class="log-timestamp">{{ formatTimestamp(log.timestamp) }}</span>
-                      <span class="log-type">{{ log.type.toUpperCase() }}</span>
-                      <span class="log-status">{{ (log.status || 'success').toUpperCase() }}</span>
-                    </div>
-                    <div v-if="log.command" class="log-command">{{ log.command }}</div>
-                    <div v-else-if="log.message" class="log-message">{{ log.message }}</div>
-                    <div v-if="log.response" class="log-response">
-                      <pre>{{ JSON.stringify(log.response, null, 2) }}</pre>
-                    </div>
-                    <div v-if="log.details" class="log-details">
-                      <strong>Details:</strong>
-                      <pre>{{ JSON.stringify(log.details, null, 2) }}</pre>
-                    </div>
-                    <div v-if="log.error" class="log-error">
-                      <strong>Error:</strong> {{ log.error }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button @click="refreshLogs">Refresh</button>
-                <button @click="showLogsModal = false">Close</button>
-              </div>
-            </div>
-          </div>
-          <div class="cli-output" v-if="cliOutput">
-            <h4>Output:</h4>
-            <pre>{{ cliOutput }}</pre>
+          <div v-if="pageList.length === 0" class="empty-list">
+            <p>暂无页面实例</p>
           </div>
         </div>
       </div>
-      <div class="output-section">
-        <h2>Markup Output</h2>
-        <div class="markup-output" v-html="markupOutput"></div>
-        <pre class="raw-output">{{ rawMarkupOutput }}</pre>
+      <button v-if="isSidebarHidden" class="expand-btn" @click="toggleSidebar">›</button>
+      
+      <div class="converter-content">
+        <div class="input-section">
+          <h2>ANX Config</h2>
+          <textarea 
+            v-model="anxInput" 
+            placeholder="Enter ANX format content here..."
+            @input="debouncedConvertAnxToMarkup"
+          ></textarea>
+        </div>
+        
+        <div class="json-section">
+          <h2>Core Nodes</h2>
+          <pre class="json-output">{{ jsonStructure }}</pre>
+          
+          <div class="cli-section">
+            <h3>CLI Command</h3>
+            <div class="cli-input-container">
+              <input 
+                v-model="cliCommand" 
+                placeholder="Enter CLI command here..."
+                @keyup.enter="executeCliCommand"
+              />
+              <button @click="executeCliCommand">Execute</button>
+              <button @click="showCommandsList">Commands</button>
+              <button @click="showCliLogs">Logs</button>
+            </div>
+            
+            <div class="cli-output" v-if="cliOutput">
+              <h4>Output:</h4>
+              <pre>{{ cliOutput }}</pre>
+            </div>
+          </div>
+        </div>
+        
+        <div class="output-section">
+          <h2>Markup Output</h2>
+          <div class="markup-output" v-html="markupOutput"></div>
+          <pre class="raw-output">{{ rawMarkupOutput }}</pre>
+        </div>
+        
+        <div class="visual-section">
+          <h2>ANXView (Web Component)</h2>
+          <anx-view 
+            :nodes-structure="JSON.stringify(nodesStructure)"
+            :visualization-html="visualizationHTML"
+          ></anx-view>
+        </div>
       </div>
-      <div class="visual-section">
-        <h2>ANXView (Web Component)</h2>
-        <anx-view 
-          :nodes-structure="JSON.stringify(nodesStructure)"
-          :visualization-html="visualizationHTML"
-        ></anx-view>
+    </div>
+    
+    <!-- Commands list modal -->
+    <div class="modal" v-if="showCommandsModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>CLI Commands List</h3>
+          <button @click="showCommandsModal = false" class="close-btn">×</button>
+        </div>
+        <div class="modal-body">
+          <div v-for="category in cliCommands" :key="category.category" class="command-category">
+            <h4>{{ category.category }}</h4>
+            <ul class="command-list">
+              <li v-for="command in category.commands" :key="command.name" class="command-item">
+                <div class="command-name">{{ command.name }}</div>
+                <div class="command-description">{{ command.description }}</div>
+                <div class="command-usage">{{ command.usage }}</div>
+                <div class="command-example">{{ command.example }}</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button @click="showCommandsModal = false">Close</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Unified Logs modal -->
+    <div class="modal" v-if="showLogsModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>System Logs</h3>
+          <div class="modal-header-actions">
+            <button @click="refreshLogs" class="refresh-btn">↻ Refresh</button>
+            <button @click="showLogsModal = false" class="close-btn">×</button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div v-if="allLogs.length === 0" class="no-logs">
+            No logs available.
+          </div>
+          <div v-else class="logs-list">
+            <div v-for="(log, index) in allLogs" :key="index" class="log-item" :class="[log.status, log.type]">
+              <div class="log-header">
+                <span class="log-timestamp">{{ formatTimestamp(log.timestamp) }}</span>
+                <span class="log-type">{{ log.type.toUpperCase() }}</span>
+                <span class="log-status">{{ (log.status || 'success').toUpperCase() }}</span>
+              </div>
+              <div v-if="log.command" class="log-command">{{ log.command }}</div>
+              <div v-else-if="log.message" class="log-message">{{ log.message }}</div>
+              <div v-if="log.response" class="log-response">
+                <pre>{{ JSON.stringify(log.response, null, 2) }}</pre>
+              </div>
+              <div v-if="log.details" class="log-details">
+                <strong>Details:</strong>
+                <pre>{{ JSON.stringify(log.details, null, 2) }}</pre>
+              </div>
+              <div v-if="log.error" class="log-error">
+                <strong>Error:</strong> {{ log.error }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button @click="refreshLogs">Refresh</button>
+          <button @click="showLogsModal = false">Close</button>
+        </div>
       </div>
     </div>
   </div>
@@ -151,6 +199,11 @@ export default {
   }
 }`,
       hubList: [], // 存储从hub获取的tile case列表
+      currentTileUuid: '', // 当前选中的tile uuid
+      currentUrlTile: '', // 当前选中的url_tile
+      currentUuidPage: '', // 当前选中的页面uuid
+      pageList: [], // 页面列表
+      isSidebarHidden: false, // 侧边栏是否隐藏
       boxDatasetTest: `{
   "kind": "box",
   "title": "测试Box组件 dataset",
@@ -252,13 +305,18 @@ export default {
     window.removeEventListener('openLogs', this.handleOpenLogs);
   },
   methods: {
-    // 检查URL参数中是否包含uuid_tile
+    // 检查URL参数中是否包含uuid_tile或url_tile
     checkUrlForUuidTile() {
       const urlParams = new URLSearchParams(window.location.search);
       const uuidTile = urlParams.get('uuid_tile');
+      const urlTile = urlParams.get('url_tile');
+      
       if (uuidTile) {
         console.log(`[URL] Found uuid_tile parameter: ${uuidTile}`);
         this.loadHubTestCase(uuidTile);
+      } else if (urlTile) {
+        console.log(`[URL] Found url_tile parameter: ${urlTile}`);
+        this.loadUrlTile(urlTile);
       }
     },
     // 防抖函数，避免频繁的API调用
@@ -287,16 +345,170 @@ export default {
         const data = await response.json();
         if (data.success) {
           this.anxInput = JSON.stringify(data.data.anxContent, null, 2);
+          this.currentTileUuid = uuid;
+          // 从hubList中查找对应的url_tile
+          const tile = this.hubList.find(item => item.uuid === uuid);
+          this.currentUrlTile = tile ? tile.url : '';
+          // 生成或获取当前页面uuid
+          this.currentUuidPage = await this.generateUuidPage();
+          // 加载页面列表
+          await this.fetchPageList(uuid);
+          // 使用uuid_page进行转换
           this.convertAnxToMarkup();
         }
       } catch (error) {
         console.error('Error loading hub tile case:', error);
       }
     },
+    // 通过URL加载tile
+    async loadUrlTile(url) {
+      try {
+        const response = await fetch('http://localhost:7887/api/convert-to-nodes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url_tile: url })
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          if (result.nodes) {
+            // 获取原始ANX配置
+            const anxResponse = await fetch(url);
+            if (anxResponse.ok) {
+              const anxContent = await anxResponse.json();
+              this.anxInput = JSON.stringify(anxContent, null, 2);
+            }
+            this.currentUrlTile = url;
+            this.currentTileUuid = '';
+            // 生成或获取当前页面uuid
+            this.currentUuidPage = await this.generateUuidPage();
+            // 加载页面列表（通过url_tile）
+            await this.fetchPageListByUrl(url);
+            // 使用uuid_page进行转换
+            this.convertAnxToMarkup();
+          }
+        }
+      } catch (error) {
+        console.error('Error loading url tile:', error);
+      }
+    },
+    // 生成或获取uuid_page
+    async generateUuidPage() {
+      if (!this.currentTileUuid) {
+        return 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      }
+      
+      try {
+        const response = await fetch(`http://localhost:7887/api/pages/by-tile/${this.currentTileUuid}`);
+        if (response.ok) {
+          const result = await response.json();
+          const pages = result.data || [];
+          if (pages.length > 0) {
+            return pages[0].uuid_page;
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching page list:', error);
+      }
+      
+      return 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    },
+    // 获取页面列表
+    async fetchPageList(uuid_tile) {
+      try {
+        const response = await fetch(`http://localhost:7887/api/pages/by-tile/${uuid_tile}`);
+        if (response.ok) {
+          const result = await response.json();
+          this.pageList = (result.data || []).sort((a, b) => 
+            new Date(b.createdAt) - new Date(a.createdAt)
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching page list:', error);
+      }
+    },
+    // 切换页面
+    switchPage(uuid_page) {
+      this.currentUuidPage = uuid_page;
+      // 重新转换ANX，使用新的uuid_page
+      this.convertAnxToMarkup();
+    },
+    // 创建新页面
+    async createNewPage() {
+      const newUuid = 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      this.currentUuidPage = newUuid;
+      // 更新页面列表
+      if (this.currentTileUuid) {
+        await this.fetchPageList(this.currentTileUuid);
+      }
+      // 重新转换ANX
+      this.convertAnxToMarkup();
+    },
+    // 切换侧边栏显示
+    toggleSidebar() {
+      this.isSidebarHidden = !this.isSidebarHidden;
+    },
+    // 格式化日期
+    formatDate(dateStr) {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('zh-CN', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    },
+    // 获取页面状态文本
+    getPageStatusText(page) {
+      const pageData = page.data || {};
+      const submitStatus = pageData.submitStatus;
+      
+      if (submitStatus === 'running') {
+        return '运行中';
+      } else if (submitStatus === 'submitted') {
+        return '已提交';
+      } else if (submitStatus === 'pending') {
+        return '待提交';
+      }
+      
+      return '正常';
+    },
+    // 获取页面状态样式类
+    getPageStatusClass(page) {
+      const pageData = page.data || {};
+      const submitStatus = pageData.submitStatus;
+      
+      if (submitStatus === 'running') {
+        return 'running';
+      } else if (submitStatus === 'submitted') {
+        return 'submitted';
+      } else if (submitStatus === 'pending') {
+        return 'pending';
+      }
+      
+      return 'normal';
+    },
     async convertAnxToMarkup() {
       try {
-        // Parse the ANX input string to a JavaScript object
-        const anxContent = JSON.parse(this.anxInput);
+        // 构建请求参数
+        const requestParams = {};
+        
+        // 如果有 url_tile，使用 url_tile 获取数据
+        if (this.currentUrlTile) {
+          requestParams.url_tile = this.currentUrlTile;
+        } else {
+          // 否则使用 anxContent
+          const anxContent = JSON.parse(this.anxInput);
+          requestParams.anxContent = anxContent;
+        }
+        
+        // 添加 uuid_page 参数
+        if (this.currentUuidPage) {
+          requestParams.uuid_page = this.currentUuidPage;
+        }
         
         // Get nodes structure from backend
         const nodesResponse = await fetch('http://localhost:7887/api/convert-to-nodes', {
@@ -304,7 +516,7 @@ export default {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ anxContent })
+          body: JSON.stringify(requestParams)
         });
         
         const nodesResult = await nodesResponse.json();
@@ -317,7 +529,7 @@ export default {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ anxContent })
+          body: JSON.stringify(requestParams)
         });
         
         const markupResult = await markupResponse.json();
@@ -1188,14 +1400,207 @@ export default {
 <style scoped>
 .converter-container {
   width: 100%;
-  max-width: 95%;
+  max-width: 100%;
   margin: 0 auto;
+}
+
+.main-layout {
+  display: flex;
+  gap: 0;
+}
+
+/* Page列表侧边栏样式 */
+.page-list-sidebar {
+  width: 280px;
+  background-color: #f8f9fa;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  height: calc(80vh - 60px);
+  transition: transform 0.3s ease;
+  transform: translateX(0);
+}
+
+.page-list-sidebar.hidden {
+  transform: translateX(-100%);
+  position: absolute;
+  left: 0;
+  z-index: 100;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #4CAF50;
+  color: white;
+}
+
+.sidebar-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-count {
+  font-size: 12px;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.add-page-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-page-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.collapse-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.collapse-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.expand-btn {
+  width: 30px;
+  height: 60px;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: auto;
+  z-index: 101;
+}
+
+.expand-btn:hover {
+  background-color: #45a049;
+}
+
+.page-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.page-item {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-item:hover {
+  border-color: #4CAF50;
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+}
+
+.page-item.active {
+  border-color: #4CAF50;
+  background-color: rgba(76, 175, 80, 0.05);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.page-name {
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+}
+
+.page-status {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.page-status.running {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.page-status.submitted {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.page-status.pending {
+  background-color: #ff5722;
+  color: white;
+}
+
+.page-status.normal {
+  background-color: #e0e0e0;
+  color: #666;
+}
+
+.page-uuid {
+  font-size: 11px;
+  color: #999;
+  font-family: monospace;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.page-date {
+  font-size: 11px;
+  color: #bbb;
+}
+
+.empty-list {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
 }
 
 .converter-content {
   display: flex;
   gap: 20px;
   height: 80vh;
+  flex: 1;
 }
 
 .input-section,
@@ -1323,20 +1728,105 @@ export default {
   gap: 10px;
 }
 
+/* Tile Cases 收起/展开效果 */
+.tile-cases-wrapper {
+  position: relative;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+
 .tile-cases {
-  margin-bottom: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px 15px;
+  margin: 0;
+  max-height: 40px;
+  overflow: hidden;
+  transition: max-height 0.3s ease, box-shadow 0.3s ease;
+  z-index: 100;
+  border: none;
+  border-top: none;
+}
+
+.tile-cases-wrapper:hover .tile-cases {
+  max-height: 250px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.tile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .tile-cases h3 {
-  margin-bottom: 15px;
+  margin: 0;
   font-size: 18px;
   color: #333;
+  cursor: pointer;
+  padding: 5px 0;
+}
+
+.tile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  font-size: 12px;
+  color: #666;
+}
+
+.tile-uuid,
+.tile-url {
+  background-color: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tile-grid-wrapper {
+  max-height: 180px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .tile-grid {
   display: flex;
-  gap: 20px;
+  gap: 15px;
   flex-wrap: wrap;
+  padding: 5px 0;
+}
+
+/* 滚动条样式 */
+.tile-grid-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tile-grid-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.tile-grid-wrapper::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.tile-grid-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #999;
 }
 
 .tile-item {

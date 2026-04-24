@@ -55,6 +55,7 @@ function addPage(pageInfo) {
     uuid_page: pageInfo.uuid_page,
     uuid_tile: pageInfo.uuid_tile,
     url_tile: pageInfo.url_tile,
+    uuid_visitor: pageInfo.uuid_visitor || '',
     title: pageInfo.title || '',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -114,6 +115,14 @@ function getPagesByUrlTile(url_tile) {
     p && typeof p === 'object' && 
     p.uuid_page && typeof p.uuid_page === 'string' &&
     p.url_tile === url_tile
+  ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+function getPagesByVisitor(uuid_visitor) {
+  return pagesData.pages.filter(p => 
+    p && typeof p === 'object' && 
+    p.uuid_page && typeof p.uuid_page === 'string' &&
+    (p.uuid_visitor === uuid_visitor || (p.data && p.data.uuid_visitor === uuid_visitor))
   ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
@@ -223,59 +232,48 @@ function getLastPageForVisitor(options) {
 function getTilePageUUID(options) {
   const { uuid_page, uuid_tile, url_tile, uuid_visitor, title } = options;
   
-  // 如果提供了 uuid_page，检查页面是否存在，不存在则创建
-  if (uuid_page && uuid_page.trim()) {
-    const existingPage = getPage(uuid_page);
-    if (!existingPage) {
-      // 如果页面不存在，创建新页面记录
-      const pageData = {
-        uuid_page: uuid_page,
-        uuid_tile: uuid_tile || '',
-        url_tile: url_tile || '',
-        title: title || '',
-        cardKey: generateCardKey(),
-        data: {}
-      };
-      if (uuid_visitor) {
-        pageData.data.uuid_visitor = uuid_visitor;
-      }
-      addPage(pageData);
-      console.log(`[Page Manager] Created new page with provided uuid_page: ${uuid_page}`);
+  // 必须提供 uuid_page 才能创建页面
+  if (!uuid_page || !uuid_page.trim()) {
+    console.warn('[Page Manager] uuid_page is required to create a page');
+    throw new Error('uuid_page is required to create a page');
+  }
+  
+  // 必须提供 uuid_visitor
+  if (!uuid_visitor || !uuid_visitor.trim()) {
+    console.warn('[Page Manager] uuid_visitor is required to create a page');
+    throw new Error('uuid_visitor is required to create a page');
+  }
+  
+  // 如果提供了 uuid_page，检查是否存在，不存在则创建
+  const existingPage = getPage(uuid_page);
+  if (!existingPage) {
+    // 如果页面不存在，创建新页面记录
+    const pageData = {
+      uuid_page: uuid_page,
+      uuid_tile: uuid_tile || '',
+      url_tile: url_tile || '',
+      uuid_visitor: uuid_visitor || '',
+      title: title || '',
+      cardKey: generateCardKey(),
+      data: {}
+    };
+    if (uuid_visitor) {
+      pageData.data.uuid_visitor = uuid_visitor;
     }
-    return uuid_page;
+    addPage(pageData);
+    console.log(`[Page Manager] Created new page with provided uuid_page: ${uuid_page}`);
+  } else {
+    // 如果页面已存在，并且提供了 uuid_visitor，检查是否需要更新
+    if (uuid_visitor && !existingPage.uuid_visitor) {
+      existingPage.uuid_visitor = uuid_visitor;
+      if (!existingPage.data) existingPage.data = {};
+      existingPage.data.uuid_visitor = uuid_visitor;
+      existingPage.updatedAt = new Date().toISOString();
+      savePages();
+    }
   }
   
-  // 先尝试获取已有的页面
-  const existingPageUUID = getLastPageForVisitor({ uuid_tile, url_tile, uuid_visitor });
-  
-  if (existingPageUUID) {
-    return existingPageUUID;
-  }
-  
-  // 如果没有已有页面，创建新页面
-  const newUUID = generateUuidPage();
-  
-  // 准备页面数据
-  const pageData = {
-    uuid_page: newUUID,
-    uuid_tile: uuid_tile || '',
-    url_tile: url_tile || '',
-    title: title || '',
-    cardKey: generateCardKey(),
-    data: {}
-  };
-  
-  // 如果提供了 visitor，存储到 data 中
-  if (uuid_visitor) {
-    pageData.data.uuid_visitor = uuid_visitor;
-  }
-  
-  // 添加页面
-  addPage(pageData);
-  
-  console.log(`[Page Manager] Created new page for tile: ${newUUID}`);
-  
-  return newUUID;
+  return uuid_page;
 }
 
 /**
@@ -305,6 +303,7 @@ module.exports = {
   savePageNodes,
   getPagesByTile,
   getPagesByUrlTile,
+  getPagesByVisitor,
   getAllPages,
   updatePage,
   deletePage,

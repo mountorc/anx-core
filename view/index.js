@@ -351,13 +351,25 @@ function generateVisualizationJS() {
       .then(result => {
         console.log('Button click handled successfully:', result);
         
-        // 恢复按钮状态
-        if (buttonElement) {
-          setTimeout(() => {
-            console.log('Restoring button state');
-            buttonElement.disabled = false;
-            buttonElement.classList.remove('loading');
-          }, 500);
+        // 如果返回的是 running 状态，保持按钮禁用并显示运行中状态
+        if (result && result.status === 'running') {
+          console.log('=== Task is running ===');
+          if (buttonElement) {
+            buttonElement.innerHTML = '<span class="spinner"></span> 处理中...';
+          }
+          
+          // 开始轮询检查任务状态
+          startTaskPolling(result.parentCardKey || buttonData.node.cardKey, buttonElement);
+        } else {
+          // 恢复按钮状态
+          if (buttonElement) {
+            setTimeout(() => {
+              console.log('Restoring button state');
+              buttonElement.disabled = false;
+              buttonElement.classList.remove('loading');
+              buttonElement.innerHTML = buttonData.label || '提交';
+            }, 500);
+          }
         }
         
         return result;
@@ -371,12 +383,57 @@ function generateVisualizationJS() {
             console.log('Restoring button state after error');
             buttonElement.disabled = false;
             buttonElement.classList.remove('loading');
+            buttonElement.innerHTML = buttonData.label || '提交';
           }, 500);
         }
         
         throw error;
       });
   };
+
+  // 轮询检查任务状态
+  function startTaskPolling(cardKey, buttonElement) {
+    console.log('=== Starting task polling for:', cardKey);
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await fetch('/api/get-node-data', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ cardKey: cardKey })
+        });
+        
+        const result = await response.json();
+        console.log('=== Polling result:', result);
+        
+        if (result && result.data) {
+          const submitStatus = result.data.submitStatus;
+          const processing = result.data.processing;
+          
+          // 任务完成（成功或失败）
+          if (submitStatus === 'submitted' || !processing) {
+            clearInterval(pollInterval);
+            console.log('=== Task completed ===');
+            
+            if (buttonElement) {
+              buttonElement.disabled = false;
+              buttonElement.classList.remove('loading');
+              buttonElement.innerHTML = buttonElement.dataset.originalLabel || '提交';
+            }
+          }
+        }
+      } catch (error) {
+        console.error('=== Polling error:', error);
+        clearInterval(pollInterval);
+        if (buttonElement) {
+          buttonElement.disabled = false;
+          buttonElement.classList.remove('loading');
+          buttonElement.innerHTML = buttonElement.dataset.originalLabel || '提交';
+        }
+      }
+    }, 2000); // 每2秒轮询一次
+  }
   
   // 触发事件到后端
   function triggerEvent(eventData) {
@@ -749,6 +806,31 @@ function generateVisualizationCSS() {
     
     .button-visualization button:hover {
       background-color: #218838;
+    }
+    
+    .button-visualization button.loading {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+    
+    .button-visualization button.loading:hover {
+      background-color: #6c757d;
+    }
+    
+    .button-visualization .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
     
     .options-visualization {

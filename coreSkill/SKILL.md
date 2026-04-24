@@ -180,6 +180,7 @@ await executeCli('anx card_1776755731076_8546 set_form \'{"seed":99999,"system_p
 | `anx <cardKey> set_form --replace '{...}'` | Replace all fields | `anx card_xxx set_form --replace '{"seed":123}'` |
 | `anx <cardKey> get_node` | Get current node data | `anx card_xxx get_node` |
 | `anx <cardKey> fill "value"` | Fill a single field | `anx card_xxx fill "hello"` |
+| `anx <cardKey> tap` | Click button / trigger action (cross-platform) | `anx card_xxx tap` |
 
 ---
 
@@ -239,7 +240,7 @@ const { uuid_page: samePage } = await getTileMarkup(uuid, null, myPage);  // SAM
 | `<x options>` | Dropdown | `set_form '{"field":"option_value"}'` |
 | `<x checkbox>` | Multi-select | `set_form '{"field":["value1","value2"]}'` |
 | `<x file>` | File upload | Via file upload API |
-| `<x button>` | Button | Trigger submit or action |
+| `<x button>` | Button | `tap` command to trigger action |
 | `<x form>` | Form container | Parent container, use its cardKey |
 
 ---

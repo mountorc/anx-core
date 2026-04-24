@@ -21,7 +21,9 @@ export default {
   name: 'App',
   computed: {
     isNodeVisualizationPage() {
-      return this.$route.path.startsWith('/anx/view') || this.$route.path.startsWith('/anx/markup')
+      return this.$route.path.startsWith('/anx/view') || 
+             this.$route.path.startsWith('/anx/markup') ||
+             this.$route.path.startsWith('/anx/visitor-pages')
     }
   },
   methods: {

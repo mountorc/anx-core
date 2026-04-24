@@ -23,7 +23,7 @@ const PORT = 7887;
 const cardStorage = new Map();
 // 导入节点存储模块
 const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('../../core/app/node.js');
-const { generateUuidPage, generateCardKey, addPage, getPage, getPageWithNodes, savePageNodes, getPagesByTile, getPagesByUrlTile, getAllPages, updatePage, deletePage, getPageCount, getLastPageForVisitor, getTilePageUUID, getTilePage } = require('../../core/app/pageManager.js');
+const { generateUuidPage, generateCardKey, addPage, getPage, getPageWithNodes, savePageNodes, getPagesByTile, getPagesByUrlTile, getPagesByVisitor, getAllPages, updatePage, deletePage, getPageCount, getLastPageForVisitor, getTilePageUUID, getTilePage } = require('../../core/app/pageManager.js');
 const { setHubAnxMap, processAnxContent } = require('../../core/utils/tile.js');
 const { processNodeDataset } = require('../../core/utils/dataset-processor.js');
 const { generateAnxHash, getNodesByHash, setNodesByHash, anxHashToNodeMap } = require('../../core/utils/hashNode.js');
@@ -299,7 +299,7 @@ function updateFormulas(formNode) {
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:17887', 'http://localhost:7887', 'http://127.0.0.1:17887', 'http://127.0.0.1:7887'],
+  origin: ['http://localhost:17887', 'http://localhost:17888', 'http://localhost:7887', 'http://127.0.0.1:17887', 'http://127.0.0.1:17888', 'http://127.0.0.1:7887'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
@@ -308,7 +308,35 @@ app.use(express.json());
 // API endpoint for converting ANX to Markup (POST)
 app.post('/api/convert', async (req, res) => {
   try {
-    let { anxContent, uuid_tile } = req.body;
+    let { anxContent, uuid_tile, url_tile } = req.body;
+    
+    // 如果提供了 url_tile，从指定URL获取配置
+    if (url_tile) {
+      try {
+        const response = await fetch(url_tile);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        const config = result.config || result;
+        // 支持两种格式：
+        // 1. {uuid: "...", anxContent: {...}}
+        // 2. {kind: "...", kinds: [...]} - 直接是 anxContent
+        if (config.anxContent) {
+          anxContent = config.anxContent;
+          uuid_tile = config.uuid || url_tile;
+        } else if (config.kind) {
+          // 直接是 anxContent 格式
+          anxContent = config;
+          uuid_tile = null;
+        } else {
+          throw new Error('Invalid tile config format');
+        }
+      } catch (error) {
+        console.error(`Error loading tile config from URL ${url_tile}:`, error);
+        return res.status(404).json({ error: 'Failed to load tile config from URL' });
+      }
+    }
     
     // 使用 tile.js 模块处理 anxContent
     const anxResult = processAnxContent(anxContent, uuid_tile);
@@ -648,7 +676,17 @@ app.get('/api/get-node', (req, res) => {
 // API endpoint for converting ANX to nodes structure
 app.post('/api/convert-to-nodes', async (req, res) => {
   try {
-    let { anxContent, uuid_tile, url_tile, uuid_page } = req.body;
+    let { anxContent, uuid_tile, url_tile, uuid_page, uuid_visitor } = req.body;
+    
+    // 必须提供 uuid_page
+    if (!uuid_page || !uuid_page.trim()) {
+      return res.status(400).json({ error: 'uuid_page parameter is required' });
+    }
+    
+    // 必须提供 uuid_visitor
+    if (!uuid_visitor || !uuid_visitor.trim()) {
+      return res.status(400).json({ error: 'uuid_visitor parameter is required' });
+    }
     
     // 如果提供了 uuid_page，先检查是否有已保存的页面实例
     if (uuid_page) {
@@ -693,12 +731,6 @@ app.post('/api/convert-to-nodes', async (req, res) => {
         res.json({ nodes: nodesStructure, isExisting: true });
         return;
       }
-    }
-    
-    // 如果没有提供 uuid_page，生成一个新的
-    if (!uuid_page) {
-      uuid_page = generateUuidPage();
-      console.log(`[Page Manager] Generated new uuid_page: ${uuid_page}`);
     }
     
     // 如果提供了 url_tile，从指定URL获取配置
@@ -797,10 +829,11 @@ app.post('/api/convert-to-nodes', async (req, res) => {
       uuid_page: uuid_page,
       uuid_tile: uuid_tile,
       url_tile: url_tile,
+      uuid_visitor: uuid_visitor,
       title: nodesStructure.config?.title || '',
       cardKey: cardKey,
       nodes: nodesStructure,
-      data: pageData
+      data: { ...pageData, uuid_visitor: uuid_visitor }
     });
     
     // 存储根节点到 node.js（持久化）
@@ -908,6 +941,16 @@ app.get('/api/markup', async (req, res) => {
     
     if (!url_tile && !uuid_tile) {
       return res.status(400).send('Error: Either url_tile or uuid_tile parameter is required');
+    }
+    
+    // 必须提供 uuid_page
+    if (!providedUuidPage || !providedUuidPage.trim()) {
+      return res.status(400).send('Error: uuid_page parameter is required');
+    }
+    
+    // 必须提供 uuid_visitor
+    if (!uuid_visitor || !uuid_visitor.trim()) {
+      return res.status(400).send('Error: uuid_visitor parameter is required');
     }
     
     // 使用 getTilePageUUID 获取或创建页面 UUID
@@ -1726,22 +1769,58 @@ app.post('/api/trigger-card-key', async (req, res) => {
     // 获取存储中的节点数据
     const storedNode = getNode(cardKey);
     
-    // 调用 trigger-and-tap.js 中的函数
+    // 处理tapSet并获取执行结果
+    let tapResult = null;
     if (tapSet) {
       try {
         logToSystem('handleTapSet-try', {
           cardKey: cardKey,
           handleTapSet:handleTapSet?true:false
         });
-        // 调用 handleTapSet
-        handleTapSet({cardKey});
+        
+        // 检查是否有requestSet配置
+        if (tapSet.requestSet) {
+          const parentCardKey = storedNode?.parentCardKey || cardKey;
+          
+          // 如果包含resultSet，返回running状态
+          if (tapSet.requestSet.resultSet !== undefined && tapSet.requestSet.resultSet !== null && tapSet.requestSet.resultSet !== false) {
+            // 立即设置running状态
+            updateNodeData(parentCardKey, { processing: true, submitStatus: 'running' });
+            
+            // 立即返回running状态
+            tapResult = {
+              message: 'Request started',
+              action: 'requestSet',
+              status: 'running',
+              submitStatus: 'running',
+              cardKey: cardKey,
+              parentCardKey: parentCardKey
+            };
+            
+            // 后台异步执行请求
+            handleTapSetRequestSetAsync(cardKey, parentCardKey, tapSet.requestSet);
+          } else {
+            // 同步执行请求
+            tapResult = await handleTapSetRequestSet(cardKey, parentCardKey, tapSet.requestSet);
+            if (!tapResult.status) {
+              tapResult.status = 'completed';
+            }
+          }
+        } else {
+          // 调用 handleTapSet
+          handleTapSet({cardKey});
+          tapResult = { status: 'completed', message: 'Tap action executed' };
+        }
+        
         logToSystem('handleTapSet-finish', {
+          result: tapResult
         });
       } catch (tapError) {
         logToSystem('handleTapSet-error', {
           cardKey: cardKey,
-          tapError: tapError,
+          tapError: tapError.message,
         });
+        tapResult = { status: 'error', message: tapError.message };
       }
     }
     
@@ -1755,14 +1834,15 @@ app.post('/api/trigger-card-key', async (req, res) => {
       }
     }
     
-    // 返回当前节点结构
+    // 返回包含状态数据的结果
     res.json({
       success: true,
       message: 'Card key triggered successfully',
       cardKey: cardKey,
       tapSet: tapSet || null,
       triggerSet: triggerSet || null,
-      nodes: storedNode || null
+      nodes: storedNode || null,
+      data: tapResult || { status: 'completed' }
     });
   } catch (error) {
     console.error('[API] Error triggering card key:', error);
@@ -1875,6 +1955,41 @@ app.get('/dataset/:filename', (req, res) => {
 });
 
 // API endpoint for updating node data
+app.post('/api/get-node-data', (req, res) => {
+  try {
+    const { cardKey } = req.body;
+    
+    if (!cardKey) {
+      return res.status(400).json({ error: 'cardKey is required' });
+    }
+    
+    // 从多个来源查找节点
+    const node = findNode(cardKey);
+    
+    if (node) {
+      res.json({
+        success: true,
+        cardKey: cardKey,
+        data: node.data || {}
+      });
+    } else {
+      res.json({
+        success: false,
+        cardKey: cardKey,
+        error: 'Node not found',
+        data: {}
+      });
+    }
+  } catch (error) {
+    console.error('[API] Error getting node data:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to get node data',
+      data: {}
+    });
+  }
+});
+
 app.post('/api/update-node-data', (req, res) => {
   try {
     const { cardKey, field, value } = req.body;
@@ -2220,14 +2335,44 @@ app.get('/api/pages/by-tile/:uuid_tile', (req, res) => {
   }
 });
 
+// 获取指定visitor的所有页面
+app.get('/api/pages/by-visitor/:uuid_visitor', (req, res) => {
+  try {
+    const { uuid_visitor } = req.params;
+    const pages = getPagesByVisitor(uuid_visitor);
+    res.json({
+      success: true,
+      data: pages,
+      count: pages.length
+    });
+  } catch (error) {
+    console.error('Error loading pages by visitor:', error);
+    res.status(500).json({ error: 'Failed to load pages by visitor' });
+  }
+});
+
 // 通过 url_tile 获取页面列表
 app.get('/api/pages/by-url-tile', (req, res) => {
   try {
-    const { url_tile } = req.query;
+    const { url_tile, uuid_visitor } = req.query;
     if (!url_tile) {
       return res.status(400).json({ error: 'url_tile parameter is required' });
     }
-    const pages = getPagesByUrlTile(url_tile);
+    
+    let pages = getPagesByUrlTile(url_tile);
+    
+    // 如果提供了 uuid_visitor，优先返回匹配的页面；如果没有匹配的，返回所有页面（向后兼容）
+    if (uuid_visitor) {
+      const filteredPages = pages.filter(page => 
+        page.uuid_visitor === uuid_visitor || 
+        (page.data && page.data.uuid_visitor === uuid_visitor)
+      );
+      // 如果有匹配的页面，返回过滤结果；否则返回所有页面
+      if (filteredPages.length > 0) {
+        pages = filteredPages;
+      }
+    }
+    
     res.json({
       success: true,
       data: pages,
