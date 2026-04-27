@@ -3,7 +3,7 @@
  * 基于 AutoDataSource OSS 上传文件（Token方式）
  */
 
-const BASE_URL = 'http://localhost:8080/autoDataSource';
+const OSS_HOST = 'http://localhost:2427';
 
 
 /**
@@ -57,7 +57,7 @@ async function uploadImageToOSS(file, basePath = 'anx-core/') {
 
 
 /**
- * 使用token上传文件
+ * 使用token上传文件（form-data格式）
  * @param {string} token - 上传token
  * @param {File} file - 要上传的文件
  * @param {string} fileName - 文件名
@@ -70,18 +70,41 @@ async function uploadFileByToken(token, file, fileName) {
     formData.append('file', file);
     formData.append('fileName', fileName);
     
-    const response = await fetch(`${BASE_URL}/api/oss/upload-by-token`, {
+    console.log('OSS Upload: Preparing to upload file:', fileName);
+    console.log('OSS Upload: File size:', file.size);
+    console.log('OSS Upload: URL:', `${OSS_HOST}/oss/upload-form`);
+    
+    const response = await fetch(`${OSS_HOST}/oss/upload-form`, {
       method: 'POST',
       body: formData
     });
     
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    console.log('OSS Upload: Response status:', response.status);
     
-    return await response.json();
+    const responseText = await response.text();
+    console.log('OSS Upload: Raw response text:', responseText);
+    
+    try {
+      const result = JSON.parse(responseText);
+      console.log('OSS Upload: Parsed result:', result);
+      
+      if (result.success === true) {
+        return result;
+      } else {
+        throw new Error(`Upload failed: ${result.message || 'Unknown error'}`);
+      }
+    } catch (jsonError) {
+      console.warn('OSS Upload: Failed to parse JSON, but continuing to check response:', jsonError);
+      
+      if (responseText.includes('success') && responseText.includes('true')) {
+        console.log('OSS Upload: Response contains success:true, treating as success');
+        return { success: true, message: 'Upload successful', data: responseText };
+      }
+      
+      throw new Error(`Upload failed with status ${response.status}: ${responseText}`);
+    }
   } catch (error) {
-    console.error('Error uploading file:', error);
+    console.error('OSS Upload: Error uploading file:', error);
     throw error;
   }
 }

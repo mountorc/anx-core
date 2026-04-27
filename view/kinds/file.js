@@ -86,10 +86,7 @@ function renderSingleImageUpload(node, inputId) {
         </div>
       ` : `
         <div class="anx-upload-area" onclick="triggerFileInput('${inputId}')">
-          <div class="anx-upload-placeholder">
-            <div class="anx-upload-icon">📷</div>
-            <div class="anx-upload-text">点击上传图片</div>
-          </div>
+          <div class="anx-upload-plus">+</div>
         </div>
       `}
     </div>

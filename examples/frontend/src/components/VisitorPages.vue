@@ -3,12 +3,6 @@
     <div class="visitor-pages-header">
       <h2>页面列表</h2>
       <span class="instance-count">{{ pages.length }} 个实例</span>
-      <button class="add-btn" @click="handleAddPage">
-        <span class="add-icon">+</span>
-      </button>
-      <button class="back-btn" @click="handleBack">
-        <span class="back-icon">‹</span>
-      </button>
     </div>
     
     <div class="visitor-info-bar">
@@ -27,7 +21,7 @@
         <div class="page-indicator"></div>
         <div class="page-content">
           <div class="page-title">{{ page.title || '未命名' }}</div>
-          <div class="page-id">{{ page.uuid_page }}</div>
+          <div class="page-id" :title="page.uuid_page">{{ truncateUuid(page.uuid_page) }}</div>
           <div class="page-date">{{ formatDate(page.createdAt) }}</div>
         </div>
         <span class="status-badge" :class="getStatusClass(page)">
@@ -41,12 +35,31 @@
       <p>暂无页面数据</p>
       <p class="empty-hint">该 visitor 尚未创建任何页面</p>
     </div>
+    
+    <div v-if="showModal" class="modal-overlay" @click.self="closeModal">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>{{ selectedPage?.title || '页面预览' }}</h3>
+          <button class="close-btn" @click="closeModal">×</button>
+        </div>
+        <div class="modal-body">
+          <div v-if="modalLoading" class="loading-content">
+            <div class="spinner"></div>
+            <p>加载中...</p>
+          </div>
+          <div v-else-if="modalError" class="error-content">
+            <p>{{ modalError }}</p>
+          </div>
+          <div v-else-if="nodesStructure && visualizationHTML" class="anx-view-container">
+            <div ref="anxViewContainer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { communicateWithBackend } from '../utils/postCore.js';
-
 export default {
   name: 'VisitorPages',
   props: {
@@ -58,9 +71,15 @@ export default {
   data() {
     return {
       pages: [],
-      selectedPage: null
+      selectedPage: null,
+      showModal: false,
+      modalLoading: false,
+      modalError: '',
+      nodesStructure: null,
+      visualizationHTML: ''
     };
   },
+  refs: ['anxViewContainer'],
   mounted() {
     if (this.uuid_visitor) {
       this.loadPages();
@@ -90,7 +109,6 @@ export default {
           if (result && result.success) {
             this.pages = result.data || [];
             console.log('[VisitorPages] Pages loaded:', this.pages.length);
-            // 默认选中第一个页面
             if (this.pages.length > 0 && !this.selectedPage) {
               this.selectedPage = this.pages[0];
             }
@@ -105,7 +123,7 @@ export default {
         this.pages = [];
       }
     },
-    handlePageClick(page) {
+    async handlePageClick(page) {
       this.selectedPage = page;
       this.$emit('pageClick', page);
       
@@ -116,12 +134,172 @@ export default {
           timestamp: new Date().toISOString()
         }, '*');
       }
+      
+      await this.openAnxViewModal(page);
     },
-    handleAddPage() {
-      this.$emit('addPage', { uuid_visitor: this.uuid_visitor });
+    async openAnxViewModal(page) {
+      this.showModal = true;
+      this.modalLoading = true;
+      this.modalError = '';
+      this.nodesStructure = null;
+      this.visualizationHTML = '';
+      
+      try {
+        const pageData = await this.fetchPageData(page);
+        if (pageData && pageData.nodes) {
+          this.nodesStructure = pageData.nodes;
+        } else if (page.url_tile) {
+          await this.fetchFromUrl(page.url_tile, page.uuid_page);
+        } else if (page.uuid_tile) {
+          await this.fetchFromTile(page.uuid_tile, page.uuid_page);
+        }
+        
+        if (this.nodesStructure && !this.visualizationHTML) {
+          await this.fetchVisualization(page.uuid_page);
+        }
+      } catch (error) {
+        console.error('[VisitorPages] Error loading ANX view:', error);
+        this.modalError = '加载页面失败: ' + error.message;
+      } finally {
+        this.modalLoading = false;
+        await this.$nextTick();
+        this.createAnxViewElement();
+      }
     },
-    handleBack() {
-      this.$emit('back');
+    async fetchVisualization(uuid_page) {
+      const vizResponse = await fetch('http://localhost:7887/api/visualize-node', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          node: this.nodesStructure,
+          uuid_page: uuid_page
+        })
+      });
+
+      if (!vizResponse.ok) {
+        throw new Error('Failed to fetch visualization');
+      }
+
+      const vizResult = await vizResponse.json();
+      this.visualizationHTML = vizResult.html || '';
+    },
+    createAnxViewElement() {
+      const container = this.$refs.anxViewContainer;
+      if (!container || !this.nodesStructure || !this.visualizationHTML) {
+        return;
+      }
+      
+      container.innerHTML = '';
+      
+      const anxView = document.createElement('anx-view');
+      anxView.setAttribute('nodes-structure', JSON.stringify(this.nodesStructure));
+      anxView.setAttribute('visualization-html', this.visualizationHTML);
+      container.appendChild(anxView);
+    },
+    async fetchPageData(page) {
+      try {
+        const response = await fetch(`http://localhost:7887/api/pages/${page.uuid_page}`);
+        if (response.ok) {
+          const result = await response.json();
+          return result.data;
+        }
+      } catch (error) {
+        console.error('[VisitorPages] Error fetching page data:', error);
+      }
+      return null;
+    },
+    async fetchFromUrl(url, uuid_page) {
+      const nodesResponse = await fetch('http://localhost:7887/api/convert-to-nodes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          url_tile: url, 
+          uuid_page: uuid_page,
+          uuid_visitor: this.uuid_visitor
+        })
+      });
+
+      if (!nodesResponse.ok) {
+        throw new Error('Failed to fetch nodes structure');
+      }
+
+      const nodesResult = await nodesResponse.json();
+      if (!nodesResult.nodes) {
+        throw new Error('Failed to get nodes structure from response');
+      }
+
+      this.nodesStructure = nodesResult.nodes;
+
+      const vizResponse = await fetch('http://localhost:7887/api/visualize-node', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          nodes: this.nodesStructure,
+          uuid_page: uuid_page
+        })
+      });
+
+      if (!vizResponse.ok) {
+        throw new Error('Failed to fetch visualization');
+      }
+
+      const vizResult = await vizResponse.json();
+      this.visualizationHTML = vizResult.html || '';
+    },
+    async fetchFromTile(uuid_tile, uuid_page) {
+      const nodesResponse = await fetch('http://localhost:7887/api/convert-to-nodes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          uuid_tile: uuid_tile, 
+          uuid_page: uuid_page,
+          uuid_visitor: this.uuid_visitor
+        })
+      });
+
+      if (!nodesResponse.ok) {
+        throw new Error('Failed to fetch nodes structure');
+      }
+
+      const nodesResult = await nodesResponse.json();
+      if (!nodesResult.nodes) {
+        throw new Error('Failed to get nodes structure from response');
+      }
+
+      this.nodesStructure = nodesResult.nodes;
+
+      const vizResponse = await fetch('http://localhost:7887/api/visualize-node', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          nodes: this.nodesStructure,
+          uuid_page: uuid_page
+        })
+      });
+
+      if (!vizResponse.ok) {
+        throw new Error('Failed to fetch visualization');
+      }
+
+      const vizResult = await vizResponse.json();
+      this.visualizationHTML = vizResult.html || '';
+    },
+    closeModal() {
+      this.showModal = false;
+      this.modalLoading = false;
+      this.modalError = '';
+      this.nodesStructure = null;
+      this.visualizationHTML = '';
     },
     formatDate(dateStr) {
       if (!dateStr) return '';
@@ -131,6 +309,11 @@ export default {
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');
       return `${month}月${day}日 ${hours}:${minutes}`;
+    },
+    truncateUuid(uuid) {
+      if (!uuid) return '';
+      if (uuid.length <= 20) return uuid;
+      return uuid.substring(0, 10) + '...' + uuid.substring(uuid.length - 8);
     },
     getStatusClass(page) {
       const submitStatus = page.data?.submitStatus;
@@ -179,7 +362,7 @@ export default {
 .visitor-pages-header {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 8px 12px;
   background: #fff;
   border-bottom: 1px solid #eee;
   position: relative;
@@ -187,87 +370,36 @@ export default {
 
 .visitor-pages-header h2 {
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   color: #333;
 }
 
 .instance-count {
-  margin-left: 12px;
-  padding: 4px 10px;
-  background: #f5f5f5;
-  border-radius: 12px;
-  font-size: 12px;
+  margin-left: 8px;
+  padding: 2px 8px;
+  background: #f0f0f0;
+  border-radius: 10px;
+  font-size: 11px;
   color: #666;
-}
-
-.add-btn {
-  position: absolute;
-  right: 50px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #2196f3;
-  border: none;
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-
-.add-btn:hover {
-  background: #1976d2;
-}
-
-.add-icon {
-  line-height: 1;
-}
-
-.back-btn {
-  position: absolute;
-  right: 12px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #f5f5f5;
-  border: none;
-  color: #666;
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-
-.back-btn:hover {
-  background: #e0e0e0;
-}
-
-.back-icon {
-  line-height: 1;
-  font-size: 24px;
 }
 
 .visitor-info-bar {
   display: flex;
   align-items: center;
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: #fafafa;
   border-bottom: 1px solid #eee;
 }
 
 .visitor-label {
-  font-size: 12px;
+  font-size: 11px;
   color: #999;
-  margin-right: 8px;
+  margin-right: 6px;
 }
 
 .visitor-value {
-  font-size: 12px;
+  font-size: 11px;
   color: #1976d2;
   font-family: monospace;
   word-break: break-all;
@@ -276,70 +408,73 @@ export default {
 .pages-list {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
+  padding: 8px;
 }
 
 .page-item {
   display: flex;
-  align-items: stretch;
-  padding: 12px;
-  margin-bottom: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  margin-bottom: 4px;
   background: #fff;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: 1px solid transparent;
+  transition: all 0.15s ease;
+  border: none;
 }
 
 .page-item:hover {
-  background: #f8f9fa;
+  background: #f5f7fa;
 }
 
 .page-item.active {
-  background: #e3f2fd;
-  border-color: #90caf9;
+  background: #ebf5ff;
 }
 
 .page-indicator {
-  width: 4px;
+  width: 3px;
+  height: 24px;
   background: #2196f3;
   border-radius: 2px;
-  margin-right: 12px;
+  margin-right: 10px;
   flex-shrink: 0;
 }
 
 .page-content {
   flex: 1;
   overflow: hidden;
+  min-width: 0;
 }
 
 .page-title {
   font-weight: 500;
   color: #333;
-  margin-bottom: 4px;
-  font-size: 14px;
+  font-size: 13px;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .page-id {
   font-family: monospace;
-  font-size: 12px;
+  font-size: 11px;
   color: #999;
-  margin-bottom: 4px;
-  word-break: break-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .page-date {
-  font-size: 12px;
-  color: #bbb;
+  display: none;
 }
 
 .status-badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 11px;
   font-weight: 500;
-  align-self: flex-start;
-  margin-left: 12px;
+  margin-left: 10px;
   flex-shrink: 0;
 }
 
@@ -380,5 +515,129 @@ export default {
 .empty-hint {
   font-size: 12px;
   color: #bbb;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-container {
+  background: #fff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.close-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #e0e0e0;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  background: #d0d0d0;
+}
+
+.modal-body {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+  background: #f5f5f5;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #2196f3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-content p {
+  margin-top: 16px;
+  color: #666;
+}
+
+.error-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #dc3545;
+}
+
+.anx-view-container {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 400px;
 }
 </style>

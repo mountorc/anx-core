@@ -992,17 +992,36 @@ function generateVisualizationCSS() {
     }
     
     .anx-upload-area {
+      width: 100px;
+      height: 100px;
       border: 2px dashed #ddd;
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       transition: all 0.3s ease;
+      background: #fff;
     }
     
     .anx-upload-area:hover {
       border-color: #409eff;
       background-color: #f5f9ff;
+    }
+    
+    .anx-upload-plus {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: #999;
+      font-weight: 300;
+    }
+    
+    .anx-upload-area:hover .anx-upload-plus {
+      color: #409eff;
     }
     
     .anx-upload-placeholder {

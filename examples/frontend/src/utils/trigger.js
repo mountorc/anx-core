@@ -3,21 +3,33 @@
  */
 import { sendMessageToParent, dispatchGlobalEvent, communicateWithBackend } from './postCore.js';
 
+function getUuidVisitor() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('uuid_visitor');
+}
+
 /**
  * 处理触发事件
  * @param {string} cardKey - 卡片 key
  * @param {Object} tapSet - tapSet 配置
  * @param {HTMLElement} buttonElement - 按钮元素（可选）
+ * @param {string} uuidVisitor - 访客 UUID（可选，优先使用）
  */
-export async function triggerDeal(cardKey, tapSet = null, buttonElement = null) {
+export async function triggerDeal(cardKey, tapSet = null, buttonElement = null, uuidVisitor = null) {
   console.log("cardKey" + cardKey);
   if (tapSet) {
     console.log("with tapSet:", tapSet);
   }
 
   try {
+    const uuid_visitor = uuidVisitor || getUuidVisitor();
+    
     // 直接调用后端 API 触发 cardKey 节点点击
-    const result = await communicateWithBackend('/api/trigger-card-key', { cardKey, tapSet });
+    const requestData = { cardKey, tapSet };
+    if (uuid_visitor) {
+      requestData.uuid_visitor = uuid_visitor;
+    }
+    const result = await communicateWithBackend('/api/trigger-card-key', requestData);
     console.log('Card key triggered:', result);
 
     // 发送消息到父窗口，触发日志记录

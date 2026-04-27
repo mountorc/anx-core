@@ -54,12 +54,18 @@ window.removeFile = function(cardKey, kind, index) {
   }
 };
 
+function getUuidVisitorFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('uuid_visitor');
+}
+
 // 添加全局节点数据更新函数占位符
 window.updateNodeData = function(element) {
   console.log('ANXView: updateNodeData placeholder called');
   const cardKey = element.getAttribute('data-card-key');
   const field = element.getAttribute('data-field');
   const value = element.value;
+  const uuid_visitor = getUuidVisitorFromURL();
   
   // 使用postCore发送消息
   if (postCore) {
@@ -71,7 +77,8 @@ window.updateNodeData = function(element) {
       detail: {
         cardKey: cardKey,
         field: field,
-        value: value
+        value: value,
+        uuid_visitor: uuid_visitor
       }
     });
     window.dispatchEvent(event);
@@ -83,6 +90,7 @@ window.updateCheckboxData = function(element) {
   console.log('ANXView: updateCheckboxData placeholder called');
   const cardKey = element.getAttribute('data-card-key');
   const field = element.getAttribute('data-field');
+  const uuid_visitor = getUuidVisitorFromURL();
   
   // 获取当前所有选中的值
   const checkboxes = document.querySelectorAll('[data-card-key="' + cardKey + '"][data-field="' + field + '"]');
@@ -103,7 +111,8 @@ window.updateCheckboxData = function(element) {
       detail: {
         cardKey: cardKey,
         field: field,
-        value: values
+        value: values,
+        uuid_visitor: uuid_visitor
       }
     });
     window.dispatchEvent(event);
@@ -127,6 +136,8 @@ window.handleTapSet = function(tapSet, node, button) {
 // 定义全局的节点更新函数
 window.anxNodeUpdate = function(cardKey, field, value) {
   console.log('ANXView: anxNodeUpdate called:', cardKey, field, value);
+  const uuid_visitor = getUuidVisitorFromURL();
+  
   // 使用postCore发送消息
   if (postCore) {
     postCore.sendNodeDataUpdate(cardKey, field, value);
@@ -137,7 +148,8 @@ window.anxNodeUpdate = function(cardKey, field, value) {
       detail: {
         cardKey: cardKey,
         field: field,
-        value: value
+        value: value,
+        uuid_visitor: uuid_visitor
       }
     });
     window.dispatchEvent(event);

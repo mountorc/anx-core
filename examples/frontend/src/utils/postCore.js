@@ -99,6 +99,11 @@ export async function communicateWithBackend(endpoint, data) {
   }
 }
 
+function getUuidVisitor() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('uuid_visitor');
+}
+
 /**
  * 更新节点数据到后端
  * @param {string} cardKey - 节点卡键
@@ -107,9 +112,16 @@ export async function communicateWithBackend(endpoint, data) {
  * @returns {Promise<Object>} - 响应数据
  */
 export async function updateNodeDataToBackend(cardKey, field, value) {
-  return communicateWithBackend('/api/update-node-data', {
+  const requestData = {
     cardKey: cardKey,
     field: field,
     value: value
-  });
+  };
+  
+  const uuid_visitor = getUuidVisitor();
+  if (uuid_visitor) {
+    requestData.uuid_visitor = uuid_visitor;
+  }
+  
+  return communicateWithBackend('/api/update-node-data', requestData);
 }

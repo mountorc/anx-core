@@ -1,6 +1,259 @@
 [
   {
     "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 22:30:57",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": "https://intostore.oss-cn-qingdao.aliyuncs.com/turan/1777300256719_d16smn2l.png"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"https://intostore.oss-cn-qingdao.aliyuncs.com/turan/1777300256719_d16smn2l.png\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 22:30:56",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": "blob:http://localhost:17887/21f89cc8-be04-4e6d-abb4-2a4b059f0b31"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/21f89cc8-be04-4e6d-abb4-2a4b059f0b31\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:58:51",
+    "details": {
+      "cardKey": "card_1776775894609_1pbskkb68",
+      "field": "value",
+      "value": ""
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1776775894609_1pbskkb68\",\"field\":\"value\",\"value\":\"\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:58:14",
+    "details": {
+      "cardKey": "card_1776775894609_1pbskkb68",
+      "field": "value",
+      "value": "blob:http://localhost:17887/1d445a44-0ceb-47a5-8f6b-7a869374ba90"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1776775894609_1pbskkb68\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/1d445a44-0ceb-47a5-8f6b-7a869374ba90\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:50:06",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": ""
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:50:05",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": "blob:http://localhost:17887/6889b48e-caf3-4936-a9ba-ed37bbb9159d"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/6889b48e-caf3-4936-a9ba-ed37bbb9159d\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:32:34",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": ""
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:32:34",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": "blob:http://localhost:17887/e32371c6-16d9-4a24-b179-554707271e7f"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/e32371c6-16d9-4a24-b179-554707271e7f\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:28:23",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": ""
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:28:23",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": "blob:http://localhost:17887/32527313-7dd7-49a8-a105-a5a513474a15"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/32527313-7dd7-49a8-a105-a5a513474a15\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:24:20",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": ""
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:24:20",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": "blob:http://localhost:17887/7e6d1447-3868-401c-8939-21cb952c5814"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/7e6d1447-3868-401c-8939-21cb952c5814\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:23:46",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": ""
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:23:45",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": "blob:http://localhost:17887/ef4a2000-d53f-492c-b2f7-d7e8aeb26bae"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/ef4a2000-d53f-492c-b2f7-d7e8aeb26bae\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:17:36",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": "blob:http://localhost:17887/e8034d41-1789-4294-8b97-903b37a1fe55"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/e8034d41-1789-4294-8b97-903b37a1fe55\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:17:27",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": ""
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:13:52",
+    "details": {
+      "cardKey": "card_1776775894609_1pbskkb68",
+      "field": "value",
+      "value": ""
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1776775894609_1pbskkb68\",\"field\":\"value\",\"value\":\"\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:13:52",
+    "details": {
+      "cardKey": "card_1776775894609_1pbskkb68",
+      "field": "value",
+      "value": "blob:http://localhost:17887/27f15d00-09d4-4dfa-af4f-f9ad03069dd9"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1776775894609_1pbskkb68\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/27f15d00-09d4-4dfa-af4f-f9ad03069dd9\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:11:39",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": "blob:http://localhost:17887/c19b2053-6dfb-4b37-9db1-83a0b5d1ab81"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/c19b2053-6dfb-4b37-9db1-83a0b5d1ab81\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:10:54",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": ""
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 21:10:54",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": "blob:http://localhost:17887/f23f4910-678c-4e2c-8e59-fa23cd794917"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/f23f4910-678c-4e2c-8e59-fa23cd794917\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 12:43:07",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": ""
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"\"}"
+  },
+  {
+    "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-04-27 12:43:07",
+    "details": {
+      "cardKey": "card_1777056109714_b9jkndf94",
+      "field": "value",
+      "value": "blob:http://localhost:17887/b4ad5036-fd20-43d7-8cb1-563fb6d34b31"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777056109714_b9jkndf94\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/b4ad5036-fd20-43d7-8cb1-563fb6d34b31\"}"
+  },
+  {
+    "type": "system",
     "action": "handleTapSet-error",
     "timestamp": "2026-04-25 02:24:56",
     "details": {
@@ -40800,1911 +41053,5 @@
       "timestamp": "2026-04-18T12:28:05.758Z"
     },
     "message": "[System] action_success: {\"actionType\":\"requestSet\",\"timestamp\":\"2026-04-18T12:28:05.758Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "request_send",
-    "timestamp": "2026-04-18T12:28:05.734Z",
-    "details": {
-      "url": "http://localhost:3002/api/run-workflow",
-      "method": "POST",
-      "headers": {
-        "Content-Type": "application/json"
-      },
-      "body": "{\"workflowId\":\"2028318219441803266\",\"image1\":\"blob:http://localhost:17887/7a51319d-8226-4451-852f-083b4d051678\"}",
-      "timestamp": "2026-04-18T12:28:05.734Z"
-    },
-    "message": "[System] request_send: {\"url\":\"http://localhost:3002/api/run-workflow\",\"method\":\"POST\",\"headers\":{\"Content-Type\":\"application/json\"},\"body\":\"{\\\"workflowId\\\":\\\"2028318219441803266\\\",\\\"image1\\\":\\\"blob:http://localhost:17887/7a51319d-8226-4451-852f-083b4d051678\\\"}\",\"timestamp\":\"2026-04-18T12:28:05.734Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "request_params",
-    "timestamp": "2026-04-18T12:28:05.711Z",
-    "details": {
-      "params": {
-        "workflowId": "2028318219441803266",
-        "image1": "blob:http://localhost:17887/7a51319d-8226-4451-852f-083b4d051678"
-      },
-      "paramMap": {
-        "workflowId": "'2028318219441803266'",
-        "image1": "images",
-        "system_prompt": "system_prompt",
-        "user_prompt": "user_prompt",
-        "display_style": "display_style",
-        "remove_parts": "remove_parts",
-        "aspect_ratio": "aspect_ratio",
-        "resolution": "resolution",
-        "seed": "seed",
-        "skip_error": "skip_error",
-        "rmbg_model": "rmbg_model",
-        "sensitivity": "sensitivity",
-        "process_res": "process_res",
-        "background": "background",
-        "background_color": "background_color"
-      },
-      "timestamp": "2026-04-18T12:28:05.711Z"
-    },
-    "message": "[System] request_params: {\"params\":{\"workflowId\":\"2028318219441803266\",\"image1\":\"blob:http://localhost:17887/7a51319d-8226-4451-852f-083b4d051678\"},\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"timestamp\":\"2026-04-18T12:28:05.711Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "request_start",
-    "timestamp": "2026-04-18T12:28:05.685Z",
-    "details": {
-      "method": "POST",
-      "url": "http://localhost:3002/api/run-workflow",
-      "paramMap": {
-        "workflowId": "'2028318219441803266'",
-        "image1": "images",
-        "system_prompt": "system_prompt",
-        "user_prompt": "user_prompt",
-        "display_style": "display_style",
-        "remove_parts": "remove_parts",
-        "aspect_ratio": "aspect_ratio",
-        "resolution": "resolution",
-        "seed": "seed",
-        "skip_error": "skip_error",
-        "rmbg_model": "rmbg_model",
-        "sensitivity": "sensitivity",
-        "process_res": "process_res",
-        "background": "background",
-        "background_color": "background_color"
-      },
-      "timestamp": "2026-04-18T12:28:05.685Z"
-    },
-    "message": "[System] request_start: {\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"timestamp\":\"2026-04-18T12:28:05.685Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "request_start",
-    "timestamp": "2026-04-18T12:28:05.661Z",
-    "details": {
-      "cardKey": "card_1776491722387_5211",
-      "url": "http://localhost:3002/api/run-workflow",
-      "method": "POST",
-      "paramMap": {
-        "workflowId": "'2028318219441803266'",
-        "image1": "images",
-        "system_prompt": "system_prompt",
-        "user_prompt": "user_prompt",
-        "display_style": "display_style",
-        "remove_parts": "remove_parts",
-        "aspect_ratio": "aspect_ratio",
-        "resolution": "resolution",
-        "seed": "seed",
-        "skip_error": "skip_error",
-        "rmbg_model": "rmbg_model",
-        "sensitivity": "sensitivity",
-        "process_res": "process_res",
-        "background": "background",
-        "background_color": "background_color"
-      },
-      "timestamp": "2026-04-18T12:28:05.661Z"
-    },
-    "message": "[System] request_start: {\"cardKey\":\"card_1776491722387_5211\",\"url\":\"http://localhost:3002/api/run-workflow\",\"method\":\"POST\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"timestamp\":\"2026-04-18T12:28:05.661Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "handleAction-start",
-    "timestamp": "2026-04-18T12:28:05.633Z",
-    "details": {
-      "cardKey": "card_1776491722387_5211",
-      "actionType": "requestSet",
-      "actionConfig": {
-        "method": "POST",
-        "url": "http://localhost:3002/api/run-workflow",
-        "paramMap": {
-          "workflowId": "'2028318219441803266'",
-          "image1": "images",
-          "system_prompt": "system_prompt",
-          "user_prompt": "user_prompt",
-          "display_style": "display_style",
-          "remove_parts": "remove_parts",
-          "aspect_ratio": "aspect_ratio",
-          "resolution": "resolution",
-          "seed": "seed",
-          "skip_error": "skip_error",
-          "rmbg_model": "rmbg_model",
-          "sensitivity": "sensitivity",
-          "process_res": "process_res",
-          "background": "background",
-          "background_color": "background_color"
-        },
-        "resultSet": true,
-        "successSet": {
-          "taskId": "taskId",
-          "result": "result"
-        },
-        "api_status": {
-          "url": "http://localhost:3002/api/task/status/{{taskId}}"
-        },
-        "api_result": {
-          "url": "http://localhost:3002/api/task/result/{{taskId}}"
-        }
-      },
-      "data": {},
-      "timestamp": "2026-04-18T12:28:05.633Z"
-    },
-    "message": "[System] handleAction-start: {\"cardKey\":\"card_1776491722387_5211\",\"actionType\":\"requestSet\",\"actionConfig\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"resultSet\":true,\"successSet\":{\"taskId\":\"taskId\",\"result\":\"result\"},\"api_status\":{\"url\":\"http://localhost:3002/api/task/status/{{taskId}}\"},\"api_result\":{\"url\":\"http://localhost:3002/api/task/result/{{taskId}}\"}},\"data\":{},\"timestamp\":\"2026-04-18T12:28:05.633Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "handleTapSet-tapSet",
-    "timestamp": "2026-04-18T12:28:05.609Z",
-    "details": {
-      "cardKey": "card_1776491722387_5211",
-      "parentCardKey": "card_1776491722387_9137",
-      "testValue": "none",
-      "testValue1": "none",
-      "testValue2": "none",
-      "tapSet": {
-        "requestSet": {
-          "method": "POST",
-          "url": "http://localhost:3002/api/run-workflow",
-          "paramMap": {
-            "workflowId": "'2028318219441803266'",
-            "image1": "images",
-            "system_prompt": "system_prompt",
-            "user_prompt": "user_prompt",
-            "display_style": "display_style",
-            "remove_parts": "remove_parts",
-            "aspect_ratio": "aspect_ratio",
-            "resolution": "resolution",
-            "seed": "seed",
-            "skip_error": "skip_error",
-            "rmbg_model": "rmbg_model",
-            "sensitivity": "sensitivity",
-            "process_res": "process_res",
-            "background": "background",
-            "background_color": "background_color"
-          },
-          "resultSet": true,
-          "successSet": {
-            "taskId": "taskId",
-            "result": "result"
-          },
-          "api_status": {
-            "url": "http://localhost:3002/api/task/status/{{taskId}}"
-          },
-          "api_result": {
-            "url": "http://localhost:3002/api/task/result/{{taskId}}"
-          }
-        }
-      },
-      "node": {
-        "cardKey": "card_1776491722387_5211",
-        "config": {
-          "kind": "button",
-          "type": "string",
-          "nick": "submit",
-          "title": "开始处理2",
-          "description": "提交表单并开始图像处理",
-          "tapSet": {
-            "requestSet": {
-              "method": "POST",
-              "url": "http://localhost:3002/api/run-workflow",
-              "paramMap": {
-                "workflowId": "'2028318219441803266'",
-                "image1": "images",
-                "system_prompt": "system_prompt",
-                "user_prompt": "user_prompt",
-                "display_style": "display_style",
-                "remove_parts": "remove_parts",
-                "aspect_ratio": "aspect_ratio",
-                "resolution": "resolution",
-                "seed": "seed",
-                "skip_error": "skip_error",
-                "rmbg_model": "rmbg_model",
-                "sensitivity": "sensitivity",
-                "process_res": "process_res",
-                "background": "background",
-                "background_color": "background_color"
-              },
-              "resultSet": true,
-              "successSet": {
-                "taskId": "taskId",
-                "result": "result"
-              },
-              "api_status": {
-                "url": "http://localhost:3002/api/task/status/{{taskId}}"
-              },
-              "api_result": {
-                "url": "http://localhost:3002/api/task/result/{{taskId}}"
-              }
-            }
-          }
-        },
-        "data": {},
-        "logs": [],
-        "nodes": [],
-        "parentCardKey": "card_1776491722387_9137"
-      },
-      "parentNode": {
-        "cardKey": "card_1776491722387_9137",
-        "config": {
-          "kind": "form",
-          "type": "object",
-          "nick": "clothing_image_processing",
-          "title": "服装图像处理2",
-          "kinds": [
-            {
-              "kind": "file",
-              "type": "array",
-              "nick": "images",
-              "title": "上传图像",
-              "must": true,
-              "description": "支持上传多张服装图像（最多8张）",
-              "accept": "image/*",
-              "multiple": true,
-              "maxCount": 8
-            },
-            {
-              "kind": "textarea",
-              "type": "string",
-              "nick": "system_prompt",
-              "title": "系统提示词",
-              "value": "对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景",
-              "must": true,
-              "description": "系统级别的处理指令",
-              "placeholder": "请输入系统提示词",
-              "maxLength": 500
-            },
-            {
-              "kind": "textarea",
-              "type": "string",
-              "nick": "user_prompt",
-              "title": "用户提示词",
-              "value": "",
-              "must": false,
-              "description": "用户的自定义提示词",
-              "placeholder": "请输入用户提示词（可选）",
-              "maxLength": 500
-            },
-            {
-              "kind": "input",
-              "type": "string",
-              "nick": "display_style",
-              "title": "展示风格",
-              "value": "",
-              "must": false,
-              "description": "图像展示风格",
-              "placeholder": "请输入展示风格"
-            },
-            {
-              "kind": "input",
-              "type": "string",
-              "nick": "remove_parts",
-              "title": "去除部位",
-              "value": "",
-              "must": false,
-              "description": "需要去除的部位",
-              "placeholder": "请输入需要去除的部位"
-            },
-            {
-              "kind": "options",
-              "type": "string",
-              "nick": "aspect_ratio",
-              "title": "宽高比",
-              "value": "randomize",
-              "must": false,
-              "description": "输出图像的宽高比",
-              "options": [
-                {
-                  "title": "随机",
-                  "value": "randomize"
-                },
-                {
-                  "title": "1:1",
-                  "value": "1:1"
-                },
-                {
-                  "title": "4:3",
-                  "value": "4:3"
-                },
-                {
-                  "title": "16:9",
-                  "value": "16:9"
-                }
-              ]
-            },
-            {
-              "kind": "options",
-              "type": "string",
-              "nick": "resolution",
-              "title": "分辨率",
-              "value": "auto",
-              "must": false,
-              "description": "输出图像的分辨率",
-              "options": [
-                {
-                  "title": "自动",
-                  "value": "auto"
-                },
-                {
-                  "title": "1K",
-                  "value": "1k"
-                },
-                {
-                  "title": "2K",
-                  "value": "2k"
-                },
-                {
-                  "title": "4K",
-                  "value": "4k"
-                }
-              ]
-            },
-            {
-              "kind": "input",
-              "type": "number",
-              "nick": "seed",
-              "title": "随机种子",
-              "value": 1424685757,
-              "must": false,
-              "description": "随机种子值，用于可重复的结果"
-            },
-            {
-              "kind": "checkbox",
-              "type": "boolean",
-              "nick": "skip_error",
-              "title": "跳过错误",
-              "value": false,
-              "must": false,
-              "description": "是否跳过处理中的错误"
-            },
-            {
-              "kind": "options",
-              "type": "string",
-              "nick": "rmbg_model",
-              "title": "背景移除模型",
-              "value": "RMBG-2.0",
-              "must": false,
-              "description": "使用的背景移除模型",
-              "options": [
-                {
-                  "title": "RMBG-2.0",
-                  "value": "RMBG-2.0"
-                }
-              ]
-            },
-            {
-              "kind": "input",
-              "type": "number",
-              "nick": "sensitivity",
-              "title": "敏感度",
-              "value": 1,
-              "must": false,
-              "description": "背景移除的敏感度（0-1）"
-            },
-            {
-              "kind": "input",
-              "type": "number",
-              "nick": "process_res",
-              "title": "处理分辨率",
-              "value": 1024,
-              "must": false,
-              "description": "处理时的分辨率"
-            },
-            {
-              "kind": "options",
-              "type": "string",
-              "nick": "background",
-              "title": "背景类型",
-              "value": "Color",
-              "must": false,
-              "description": "背景类型",
-              "options": [
-                {
-                  "title": "纯色",
-                  "value": "Color"
-                },
-                {
-                  "title": "透明",
-                  "value": "Transparent"
-                },
-                {
-                  "title": "模糊",
-                  "value": "Blur"
-                }
-              ]
-            },
-            {
-              "kind": "input",
-              "type": "string",
-              "nick": "background_color",
-              "title": "背景颜色",
-              "value": "#222222",
-              "must": false,
-              "description": "纯色背景的颜色值"
-            },
-            {
-              "kind": "button",
-              "type": "string",
-              "nick": "submit",
-              "title": "开始处理2",
-              "description": "提交表单并开始图像处理",
-              "tapSet": {
-                "requestSet": {
-                  "method": "POST",
-                  "url": "http://localhost:3002/api/run-workflow",
-                  "paramMap": {
-                    "workflowId": "'2028318219441803266'",
-                    "image1": "images",
-                    "system_prompt": "system_prompt",
-                    "user_prompt": "user_prompt",
-                    "display_style": "display_style",
-                    "remove_parts": "remove_parts",
-                    "aspect_ratio": "aspect_ratio",
-                    "resolution": "resolution",
-                    "seed": "seed",
-                    "skip_error": "skip_error",
-                    "rmbg_model": "rmbg_model",
-                    "sensitivity": "sensitivity",
-                    "process_res": "process_res",
-                    "background": "background",
-                    "background_color": "background_color"
-                  },
-                  "resultSet": true,
-                  "successSet": {
-                    "taskId": "taskId",
-                    "result": "result"
-                  },
-                  "api_status": {
-                    "url": "http://localhost:3002/api/task/status/{{taskId}}"
-                  },
-                  "api_result": {
-                    "url": "http://localhost:3002/api/task/result/{{taskId}}"
-                  }
-                }
-              }
-            }
-          ],
-          "resultSet": {
-            "showType": "right",
-            "items": []
-          }
-        },
-        "data": {
-          "value": {
-            "images": "blob:http://localhost:17887/7a51319d-8226-4451-852f-083b4d051678"
-          }
-        },
-        "logs": [],
-        "nodes": [
-          {
-            "cardKey": "card_1776491722387_7996",
-            "config": {
-              "kind": "file",
-              "type": "array",
-              "nick": "images",
-              "title": "上传图像",
-              "must": true,
-              "description": "支持上传多张服装图像（最多8张）",
-              "accept": "image/*",
-              "multiple": true,
-              "maxCount": 8
-            },
-            "data": {
-              "value": "blob:http://localhost:17887/7a51319d-8226-4451-852f-083b4d051678"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_6639",
-            "config": {
-              "kind": "textarea",
-              "type": "string",
-              "nick": "system_prompt",
-              "title": "系统提示词",
-              "value": "对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景",
-              "must": true,
-              "description": "系统级别的处理指令",
-              "placeholder": "请输入系统提示词",
-              "maxLength": 500
-            },
-            "data": {
-              "value": "对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_5794",
-            "config": {
-              "kind": "textarea",
-              "type": "string",
-              "nick": "user_prompt",
-              "title": "用户提示词",
-              "value": "",
-              "must": false,
-              "description": "用户的自定义提示词",
-              "placeholder": "请输入用户提示词（可选）",
-              "maxLength": 500
-            },
-            "data": {
-              "value": ""
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_6591",
-            "config": {
-              "kind": "input",
-              "type": "string",
-              "nick": "display_style",
-              "title": "展示风格",
-              "value": "",
-              "must": false,
-              "description": "图像展示风格",
-              "placeholder": "请输入展示风格"
-            },
-            "data": {
-              "value": ""
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_9042",
-            "config": {
-              "kind": "input",
-              "type": "string",
-              "nick": "remove_parts",
-              "title": "去除部位",
-              "value": "",
-              "must": false,
-              "description": "需要去除的部位",
-              "placeholder": "请输入需要去除的部位"
-            },
-            "data": {
-              "value": ""
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_9345",
-            "config": {
-              "kind": "options",
-              "type": "string",
-              "nick": "aspect_ratio",
-              "title": "宽高比",
-              "value": "randomize",
-              "must": false,
-              "description": "输出图像的宽高比",
-              "options": [
-                {
-                  "title": "随机",
-                  "value": "randomize"
-                },
-                {
-                  "title": "1:1",
-                  "value": "1:1"
-                },
-                {
-                  "title": "4:3",
-                  "value": "4:3"
-                },
-                {
-                  "title": "16:9",
-                  "value": "16:9"
-                }
-              ]
-            },
-            "data": {
-              "value": "randomize"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_7710",
-            "config": {
-              "kind": "options",
-              "type": "string",
-              "nick": "resolution",
-              "title": "分辨率",
-              "value": "auto",
-              "must": false,
-              "description": "输出图像的分辨率",
-              "options": [
-                {
-                  "title": "自动",
-                  "value": "auto"
-                },
-                {
-                  "title": "1K",
-                  "value": "1k"
-                },
-                {
-                  "title": "2K",
-                  "value": "2k"
-                },
-                {
-                  "title": "4K",
-                  "value": "4k"
-                }
-              ]
-            },
-            "data": {
-              "value": "auto"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_187",
-            "config": {
-              "kind": "input",
-              "type": "number",
-              "nick": "seed",
-              "title": "随机种子",
-              "value": 1424685757,
-              "must": false,
-              "description": "随机种子值，用于可重复的结果"
-            },
-            "data": {
-              "value": 1424685757
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_6134",
-            "config": {
-              "kind": "checkbox",
-              "type": "boolean",
-              "nick": "skip_error",
-              "title": "跳过错误",
-              "value": false,
-              "must": false,
-              "description": "是否跳过处理中的错误"
-            },
-            "data": {
-              "value": false
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_817",
-            "config": {
-              "kind": "options",
-              "type": "string",
-              "nick": "rmbg_model",
-              "title": "背景移除模型",
-              "value": "RMBG-2.0",
-              "must": false,
-              "description": "使用的背景移除模型",
-              "options": [
-                {
-                  "title": "RMBG-2.0",
-                  "value": "RMBG-2.0"
-                }
-              ]
-            },
-            "data": {
-              "value": "RMBG-2.0"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_5100",
-            "config": {
-              "kind": "input",
-              "type": "number",
-              "nick": "sensitivity",
-              "title": "敏感度",
-              "value": 1,
-              "must": false,
-              "description": "背景移除的敏感度（0-1）"
-            },
-            "data": {
-              "value": 1
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_4553",
-            "config": {
-              "kind": "input",
-              "type": "number",
-              "nick": "process_res",
-              "title": "处理分辨率",
-              "value": 1024,
-              "must": false,
-              "description": "处理时的分辨率"
-            },
-            "data": {
-              "value": 1024
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_6440",
-            "config": {
-              "kind": "options",
-              "type": "string",
-              "nick": "background",
-              "title": "背景类型",
-              "value": "Color",
-              "must": false,
-              "description": "背景类型",
-              "options": [
-                {
-                  "title": "纯色",
-                  "value": "Color"
-                },
-                {
-                  "title": "透明",
-                  "value": "Transparent"
-                },
-                {
-                  "title": "模糊",
-                  "value": "Blur"
-                }
-              ]
-            },
-            "data": {
-              "value": "Color"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_5693",
-            "config": {
-              "kind": "input",
-              "type": "string",
-              "nick": "background_color",
-              "title": "背景颜色",
-              "value": "#222222",
-              "must": false,
-              "description": "纯色背景的颜色值"
-            },
-            "data": {
-              "value": "#222222"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          },
-          {
-            "cardKey": "card_1776491722387_5211",
-            "config": {
-              "kind": "button",
-              "type": "string",
-              "nick": "submit",
-              "title": "开始处理2",
-              "description": "提交表单并开始图像处理",
-              "tapSet": {
-                "requestSet": {
-                  "method": "POST",
-                  "url": "http://localhost:3002/api/run-workflow",
-                  "paramMap": {
-                    "workflowId": "'2028318219441803266'",
-                    "image1": "images",
-                    "system_prompt": "system_prompt",
-                    "user_prompt": "user_prompt",
-                    "display_style": "display_style",
-                    "remove_parts": "remove_parts",
-                    "aspect_ratio": "aspect_ratio",
-                    "resolution": "resolution",
-                    "seed": "seed",
-                    "skip_error": "skip_error",
-                    "rmbg_model": "rmbg_model",
-                    "sensitivity": "sensitivity",
-                    "process_res": "process_res",
-                    "background": "background",
-                    "background_color": "background_color"
-                  },
-                  "resultSet": true,
-                  "successSet": {
-                    "taskId": "taskId",
-                    "result": "result"
-                  },
-                  "api_status": {
-                    "url": "http://localhost:3002/api/task/status/{{taskId}}"
-                  },
-                  "api_result": {
-                    "url": "http://localhost:3002/api/task/result/{{taskId}}"
-                  }
-                }
-              }
-            },
-            "data": {},
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491722387_9137"
-          }
-        ],
-        "parentCardKey": null
-      },
-      "timestamp": "2026-04-18T12:28:05.609Z"
-    },
-    "message": "[System] handleTapSet-tapSet: {\"cardKey\":\"card_1776491722387_5211\",\"parentCardKey\":\"card_1776491722387_9137\",\"testValue\":\"none\",\"testValue1\":\"none\",\"testValue2\":\"none\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"resultSet\":true,\"successSet\":{\"taskId\":\"taskId\",\"result\":\"result\"},\"api_status\":{\"url\":\"http://localhost:3002/api/task/status/{{taskId}}\"},\"api_result\":{\"url\":\"http://localhost:3002/api/task/result/{{taskId}}\"}}},\"node\":{\"cardKey\":\"card_1776491722387_5211\",\"config\":{\"kind\":\"button\",\"type\":\"string\",\"nick\":\"submit\",\"title\":\"开始处理2\",\"description\":\"提交表单并开始图像处理\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"resultSet\":true,\"successSet\":{\"taskId\":\"taskId\",\"result\":\"result\"},\"api_status\":{\"url\":\"http://localhost:3002/api/task/status/{{taskId}}\"},\"api_result\":{\"url\":\"http://localhost:3002/api/task/result/{{taskId}}\"}}}},\"data\":{},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},\"parentNode\":{\"cardKey\":\"card_1776491722387_9137\",\"config\":{\"kind\":\"form\",\"type\":\"object\",\"nick\":\"clothing_image_processing\",\"title\":\"服装图像处理2\",\"kinds\":[{\"kind\":\"file\",\"type\":\"array\",\"nick\":\"images\",\"title\":\"上传图像\",\"must\":true,\"description\":\"支持上传多张服装图像（最多8张）\",\"accept\":\"image/*\",\"multiple\":true,\"maxCount\":8},{\"kind\":\"textarea\",\"type\":\"string\",\"nick\":\"system_prompt\",\"title\":\"系统提示词\",\"value\":\"对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景\",\"must\":true,\"description\":\"系统级别的处理指令\",\"placeholder\":\"请输入系统提示词\",\"maxLength\":500},{\"kind\":\"textarea\",\"type\":\"string\",\"nick\":\"user_prompt\",\"title\":\"用户提示词\",\"value\":\"\",\"must\":false,\"description\":\"用户的自定义提示词\",\"placeholder\":\"请输入用户提示词（可选）\",\"maxLength\":500},{\"kind\":\"input\",\"type\":\"string\",\"nick\":\"display_style\",\"title\":\"展示风格\",\"value\":\"\",\"must\":false,\"description\":\"图像展示风格\",\"placeholder\":\"请输入展示风格\"},{\"kind\":\"input\",\"type\":\"string\",\"nick\":\"remove_parts\",\"title\":\"去除部位\",\"value\":\"\",\"must\":false,\"description\":\"需要去除的部位\",\"placeholder\":\"请输入需要去除的部位\"},{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"aspect_ratio\",\"title\":\"宽高比\",\"value\":\"randomize\",\"must\":false,\"description\":\"输出图像的宽高比\",\"options\":[{\"title\":\"随机\",\"value\":\"randomize\"},{\"title\":\"1:1\",\"value\":\"1:1\"},{\"title\":\"4:3\",\"value\":\"4:3\"},{\"title\":\"16:9\",\"value\":\"16:9\"}]},{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"resolution\",\"title\":\"分辨率\",\"value\":\"auto\",\"must\":false,\"description\":\"输出图像的分辨率\",\"options\":[{\"title\":\"自动\",\"value\":\"auto\"},{\"title\":\"1K\",\"value\":\"1k\"},{\"title\":\"2K\",\"value\":\"2k\"},{\"title\":\"4K\",\"value\":\"4k\"}]},{\"kind\":\"input\",\"type\":\"number\",\"nick\":\"seed\",\"title\":\"随机种子\",\"value\":1424685757,\"must\":false,\"description\":\"随机种子值，用于可重复的结果\"},{\"kind\":\"checkbox\",\"type\":\"boolean\",\"nick\":\"skip_error\",\"title\":\"跳过错误\",\"value\":false,\"must\":false,\"description\":\"是否跳过处理中的错误\"},{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"rmbg_model\",\"title\":\"背景移除模型\",\"value\":\"RMBG-2.0\",\"must\":false,\"description\":\"使用的背景移除模型\",\"options\":[{\"title\":\"RMBG-2.0\",\"value\":\"RMBG-2.0\"}]},{\"kind\":\"input\",\"type\":\"number\",\"nick\":\"sensitivity\",\"title\":\"敏感度\",\"value\":1,\"must\":false,\"description\":\"背景移除的敏感度（0-1）\"},{\"kind\":\"input\",\"type\":\"number\",\"nick\":\"process_res\",\"title\":\"处理分辨率\",\"value\":1024,\"must\":false,\"description\":\"处理时的分辨率\"},{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"background\",\"title\":\"背景类型\",\"value\":\"Color\",\"must\":false,\"description\":\"背景类型\",\"options\":[{\"title\":\"纯色\",\"value\":\"Color\"},{\"title\":\"透明\",\"value\":\"Transparent\"},{\"title\":\"模糊\",\"value\":\"Blur\"}]},{\"kind\":\"input\",\"type\":\"string\",\"nick\":\"background_color\",\"title\":\"背景颜色\",\"value\":\"#222222\",\"must\":false,\"description\":\"纯色背景的颜色值\"},{\"kind\":\"button\",\"type\":\"string\",\"nick\":\"submit\",\"title\":\"开始处理2\",\"description\":\"提交表单并开始图像处理\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"resultSet\":true,\"successSet\":{\"taskId\":\"taskId\",\"result\":\"result\"},\"api_status\":{\"url\":\"http://localhost:3002/api/task/status/{{taskId}}\"},\"api_result\":{\"url\":\"http://localhost:3002/api/task/result/{{taskId}}\"}}}}],\"resultSet\":{\"showType\":\"right\",\"items\":[]}},\"data\":{\"value\":{\"images\":\"blob:http://localhost:17887/7a51319d-8226-4451-852f-083b4d051678\"}},\"logs\":[],\"nodes\":[{\"cardKey\":\"card_1776491722387_7996\",\"config\":{\"kind\":\"file\",\"type\":\"array\",\"nick\":\"images\",\"title\":\"上传图像\",\"must\":true,\"description\":\"支持上传多张服装图像（最多8张）\",\"accept\":\"image/*\",\"multiple\":true,\"maxCount\":8},\"data\":{\"value\":\"blob:http://localhost:17887/7a51319d-8226-4451-852f-083b4d051678\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_6639\",\"config\":{\"kind\":\"textarea\",\"type\":\"string\",\"nick\":\"system_prompt\",\"title\":\"系统提示词\",\"value\":\"对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景\",\"must\":true,\"description\":\"系统级别的处理指令\",\"placeholder\":\"请输入系统提示词\",\"maxLength\":500},\"data\":{\"value\":\"对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_5794\",\"config\":{\"kind\":\"textarea\",\"type\":\"string\",\"nick\":\"user_prompt\",\"title\":\"用户提示词\",\"value\":\"\",\"must\":false,\"description\":\"用户的自定义提示词\",\"placeholder\":\"请输入用户提示词（可选）\",\"maxLength\":500},\"data\":{\"value\":\"\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_6591\",\"config\":{\"kind\":\"input\",\"type\":\"string\",\"nick\":\"display_style\",\"title\":\"展示风格\",\"value\":\"\",\"must\":false,\"description\":\"图像展示风格\",\"placeholder\":\"请输入展示风格\"},\"data\":{\"value\":\"\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_9042\",\"config\":{\"kind\":\"input\",\"type\":\"string\",\"nick\":\"remove_parts\",\"title\":\"去除部位\",\"value\":\"\",\"must\":false,\"description\":\"需要去除的部位\",\"placeholder\":\"请输入需要去除的部位\"},\"data\":{\"value\":\"\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_9345\",\"config\":{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"aspect_ratio\",\"title\":\"宽高比\",\"value\":\"randomize\",\"must\":false,\"description\":\"输出图像的宽高比\",\"options\":[{\"title\":\"随机\",\"value\":\"randomize\"},{\"title\":\"1:1\",\"value\":\"1:1\"},{\"title\":\"4:3\",\"value\":\"4:3\"},{\"title\":\"16:9\",\"value\":\"16:9\"}]},\"data\":{\"value\":\"randomize\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_7710\",\"config\":{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"resolution\",\"title\":\"分辨率\",\"value\":\"auto\",\"must\":false,\"description\":\"输出图像的分辨率\",\"options\":[{\"title\":\"自动\",\"value\":\"auto\"},{\"title\":\"1K\",\"value\":\"1k\"},{\"title\":\"2K\",\"value\":\"2k\"},{\"title\":\"4K\",\"value\":\"4k\"}]},\"data\":{\"value\":\"auto\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_187\",\"config\":{\"kind\":\"input\",\"type\":\"number\",\"nick\":\"seed\",\"title\":\"随机种子\",\"value\":1424685757,\"must\":false,\"description\":\"随机种子值，用于可重复的结果\"},\"data\":{\"value\":1424685757},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_6134\",\"config\":{\"kind\":\"checkbox\",\"type\":\"boolean\",\"nick\":\"skip_error\",\"title\":\"跳过错误\",\"value\":false,\"must\":false,\"description\":\"是否跳过处理中的错误\"},\"data\":{\"value\":false},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_817\",\"config\":{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"rmbg_model\",\"title\":\"背景移除模型\",\"value\":\"RMBG-2.0\",\"must\":false,\"description\":\"使用的背景移除模型\",\"options\":[{\"title\":\"RMBG-2.0\",\"value\":\"RMBG-2.0\"}]},\"data\":{\"value\":\"RMBG-2.0\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_5100\",\"config\":{\"kind\":\"input\",\"type\":\"number\",\"nick\":\"sensitivity\",\"title\":\"敏感度\",\"value\":1,\"must\":false,\"description\":\"背景移除的敏感度（0-1）\"},\"data\":{\"value\":1},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_4553\",\"config\":{\"kind\":\"input\",\"type\":\"number\",\"nick\":\"process_res\",\"title\":\"处理分辨率\",\"value\":1024,\"must\":false,\"description\":\"处理时的分辨率\"},\"data\":{\"value\":1024},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_6440\",\"config\":{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"background\",\"title\":\"背景类型\",\"value\":\"Color\",\"must\":false,\"description\":\"背景类型\",\"options\":[{\"title\":\"纯色\",\"value\":\"Color\"},{\"title\":\"透明\",\"value\":\"Transparent\"},{\"title\":\"模糊\",\"value\":\"Blur\"}]},\"data\":{\"value\":\"Color\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_5693\",\"config\":{\"kind\":\"input\",\"type\":\"string\",\"nick\":\"background_color\",\"title\":\"背景颜色\",\"value\":\"#222222\",\"must\":false,\"description\":\"纯色背景的颜色值\"},\"data\":{\"value\":\"#222222\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"},{\"cardKey\":\"card_1776491722387_5211\",\"config\":{\"kind\":\"button\",\"type\":\"string\",\"nick\":\"submit\",\"title\":\"开始处理2\",\"description\":\"提交表单并开始图像处理\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"resultSet\":true,\"successSet\":{\"taskId\":\"taskId\",\"result\":\"result\"},\"api_status\":{\"url\":\"http://localhost:3002/api/task/status/{{taskId}}\"},\"api_result\":{\"url\":\"http://localhost:3002/api/task/result/{{taskId}}\"}}}},\"data\":{},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491722387_9137\"}],\"parentCardKey\":null},\"timestamp\":\"2026-04-18T12:28:05.609Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "handleTapSet-try",
-    "timestamp": "2026-04-18T12:28:05.581Z",
-    "details": {
-      "cardKey": "card_1776491722387_5211",
-      "handleTapSet": true
-    },
-    "message": "[System] handleTapSet-try: {\"cardKey\":\"card_1776491722387_5211\",\"handleTapSet\":true}"
-  },
-  {
-    "type": "system",
-    "action": "trigger_card_key",
-    "timestamp": "2026-04-18T12:28:05.550Z",
-    "details": {
-      "cardKey": "card_1776491722387_5211",
-      "tapSet": {
-        "requestSet": {
-          "method": "POST",
-          "url": "http://localhost:3002/api/run-workflow",
-          "paramMap": {
-            "workflowId": "'2028318219441803266'",
-            "image1": "images",
-            "system_prompt": "system_prompt",
-            "user_prompt": "user_prompt",
-            "display_style": "display_style",
-            "remove_parts": "remove_parts",
-            "aspect_ratio": "aspect_ratio",
-            "resolution": "resolution",
-            "seed": "seed",
-            "skip_error": "skip_error",
-            "rmbg_model": "rmbg_model",
-            "sensitivity": "sensitivity",
-            "process_res": "process_res",
-            "background": "background",
-            "background_color": "background_color"
-          },
-          "resultSet": true,
-          "successSet": {
-            "taskId": "taskId",
-            "result": "result"
-          },
-          "api_status": {
-            "url": "http://localhost:3002/api/task/status/{{taskId}}"
-          },
-          "api_result": {
-            "url": "http://localhost:3002/api/task/result/{{taskId}}"
-          }
-        }
-      },
-      "triggerSet": null
-    },
-    "message": "[System] trigger_card_key: {\"cardKey\":\"card_1776491722387_5211\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"resultSet\":true,\"successSet\":{\"taskId\":\"taskId\",\"result\":\"result\"},\"api_status\":{\"url\":\"http://localhost:3002/api/task/status/{{taskId}}\"},\"api_result\":{\"url\":\"http://localhost:3002/api/task/result/{{taskId}}\"}}},\"triggerSet\":null}"
-  },
-  {
-    "type": "system",
-    "action": "update_node_data",
-    "timestamp": "2026-04-18T12:27:56.138Z",
-    "details": {
-      "cardKey": "card_1776491722387_7996",
-      "field": "value",
-      "value": "blob:http://localhost:17887/7a51319d-8226-4451-852f-083b4d051678"
-    },
-    "message": "[System] update_node_data: {\"cardKey\":\"card_1776491722387_7996\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/7a51319d-8226-4451-852f-083b4d051678\"}"
-  },
-  {
-    "type": "system",
-    "action": "handleTapSet-error",
-    "timestamp": "2026-04-18T05:53:00.021Z",
-    "details": {
-      "cardKey": "card_1776491568254_6235",
-      "tapError": {}
-    },
-    "message": "[System] handleTapSet-error: {\"cardKey\":\"card_1776491568254_6235\",\"tapError\":{}}"
-  },
-  {
-    "type": "system",
-    "action": "tapSet-end",
-    "timestamp": "2026-04-18T05:53:00.001Z",
-    "details": {
-      "timestamp": "2026-04-18T05:53:00.001Z"
-    },
-    "message": "[System] tapSet-end: {\"timestamp\":\"2026-04-18T05:53:00.001Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "action_success",
-    "timestamp": "2026-04-18T05:52:59.982Z",
-    "details": {
-      "actionType": "requestSet",
-      "timestamp": "2026-04-18T05:52:59.982Z"
-    },
-    "message": "[System] action_success: {\"actionType\":\"requestSet\",\"timestamp\":\"2026-04-18T05:52:59.982Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "request_send",
-    "timestamp": "2026-04-18T05:52:59.963Z",
-    "details": {
-      "url": "http://localhost:3002/api/run-workflow",
-      "method": "POST",
-      "headers": {
-        "Content-Type": "application/json"
-      },
-      "body": "{\"workflowId\":\"2028318219441803266\",\"image1\":\"blob:http://localhost:17887/a2aaeb37-b910-44d4-8a76-5ff4d607e43b\"}",
-      "timestamp": "2026-04-18T05:52:59.963Z"
-    },
-    "message": "[System] request_send: {\"url\":\"http://localhost:3002/api/run-workflow\",\"method\":\"POST\",\"headers\":{\"Content-Type\":\"application/json\"},\"body\":\"{\\\"workflowId\\\":\\\"2028318219441803266\\\",\\\"image1\\\":\\\"blob:http://localhost:17887/a2aaeb37-b910-44d4-8a76-5ff4d607e43b\\\"}\",\"timestamp\":\"2026-04-18T05:52:59.963Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "request_params",
-    "timestamp": "2026-04-18T05:52:59.946Z",
-    "details": {
-      "params": {
-        "workflowId": "2028318219441803266",
-        "image1": "blob:http://localhost:17887/a2aaeb37-b910-44d4-8a76-5ff4d607e43b"
-      },
-      "paramMap": {
-        "workflowId": "'2028318219441803266'",
-        "image1": "images",
-        "system_prompt": "system_prompt",
-        "user_prompt": "user_prompt",
-        "display_style": "display_style",
-        "remove_parts": "remove_parts",
-        "aspect_ratio": "aspect_ratio",
-        "resolution": "resolution",
-        "seed": "seed",
-        "skip_error": "skip_error",
-        "rmbg_model": "rmbg_model",
-        "sensitivity": "sensitivity",
-        "process_res": "process_res",
-        "background": "background",
-        "background_color": "background_color"
-      },
-      "timestamp": "2026-04-18T05:52:59.946Z"
-    },
-    "message": "[System] request_params: {\"params\":{\"workflowId\":\"2028318219441803266\",\"image1\":\"blob:http://localhost:17887/a2aaeb37-b910-44d4-8a76-5ff4d607e43b\"},\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"timestamp\":\"2026-04-18T05:52:59.946Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "request_start",
-    "timestamp": "2026-04-18T05:52:59.926Z",
-    "details": {
-      "method": "POST",
-      "url": "http://localhost:3002/api/run-workflow",
-      "paramMap": {
-        "workflowId": "'2028318219441803266'",
-        "image1": "images",
-        "system_prompt": "system_prompt",
-        "user_prompt": "user_prompt",
-        "display_style": "display_style",
-        "remove_parts": "remove_parts",
-        "aspect_ratio": "aspect_ratio",
-        "resolution": "resolution",
-        "seed": "seed",
-        "skip_error": "skip_error",
-        "rmbg_model": "rmbg_model",
-        "sensitivity": "sensitivity",
-        "process_res": "process_res",
-        "background": "background",
-        "background_color": "background_color"
-      },
-      "timestamp": "2026-04-18T05:52:59.926Z"
-    },
-    "message": "[System] request_start: {\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"timestamp\":\"2026-04-18T05:52:59.926Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "request_start",
-    "timestamp": "2026-04-18T05:52:59.907Z",
-    "details": {
-      "cardKey": "card_1776491568254_6235",
-      "url": "http://localhost:3002/api/run-workflow",
-      "method": "POST",
-      "paramMap": {
-        "workflowId": "'2028318219441803266'",
-        "image1": "images",
-        "system_prompt": "system_prompt",
-        "user_prompt": "user_prompt",
-        "display_style": "display_style",
-        "remove_parts": "remove_parts",
-        "aspect_ratio": "aspect_ratio",
-        "resolution": "resolution",
-        "seed": "seed",
-        "skip_error": "skip_error",
-        "rmbg_model": "rmbg_model",
-        "sensitivity": "sensitivity",
-        "process_res": "process_res",
-        "background": "background",
-        "background_color": "background_color"
-      },
-      "timestamp": "2026-04-18T05:52:59.907Z"
-    },
-    "message": "[System] request_start: {\"cardKey\":\"card_1776491568254_6235\",\"url\":\"http://localhost:3002/api/run-workflow\",\"method\":\"POST\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"timestamp\":\"2026-04-18T05:52:59.907Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "handleAction-start",
-    "timestamp": "2026-04-18T05:52:59.886Z",
-    "details": {
-      "cardKey": "card_1776491568254_6235",
-      "actionType": "requestSet",
-      "actionConfig": {
-        "method": "POST",
-        "url": "http://localhost:3002/api/run-workflow",
-        "paramMap": {
-          "workflowId": "'2028318219441803266'",
-          "image1": "images",
-          "system_prompt": "system_prompt",
-          "user_prompt": "user_prompt",
-          "display_style": "display_style",
-          "remove_parts": "remove_parts",
-          "aspect_ratio": "aspect_ratio",
-          "resolution": "resolution",
-          "seed": "seed",
-          "skip_error": "skip_error",
-          "rmbg_model": "rmbg_model",
-          "sensitivity": "sensitivity",
-          "process_res": "process_res",
-          "background": "background",
-          "background_color": "background_color"
-        },
-        "resultSet": true,
-        "successSet": {
-          "taskId": "taskId",
-          "result": "result"
-        },
-        "api_status": {
-          "url": "http://localhost:3002/api/task/status/{{taskId}}"
-        },
-        "api_result": {
-          "url": "http://localhost:3002/api/task/result/{{taskId}}"
-        }
-      },
-      "data": {},
-      "timestamp": "2026-04-18T05:52:59.886Z"
-    },
-    "message": "[System] handleAction-start: {\"cardKey\":\"card_1776491568254_6235\",\"actionType\":\"requestSet\",\"actionConfig\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"resultSet\":true,\"successSet\":{\"taskId\":\"taskId\",\"result\":\"result\"},\"api_status\":{\"url\":\"http://localhost:3002/api/task/status/{{taskId}}\"},\"api_result\":{\"url\":\"http://localhost:3002/api/task/result/{{taskId}}\"}},\"data\":{},\"timestamp\":\"2026-04-18T05:52:59.886Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "handleTapSet-tapSet",
-    "timestamp": "2026-04-18T05:52:59.864Z",
-    "details": {
-      "cardKey": "card_1776491568254_6235",
-      "parentCardKey": "card_1776491568253_3308",
-      "testValue": "none",
-      "testValue1": "none",
-      "testValue2": "none",
-      "tapSet": {
-        "requestSet": {
-          "method": "POST",
-          "url": "http://localhost:3002/api/run-workflow",
-          "paramMap": {
-            "workflowId": "'2028318219441803266'",
-            "image1": "images",
-            "system_prompt": "system_prompt",
-            "user_prompt": "user_prompt",
-            "display_style": "display_style",
-            "remove_parts": "remove_parts",
-            "aspect_ratio": "aspect_ratio",
-            "resolution": "resolution",
-            "seed": "seed",
-            "skip_error": "skip_error",
-            "rmbg_model": "rmbg_model",
-            "sensitivity": "sensitivity",
-            "process_res": "process_res",
-            "background": "background",
-            "background_color": "background_color"
-          },
-          "resultSet": true,
-          "successSet": {
-            "taskId": "taskId",
-            "result": "result"
-          },
-          "api_status": {
-            "url": "http://localhost:3002/api/task/status/{{taskId}}"
-          },
-          "api_result": {
-            "url": "http://localhost:3002/api/task/result/{{taskId}}"
-          }
-        }
-      },
-      "node": {
-        "cardKey": "card_1776491568254_6235",
-        "config": {
-          "kind": "button",
-          "type": "string",
-          "nick": "submit",
-          "title": "开始处理2",
-          "description": "提交表单并开始图像处理",
-          "tapSet": {
-            "requestSet": {
-              "method": "POST",
-              "url": "http://localhost:3002/api/run-workflow",
-              "paramMap": {
-                "workflowId": "'2028318219441803266'",
-                "image1": "images",
-                "system_prompt": "system_prompt",
-                "user_prompt": "user_prompt",
-                "display_style": "display_style",
-                "remove_parts": "remove_parts",
-                "aspect_ratio": "aspect_ratio",
-                "resolution": "resolution",
-                "seed": "seed",
-                "skip_error": "skip_error",
-                "rmbg_model": "rmbg_model",
-                "sensitivity": "sensitivity",
-                "process_res": "process_res",
-                "background": "background",
-                "background_color": "background_color"
-              },
-              "resultSet": true,
-              "successSet": {
-                "taskId": "taskId",
-                "result": "result"
-              },
-              "api_status": {
-                "url": "http://localhost:3002/api/task/status/{{taskId}}"
-              },
-              "api_result": {
-                "url": "http://localhost:3002/api/task/result/{{taskId}}"
-              }
-            }
-          }
-        },
-        "data": {},
-        "logs": [],
-        "nodes": [],
-        "parentCardKey": "card_1776491568253_3308"
-      },
-      "parentNode": {
-        "cardKey": "card_1776491568253_3308",
-        "config": {
-          "kind": "form",
-          "type": "object",
-          "nick": "clothing_image_processing",
-          "title": "服装图像处理2",
-          "kinds": [
-            {
-              "kind": "file",
-              "type": "array",
-              "nick": "images",
-              "title": "上传图像",
-              "must": true,
-              "description": "支持上传多张服装图像（最多8张）",
-              "accept": "image/*",
-              "multiple": true,
-              "maxCount": 8
-            },
-            {
-              "kind": "textarea",
-              "type": "string",
-              "nick": "system_prompt",
-              "title": "系统提示词",
-              "value": "对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景",
-              "must": true,
-              "description": "系统级别的处理指令",
-              "placeholder": "请输入系统提示词",
-              "maxLength": 500
-            },
-            {
-              "kind": "textarea",
-              "type": "string",
-              "nick": "user_prompt",
-              "title": "用户提示词",
-              "value": "",
-              "must": false,
-              "description": "用户的自定义提示词",
-              "placeholder": "请输入用户提示词（可选）",
-              "maxLength": 500
-            },
-            {
-              "kind": "input",
-              "type": "string",
-              "nick": "display_style",
-              "title": "展示风格",
-              "value": "",
-              "must": false,
-              "description": "图像展示风格",
-              "placeholder": "请输入展示风格"
-            },
-            {
-              "kind": "input",
-              "type": "string",
-              "nick": "remove_parts",
-              "title": "去除部位",
-              "value": "",
-              "must": false,
-              "description": "需要去除的部位",
-              "placeholder": "请输入需要去除的部位"
-            },
-            {
-              "kind": "options",
-              "type": "string",
-              "nick": "aspect_ratio",
-              "title": "宽高比",
-              "value": "randomize",
-              "must": false,
-              "description": "输出图像的宽高比",
-              "options": [
-                {
-                  "title": "随机",
-                  "value": "randomize"
-                },
-                {
-                  "title": "1:1",
-                  "value": "1:1"
-                },
-                {
-                  "title": "4:3",
-                  "value": "4:3"
-                },
-                {
-                  "title": "16:9",
-                  "value": "16:9"
-                }
-              ]
-            },
-            {
-              "kind": "options",
-              "type": "string",
-              "nick": "resolution",
-              "title": "分辨率",
-              "value": "auto",
-              "must": false,
-              "description": "输出图像的分辨率",
-              "options": [
-                {
-                  "title": "自动",
-                  "value": "auto"
-                },
-                {
-                  "title": "1K",
-                  "value": "1k"
-                },
-                {
-                  "title": "2K",
-                  "value": "2k"
-                },
-                {
-                  "title": "4K",
-                  "value": "4k"
-                }
-              ]
-            },
-            {
-              "kind": "input",
-              "type": "number",
-              "nick": "seed",
-              "title": "随机种子",
-              "value": 1424685757,
-              "must": false,
-              "description": "随机种子值，用于可重复的结果"
-            },
-            {
-              "kind": "checkbox",
-              "type": "boolean",
-              "nick": "skip_error",
-              "title": "跳过错误",
-              "value": false,
-              "must": false,
-              "description": "是否跳过处理中的错误"
-            },
-            {
-              "kind": "options",
-              "type": "string",
-              "nick": "rmbg_model",
-              "title": "背景移除模型",
-              "value": "RMBG-2.0",
-              "must": false,
-              "description": "使用的背景移除模型",
-              "options": [
-                {
-                  "title": "RMBG-2.0",
-                  "value": "RMBG-2.0"
-                }
-              ]
-            },
-            {
-              "kind": "input",
-              "type": "number",
-              "nick": "sensitivity",
-              "title": "敏感度",
-              "value": 1,
-              "must": false,
-              "description": "背景移除的敏感度（0-1）"
-            },
-            {
-              "kind": "input",
-              "type": "number",
-              "nick": "process_res",
-              "title": "处理分辨率",
-              "value": 1024,
-              "must": false,
-              "description": "处理时的分辨率"
-            },
-            {
-              "kind": "options",
-              "type": "string",
-              "nick": "background",
-              "title": "背景类型",
-              "value": "Color",
-              "must": false,
-              "description": "背景类型",
-              "options": [
-                {
-                  "title": "纯色",
-                  "value": "Color"
-                },
-                {
-                  "title": "透明",
-                  "value": "Transparent"
-                },
-                {
-                  "title": "模糊",
-                  "value": "Blur"
-                }
-              ]
-            },
-            {
-              "kind": "input",
-              "type": "string",
-              "nick": "background_color",
-              "title": "背景颜色",
-              "value": "#222222",
-              "must": false,
-              "description": "纯色背景的颜色值"
-            },
-            {
-              "kind": "button",
-              "type": "string",
-              "nick": "submit",
-              "title": "开始处理2",
-              "description": "提交表单并开始图像处理",
-              "tapSet": {
-                "requestSet": {
-                  "method": "POST",
-                  "url": "http://localhost:3002/api/run-workflow",
-                  "paramMap": {
-                    "workflowId": "'2028318219441803266'",
-                    "image1": "images",
-                    "system_prompt": "system_prompt",
-                    "user_prompt": "user_prompt",
-                    "display_style": "display_style",
-                    "remove_parts": "remove_parts",
-                    "aspect_ratio": "aspect_ratio",
-                    "resolution": "resolution",
-                    "seed": "seed",
-                    "skip_error": "skip_error",
-                    "rmbg_model": "rmbg_model",
-                    "sensitivity": "sensitivity",
-                    "process_res": "process_res",
-                    "background": "background",
-                    "background_color": "background_color"
-                  },
-                  "resultSet": true,
-                  "successSet": {
-                    "taskId": "taskId",
-                    "result": "result"
-                  },
-                  "api_status": {
-                    "url": "http://localhost:3002/api/task/status/{{taskId}}"
-                  },
-                  "api_result": {
-                    "url": "http://localhost:3002/api/task/result/{{taskId}}"
-                  }
-                }
-              }
-            }
-          ],
-          "resultSet": {
-            "showType": "right",
-            "items": []
-          }
-        },
-        "data": {
-          "value": {
-            "images": "blob:http://localhost:17887/a2aaeb37-b910-44d4-8a76-5ff4d607e43b"
-          }
-        },
-        "logs": [],
-        "nodes": [
-          {
-            "cardKey": "card_1776491568254_5635",
-            "config": {
-              "kind": "file",
-              "type": "array",
-              "nick": "images",
-              "title": "上传图像",
-              "must": true,
-              "description": "支持上传多张服装图像（最多8张）",
-              "accept": "image/*",
-              "multiple": true,
-              "maxCount": 8
-            },
-            "data": {
-              "value": "blob:http://localhost:17887/a2aaeb37-b910-44d4-8a76-5ff4d607e43b"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_5950",
-            "config": {
-              "kind": "textarea",
-              "type": "string",
-              "nick": "system_prompt",
-              "title": "系统提示词",
-              "value": "对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景",
-              "must": true,
-              "description": "系统级别的处理指令",
-              "placeholder": "请输入系统提示词",
-              "maxLength": 500
-            },
-            "data": {
-              "value": "对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_340",
-            "config": {
-              "kind": "textarea",
-              "type": "string",
-              "nick": "user_prompt",
-              "title": "用户提示词",
-              "value": "",
-              "must": false,
-              "description": "用户的自定义提示词",
-              "placeholder": "请输入用户提示词（可选）",
-              "maxLength": 500
-            },
-            "data": {
-              "value": ""
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_3796",
-            "config": {
-              "kind": "input",
-              "type": "string",
-              "nick": "display_style",
-              "title": "展示风格",
-              "value": "",
-              "must": false,
-              "description": "图像展示风格",
-              "placeholder": "请输入展示风格"
-            },
-            "data": {
-              "value": ""
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_525",
-            "config": {
-              "kind": "input",
-              "type": "string",
-              "nick": "remove_parts",
-              "title": "去除部位",
-              "value": "",
-              "must": false,
-              "description": "需要去除的部位",
-              "placeholder": "请输入需要去除的部位"
-            },
-            "data": {
-              "value": ""
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_4669",
-            "config": {
-              "kind": "options",
-              "type": "string",
-              "nick": "aspect_ratio",
-              "title": "宽高比",
-              "value": "randomize",
-              "must": false,
-              "description": "输出图像的宽高比",
-              "options": [
-                {
-                  "title": "随机",
-                  "value": "randomize"
-                },
-                {
-                  "title": "1:1",
-                  "value": "1:1"
-                },
-                {
-                  "title": "4:3",
-                  "value": "4:3"
-                },
-                {
-                  "title": "16:9",
-                  "value": "16:9"
-                }
-              ]
-            },
-            "data": {
-              "value": "randomize"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_9134",
-            "config": {
-              "kind": "options",
-              "type": "string",
-              "nick": "resolution",
-              "title": "分辨率",
-              "value": "auto",
-              "must": false,
-              "description": "输出图像的分辨率",
-              "options": [
-                {
-                  "title": "自动",
-                  "value": "auto"
-                },
-                {
-                  "title": "1K",
-                  "value": "1k"
-                },
-                {
-                  "title": "2K",
-                  "value": "2k"
-                },
-                {
-                  "title": "4K",
-                  "value": "4k"
-                }
-              ]
-            },
-            "data": {
-              "value": "auto"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_7026",
-            "config": {
-              "kind": "input",
-              "type": "number",
-              "nick": "seed",
-              "title": "随机种子",
-              "value": 1424685757,
-              "must": false,
-              "description": "随机种子值，用于可重复的结果"
-            },
-            "data": {
-              "value": 1424685757
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_3765",
-            "config": {
-              "kind": "checkbox",
-              "type": "boolean",
-              "nick": "skip_error",
-              "title": "跳过错误",
-              "value": false,
-              "must": false,
-              "description": "是否跳过处理中的错误"
-            },
-            "data": {
-              "value": false
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_7240",
-            "config": {
-              "kind": "options",
-              "type": "string",
-              "nick": "rmbg_model",
-              "title": "背景移除模型",
-              "value": "RMBG-2.0",
-              "must": false,
-              "description": "使用的背景移除模型",
-              "options": [
-                {
-                  "title": "RMBG-2.0",
-                  "value": "RMBG-2.0"
-                }
-              ]
-            },
-            "data": {
-              "value": "RMBG-2.0"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_2983",
-            "config": {
-              "kind": "input",
-              "type": "number",
-              "nick": "sensitivity",
-              "title": "敏感度",
-              "value": 1,
-              "must": false,
-              "description": "背景移除的敏感度（0-1）"
-            },
-            "data": {
-              "value": 1
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_2096",
-            "config": {
-              "kind": "input",
-              "type": "number",
-              "nick": "process_res",
-              "title": "处理分辨率",
-              "value": 1024,
-              "must": false,
-              "description": "处理时的分辨率"
-            },
-            "data": {
-              "value": 1024
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_1430",
-            "config": {
-              "kind": "options",
-              "type": "string",
-              "nick": "background",
-              "title": "背景类型",
-              "value": "Color",
-              "must": false,
-              "description": "背景类型",
-              "options": [
-                {
-                  "title": "纯色",
-                  "value": "Color"
-                },
-                {
-                  "title": "透明",
-                  "value": "Transparent"
-                },
-                {
-                  "title": "模糊",
-                  "value": "Blur"
-                }
-              ]
-            },
-            "data": {
-              "value": "Color"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_136",
-            "config": {
-              "kind": "input",
-              "type": "string",
-              "nick": "background_color",
-              "title": "背景颜色",
-              "value": "#222222",
-              "must": false,
-              "description": "纯色背景的颜色值"
-            },
-            "data": {
-              "value": "#222222"
-            },
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          },
-          {
-            "cardKey": "card_1776491568254_6235",
-            "config": {
-              "kind": "button",
-              "type": "string",
-              "nick": "submit",
-              "title": "开始处理2",
-              "description": "提交表单并开始图像处理",
-              "tapSet": {
-                "requestSet": {
-                  "method": "POST",
-                  "url": "http://localhost:3002/api/run-workflow",
-                  "paramMap": {
-                    "workflowId": "'2028318219441803266'",
-                    "image1": "images",
-                    "system_prompt": "system_prompt",
-                    "user_prompt": "user_prompt",
-                    "display_style": "display_style",
-                    "remove_parts": "remove_parts",
-                    "aspect_ratio": "aspect_ratio",
-                    "resolution": "resolution",
-                    "seed": "seed",
-                    "skip_error": "skip_error",
-                    "rmbg_model": "rmbg_model",
-                    "sensitivity": "sensitivity",
-                    "process_res": "process_res",
-                    "background": "background",
-                    "background_color": "background_color"
-                  },
-                  "resultSet": true,
-                  "successSet": {
-                    "taskId": "taskId",
-                    "result": "result"
-                  },
-                  "api_status": {
-                    "url": "http://localhost:3002/api/task/status/{{taskId}}"
-                  },
-                  "api_result": {
-                    "url": "http://localhost:3002/api/task/result/{{taskId}}"
-                  }
-                }
-              }
-            },
-            "data": {},
-            "logs": [],
-            "nodes": [],
-            "parentCardKey": "card_1776491568253_3308"
-          }
-        ],
-        "parentCardKey": null
-      },
-      "timestamp": "2026-04-18T05:52:59.864Z"
-    },
-    "message": "[System] handleTapSet-tapSet: {\"cardKey\":\"card_1776491568254_6235\",\"parentCardKey\":\"card_1776491568253_3308\",\"testValue\":\"none\",\"testValue1\":\"none\",\"testValue2\":\"none\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"resultSet\":true,\"successSet\":{\"taskId\":\"taskId\",\"result\":\"result\"},\"api_status\":{\"url\":\"http://localhost:3002/api/task/status/{{taskId}}\"},\"api_result\":{\"url\":\"http://localhost:3002/api/task/result/{{taskId}}\"}}},\"node\":{\"cardKey\":\"card_1776491568254_6235\",\"config\":{\"kind\":\"button\",\"type\":\"string\",\"nick\":\"submit\",\"title\":\"开始处理2\",\"description\":\"提交表单并开始图像处理\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"resultSet\":true,\"successSet\":{\"taskId\":\"taskId\",\"result\":\"result\"},\"api_status\":{\"url\":\"http://localhost:3002/api/task/status/{{taskId}}\"},\"api_result\":{\"url\":\"http://localhost:3002/api/task/result/{{taskId}}\"}}}},\"data\":{},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},\"parentNode\":{\"cardKey\":\"card_1776491568253_3308\",\"config\":{\"kind\":\"form\",\"type\":\"object\",\"nick\":\"clothing_image_processing\",\"title\":\"服装图像处理2\",\"kinds\":[{\"kind\":\"file\",\"type\":\"array\",\"nick\":\"images\",\"title\":\"上传图像\",\"must\":true,\"description\":\"支持上传多张服装图像（最多8张）\",\"accept\":\"image/*\",\"multiple\":true,\"maxCount\":8},{\"kind\":\"textarea\",\"type\":\"string\",\"nick\":\"system_prompt\",\"title\":\"系统提示词\",\"value\":\"对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景\",\"must\":true,\"description\":\"系统级别的处理指令\",\"placeholder\":\"请输入系统提示词\",\"maxLength\":500},{\"kind\":\"textarea\",\"type\":\"string\",\"nick\":\"user_prompt\",\"title\":\"用户提示词\",\"value\":\"\",\"must\":false,\"description\":\"用户的自定义提示词\",\"placeholder\":\"请输入用户提示词（可选）\",\"maxLength\":500},{\"kind\":\"input\",\"type\":\"string\",\"nick\":\"display_style\",\"title\":\"展示风格\",\"value\":\"\",\"must\":false,\"description\":\"图像展示风格\",\"placeholder\":\"请输入展示风格\"},{\"kind\":\"input\",\"type\":\"string\",\"nick\":\"remove_parts\",\"title\":\"去除部位\",\"value\":\"\",\"must\":false,\"description\":\"需要去除的部位\",\"placeholder\":\"请输入需要去除的部位\"},{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"aspect_ratio\",\"title\":\"宽高比\",\"value\":\"randomize\",\"must\":false,\"description\":\"输出图像的宽高比\",\"options\":[{\"title\":\"随机\",\"value\":\"randomize\"},{\"title\":\"1:1\",\"value\":\"1:1\"},{\"title\":\"4:3\",\"value\":\"4:3\"},{\"title\":\"16:9\",\"value\":\"16:9\"}]},{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"resolution\",\"title\":\"分辨率\",\"value\":\"auto\",\"must\":false,\"description\":\"输出图像的分辨率\",\"options\":[{\"title\":\"自动\",\"value\":\"auto\"},{\"title\":\"1K\",\"value\":\"1k\"},{\"title\":\"2K\",\"value\":\"2k\"},{\"title\":\"4K\",\"value\":\"4k\"}]},{\"kind\":\"input\",\"type\":\"number\",\"nick\":\"seed\",\"title\":\"随机种子\",\"value\":1424685757,\"must\":false,\"description\":\"随机种子值，用于可重复的结果\"},{\"kind\":\"checkbox\",\"type\":\"boolean\",\"nick\":\"skip_error\",\"title\":\"跳过错误\",\"value\":false,\"must\":false,\"description\":\"是否跳过处理中的错误\"},{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"rmbg_model\",\"title\":\"背景移除模型\",\"value\":\"RMBG-2.0\",\"must\":false,\"description\":\"使用的背景移除模型\",\"options\":[{\"title\":\"RMBG-2.0\",\"value\":\"RMBG-2.0\"}]},{\"kind\":\"input\",\"type\":\"number\",\"nick\":\"sensitivity\",\"title\":\"敏感度\",\"value\":1,\"must\":false,\"description\":\"背景移除的敏感度（0-1）\"},{\"kind\":\"input\",\"type\":\"number\",\"nick\":\"process_res\",\"title\":\"处理分辨率\",\"value\":1024,\"must\":false,\"description\":\"处理时的分辨率\"},{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"background\",\"title\":\"背景类型\",\"value\":\"Color\",\"must\":false,\"description\":\"背景类型\",\"options\":[{\"title\":\"纯色\",\"value\":\"Color\"},{\"title\":\"透明\",\"value\":\"Transparent\"},{\"title\":\"模糊\",\"value\":\"Blur\"}]},{\"kind\":\"input\",\"type\":\"string\",\"nick\":\"background_color\",\"title\":\"背景颜色\",\"value\":\"#222222\",\"must\":false,\"description\":\"纯色背景的颜色值\"},{\"kind\":\"button\",\"type\":\"string\",\"nick\":\"submit\",\"title\":\"开始处理2\",\"description\":\"提交表单并开始图像处理\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"resultSet\":true,\"successSet\":{\"taskId\":\"taskId\",\"result\":\"result\"},\"api_status\":{\"url\":\"http://localhost:3002/api/task/status/{{taskId}}\"},\"api_result\":{\"url\":\"http://localhost:3002/api/task/result/{{taskId}}\"}}}}],\"resultSet\":{\"showType\":\"right\",\"items\":[]}},\"data\":{\"value\":{\"images\":\"blob:http://localhost:17887/a2aaeb37-b910-44d4-8a76-5ff4d607e43b\"}},\"logs\":[],\"nodes\":[{\"cardKey\":\"card_1776491568254_5635\",\"config\":{\"kind\":\"file\",\"type\":\"array\",\"nick\":\"images\",\"title\":\"上传图像\",\"must\":true,\"description\":\"支持上传多张服装图像（最多8张）\",\"accept\":\"image/*\",\"multiple\":true,\"maxCount\":8},\"data\":{\"value\":\"blob:http://localhost:17887/a2aaeb37-b910-44d4-8a76-5ff4d607e43b\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_5950\",\"config\":{\"kind\":\"textarea\",\"type\":\"string\",\"nick\":\"system_prompt\",\"title\":\"系统提示词\",\"value\":\"对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景\",\"must\":true,\"description\":\"系统级别的处理指令\",\"placeholder\":\"请输入系统提示词\",\"maxLength\":500},\"data\":{\"value\":\"对图像中的服装进行精修处理，袖子要展开，确保生成的衣服100%去除褶皱，去除衣架、人手、模特无关等元素，只保留服装本身。去除衣服上的褶皱并修正衣服的版型，保留原有材质，纯色背景\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_340\",\"config\":{\"kind\":\"textarea\",\"type\":\"string\",\"nick\":\"user_prompt\",\"title\":\"用户提示词\",\"value\":\"\",\"must\":false,\"description\":\"用户的自定义提示词\",\"placeholder\":\"请输入用户提示词（可选）\",\"maxLength\":500},\"data\":{\"value\":\"\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_3796\",\"config\":{\"kind\":\"input\",\"type\":\"string\",\"nick\":\"display_style\",\"title\":\"展示风格\",\"value\":\"\",\"must\":false,\"description\":\"图像展示风格\",\"placeholder\":\"请输入展示风格\"},\"data\":{\"value\":\"\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_525\",\"config\":{\"kind\":\"input\",\"type\":\"string\",\"nick\":\"remove_parts\",\"title\":\"去除部位\",\"value\":\"\",\"must\":false,\"description\":\"需要去除的部位\",\"placeholder\":\"请输入需要去除的部位\"},\"data\":{\"value\":\"\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_4669\",\"config\":{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"aspect_ratio\",\"title\":\"宽高比\",\"value\":\"randomize\",\"must\":false,\"description\":\"输出图像的宽高比\",\"options\":[{\"title\":\"随机\",\"value\":\"randomize\"},{\"title\":\"1:1\",\"value\":\"1:1\"},{\"title\":\"4:3\",\"value\":\"4:3\"},{\"title\":\"16:9\",\"value\":\"16:9\"}]},\"data\":{\"value\":\"randomize\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_9134\",\"config\":{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"resolution\",\"title\":\"分辨率\",\"value\":\"auto\",\"must\":false,\"description\":\"输出图像的分辨率\",\"options\":[{\"title\":\"自动\",\"value\":\"auto\"},{\"title\":\"1K\",\"value\":\"1k\"},{\"title\":\"2K\",\"value\":\"2k\"},{\"title\":\"4K\",\"value\":\"4k\"}]},\"data\":{\"value\":\"auto\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_7026\",\"config\":{\"kind\":\"input\",\"type\":\"number\",\"nick\":\"seed\",\"title\":\"随机种子\",\"value\":1424685757,\"must\":false,\"description\":\"随机种子值，用于可重复的结果\"},\"data\":{\"value\":1424685757},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_3765\",\"config\":{\"kind\":\"checkbox\",\"type\":\"boolean\",\"nick\":\"skip_error\",\"title\":\"跳过错误\",\"value\":false,\"must\":false,\"description\":\"是否跳过处理中的错误\"},\"data\":{\"value\":false},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_7240\",\"config\":{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"rmbg_model\",\"title\":\"背景移除模型\",\"value\":\"RMBG-2.0\",\"must\":false,\"description\":\"使用的背景移除模型\",\"options\":[{\"title\":\"RMBG-2.0\",\"value\":\"RMBG-2.0\"}]},\"data\":{\"value\":\"RMBG-2.0\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_2983\",\"config\":{\"kind\":\"input\",\"type\":\"number\",\"nick\":\"sensitivity\",\"title\":\"敏感度\",\"value\":1,\"must\":false,\"description\":\"背景移除的敏感度（0-1）\"},\"data\":{\"value\":1},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_2096\",\"config\":{\"kind\":\"input\",\"type\":\"number\",\"nick\":\"process_res\",\"title\":\"处理分辨率\",\"value\":1024,\"must\":false,\"description\":\"处理时的分辨率\"},\"data\":{\"value\":1024},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_1430\",\"config\":{\"kind\":\"options\",\"type\":\"string\",\"nick\":\"background\",\"title\":\"背景类型\",\"value\":\"Color\",\"must\":false,\"description\":\"背景类型\",\"options\":[{\"title\":\"纯色\",\"value\":\"Color\"},{\"title\":\"透明\",\"value\":\"Transparent\"},{\"title\":\"模糊\",\"value\":\"Blur\"}]},\"data\":{\"value\":\"Color\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_136\",\"config\":{\"kind\":\"input\",\"type\":\"string\",\"nick\":\"background_color\",\"title\":\"背景颜色\",\"value\":\"#222222\",\"must\":false,\"description\":\"纯色背景的颜色值\"},\"data\":{\"value\":\"#222222\"},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"},{\"cardKey\":\"card_1776491568254_6235\",\"config\":{\"kind\":\"button\",\"type\":\"string\",\"nick\":\"submit\",\"title\":\"开始处理2\",\"description\":\"提交表单并开始图像处理\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"resultSet\":true,\"successSet\":{\"taskId\":\"taskId\",\"result\":\"result\"},\"api_status\":{\"url\":\"http://localhost:3002/api/task/status/{{taskId}}\"},\"api_result\":{\"url\":\"http://localhost:3002/api/task/result/{{taskId}}\"}}}},\"data\":{},\"logs\":[],\"nodes\":[],\"parentCardKey\":\"card_1776491568253_3308\"}],\"parentCardKey\":null},\"timestamp\":\"2026-04-18T05:52:59.864Z\"}"
-  },
-  {
-    "type": "system",
-    "action": "handleTapSet-try",
-    "timestamp": "2026-04-18T05:52:59.837Z",
-    "details": {
-      "cardKey": "card_1776491568254_6235",
-      "handleTapSet": true
-    },
-    "message": "[System] handleTapSet-try: {\"cardKey\":\"card_1776491568254_6235\",\"handleTapSet\":true}"
-  },
-  {
-    "type": "system",
-    "action": "trigger_card_key",
-    "timestamp": "2026-04-18T05:52:59.810Z",
-    "details": {
-      "cardKey": "card_1776491568254_6235",
-      "tapSet": {
-        "requestSet": {
-          "method": "POST",
-          "url": "http://localhost:3002/api/run-workflow",
-          "paramMap": {
-            "workflowId": "'2028318219441803266'",
-            "image1": "images",
-            "system_prompt": "system_prompt",
-            "user_prompt": "user_prompt",
-            "display_style": "display_style",
-            "remove_parts": "remove_parts",
-            "aspect_ratio": "aspect_ratio",
-            "resolution": "resolution",
-            "seed": "seed",
-            "skip_error": "skip_error",
-            "rmbg_model": "rmbg_model",
-            "sensitivity": "sensitivity",
-            "process_res": "process_res",
-            "background": "background",
-            "background_color": "background_color"
-          },
-          "resultSet": true,
-          "successSet": {
-            "taskId": "taskId",
-            "result": "result"
-          },
-          "api_status": {
-            "url": "http://localhost:3002/api/task/status/{{taskId}}"
-          },
-          "api_result": {
-            "url": "http://localhost:3002/api/task/result/{{taskId}}"
-          }
-        }
-      },
-      "triggerSet": null
-    },
-    "message": "[System] trigger_card_key: {\"cardKey\":\"card_1776491568254_6235\",\"tapSet\":{\"requestSet\":{\"method\":\"POST\",\"url\":\"http://localhost:3002/api/run-workflow\",\"paramMap\":{\"workflowId\":\"'2028318219441803266'\",\"image1\":\"images\",\"system_prompt\":\"system_prompt\",\"user_prompt\":\"user_prompt\",\"display_style\":\"display_style\",\"remove_parts\":\"remove_parts\",\"aspect_ratio\":\"aspect_ratio\",\"resolution\":\"resolution\",\"seed\":\"seed\",\"skip_error\":\"skip_error\",\"rmbg_model\":\"rmbg_model\",\"sensitivity\":\"sensitivity\",\"process_res\":\"process_res\",\"background\":\"background\",\"background_color\":\"background_color\"},\"resultSet\":true,\"successSet\":{\"taskId\":\"taskId\",\"result\":\"result\"},\"api_status\":{\"url\":\"http://localhost:3002/api/task/status/{{taskId}}\"},\"api_result\":{\"url\":\"http://localhost:3002/api/task/result/{{taskId}}\"}}},\"triggerSet\":null}"
-  },
-  {
-    "type": "system",
-    "action": "update_node_data",
-    "timestamp": "2026-04-18T05:52:51.465Z",
-    "details": {
-      "cardKey": "card_1776491568254_5635",
-      "field": "value",
-      "value": "blob:http://localhost:17887/a2aaeb37-b910-44d4-8a76-5ff4d607e43b"
-    },
-    "message": "[System] update_node_data: {\"cardKey\":\"card_1776491568254_5635\",\"field\":\"value\",\"value\":\"blob:http://localhost:17887/a2aaeb37-b910-44d4-8a76-5ff4d607e43b\"}"
-  },
-  {
-    "type": "error",
-    "action": "request_error",
-    "error": "fetch failed",
-    "timestamp": "2026-04-18T05:33:06.009Z",
-    "details": {
-      "url": "http://localhost:3002/api/run-workflow",
-      "method": "POST",
-      "timestamp": "2026-04-18T05:33:06.009Z"
-    },
-    "message": "[Error] request_error: fetch failed"
-  },
-  {
-    "type": "error",
-    "action": "request_error",
-    "error": "fetch failed",
-    "timestamp": "2026-04-18T05:33:05.975Z",
-    "details": {
-      "url": "http://localhost:3002/api/run-workflow",
-      "method": "POST",
-      "stack": "TypeError: fetch failed\n    at node:internal/deps/undici/undici:15845:13\n    at async executeRequest (/Users/a1-6/Documents/code/trae/anx-core/core/utils/request.js:85:22)",
-      "timestamp": "2026-04-18T05:33:05.975Z"
-    },
-    "message": "[Error] request_error: fetch failed"
   }
 ]
