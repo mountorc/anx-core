@@ -49,7 +49,10 @@ export async function triggerDeal(cardKey, tapSet = null, buttonElement = null, 
 
     // 如果返回的是 running 状态，更新按钮状态并处理后续逻辑
     if (result && result.status === 'running') {
+      console.log('[triggerDeal] Detected running status, calling handleRunningStatus');
       handleRunningStatus(result, buttonElement);
+    } else {
+      console.log('[triggerDeal] Status is not running:', result?.status);
     }
 
     return result;
@@ -115,6 +118,7 @@ function handleRunningStatus(result, buttonElement) {
   updateResultDisplay(result.parentCardKey, 'running');
 
   // 开始轮询检查任务状态
+  console.log('[Running Status] Calling startTaskPolling with parentCardKey:', result.parentCardKey);
   startTaskPolling(result.parentCardKey, buttonElement);
 }
 
@@ -188,11 +192,13 @@ function updateResultDisplay(parentCardKey, status, result = null) {
  * @param {HTMLElement} buttonElement - 按钮元素（可选）
  */
 function startTaskPolling(parentCardKey, buttonElement) {
+  console.log('[Polling] Started polling for cardKey:', parentCardKey);
   const pollInterval = setInterval(async () => {
     try {
       // 查询节点数据获取最新状态
       const result = await communicateWithBackend('/api/get-node-data', { cardKey: parentCardKey });
       console.log('[Polling] Task status:', result);
+      console.log('[Polling] submitStatus:', result?.data?.submitStatus, 'processing:', result?.data?.processing);
 
       if (result && result.data) {
         const submitStatus = result.data.submitStatus;
