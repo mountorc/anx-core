@@ -318,6 +318,16 @@ app.post('/api/convert', async (req, res) => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const result = await response.json();
+        
+        // 检查是否有有效的配置
+        if (!result || (!result.config && !result.kind && !result.anxContent)) {
+          console.error(`Error loading tile config from URL ${url_tile}: No valid config found`);
+          return res.status(400).json({ 
+            success: false, 
+            error: '无法获取有效的 tile 配置，请检查 URL 是否正确或稍后重试' 
+          });
+        }
+        
         const config = result.config || result;
         // 支持两种格式：
         // 1. {uuid: "...", anxContent: {...}}
@@ -334,7 +344,10 @@ app.post('/api/convert', async (req, res) => {
         }
       } catch (error) {
         console.error(`Error loading tile config from URL ${url_tile}:`, error);
-        return res.status(404).json({ error: 'Failed to load tile config from URL' });
+        return res.status(400).json({ 
+          success: false, 
+          error: '无法获取有效的 tile 配置，请检查 URL 是否正确或稍后重试' 
+        });
       }
     }
     
@@ -738,6 +751,16 @@ app.post('/api/convert-to-nodes', async (req, res) => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const result = await response.json();
+        
+        // 检查是否有有效的配置
+        if (!result || (!result.config && !result.kind && !result.anxContent)) {
+          console.error(`Error loading tile config from URL ${url_tile}: No valid config found`);
+          return res.status(400).json({ 
+            success: false, 
+            error: '无法获取有效的 tile 配置，请检查 URL 是否正确或稍后重试' 
+          });
+        }
+        
         const config = result.config || result;
         // 支持两种格式：
         // 1. {uuid: "...", anxContent: {...}}
@@ -754,7 +777,10 @@ app.post('/api/convert-to-nodes', async (req, res) => {
         }
       } catch (error) {
         console.error(`Error loading tile config from URL ${url_tile}:`, error);
-        return res.status(404).json({ error: 'Failed to load tile config from URL' });
+        return res.status(400).json({ 
+          success: false, 
+          error: '无法获取有效的 tile 配置，请检查 URL 是否正确或稍后重试' 
+        });
       }
     } else if (uuid_tile && !hubAnxMap.has(uuid_tile)) {
       // 如果提供了 uuid_tile 但本地没有找到，尝试从 URL 动态加载
@@ -881,6 +907,16 @@ app.post('/api/convert-to-markup', async (req, res) => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const result = await response.json();
+        
+        // 检查是否有有效的配置
+        if (!result || (!result.config && !result.kind && !result.anxContent)) {
+          console.error(`Error loading tile config from URL ${url_tile}: No valid config found`);
+          return res.status(400).json({ 
+            success: false, 
+            error: '无法获取有效的 tile 配置，请检查 URL 是否正确或稍后重试' 
+          });
+        }
+        
         const config = result.config || result;
         // 支持两种格式：
         // 1. {uuid: "...", anxContent: {...}}
@@ -971,6 +1007,16 @@ app.get('/api/markup', async (req, res) => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const result = await response.json();
+        
+        // 检查是否有有效的配置
+        if (!result || (!result.config && !result.kind && !result.anxContent)) {
+          console.error(`Error loading tile config from URL ${url_tile}: No valid config found`);
+          return res.status(400).json({ 
+            success: false, 
+            error: '无法获取有效的 tile 配置，请检查 URL 是否正确或稍后重试' 
+          });
+        }
+        
         const config = result.config || result;
         // 支持两种格式：
         // 1. {uuid: "...", anxContent: {...}}
@@ -985,7 +1031,10 @@ app.get('/api/markup', async (req, res) => {
         }
       } catch (error) {
         console.error(`Error loading tile config from URL ${url_tile}:`, error);
-        return res.status(404).send('Error: Failed to load tile config from URL');
+        return res.status(400).json({ 
+          success: false, 
+          error: '无法获取有效的 tile 配置，请检查 URL 是否正确或稍后重试' 
+        });
       }
     } else if (uuid_tile) {
       // 如果提供了 uuid_tile 但本地没有找到，尝试从 URL 动态加载

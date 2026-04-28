@@ -4,8 +4,17 @@
       <p>Loading visualization...</p>
     </div>
 
-    <div v-if="error" class="error">
-      <p>{{ error }}</p>
+    <div v-if="error" class="error-container">
+      <div class="error-card">
+        <div class="error-icon">🔌</div>
+        <h2 class="error-title">{{ errorTitle }}</h2>
+        <p class="error-message">{{ error }}</p>
+        <p class="error-hint">{{ errorHint }}</p>
+        <button class="retry-btn" @click="retryConnection" :disabled="isReconnecting">
+          <span class="retry-icon">{{ isReconnecting ? '⏳' : '🔄' }}</span>
+          {{ isReconnecting ? '连接中...' : '重新连接' }}
+        </button>
+      </div>
     </div>
 
     <div v-show="!error && nodesStructure && visualizationHTML" class="anx-page-layout">
@@ -78,8 +87,23 @@ export default {
       pageList: [],
       uuidTile: '',
       isSidebarHidden: false,
-      currentUuidVisitor: null
+      currentUuidVisitor: null,
+      isReconnecting: false
     };
+  },
+  computed: {
+    errorTitle() {
+      if (this.error.includes('Failed to fetch') || this.error.includes('NetworkError')) {
+        return '服务连接失败';
+      }
+      return '操作异常';
+    },
+    errorHint() {
+      if (this.error.includes('Failed to fetch') || this.error.includes('NetworkError')) {
+        return '请检查后端服务是否已启动，然后点击下方按钮重新连接';
+      }
+      return '请检查网络连接或稍后重试';
+    }
   },
   async mounted() {
     // 初始化 uuid_visitor（优先级：URL参数 > props）
@@ -272,12 +296,20 @@ export default {
     async createNewPage() {
       const newUuid = 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       this.uuidPage = newUuid;
+      
+      const newQuery = {
+        ...this.$route.query,
+        uuid_page: newUuid
+      };
+      
+      // 确保 uuid_visitor 被携带
+      if (this.currentUuidVisitor) {
+        newQuery.uuid_visitor = this.currentUuidVisitor;
+      }
+      
       this.$router.replace({
         params: { ...this.$route.params },
-        query: {
-          ...this.$route.query,
-          uuid_page: newUuid
-        }
+        query: newQuery
       });
       
       // 更新页面列表
@@ -288,6 +320,9 @@ export default {
       } else if (urlTile) {
         await this.fetchPageListByUrl(urlTile);
       }
+      
+      // 重新初始化 tile 视图，确保加载 tile 配置
+      await this.initTile();
     },
     toggleSidebar() {
       this.isSidebarHidden = !this.isSidebarHidden;
@@ -445,6 +480,14 @@ export default {
       style.id = 'anx-page-dynamic-style';
       style.textContent = css;
       document.head.appendChild(style);
+    },
+    async retryConnection() {
+      this.isReconnecting = true;
+      this.error = '';
+      
+      await this.initTile();
+      
+      this.isReconnecting = false;
     }
   },
   beforeUnmount() {
@@ -722,17 +765,101 @@ export default {
   font-size: 18px;
 }
 
-.error {
+.error-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
-  color: #dc3545;
-  background: #f8d7da;
-  font-size: 18px;
-  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  z-index: 1000;
+}
+
+.error-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  padding: 48px 40px;
   text-align: center;
+  max-width: 480px;
+  width: 90%;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+  opacity: 0.8;
+}
+
+.error-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+
+.error-message {
+  font-size: 14px;
+  color: #888;
+  margin: 0 0 16px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.error-hint {
+  font-size: 13px;
+  color: #aaa;
+  margin: 0 0 32px 0;
+  line-height: 1.6;
+}
+
+.retry-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.retry-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.retry-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.retry-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.retry-icon {
+  font-size: 16px;
 }
 
 .visualization-container {
