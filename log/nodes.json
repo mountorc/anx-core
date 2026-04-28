@@ -170912,7 +170912,10 @@
       "title": "服装图像处理2",
       "type": "object"
     },
-    "data": {},
+    "data": {
+      "processing": false,
+      "submitStatus": "pending"
+    },
     "logs": [],
     "nodes": [
       {
@@ -171311,7 +171314,7 @@
       "type": "array"
     },
     "data": {
-      "value": ""
+      "value": "https://intostore.oss-cn-qingdao.aliyuncs.com/turan/1777301401333_qlvz3q48.png"
     },
     "logs": [],
     "nodes": [],
@@ -171353,7 +171356,7 @@
       "value": ""
     },
     "data": {
-      "value": ""
+      "value": "测试2"
     },
     "logs": [],
     "nodes": [],
@@ -202491,7 +202494,7 @@
       "value": ""
     },
     "data": {
-      "value": ""
+      "value": "updated_test_value"
     },
     "logs": [],
     "nodes": [],
@@ -203347,7 +203350,7 @@
       "value": ""
     },
     "data": {
-      "value": ""
+      "value": "测试"
     },
     "logs": [],
     "nodes": [],
@@ -205275,5 +205278,1079 @@
     "nodes": [],
     "uuid_page": "page_1777193605519_zksbtjkq8",
     "parentCardKey": null
+  },
+  "card_1777300973141_9jm3xr4hg": {
+    "cardKey": "card_1777300973141_9jm3xr4hg",
+    "config": {
+      "kind": "form",
+      "kinds": []
+    },
+    "data": {},
+    "logs": [],
+    "nodes": [],
+    "uuid_page": "page_1777300973064_a0yq5b5fu",
+    "parentCardKey": null
+  },
+  "card_1777306148130_d6nino5nm": {
+    "cardKey": "card_1777306148130_d6nino5nm",
+    "config": {
+      "description": "输出图像的宽高比",
+      "kind": "options",
+      "must": false,
+      "nick": "aspect_ratio",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize"
+        },
+        {
+          "title": "1:1",
+          "value": "1:1"
+        },
+        {
+          "title": "4:3",
+          "value": "4:3"
+        },
+        {
+          "title": "16:9",
+          "value": "16:9"
+        }
+      ],
+      "title": "宽高比",
+      "type": "string",
+      "value": "randomize"
+    },
+    "data": {
+      "value": "randomize",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize",
+          "selected": true
+        },
+        {
+          "title": "1:1",
+          "value": "1:1",
+          "selected": false
+        },
+        {
+          "title": "4:3",
+          "value": "4:3",
+          "selected": false
+        },
+        {
+          "title": "16:9",
+          "value": "16:9",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306148130_8rdagm6mp",
+    "uuid_page": null
+  },
+  "card_1777306148130_b9crl6eje": {
+    "cardKey": "card_1777306148130_b9crl6eje",
+    "config": {
+      "description": "输出图像的分辨率",
+      "kind": "options",
+      "must": false,
+      "nick": "resolution",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto"
+        },
+        {
+          "title": "1K",
+          "value": "1k"
+        },
+        {
+          "title": "2K",
+          "value": "2k"
+        },
+        {
+          "title": "4K",
+          "value": "4k"
+        }
+      ],
+      "title": "分辨率",
+      "type": "string",
+      "value": "auto"
+    },
+    "data": {
+      "value": "auto",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto",
+          "selected": true
+        },
+        {
+          "title": "1K",
+          "value": "1k",
+          "selected": false
+        },
+        {
+          "title": "2K",
+          "value": "2k",
+          "selected": false
+        },
+        {
+          "title": "4K",
+          "value": "4k",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306148130_8rdagm6mp",
+    "uuid_page": null
+  },
+  "card_1777306154046_hzn2raug3": {
+    "cardKey": "card_1777306154046_hzn2raug3",
+    "config": {
+      "description": "输出图像的宽高比",
+      "kind": "options",
+      "must": false,
+      "nick": "aspect_ratio",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize"
+        },
+        {
+          "title": "1:1",
+          "value": "1:1"
+        },
+        {
+          "title": "4:3",
+          "value": "4:3"
+        },
+        {
+          "title": "16:9",
+          "value": "16:9"
+        }
+      ],
+      "title": "宽高比",
+      "type": "string",
+      "value": "randomize"
+    },
+    "data": {
+      "value": "randomize",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize",
+          "selected": true
+        },
+        {
+          "title": "1:1",
+          "value": "1:1",
+          "selected": false
+        },
+        {
+          "title": "4:3",
+          "value": "4:3",
+          "selected": false
+        },
+        {
+          "title": "16:9",
+          "value": "16:9",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306154045_kplbksvpz",
+    "uuid_page": null
+  },
+  "card_1777306154046_1065ekm83": {
+    "cardKey": "card_1777306154046_1065ekm83",
+    "config": {
+      "description": "输出图像的分辨率",
+      "kind": "options",
+      "must": false,
+      "nick": "resolution",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto"
+        },
+        {
+          "title": "1K",
+          "value": "1k"
+        },
+        {
+          "title": "2K",
+          "value": "2k"
+        },
+        {
+          "title": "4K",
+          "value": "4k"
+        }
+      ],
+      "title": "分辨率",
+      "type": "string",
+      "value": "auto"
+    },
+    "data": {
+      "value": "auto",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto",
+          "selected": true
+        },
+        {
+          "title": "1K",
+          "value": "1k",
+          "selected": false
+        },
+        {
+          "title": "2K",
+          "value": "2k",
+          "selected": false
+        },
+        {
+          "title": "4K",
+          "value": "4k",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306154045_kplbksvpz",
+    "uuid_page": null
+  },
+  "card_1777306154945_080h2zw1t": {
+    "cardKey": "card_1777306154945_080h2zw1t",
+    "config": {
+      "description": "输出图像的宽高比",
+      "kind": "options",
+      "must": false,
+      "nick": "aspect_ratio",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize"
+        },
+        {
+          "title": "1:1",
+          "value": "1:1"
+        },
+        {
+          "title": "4:3",
+          "value": "4:3"
+        },
+        {
+          "title": "16:9",
+          "value": "16:9"
+        }
+      ],
+      "title": "宽高比",
+      "type": "string",
+      "value": "randomize"
+    },
+    "data": {
+      "value": "randomize",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize",
+          "selected": true
+        },
+        {
+          "title": "1:1",
+          "value": "1:1",
+          "selected": false
+        },
+        {
+          "title": "4:3",
+          "value": "4:3",
+          "selected": false
+        },
+        {
+          "title": "16:9",
+          "value": "16:9",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306154945_5nz0b5sbl",
+    "uuid_page": null
+  },
+  "card_1777306154945_c8odpk2ch": {
+    "cardKey": "card_1777306154945_c8odpk2ch",
+    "config": {
+      "description": "输出图像的分辨率",
+      "kind": "options",
+      "must": false,
+      "nick": "resolution",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto"
+        },
+        {
+          "title": "1K",
+          "value": "1k"
+        },
+        {
+          "title": "2K",
+          "value": "2k"
+        },
+        {
+          "title": "4K",
+          "value": "4k"
+        }
+      ],
+      "title": "分辨率",
+      "type": "string",
+      "value": "auto"
+    },
+    "data": {
+      "value": "auto",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto",
+          "selected": true
+        },
+        {
+          "title": "1K",
+          "value": "1k",
+          "selected": false
+        },
+        {
+          "title": "2K",
+          "value": "2k",
+          "selected": false
+        },
+        {
+          "title": "4K",
+          "value": "4k",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306154945_5nz0b5sbl",
+    "uuid_page": null
+  },
+  "card_1777306155625_324hszcym": {
+    "cardKey": "card_1777306155625_324hszcym",
+    "config": {
+      "description": "输出图像的宽高比",
+      "kind": "options",
+      "must": false,
+      "nick": "aspect_ratio",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize"
+        },
+        {
+          "title": "1:1",
+          "value": "1:1"
+        },
+        {
+          "title": "4:3",
+          "value": "4:3"
+        },
+        {
+          "title": "16:9",
+          "value": "16:9"
+        }
+      ],
+      "title": "宽高比",
+      "type": "string",
+      "value": "randomize"
+    },
+    "data": {
+      "value": "randomize",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize",
+          "selected": true
+        },
+        {
+          "title": "1:1",
+          "value": "1:1",
+          "selected": false
+        },
+        {
+          "title": "4:3",
+          "value": "4:3",
+          "selected": false
+        },
+        {
+          "title": "16:9",
+          "value": "16:9",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306155625_tqq6wmcl2",
+    "uuid_page": null
+  },
+  "card_1777306155625_vp3q44x8j": {
+    "cardKey": "card_1777306155625_vp3q44x8j",
+    "config": {
+      "description": "输出图像的分辨率",
+      "kind": "options",
+      "must": false,
+      "nick": "resolution",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto"
+        },
+        {
+          "title": "1K",
+          "value": "1k"
+        },
+        {
+          "title": "2K",
+          "value": "2k"
+        },
+        {
+          "title": "4K",
+          "value": "4k"
+        }
+      ],
+      "title": "分辨率",
+      "type": "string",
+      "value": "auto"
+    },
+    "data": {
+      "value": "auto",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto",
+          "selected": true
+        },
+        {
+          "title": "1K",
+          "value": "1k",
+          "selected": false
+        },
+        {
+          "title": "2K",
+          "value": "2k",
+          "selected": false
+        },
+        {
+          "title": "4K",
+          "value": "4k",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306155625_tqq6wmcl2",
+    "uuid_page": null
+  },
+  "card_1777306156261_nmmuykzml": {
+    "cardKey": "card_1777306156261_nmmuykzml",
+    "config": {
+      "description": "输出图像的宽高比",
+      "kind": "options",
+      "must": false,
+      "nick": "aspect_ratio",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize"
+        },
+        {
+          "title": "1:1",
+          "value": "1:1"
+        },
+        {
+          "title": "4:3",
+          "value": "4:3"
+        },
+        {
+          "title": "16:9",
+          "value": "16:9"
+        }
+      ],
+      "title": "宽高比",
+      "type": "string",
+      "value": "randomize"
+    },
+    "data": {
+      "value": "randomize",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize",
+          "selected": true
+        },
+        {
+          "title": "1:1",
+          "value": "1:1",
+          "selected": false
+        },
+        {
+          "title": "4:3",
+          "value": "4:3",
+          "selected": false
+        },
+        {
+          "title": "16:9",
+          "value": "16:9",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306156261_n9rbwx19c",
+    "uuid_page": null
+  },
+  "card_1777306156261_quchh28cm": {
+    "cardKey": "card_1777306156261_quchh28cm",
+    "config": {
+      "description": "输出图像的分辨率",
+      "kind": "options",
+      "must": false,
+      "nick": "resolution",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto"
+        },
+        {
+          "title": "1K",
+          "value": "1k"
+        },
+        {
+          "title": "2K",
+          "value": "2k"
+        },
+        {
+          "title": "4K",
+          "value": "4k"
+        }
+      ],
+      "title": "分辨率",
+      "type": "string",
+      "value": "auto"
+    },
+    "data": {
+      "value": "auto",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto",
+          "selected": true
+        },
+        {
+          "title": "1K",
+          "value": "1k",
+          "selected": false
+        },
+        {
+          "title": "2K",
+          "value": "2k",
+          "selected": false
+        },
+        {
+          "title": "4K",
+          "value": "4k",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306156261_n9rbwx19c",
+    "uuid_page": null
+  },
+  "card_1777306156908_f89nfgevy": {
+    "cardKey": "card_1777306156908_f89nfgevy",
+    "config": {
+      "description": "输出图像的宽高比",
+      "kind": "options",
+      "must": false,
+      "nick": "aspect_ratio",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize"
+        },
+        {
+          "title": "1:1",
+          "value": "1:1"
+        },
+        {
+          "title": "4:3",
+          "value": "4:3"
+        },
+        {
+          "title": "16:9",
+          "value": "16:9"
+        }
+      ],
+      "title": "宽高比",
+      "type": "string",
+      "value": "randomize"
+    },
+    "data": {
+      "value": "randomize",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize",
+          "selected": true
+        },
+        {
+          "title": "1:1",
+          "value": "1:1",
+          "selected": false
+        },
+        {
+          "title": "4:3",
+          "value": "4:3",
+          "selected": false
+        },
+        {
+          "title": "16:9",
+          "value": "16:9",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306156908_8231jhuwh",
+    "uuid_page": null
+  },
+  "card_1777306156908_2inmsq9rz": {
+    "cardKey": "card_1777306156908_2inmsq9rz",
+    "config": {
+      "description": "输出图像的分辨率",
+      "kind": "options",
+      "must": false,
+      "nick": "resolution",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto"
+        },
+        {
+          "title": "1K",
+          "value": "1k"
+        },
+        {
+          "title": "2K",
+          "value": "2k"
+        },
+        {
+          "title": "4K",
+          "value": "4k"
+        }
+      ],
+      "title": "分辨率",
+      "type": "string",
+      "value": "auto"
+    },
+    "data": {
+      "value": "auto",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto",
+          "selected": true
+        },
+        {
+          "title": "1K",
+          "value": "1k",
+          "selected": false
+        },
+        {
+          "title": "2K",
+          "value": "2k",
+          "selected": false
+        },
+        {
+          "title": "4K",
+          "value": "4k",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306156908_8231jhuwh",
+    "uuid_page": null
+  },
+  "card_1777306157445_kggno5ykh": {
+    "cardKey": "card_1777306157445_kggno5ykh",
+    "config": {
+      "description": "输出图像的宽高比",
+      "kind": "options",
+      "must": false,
+      "nick": "aspect_ratio",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize"
+        },
+        {
+          "title": "1:1",
+          "value": "1:1"
+        },
+        {
+          "title": "4:3",
+          "value": "4:3"
+        },
+        {
+          "title": "16:9",
+          "value": "16:9"
+        }
+      ],
+      "title": "宽高比",
+      "type": "string",
+      "value": "randomize"
+    },
+    "data": {
+      "value": "randomize",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize",
+          "selected": true
+        },
+        {
+          "title": "1:1",
+          "value": "1:1",
+          "selected": false
+        },
+        {
+          "title": "4:3",
+          "value": "4:3",
+          "selected": false
+        },
+        {
+          "title": "16:9",
+          "value": "16:9",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306157445_de2vukhyp",
+    "uuid_page": null
+  },
+  "card_1777306157445_wa5nv3ewr": {
+    "cardKey": "card_1777306157445_wa5nv3ewr",
+    "config": {
+      "description": "输出图像的分辨率",
+      "kind": "options",
+      "must": false,
+      "nick": "resolution",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto"
+        },
+        {
+          "title": "1K",
+          "value": "1k"
+        },
+        {
+          "title": "2K",
+          "value": "2k"
+        },
+        {
+          "title": "4K",
+          "value": "4k"
+        }
+      ],
+      "title": "分辨率",
+      "type": "string",
+      "value": "auto"
+    },
+    "data": {
+      "value": "auto",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto",
+          "selected": true
+        },
+        {
+          "title": "1K",
+          "value": "1k",
+          "selected": false
+        },
+        {
+          "title": "2K",
+          "value": "2k",
+          "selected": false
+        },
+        {
+          "title": "4K",
+          "value": "4k",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306157445_de2vukhyp",
+    "uuid_page": null
+  },
+  "card_1777306171054_mzjll9kez": {
+    "cardKey": "card_1777306171054_mzjll9kez",
+    "config": {
+      "description": "输出图像的宽高比",
+      "kind": "options",
+      "must": false,
+      "nick": "aspect_ratio",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize"
+        },
+        {
+          "title": "1:1",
+          "value": "1:1"
+        },
+        {
+          "title": "4:3",
+          "value": "4:3"
+        },
+        {
+          "title": "16:9",
+          "value": "16:9"
+        }
+      ],
+      "title": "宽高比",
+      "type": "string",
+      "value": "randomize"
+    },
+    "data": {
+      "value": "randomize",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize",
+          "selected": true
+        },
+        {
+          "title": "1:1",
+          "value": "1:1",
+          "selected": false
+        },
+        {
+          "title": "4:3",
+          "value": "4:3",
+          "selected": false
+        },
+        {
+          "title": "16:9",
+          "value": "16:9",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306171054_8i8zt28fo",
+    "uuid_page": null
+  },
+  "card_1777306171054_8av970h6v": {
+    "cardKey": "card_1777306171054_8av970h6v",
+    "config": {
+      "description": "输出图像的分辨率",
+      "kind": "options",
+      "must": false,
+      "nick": "resolution",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto"
+        },
+        {
+          "title": "1K",
+          "value": "1k"
+        },
+        {
+          "title": "2K",
+          "value": "2k"
+        },
+        {
+          "title": "4K",
+          "value": "4k"
+        }
+      ],
+      "title": "分辨率",
+      "type": "string",
+      "value": "auto"
+    },
+    "data": {
+      "value": "auto",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto",
+          "selected": true
+        },
+        {
+          "title": "1K",
+          "value": "1k",
+          "selected": false
+        },
+        {
+          "title": "2K",
+          "value": "2k",
+          "selected": false
+        },
+        {
+          "title": "4K",
+          "value": "4k",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306171054_8i8zt28fo",
+    "uuid_page": null
+  },
+  "card_1777306171829_ee2ir1smp": {
+    "cardKey": "card_1777306171829_ee2ir1smp",
+    "config": {
+      "description": "输出图像的宽高比",
+      "kind": "options",
+      "must": false,
+      "nick": "aspect_ratio",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize"
+        },
+        {
+          "title": "1:1",
+          "value": "1:1"
+        },
+        {
+          "title": "4:3",
+          "value": "4:3"
+        },
+        {
+          "title": "16:9",
+          "value": "16:9"
+        }
+      ],
+      "title": "宽高比",
+      "type": "string",
+      "value": "randomize"
+    },
+    "data": {
+      "value": "randomize",
+      "options": [
+        {
+          "title": "随机",
+          "value": "randomize",
+          "selected": true
+        },
+        {
+          "title": "1:1",
+          "value": "1:1",
+          "selected": false
+        },
+        {
+          "title": "4:3",
+          "value": "4:3",
+          "selected": false
+        },
+        {
+          "title": "16:9",
+          "value": "16:9",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306171829_q1jf78gj7",
+    "uuid_page": null
+  },
+  "card_1777306171829_6mh6jl77y": {
+    "cardKey": "card_1777306171829_6mh6jl77y",
+    "config": {
+      "description": "输出图像的分辨率",
+      "kind": "options",
+      "must": false,
+      "nick": "resolution",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto"
+        },
+        {
+          "title": "1K",
+          "value": "1k"
+        },
+        {
+          "title": "2K",
+          "value": "2k"
+        },
+        {
+          "title": "4K",
+          "value": "4k"
+        }
+      ],
+      "title": "分辨率",
+      "type": "string",
+      "value": "auto"
+    },
+    "data": {
+      "value": "auto",
+      "options": [
+        {
+          "title": "自动",
+          "value": "auto",
+          "selected": true
+        },
+        {
+          "title": "1K",
+          "value": "1k",
+          "selected": false
+        },
+        {
+          "title": "2K",
+          "value": "2k",
+          "selected": false
+        },
+        {
+          "title": "4K",
+          "value": "4k",
+          "selected": false
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "parentCardKey": "card_1777306171829_q1jf78gj7",
+    "uuid_page": null
   }
 }

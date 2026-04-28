@@ -50263,7 +50263,7 @@
       "url_tile": "http://localhost:2427/ability/anx/config/turan.face_swap@1.0.0",
       "title": "",
       "createdAt": "2026-04-21T15:31:22.043Z",
-      "updatedAt": "2026-04-21T15:44:56.991Z",
+      "updatedAt": "2026-04-28T06:31:01.507Z",
       "status": "active",
       "cardKey": "card_1776785482043_kqk8tsfnd",
       "nodes": {
@@ -50433,7 +50433,7 @@
               "value": ""
             },
             "data": {
-              "value": "777"
+              "value": "7773"
             },
             "logs": [],
             "nodes": []
@@ -64648,7 +64648,35 @@
         "data": {},
         "logs": [],
         "nodes": [],
-        "uuid_page": "page_1777193605519_zksbtjkq8"
+        "uuid_page": "page_1777193605519_zksbtjkq8",
+        "parentCardKey": null
+      },
+      "data": {
+        "submitStatus": "pending",
+        "uuid_visitor": "e822784b-cbca-47a5-980b-186e943ac533"
+      }
+    },
+    {
+      "uuid_page": "page_1777300973064_a0yq5b5fu",
+      "uuid_tile": null,
+      "url_tile": "http://localhost:2427/ability/anx/config/turan.free_model@1.0.0",
+      "uuid_visitor": "e822784b-cbca-47a5-980b-186e943ac533",
+      "title": "",
+      "createdAt": "2026-04-27T14:42:53.141Z",
+      "updatedAt": "2026-04-27T14:42:53.141Z",
+      "status": "active",
+      "cardKey": "card_1777300973141_9jm3xr4hg",
+      "nodes": {
+        "cardKey": "card_1777300973141_9jm3xr4hg",
+        "config": {
+          "kind": "form",
+          "kinds": []
+        },
+        "data": {},
+        "logs": [],
+        "nodes": [],
+        "uuid_page": "page_1777300973064_a0yq5b5fu",
+        "parentCardKey": null
       },
       "data": {
         "submitStatus": "pending",

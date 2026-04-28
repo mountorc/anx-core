@@ -403,8 +403,22 @@ class ANXView extends HTMLElement {
     
     const { cardKey, field, value } = event.detail;
     
-    // 同步到后端
+    // 同步到后端并重新加载视图
     this.updateNodeDataInBackend(cardKey, field, value);
+    
+    // 无论什么字段更新，都触发视图重新加载
+    console.log('ANXView: Field updated, triggering view reload');
+    this.dispatchViewReload();
+  }
+  
+  // 触发视图重新加载
+  dispatchViewReload() {
+    console.log('ANXView: Dispatching view reload event');
+    window.dispatchEvent(new CustomEvent('reloadAnxView', {
+      detail: {
+        uuid_visitor: getUuidVisitorFromURL()
+      }
+    }));
   }
   
   // 同步节点数据到后端

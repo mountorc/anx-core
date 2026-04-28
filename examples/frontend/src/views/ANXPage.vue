@@ -101,6 +101,9 @@ export default {
       };
     }
     
+    // 添加视图重新加载事件监听（用于文件上传后刷新）
+    window.addEventListener('reloadAnxView', this.handleReloadAnxView);
+    
     // 生成或获取 uuid_page
     this.uuidPage = await this.generateUuidPage();
     this.initTile();
@@ -130,6 +133,11 @@ export default {
       this.currentUuidVisitor = uuid;
       console.log(`[ANXPage] uuid_visitor set to: ${uuid}`);
       return { success: true, uuid_visitor: uuid };
+    },
+    handleReloadAnxView(event) {
+      console.log('[ANXPage] handleReloadAnxView called:', event.detail);
+      // 重新加载当前视图
+      this.initTile();
     },
     async generateUuidPage() {
       if (this.$route.query.uuid_page) {

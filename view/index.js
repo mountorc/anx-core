@@ -36,11 +36,15 @@ function generateVisualizationJS() {
       cardKey: cardKey,
       field: field,
       value: value,
-      action: 'field_update'
+      action: 'field_update',
+      elementId: element.id,
+      elementName: element.name,
+      isInIframe: window.parent && window.parent !== window
     });
     
     // 调用父窗口的更新函数（如果在iframe中）
     if (window.parent && window.parent !== window) {
+      console.log('[View Log] Sending message to parent window');
       window.parent.postMessage({
         type: 'UPDATE_NODE_DATA',
         cardKey: cardKey,
@@ -55,6 +59,7 @@ function generateVisualizationJS() {
     }
     
     // 同时触发全局事件
+    console.log('[View Log] Dispatching nodeDataChanged event');
     window.dispatchEvent(new CustomEvent('nodeDataChanged', {
       detail: { 
         cardKey, 
@@ -774,7 +779,7 @@ function generateVisualizationCSS() {
       padding: 10px 12px;
       border: 1px solid #ddd;
       border-radius: 4px;
-      width: 100%;
+      width: calc(100% - 16px);
       font-size: 14px;
       transition: border-color 0.2s ease;
     }

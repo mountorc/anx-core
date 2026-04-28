@@ -97,7 +97,9 @@ function updateNodeData(cardKey, data) {
   if (existingNode) {
     // 合并数据，保持节点结构完整
     existingNode.data = existingNode.data || {};
+    console.log('[Node Storage] Before update - cardKey:', cardKey, 'existing data:', JSON.stringify(existingNode.data));
     Object.assign(existingNode.data, data);
+    console.log('[Node Storage] After update - cardKey:', cardKey, 'updated data:', JSON.stringify(existingNode.data));
     // 重新存储
     nodeStorage.set(cardKey, JSON.parse(JSON.stringify(existingNode)));
     // 保存到文件

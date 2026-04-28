@@ -711,15 +711,12 @@ app.post('/api/convert-to-nodes', async (req, res) => {
           });
         }
         
-        // 递归从 nodeStorage 加载所有节点的动态数据（仅在节点没有数据时加载）
+        // 递归从 nodeStorage 加载所有节点的动态数据（优先使用存储中的最新数据）
         function loadNodeData(node) {
           const storedNode = getNode(node.cardKey);
           if (storedNode && storedNode.data) {
-            // 只有当节点本身没有数据或数据为空时，才从存储加载
-            const nodeHasData = node.data && Object.keys(node.data).length > 0;
-            if (!nodeHasData) {
-              node.data = { ...storedNode.data };
-            }
+            // 优先使用 nodeStorage 中的最新数据
+            node.data = { ...storedNode.data };
           }
           if (node.nodes && node.nodes.length > 0) {
             node.nodes.forEach(childNode => loadNodeData(childNode));
@@ -1993,6 +1990,14 @@ app.post('/api/get-node-data', (req, res) => {
 app.post('/api/update-node-data', (req, res) => {
   try {
     const { cardKey, field, value } = req.body;
+    
+    console.log('[API] update-node-data called:', {
+      cardKey: cardKey,
+      field: field,
+      value: typeof value === 'string' ? value.substring(0, 100) : value,
+      hasNode: hasNode(cardKey),
+      nodeCount: getNodeCount()
+    });
     
     if (!cardKey || !field) {
       return res.status(400).json({ error: 'cardKey and field are required' });
