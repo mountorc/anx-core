@@ -295,11 +295,14 @@ export async function buttonTap(buttonElement) {
       // 传递 tapSet 和 buttonElement 到 triggerDeal
       const result = await triggerDeal(cardKey, tapSet, buttonElement);
       
-      // 执行完成后恢复按钮状态
-      buttonElement.style.backgroundColor = buttonElement.dataset.originalBgColor || '';
-      buttonElement.style.color = buttonElement.dataset.originalColor || '';
-      buttonElement.disabled = false;
-      buttonElement.classList.remove('loading');
+      // 如果返回的是 running 状态，不恢复按钮状态（由 handleRunningStatus 处理）
+      if (!(result && result.status === 'running')) {
+        // 执行完成后恢复按钮状态
+        buttonElement.style.backgroundColor = buttonElement.dataset.originalBgColor || '';
+        buttonElement.style.color = buttonElement.dataset.originalColor || '';
+        buttonElement.disabled = false;
+        buttonElement.classList.remove('loading');
+      }
     } catch (error) {
       console.error('Error in buttonTap:', error);
       // 发生错误时也恢复按钮状态
