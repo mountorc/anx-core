@@ -3,6 +3,7 @@
  */
 
 const { getCardData } = require('./card.js');
+const { logToSystem, logError } = require('./log.js');
 // 类型标记常量
 const TYPE_NUMBER = 1;
 const TYPE_STRING = 2;
@@ -151,6 +152,11 @@ function autoVar(nick, data, autoSet) {
       if (cardKey) {
         res = getCardData(cardKey, nick);
       }
+      logToSystem('auto_var_lookup', {
+        cardKey: cardKey,
+        nick: nick,
+        res: res
+      });
     }
     return res;
   } catch (error) {

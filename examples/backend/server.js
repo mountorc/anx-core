@@ -9,6 +9,7 @@ const { anxToMarkup, anxToNodes, nodesToMarkup, anxCLI } = require('../../core/i
 const { generateNodeVisualization, generateVisualizationCSS } = require('../../view/index.js');
 const { uploadImageToOSS } = require('../../view/utils/oss.js');
 const { handleTapSet, handleTriggerSet } = require('../../core/utils/trigger-and-tap.js');
+const { executeRequest } = require('../../core/utils/request.js');
 // Import hub module for tile management
 const { getAllTiles, getTileByUuid, getTileConfig } = require('../hub/hub.js');
 
