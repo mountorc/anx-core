@@ -459,7 +459,7 @@ function generateVisualizationJS() {
         // 真实调用后端 API
         const apiEndpoint = '/api/trigger-card-key';
 
-        fetch(`http://localhost:7887${apiEndpoint}`, {
+        fetch('http://localhost:7887' + apiEndpoint, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -468,7 +468,7 @@ function generateVisualizationJS() {
         })
           .then(response => {
             if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
+              throw new Error('HTTP error! status: ' + response.status);
             }
             return response.json();
           })
