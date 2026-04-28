@@ -117,6 +117,11 @@ function updateNodeData(cardKey, data) {
         }
       });
     }
+    
+    // 自动更新父节点的 data.value（如果当前节点是子节点且有 nick）
+    if (existingNode.parentCardKey && existingNode.config && existingNode.config.nick) {
+      updateParentNodeValue(existingNode.parentCardKey, existingNode.config.nick, existingNode.data.value);
+    }
   } else {
     console.warn('[Node Storage] Node not found for update:', cardKey);
   }
@@ -137,6 +142,32 @@ function updateChildNodeValue(childCardKey, value) {
     console.log('[Node Storage] Child node data updated:', childCardKey);
   } else {
     console.warn('[Node Storage] Child node not found for update:', childCardKey);
+  }
+}
+
+/**
+ * 更新父节点的 data.value（从子节点反向同步）
+ * @param {string} parentCardKey - 父节点的 cardKey
+ * @param {string} childNick - 子节点的 nick 名称
+ * @param {any} childValue - 子节点的值
+ */
+function updateParentNodeValue(parentCardKey, childNick, childValue) {
+  const parentNode = nodeStorage.get(parentCardKey);
+  if (parentNode) {
+    parentNode.data = parentNode.data || {};
+    parentNode.data.value = parentNode.data.value || {};
+    
+    // 更新父节点 data.value 中对应子节点 nick 的值
+    parentNode.data.value[childNick] = childValue;
+    console.log('[Node Storage] Parent node value updated - parentCardKey:', parentCardKey, 'childNick:', childNick, 'childValue:', childValue);
+    
+    // 重新存储
+    nodeStorage.set(parentCardKey, JSON.parse(JSON.stringify(parentNode)));
+    // 保存到文件
+    saveNodesToFile();
+    console.log('[Node Storage] Parent node data updated:', parentCardKey);
+  } else {
+    console.warn('[Node Storage] Parent node not found for update:', parentCardKey);
   }
 }
 

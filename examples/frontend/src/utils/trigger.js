@@ -122,8 +122,9 @@ function handleRunningStatus(result, buttonElement) {
  * 更新结果显示区域
  * @param {string} parentCardKey - 父节点的 cardKey
  * @param {string} status - 当前状态
+ * @param {any} result - 结果数据（可选）
  */
-function updateResultDisplay(parentCardKey, status) {
+function updateResultDisplay(parentCardKey, status, result = null) {
   // 查找结果显示区域
   const resultArea = document.querySelector('.result-area');
   if (resultArea) {
@@ -136,8 +137,34 @@ function updateResultDisplay(parentCardKey, status) {
             <div class="status-text">处理中...</div>
             <div class="status-spinner"></div>
           </div>
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+        `;
+      } else if (status === 'completed' && result) {
+        // 任务完成时显示结果，带有淡入动画
+        resultContent.innerHTML = `
+          <div class="task-completed">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+              <span style="font-size: 20px;">✅</span>
+              <span style="font-weight: 600; color: #28a745;">任务完成</span>
+            </div>
+            <pre style="background: #f8f9fa; padding: 12px; border-radius: 4px; overflow-x: auto; font-size: 12px; color: #333;">${JSON.stringify(result, null, 2)}</pre>
+          </div>
         `;
       }
+    }
+  }
+  
+  // 查找相关卡片并添加/移除运行状态样式
+  const relatedCard = document.querySelector(`[data-card-key="${parentCardKey}"]`);
+  if (relatedCard) {
+    if (status === 'running') {
+      relatedCard.classList.add('card-running');
+      relatedCard.style.borderColor = '#ff9800';
+    } else {
+      relatedCard.classList.remove('card-running');
+      relatedCard.style.borderColor = '';
     }
   }
 }
@@ -184,6 +211,29 @@ function startTaskPolling(parentCardKey, buttonElement) {
           if (result.data.result) {
             updateResultDisplay(parentCardKey, 'completed', result.data.result);
           }
+
+          // 触发视图刷新事件，通知ANXView重新加载数据
+          dispatchGlobalEvent('reloadAnxView', {
+            cardKey: parentCardKey,
+            reason: 'task_completed',
+            timestamp: new Date().toISOString()
+          });
+
+          // 发送消息到父窗口通知任务完成
+          sendMessageToParent('TASK_COMPLETED', {
+            cardKey: parentCardKey,
+            submitStatus: submitStatus,
+            result: result.data.result,
+            timestamp: new Date().toISOString()
+          });
+        } else if (submitStatus === 'running') {
+          // 任务仍在运行中，触发进度更新事件
+          dispatchGlobalEvent('taskProgress', {
+            cardKey: parentCardKey,
+            submitStatus: submitStatus,
+            processing: processing,
+            timestamp: new Date().toISOString()
+          });
         }
       }
     } catch (error) {
