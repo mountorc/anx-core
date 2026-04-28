@@ -330,7 +330,7 @@ function generateVisualizationJS() {
   
   // 处理按钮点击事件
   window.handleButtonClick = function(buttonData, buttonElement) {
-    console.log('=== Handle Button Click ===');
+    console.log('=== 333Handle Button Click ===');
     console.log('Button data:', buttonData);
     console.log('Button element:', buttonElement);
     
@@ -444,7 +444,7 @@ function generateVisualizationJS() {
   function triggerEvent(eventData) {
     console.log('=== Trigger Event ===');
     console.log('Event data:', eventData);
-    
+
     return new Promise((resolve, reject) => {
       try {
         // 构建完整的事件数据
@@ -453,28 +453,46 @@ function generateVisualizationJS() {
           timestamp: new Date().toISOString(),
           source: 'view'
         };
-        
+
         console.log('Sending event to backend:', fullEventData);
-        
+
+        // 真实调用后端 API
+        const apiEndpoint = '/api/trigger-card-key';
+
+        fetch(`http://localhost:7887${apiEndpoint}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(fullEventData)
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log('=== Backend response:', data);
+            resolve(data);
+          })
+          .catch(error => {
+            console.error('=== Error calling backend:', error);
+            reject(error);
+          });
+
         // 向父窗口发送事件
         if (window.parent && window.parent !== window) {
           console.log('Sending event to parent window');
           window.parent.postMessage(fullEventData, '*');
         }
-        
+
         // 触发全局事件
         console.log('Dispatching global event');
         window.dispatchEvent(new CustomEvent('triggerEvent', {
           detail: fullEventData
         }));
-        
-        // 模拟后端调用
-        console.log('Simulating backend call');
-        setTimeout(() => {
-          console.log('Event processed successfully');
-          resolve({ success: true, message: 'Event triggered successfully' });
-        }, 500);
-        
+
       } catch (error) {
         console.error('Error triggering event:', error);
         reject(error);
@@ -697,11 +715,9 @@ function generateVisualizationCSS() {
       display: flex;
       flex-direction: column;
       height: 100%;
-      padding: 16px;
+      padding: 12px;
       background: linear-gradient(145deg, #ffffff 0%, #fafafa 100%);
-      border-radius: 12px;
-      border: 1px solid #e8e8e8;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      border-radius: 0px;
     }
 
     .result-title {
