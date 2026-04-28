@@ -115,102 +115,131 @@ body {
   font-weight: bold;
 }
 
-/* Running 状态动画 */
+/* Running 状态动画 - 精美设计 */
 
-/* 加载旋转器 */
-.loading-spinner {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: #ffffff;
-  animation: spin 0.8s linear infinite;
-  margin-right: 8px;
-  vertical-align: middle;
-}
-
+/* 旋转动画 */
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-/* 按钮脉冲动画 */
+/* 按钮加载状态 */
 button.loading {
-  animation: pulse 1.5s ease-in-out infinite;
+  opacity: 0.9;
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-    box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4);
-  }
-  50% {
-    opacity: 0.9;
-    box-shadow: 0 0 0 8px rgba(255, 152, 0, 0);
-  }
-}
-
-/* 运行中状态显示区域 */
-.running-status {
+/* 运行中容器 */
+.running-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 16px;
-  background: linear-gradient(135deg, #fff7e6 0%, #fff3cd 100%);
-  border-radius: 8px;
-  border: 1px solid #ffeeba;
+  padding: 40px 20px;
+  gap: 24px;
 }
 
-.status-icon {
-  font-size: 24px;
-  animation: bounce 1s ease-in-out infinite;
+/* 加载圆环 */
+.loading-ring {
+  position: relative;
+  width: 64px;
+  height: 64px;
 }
 
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-.status-text {
-  font-size: 14px;
-  color: #856404;
-  font-weight: 500;
-}
-
-.status-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255, 152, 0, 0.3);
-  border-radius: 50%;
-  border-top-color: #ff9800;
-  animation: spin 0.6s linear infinite;
-}
-
-/* 进度条动画 */
-.progress-bar {
+.loading-ring-circle {
+  position: absolute;
   width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid #e0e0e0;
+  border-top-color: #667eea;
+  animation: spin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.loading-ring-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 加载内容 */
+.loading-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.loading-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  letter-spacing: 0.5px;
+}
+
+.loading-subtitle {
+  font-size: 13px;
+  color: #888;
+}
+
+/* 闪烁的点 */
+.loading-dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  font-size: 20px;
+  color: #667eea;
+}
+
+.dot {
+  animation: dot-blink 1.4s ease-in-out infinite;
+}
+
+.dot-1 { animation-delay: 0s; }
+.dot-2 { animation-delay: 0.2s; }
+.dot-3 { animation-delay: 0.4s; }
+
+@keyframes dot-blink {
+  0%, 60%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 进度条容器 */
+.progress-bar-container {
+  width: 100%;
+  max-width: 200px;
+  margin-top: 8px;
+}
+
+.progress-bar-track {
   height: 6px;
-  background-color: #e0e0e0;
+  background: #e8e8e8;
   border-radius: 3px;
   overflow: hidden;
-  margin-top: 12px;
+  position: relative;
 }
 
-.progress-fill {
+.progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ff9800, #ff5722);
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
   border-radius: 3px;
-  animation: progress 2s ease-in-out infinite;
+  animation: progress-fill 2s ease-in-out infinite;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
 }
 
-@keyframes progress {
+@keyframes progress-fill {
   0% {
     width: 0%;
   }
@@ -222,33 +251,17 @@ button.loading {
   }
 }
 
-/* 波纹动画 */
-.ripple-container {
-  position: relative;
-  overflow: hidden;
-}
-
-.ripple {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 152, 0, 0.3);
-  transform: scale(0);
-  animation: ripple 1.5s ease-out infinite;
-  pointer-events: none;
-}
-
-@keyframes ripple {
-  to {
-    transform: scale(4);
-    opacity: 0;
-  }
+.progress-text {
+  font-size: 12px;
+  color: #999;
+  margin-top: 8px;
 }
 
 /* 任务完成动画 */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -260,17 +273,10 @@ button.loading {
   animation: fadeInUp 0.4s ease-out;
 }
 
-/* 卡片闪烁效果 */
-@keyframes glow {
-  0%, 100% {
-    box-shadow: 0 0 5px rgba(255, 152, 0, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(255, 152, 0, 0.6);
-  }
-}
-
+/* 卡片运行状态 */
 .card-running {
-  animation: glow 1.5s ease-in-out infinite;
+  border-color: #667eea !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
+  box-shadow: 0 0 20px rgba(102, 126, 234, 0.15);
 }
 </style>

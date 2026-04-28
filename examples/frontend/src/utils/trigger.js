@@ -132,13 +132,26 @@ function updateResultDisplay(parentCardKey, status, result = null) {
     if (resultContent) {
       if (status === 'running') {
         resultContent.innerHTML = `
-          <div class="running-status">
-            <div class="status-icon">⏳</div>
-            <div class="status-text">处理中...</div>
-            <div class="status-spinner"></div>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-fill"></div>
+          <div class="running-container">
+            <div class="loading-ring">
+              <div class="loading-ring-circle"></div>
+              <div class="loading-ring-inner"></div>
+            </div>
+            <div class="loading-content">
+              <div class="loading-title">处理中</div>
+              <div class="loading-subtitle">正在努力处理您的请求...</div>
+              <div class="loading-dots">
+                <span class="dot dot-1">.</span>
+                <span class="dot dot-2">.</span>
+                <span class="dot dot-3">.</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-track">
+                  <div class="progress-bar-fill"></div>
+                </div>
+                <div class="progress-text">处理中</div>
+              </div>
+            </div>
           </div>
         `;
       } else if (status === 'completed' && result) {
@@ -249,7 +262,7 @@ function startTaskPolling(parentCardKey, buttonElement) {
         buttonElement.innerHTML = '提交';
       }
     }
-  }, 2000); // 每2秒轮询一次
+  }, 3000); // 每3秒轮询一次
 }
 
 
