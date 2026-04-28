@@ -10,37 +10,47 @@
 export function triggerEvent(eventData) {
   console.log('=== Trigger Event ===');
   console.log('Event data:', eventData);
-  
+
   return new Promise((resolve, reject) => {
     try {
-      // 构建完整的事件数据
       const fullEventData = {
         ...eventData,
         timestamp: new Date().toISOString(),
         source: 'view'
       };
-      
+
       console.log('Sending event to backend:', fullEventData);
-      
-      // 向父窗口发送事件
+
+      fetch('http://localhost:7887/api/trigger-card-key', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(fullEventData)
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('=== Backend response:', data);
+          resolve(data);
+        })
+        .catch(error => {
+          console.error('=== Error calling backend:', error);
+          reject(error);
+        });
+
       if (window.parent && window.parent !== window) {
-        console.log('Sending event to parent window');
         window.parent.postMessage(fullEventData, '*');
       }
-      
-      // 触发全局事件
-      console.log('Dispatching global event');
+
       window.dispatchEvent(new CustomEvent('triggerEvent', {
         detail: fullEventData
       }));
-      
-      // 模拟后端调用
-      console.log('Simulating backend call');
-      setTimeout(() => {
-        console.log('Event processed successfully');
-        resolve({ success: true, message: 'Event triggered successfully' });
-      }, 500);
-      
+
     } catch (error) {
       console.error('Error triggering event:', error);
       reject(error);
@@ -80,16 +90,21 @@ export function handleButtonClick(buttonData, buttonElement) {
   return triggerEvent(eventData)
     .then(result => {
       console.log('Button click handled successfully:', result);
-      
-      // 恢复按钮状态
-      if (buttonElement) {
-        setTimeout(() => {
-          console.log('Restoring button state');
-          buttonElement.disabled = false;
-          buttonElement.classList.remove('loading');
-        }, 500);
+
+      // 如果返回的是 running 状态，不恢复按钮状态（由轮询处理）
+      if (result && result.status === 'running') {
+        console.log('Task is running, keeping button disabled');
+      } else {
+        // 恢复按钮状态
+        if (buttonElement) {
+          setTimeout(() => {
+            console.log('Restoring button state');
+            buttonElement.disabled = false;
+            buttonElement.classList.remove('loading');
+          }, 500);
+        }
       }
-      
+
       return result;
     })
     .catch(error => {
