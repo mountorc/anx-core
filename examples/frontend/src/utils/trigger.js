@@ -290,10 +290,20 @@ export async function buttonTap(buttonElement) {
   const labelJson = buttonElement.getAttribute("data-label");
   const nodeJson = buttonElement.getAttribute("data-node");
 
+  console.log('[buttonTap] data-tap-set attribute:', tapSetJson);
+  console.log('[buttonTap] cardKey:', cardKey);
+
   let tapSet = null;
   if (tapSetJson) {
-    tapSet = JSON.parse(tapSetJson);
-    console.log("Tap set:", tapSet);
+    try {
+      tapSet = JSON.parse(tapSetJson);
+      console.log("Tap set:", tapSet);
+      console.log('[buttonTap] Has resultSet:', tapSet?.requestSet?.resultSet !== undefined);
+    } catch (e) {
+      console.error('[buttonTap] Failed to parse tapSet:', e);
+    }
+  } else {
+    console.log('[buttonTap] No tapSet found on button');
   }
 
   if (cardKey) {
