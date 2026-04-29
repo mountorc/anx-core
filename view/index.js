@@ -514,6 +514,46 @@ function generateVisualizationJS() {
 
     return value;
   }
+  
+  // 监听刷新按钮事件
+  window.addEventListener('refreshForm', function(event) {
+    console.log('=== Refresh form button clicked ===');
+    
+    // 尝试获取第一个 form 的 cardKey
+    const formElements = document.querySelectorAll('.form-visualization');
+    if (formElements.length > 0) {
+      // 查找 form 中包含 cardKey 的元素
+      const cardKeyElement = document.querySelector('[data-card-key]');
+      if (cardKeyElement) {
+        const cardKey = cardKeyElement.getAttribute('data-card-key');
+        console.log('Refreshing form with cardKey:', cardKey);
+        
+        // 刷新页面或调用父窗口的刷新方法
+        if (window.parent && window.parent !== window) {
+          console.log('Sending refresh message to parent window');
+          window.parent.postMessage({
+            type: 'REFRESH_FORM',
+            cardKey: cardKey,
+            timestamp: new Date().toISOString()
+          }, '*');
+        }
+        
+        // 同时触发一个全局事件
+        window.dispatchEvent(new CustomEvent('formRefreshed', {
+          detail: {
+            cardKey: cardKey,
+            timestamp: new Date().toISOString()
+          }
+        }));
+      } else {
+        console.log('No cardKey found, just reloading page');
+        window.location.reload();
+      }
+    } else {
+      console.log('No form found, just reloading page');
+      window.location.reload();
+    }
+  });
 })();
 </script>
   `;
@@ -739,16 +779,38 @@ function generateVisualizationCSS() {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border-radius: 2px;
     }
+    
+    .refresh-button {
+      margin-left: auto;
+      padding: 4px 8px;
+      background-color: #f0f0f0;
+      color: #666;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      line-height: 1;
+    }
+    
+    .refresh-button:hover {
+      background-color: #e0e0e0;
+      border-color: #bbb;
+      color: #333;
+    }
+    
+    .refresh-button:active {
+      background-color: #d0d0d0;
+      transform: rotate(180deg);
+    }
 
     .result-content {
       flex: 1;
       min-height: 280px;
       background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: 0px;
       overflow: hidden;
-      border: 1px solid #e8e8e8;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
     }
 
     .result-placeholder {

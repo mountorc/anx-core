@@ -139,7 +139,12 @@ function renderResultArea(resultData, resultSet, renderNode, processing) {
   if (!resultData) {
     return `
       <div class="result-area">
-        <div class="result-title">结果区域</div>
+        <div class="result-title">
+          结果区域
+          <button class="refresh-button" onclick="window.dispatchEvent(new CustomEvent('refreshForm', {detail: {}}))">
+            ↻
+          </button>
+        </div>
         <div class="result-content">
           <div class="result-placeholder">结果将显示在这里</div>
         </div>
@@ -175,7 +180,12 @@ function renderResultArea(resultData, resultSet, renderNode, processing) {
     
     return `
       <div class="result-area">
-        <div class="result-title">结果区域</div>
+        <div class="result-title">
+          结果区域
+          <button class="refresh-button" onclick="window.dispatchEvent(new CustomEvent('refreshForm', {detail: {}}))">
+            ↻
+          </button>
+        </div>
         <div class="result-content">
           ${renderNode(boardNode)}
         </div>
@@ -187,7 +197,12 @@ function renderResultArea(resultData, resultSet, renderNode, processing) {
   if (typeof resultData === 'string' && (resultData.startsWith('http://') || resultData.startsWith('https://'))) {
     return `
       <div class="result-area">
-        <div class="result-title">结果区域</div>
+        <div class="result-title">
+          结果区域
+          <button class="refresh-button" onclick="window.dispatchEvent(new CustomEvent('refreshForm', {detail: {}}))">
+            ↻
+          </button>
+        </div>
         <div class="result-content">
           <img src="${resultData}" alt="Result" class="result-image" />
         </div>
@@ -211,7 +226,12 @@ function renderResultArea(resultData, resultSet, renderNode, processing) {
     if (imageUrl) {
       return `
         <div class="result-area">
-          <div class="result-title">结果区域</div>
+          <div class="result-title">
+            结果区域
+            <button class="refresh-button" onclick="window.dispatchEvent(new CustomEvent('refreshForm', {detail: {}}))">
+              ↻
+            </button>
+          </div>
           <div class="result-content">
             <img src="${imageUrl}" alt="Result" class="result-image" />
           </div>
@@ -223,7 +243,12 @@ function renderResultArea(resultData, resultSet, renderNode, processing) {
   // 默认显示JSON格式的结果
   return `
     <div class="result-area">
-      <div class="result-title">结果区域</div>
+      <div class="result-title">
+        结果区域
+        <button class="refresh-button" onclick="window.dispatchEvent(new CustomEvent('refreshForm', {detail: {}}))">
+          ↻
+        </button>
+      </div>
       <div class="result-content">
         <pre class="result-json">${JSON.stringify(resultData, null, 2)}</pre>
       </div>
