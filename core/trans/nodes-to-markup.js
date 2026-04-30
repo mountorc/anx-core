@@ -36,6 +36,19 @@ async function nodesToMarkup(nodesStructure) {
       switch (node.config.kind) {
         case 'form':
           nodeMarkup = node.config.title ? `## ${node.config.title}\n\n` : '';
+          
+          // 将父节点的 data.value 传递给子节点
+          const formData = node.data && node.data.value ? node.data.value : {};
+          if (node.nodes && node.nodes.length > 0) {
+            node.nodes.forEach((childNode) => {
+              const childNick = childNode.config && childNode.config.nick;
+              if (childNick && formData[childNick] !== undefined && (!childNode.data || childNode.data.value === undefined)) {
+                childNode.data = childNode.data || {};
+                childNode.data.value = formData[childNick];
+              }
+            });
+          }
+          
           nodeMarkup += childMarkup;
           break;
         case 'board':
@@ -140,6 +153,27 @@ async function nodesToMarkup(nodesStructure) {
           const dateLabel = node.config.nick || 'Date';
           const dateValue = node.data && node.data.value ? node.data.value : node.config.value || node.config.placeholder || '';
           nodeMarkup = `**${dateLabel}:** ${dateValue}`;
+          break;
+        case 'image':
+          const imageLabel = node.config.nick || 'Image';
+          const imageValue = node.data && node.data.value ? node.data.value : '';
+          if (imageValue) {
+            nodeMarkup = `**${imageLabel}:**\n\n![Image](${imageValue})`;
+          } else {
+            nodeMarkup = `**${imageLabel}:** *No image uploaded*`;
+          }
+          break;
+        case 'images':
+          const imagesLabel = node.config.nick || 'Images';
+          const imagesValue = node.data && node.data.value ? node.data.value : [];
+          if (Array.isArray(imagesValue) && imagesValue.length > 0) {
+            nodeMarkup = `**${imagesLabel}:**\n\n`;
+            imagesValue.forEach((imgUrl, index) => {
+              nodeMarkup += `${index + 1}. ![Image ${index + 1}](${imgUrl})\n`;
+            });
+          } else {
+            nodeMarkup = `**${imagesLabel}:** *No images uploaded*`;
+          }
           break;
         case 'checkbox':
           const checkboxLabel = node.config.nick ? `**${node.config.nick}:**\n\n` : '';
