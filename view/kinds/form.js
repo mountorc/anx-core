@@ -18,6 +18,12 @@ function renderForm(node, renderNode) {
 
   if (node.nodes && node.nodes.length > 0) {
     node.nodes.forEach((childNode) => {
+      // 从formData中获取子节点对应的值
+      const childNick = childNode.config && childNode.config.nick;
+      if (childNick && formData[childNick] !== undefined && (!childNode.data || childNode.data.value === undefined)) {
+        childNode.data = childNode.data || {};
+        childNode.data.value = formData[childNick];
+      }
       content += renderNode(childNode);
     });
   } else if (config.kinds && config.kinds.length > 0) {
