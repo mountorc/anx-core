@@ -150,20 +150,34 @@ function convertCheckboxToMarkup(component) {
 }
 
 function convertFileToMarkup(component) {
-  const { title, description, accept, multiple, maxSize, preview, nick } = component;
+  const { title, description, accept, multiple, maxSize, preview, nick, kind } = component;
   const cardKey = 'card_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+  const label = title || nick || 'File';
   
-  let markup = `<x file ${cardKey}>\n<!-- ANX Component: ${component.kind} -->\n`;
-
-  if (title || nick) {
-    const label = title || nick;
+  let markup = `<x file ${cardKey}>\n`;
+  
+  // 处理 image 类型
+  if (kind === 'image' || kind === 'images' || accept?.includes('image')) {
+    const imageValue = component.data?.value || component.value;
+    
+    if (kind === 'images' && Array.isArray(imageValue) && imageValue.length > 0) {
+      markup += `**${label}:**\n`;
+      imageValue.forEach((imgUrl, index) => {
+        markup += `${index + 1}. ![Image ${index + 1}](${imgUrl})\n`;
+      });
+    } else if (imageValue && typeof imageValue === 'string') {
+      markup += `**${label}:**\n\n![Image](${imageValue})\n`;
+    } else {
+      markup += `**${label}:** *No image uploaded*\n`;
+    }
+  } else {
+    // 非图片文件
     markup += `**${label}:**\n`;
+    if (description) {
+      markup += `${description}\n`;
+    }
   }
-
-  if (description) {
-    markup += `${description}\n`;
-  }
-
+  
   markup += `</x>\n`;
   return markup;
 }
