@@ -1095,6 +1095,37 @@ app.get('/api/markup', async (req, res) => {
       if (storedNode && storedNode.data) {
         node.data = { ...node.data, ...storedNode.data };
       }
+      
+      // 如果是 form 节点，从父节点的 data.value 中获取数据传递给子节点
+      if (node.config && node.config.kind === 'form' && node.data && node.data.value && node.nodes && node.nodes.length > 0) {
+        const formData = node.data.value;
+        node.nodes.forEach((childNode) => {
+          const childNick = childNode.config && childNode.config.nick;
+          if (childNick && (!childNode.data || childNode.data.value === undefined)) {
+            // 尝试多种匹配方式
+            let value = undefined;
+            
+            // 1. 精确匹配
+            if (formData[childNick] !== undefined) {
+              value = formData[childNick];
+            }
+            // 2. 尝试单数/复数转换
+            else if (childNick.endsWith('s') && formData[childNick.slice(0, -1)] !== undefined) {
+              value = formData[childNick.slice(0, -1)];
+            }
+            // 3. 尝试复数转换
+            else if (!childNick.endsWith('s') && formData[childNick + 's'] !== undefined) {
+              value = formData[childNick + 's'];
+            }
+            
+            if (value !== undefined) {
+              childNode.data = childNode.data || {};
+              childNode.data.value = value;
+            }
+          }
+        });
+      }
+      
       if (node.nodes && node.nodes.length > 0) {
         node.nodes.forEach(childNode => loadNodeData(childNode));
       }
