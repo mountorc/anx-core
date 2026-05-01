@@ -100,7 +100,31 @@
           </div>
           
           <div class="cli-section">
-            <h3>CLI Command</h3>
+            <h3>CLI Execution</h3>
+            
+            <div class="cli-history">
+              <div class="history-header">
+                <span>历史记录 ({{ cliHistory.length }})</span>
+                <button class="clear-history-btn" @click="cliHistory = []" v-if="cliHistory.length > 0">清除</button>
+              </div>
+              <div class="history-list" v-if="cliHistory.length > 0">
+                <div 
+                  v-for="(item, index) in cliHistory" 
+                  :key="index" 
+                  class="history-item"
+                  @click="cliCommand = item.command"
+                >
+                  <span class="history-cardKey">{{ item.cardKey }}</span>
+                  <span class="history-action">{{ item.action }}</span>
+                  <span class="history-command">{{ item.command }}</span>
+                  <span class="history-time">{{ formatTime(item.timestamp) }}</span>
+                </div>
+              </div>
+              <div class="history-empty" v-else>
+                暂无执行记录
+              </div>
+            </div>
+            
             <div class="cli-input-container">
               <input 
                 v-model="cliCommand" 
@@ -297,6 +321,7 @@ export default {
       nodesStructure: null,
       cliCommand: '',
       cliOutput: '',
+      cliHistory: [],
       showCommandsModal: false,
       showLogsModal: false,
       cliCommands: [],
@@ -1334,6 +1359,19 @@ export default {
         // 格式化输出，显示cardKey、action和result
         this.cliOutput = `cardKey: ${result.cardKey}\naction: ${result.action}\nresult: ${JSON.stringify(result.result, null, 2)}`;
         
+        // 添加到历史记录
+        this.cliHistory.unshift({
+          command: this.cliCommand,
+          timestamp: new Date().toISOString(),
+          cardKey: result.cardKey,
+          action: result.action
+        });
+        
+        // 限制历史记录数量，最多保留50条
+        if (this.cliHistory.length > 50) {
+          this.cliHistory = this.cliHistory.slice(0, 50);
+        }
+        
         // 重新获取节点结构以更新显示
         await this.refreshNodesStructure();
       } catch (error) {
@@ -1444,6 +1482,10 @@ export default {
       if (this.showLogsModal) {
         this.refreshLogs();
       }
+    },
+    formatTime(timestamp) {
+      const date = new Date(timestamp);
+      return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
     },
     formatTimestamp(timestamp) {
       const date = new Date(timestamp);
@@ -2018,7 +2060,127 @@ export default {
   border-top: 2px solid #e0e0e0;
   padding: 15px;
   background-color: #fafafa;
-  flex-shrink: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.section-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 8px;
+  padding: 4px 0;
+  border-bottom: 1px dashed #ddd;
+}
+
+.cli-history {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+}
+
+.history-header span {
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+}
+
+.clear-history-btn {
+  padding: 2px 8px;
+  font-size: 11px;
+  background-color: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.clear-history-btn:hover {
+  background-color: #e64a19;
+}
+
+.history-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.history-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 13px;
+  padding: 20px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-item:hover {
+  background-color: #f9f9f9;
+}
+
+.history-cardKey {
+  font-size: 11px;
+  font-weight: 500;
+  color: #4CAF50;
+  background-color: rgba(76, 175, 80, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.history-action {
+  font-size: 11px;
+  color: #2196F3;
+  white-space: nowrap;
+}
+
+.history-command {
+  flex: 1;
+  font-size: 13px;
+  color: #333;
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-time {
+  font-size: 11px;
+  color: #999;
+  white-space: nowrap;
 }
 
 .cli-section h3 {
@@ -2026,12 +2188,14 @@ export default {
   margin-bottom: 10px;
   font-size: 16px;
   color: #333;
+  flex-shrink: 0;
 }
 
 .cli-input-container {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
+  flex-shrink: 0;
 }
 
 .cli-input-container input {
@@ -2060,8 +2224,9 @@ export default {
   margin-top: 15px;
   border-top: 1px solid #ddd;
   padding-top: 15px;
-  max-height: 200px;
+  max-height: 120px;
   overflow-y: auto;
+  flex-shrink: 0;
 }
 
 .cli-output h4 {
