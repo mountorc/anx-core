@@ -1,4 +1,7 @@
 {
+  "name": "anx-core",
+  "version": "1.4.20",
+  "license": "Apache-2.0",
   "dependencies": {
     "form-data": "^4.0.5",
     "node-fetch": "^2.7.0",
