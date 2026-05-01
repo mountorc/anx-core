@@ -59,6 +59,153 @@ function handleTapSet(dealSet) {
   return true;
 }
 
+/**
+ * 处理 tapSet.requestSet 的异步版本
+ */
+async function handleTapSetRequestSet(cardKey, parentCardKey, requestSet) {
+  logToSystem('request_start', {
+    cardKey: cardKey,
+    url: requestSet.url,
+    method: requestSet.method,
+    paramMap: requestSet.paramMap,
+    timestamp: new Date().toISOString()
+  });
+
+  const result = await executeRequest({ config: requestSet, cardKey });
+  
+  logToSystem('request_success', {
+    url: requestSet.url,
+    method: requestSet.method,
+    result: result,
+    timestamp: new Date().toISOString()
+  });
+
+  if (requestSet.resultSet !== undefined && requestSet.resultSet !== null && requestSet.resultSet !== false) {
+    let resultValue = null;
+    if (result && result.data && result.data.data !== undefined) {
+      resultValue = result.data.data;
+    } else if (result && result.data !== undefined) {
+      resultValue = result.data;
+    } else if (result !== undefined) {
+      resultValue = result;
+    }
+    updateNodeData(parentCardKey, { result: resultValue });
+    logToSystem('request_result_stored', {
+      cardKey: cardKey,
+      resultSet: requestSet.resultSet,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  return {
+    status: 'completed',
+    message: 'Request completed',
+    cardKey,
+    parentCardKey,
+    result: result
+  };
+}
+
+/**
+ * 处理 tapSet.requestSet 的后台异步版本
+ */
+function handleTapSetRequestSetAsync(cardKey, parentCardKey, requestSet) {
+  handleTapSetRequestSet(cardKey, parentCardKey, requestSet)
+    .catch(error => {
+      console.error('[handleTapSetRequestSetAsync] Error executing request:', error);
+      logError('request_async_error', error.message, {
+        cardKey,
+        timestamp: new Date().toISOString()
+      });
+      updateNodeData(parentCardKey, { processing: false, submitStatus: 'error', error: error.message });
+    });
+}
+
+/**
+ * 核心的 trigger-card-key 处理函数（共用函数）
+ * 供后端 /api/trigger-card-key 和 CLI tap 命令共用
+ */
+async function processTriggerCardKey(params) {
+  const { cardKey, tapSet, triggerSet, data } = params;
+  
+  logToSystem('trigger_card_key', {
+    cardKey: cardKey,
+    tapSet: tapSet || null,
+    triggerSet: triggerSet || null,
+    timestamp: new Date().toISOString()
+  });
+
+  const storedNode = getNode(cardKey);
+
+  let tapResult = null;
+  if (tapSet) {
+    try {
+      logToSystem('handleTapSet-try', {
+        cardKey: cardKey,
+        timestamp: new Date().toISOString()
+      });
+
+      if (tapSet.requestSet) {
+        const parentCardKey = storedNode?.parentCardKey || cardKey;
+
+        if (tapSet.requestSet.resultSet !== undefined && tapSet.requestSet.resultSet !== null && tapSet.requestSet.resultSet !== false) {
+          updateNodeData(parentCardKey, { processing: true, submitStatus: 'running' });
+
+          tapResult = {
+            message: 'Request started',
+            action: 'requestSet',
+            status: 'running',
+            submitStatus: 'running',
+            cardKey: cardKey,
+            parentCardKey: parentCardKey
+          };
+
+          handleTapSetRequestSetAsync(cardKey, parentCardKey, tapSet.requestSet);
+        } else {
+          tapResult = await handleTapSetRequestSet(cardKey, parentCardKey, tapSet.requestSet);
+          if (!tapResult.status) {
+            tapResult.status = 'completed';
+          }
+        }
+      } else {
+        handleTapSet({ cardKey });
+        tapResult = { status: 'completed', message: 'Tap action executed' };
+      }
+
+      logToSystem('handleTapSet-finish', {
+        result: tapResult,
+        timestamp: new Date().toISOString()
+      });
+    } catch (tapError) {
+      logToSystem('handleTapSet-error', {
+        cardKey: cardKey,
+        tapError: tapError.message,
+        timestamp: new Date().toISOString()
+      });
+      tapResult = { status: 'error', message: tapError.message };
+    }
+  }
+
+  if (triggerSet) {
+    console.log('[trigger-card-key] Calling handleTriggerSet');
+    try {
+      handleTriggerSet(triggerSet, data || {}, null);
+    } catch (triggerError) {
+      console.error('[trigger-card-key] Error handling triggerSet:', triggerError);
+    }
+  }
+
+  return {
+    success: true,
+    message: 'Card key triggered successfully',
+    cardKey: cardKey,
+    tapSet: tapSet || null,
+    triggerSet: triggerSet || null,
+    nodes: storedNode || null,
+    data: tapResult || { status: 'completed' }
+  };
+}
+
 function handleTriggerSet(triggerSet, data, element) {
   // 记录到系统日志
   logToSystem('handleTriggerSet', {
@@ -450,5 +597,8 @@ module.exports = {
   handleTapSet,
   handleTriggerSet,
   generateEventHandlers,
-  addEventListeners
+  addEventListeners,
+  handleTapSetRequestSet,
+  handleTapSetRequestSetAsync,
+  processTriggerCardKey
 };

@@ -4,9 +4,21 @@
       <div class="tile-cases">
         <div class="tile-header">
           <h3>Tile Cases</h3>
-          <div v-if="currentTileUuid || currentUrlTile" class="tile-info">
-            <span v-if="currentTileUuid" class="tile-uuid">uuid_tile: {{ currentTileUuid }}</span>
-            <span v-if="currentUrlTile" class="tile-url">url_tile: {{ currentUrlTile }}</span>
+          <div class="tile-info">
+            <div class="visitor-input-wrapper">
+              <label>uuid_visitor:</label>
+              <input 
+                v-model="uuidVisitor" 
+                placeholder="输入访客uuid" 
+                class="visitor-input"
+                @keyup.enter="refreshWithUuidVisitor"
+              />
+              <button @click="refreshWithUuidVisitor" class="refresh-btn">刷新</button>
+            </div>
+            <div v-if="currentTileUuid || currentUrlTile">
+              <span v-if="currentTileUuid" class="tile-uuid">uuid_tile: {{ currentTileUuid }}</span>
+              <span v-if="currentUrlTile" class="tile-url">url_tile: {{ currentUrlTile }}</span>
+            </div>
           </div>
         </div>
         <div class="tile-grid-wrapper">
@@ -66,6 +78,26 @@
         <div class="json-section">
           <h2>Core Nodes</h2>
           <pre class="json-output">{{ jsonStructure }}</pre>
+        </div>
+        
+        <div class="output-section">
+          <div class="section-header">
+            <h2>Markup Output</h2>
+            <div class="view-toggle">
+              <button 
+                :class="['toggle-btn', { active: outputMode === 'markup' }]"
+                @click="outputMode = 'markup'"
+              >Markup</button>
+              <button 
+                :class="['toggle-btn', { active: outputMode === 'markdown' }]"
+                @click="outputMode = 'markdown'"
+              >Markdown</button>
+            </div>
+          </div>
+          <div class="markup-container">
+            <div v-if="outputMode === 'markdown'" class="markup-output" v-html="markupOutput"></div>
+            <pre v-else class="raw-output">{{ rawMarkupOutput }}</pre>
+          </div>
           
           <div class="cli-section">
             <h3>CLI Command</h3>
@@ -77,7 +109,6 @@
               />
               <button @click="executeCliCommand">Execute</button>
               <button @click="showCommandsList">Commands</button>
-              <button @click="showCliLogs">Logs</button>
             </div>
             
             <div class="cli-output" v-if="cliOutput">
@@ -85,12 +116,6 @@
               <pre>{{ cliOutput }}</pre>
             </div>
           </div>
-        </div>
-        
-        <div class="output-section">
-          <h2>Markup Output</h2>
-          <div class="markup-output" v-html="markupOutput"></div>
-          <pre class="raw-output">{{ rawMarkupOutput }}</pre>
         </div>
         
         <div class="visual-section">
@@ -202,6 +227,8 @@ export default {
       currentTileUuid: '', // 当前选中的tile uuid
       currentUrlTile: '', // 当前选中的url_tile
       currentUuidPage: '', // 当前选中的页面uuid
+      uuidVisitor: '', // 当前的访客uuid
+      outputMode: 'markup', // 输出模式：markup 或 markdown
       pageList: [], // 页面列表
       isSidebarHidden: false, // 侧边栏是否隐藏
       boxDatasetTest: `{
@@ -286,7 +313,7 @@ export default {
     this.loadHubList();
     this.initFileUploads();
     
-    // 从URL参数中获取uuid_tile并自动加载对应的tile
+    // 从URL参数中获取uuid_tile、uuid_visitor等并自动加载对应的tile
     this.checkUrlForUuidTile();
     
     // 监听 message 事件（来自可视化 iframe）
@@ -305,11 +332,17 @@ export default {
     window.removeEventListener('openLogs', this.handleOpenLogs);
   },
   methods: {
-    // 检查URL参数中是否包含uuid_tile或url_tile
+    // 检查URL参数中是否包含uuid_tile、url_tile或uuid_visitor
     checkUrlForUuidTile() {
       const urlParams = new URLSearchParams(window.location.search);
       const uuidTile = urlParams.get('uuid_tile');
       const urlTile = urlParams.get('url_tile');
+      const uuidVisitor = urlParams.get('uuid_visitor');
+      
+      if (uuidVisitor) {
+        console.log(`[URL] Found uuid_visitor parameter: ${uuidVisitor}`);
+        this.uuidVisitor = uuidVisitor;
+      }
       
       if (uuidTile) {
         console.log(`[URL] Found uuid_tile parameter: ${uuidTile}`);
@@ -318,6 +351,24 @@ export default {
         console.log(`[URL] Found url_tile parameter: ${urlTile}`);
         this.loadUrlTile(urlTile);
       }
+    },
+    // 使用新的 uuid_visitor 刷新页面
+    refreshWithUuidVisitor() {
+      if (!this.uuidVisitor) {
+        console.log('[UUID] No uuid_visitor provided');
+        return;
+      }
+      
+      // 更新URL参数
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set('uuid_visitor', this.uuidVisitor);
+      const newUrl = `${window.location.pathname}?${urlParams.toString()}${window.location.hash}`;
+      window.history.replaceState({}, '', newUrl);
+      
+      console.log(`[UUID] Refreshing with uuid_visitor: ${this.uuidVisitor}`);
+      
+      // 重新转换以应用新的 uuid_visitor
+      this.convertAnxToMarkup();
     },
     // 防抖函数，避免频繁的API调用
     debouncedConvertAnxToMarkup() {
@@ -508,6 +559,11 @@ export default {
         // 添加 uuid_page 参数
         if (this.currentUuidPage) {
           requestParams.uuid_page = this.currentUuidPage;
+        }
+        
+        // 添加 uuid_visitor 参数
+        if (this.uuidVisitor) {
+          requestParams.uuid_visitor = this.uuidVisitor;
         }
         
         // Get nodes structure from backend
@@ -1655,15 +1711,6 @@ export default {
   background-color: #f9f9f9;
 }
 
-.json-section .cli-section {
-  margin-top: 0;
-  border: none;
-  border-top: 1px solid #ddd;
-  border-radius: 0;
-  padding: 15px;
-  background-color: #f9f9f9;
-}
-
 .input-section textarea {
   flex: 1;
   padding: 15px;
@@ -1676,17 +1723,61 @@ export default {
 .output-section {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
-.markup-output {
-  flex: 1;
-  padding: 15px;
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 10px;
   border-bottom: 1px solid #ddd;
+  flex-shrink: 0;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 4px;
+}
+
+.toggle-btn {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  color: #666;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggle-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.toggle-btn.active {
+  background-color: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+}
+
+.markup-container {
+  flex: 1;
   overflow-y: auto;
 }
 
+.markup-output {
+  padding: 15px;
+  background-color: white;
+}
+
 .raw-output {
-  flex: 1;
   padding: 15px;
   margin: 0;
   font-family: monospace;
@@ -1873,6 +1964,61 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+.tile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.visitor-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.visitor-input-wrapper label {
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+}
+
+.visitor-input {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  width: 200px;
+  font-family: monospace;
+}
+
+.visitor-input:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+.visitor-input-wrapper .refresh-btn {
+  padding: 6px 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.visitor-input-wrapper .refresh-btn:hover {
+  background-color: #45a049;
+}
+
+.output-section .cli-section {
+  border-top: 2px solid #e0e0e0;
+  padding: 15px;
+  background-color: #fafafa;
+  flex-shrink: 0;
 }
 
 .cli-section h3 {

@@ -5,6 +5,8 @@
 
 const { parseArgs } = require('./cli.js');
 const commandsData = require('./commands.json');
+const { processTriggerCardKey } = require('../utils/trigger-and-tap.js');
+const { getNode, setNode } = require('../app/node.js');
 
 /**
  * ANX CLI 命令执行器
@@ -35,9 +37,9 @@ class AnxCLI {
   /**
    * 解析并执行 ANX CLI 命令
    * @param {string} command - 命令字符串
-   * @returns {Object} - 执行结果
+   * @returns {Promise<Object>} - 执行结果
    */
-  executeCommand(command) {
+  async executeCommand(command) {
     try {
       // 解析命令
       const parts = this._parseCommand(command);
@@ -52,15 +54,9 @@ class AnxCLI {
 
       // 检查组件是否存在
       const component = this.components.get(cardKey);
-      if (!component) {
-        return {
-          error: true,
-          message: `Component not found: ${cardKey}`
-        };
-      }
 
       // 执行命令
-      return this._executeAction(component, action, parameters);
+      return this._executeAction(component, cardKey, action, parameters);
     } catch (error) {
       return {
         error: true,
@@ -96,11 +92,12 @@ class AnxCLI {
   /**
    * 执行具体的动作
    * @param {Object} component - 组件对象
+   * @param {string} cardKey - 组件的 cardKey
    * @param {string} action - 动作名称
    * @param {Array} parameters - 参数列表
-   * @returns {Object} - 执行结果
+   * @returns {Promise<Object>|Object} - 执行结果
    */
-  _executeAction(component, action, parameters) {
+  async _executeAction(component, cardKey, action, parameters) {
     switch (action) {
       // 查询命令
       case 'get_config':
@@ -148,7 +145,7 @@ class AnxCLI {
 
       // 交互事件命令
       case 'tap':
-        return this._tap(component);
+        return this._tap(component, cardKey);
       case 'double_tap':
         return this._doubleTap(component);
       case 'long_press':
@@ -426,14 +423,41 @@ class AnxCLI {
   }
 
   // 交互事件命令实现
-  _tap(component) {
-    // 触发点击事件
-    if (component.onClick) {
-      component.onClick();
+  async _tap(component, cardKey) {
+    // 首先尝试从 nodeStorage 获取节点
+    let storedNode = getNode(cardKey);
+    
+    if (!storedNode) {
+      // 如果 nodeStorage 没有，尝试从 components Map 获取
+      if (component) {
+        // 如果是老的组件格式，转换一下
+        storedNode = {
+          cardKey,
+          config: component,
+          data: component.data || { value: component.value }
+        };
+        // 存储到 nodeStorage
+        setNode(cardKey, storedNode);
+      } else {
+        return {
+          error: true,
+          message: `Component not found: ${cardKey}`
+        };
+      }
     }
+
+    // 从配置中获取 tapSet 和 triggerSet
+    const tapSet = storedNode.config.tapSet;
+    const triggerSet = storedNode.config.triggerSet;
+
+    // 使用共用的 processTriggerCardKey 函数
+    const result = await processTriggerCardKey({ cardKey, tapSet, triggerSet });
+
+    // 兼容老的返回格式
     return {
-      error: false,
-      result: { tapped: true }
+      error: !result.success,
+      result,
+      message: result.message
     };
   }
 
