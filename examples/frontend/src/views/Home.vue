@@ -719,13 +719,33 @@ export default {
         }
         
         try {
+          // 构建请求数据，携带所有必要的信息
+          const requestData = { cardKey, field, value };
+          
+          // 添加 uuid_visitor
+          if (this.uuidVisitor) {
+            requestData.uuid_visitor = this.uuidVisitor;
+          }
+          
+          // 添加 uuid_page
+          if (this.currentUuidPage) {
+            requestData.uuid_page = this.currentUuidPage;
+          }
+          
+          // 添加 uuid_tile 或 url_tile
+          if (this.currentTileUuid) {
+            requestData.uuid_tile = this.currentTileUuid;
+          } else if (this.currentUrlTile) {
+            requestData.url_tile = this.currentUrlTile;
+          }
+          
           // 调用后端 API 更新节点数据
           const response = await fetch('http://localhost:7887/api/update-node-data', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ cardKey, field, value })
+            body: JSON.stringify(requestData)
           });
           
           if (!response.ok) {
@@ -761,13 +781,33 @@ export default {
         console.log('Trigger card key from visualization:', cardKey);
         
         try {
+          // 构建请求数据，携带所有必要的信息
+          const requestData = { cardKey };
+          
+          // 添加 uuid_visitor
+          if (this.uuidVisitor) {
+            requestData.uuid_visitor = this.uuidVisitor;
+          }
+          
+          // 添加 uuid_page
+          if (this.currentUuidPage) {
+            requestData.uuid_page = this.currentUuidPage;
+          }
+          
+          // 添加 uuid_tile 或 url_tile
+          if (this.currentTileUuid) {
+            requestData.uuid_tile = this.currentTileUuid;
+          } else if (this.currentUrlTile) {
+            requestData.url_tile = this.currentUrlTile;
+          }
+          
           // 调用后端 API 触发 cardKey 节点点击
           const response = await fetch('http://localhost:7887/api/trigger-card-key', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ cardKey })
+            body: JSON.stringify(requestData)
           });
           
           if (!response.ok) {
@@ -809,13 +849,33 @@ export default {
         });
         
         try {
+          // 构建请求数据，携带所有必要的信息
+          const requestData = { cardKey, tapSet };
+          
+          // 添加 uuid_visitor
+          if (this.uuidVisitor) {
+            requestData.uuid_visitor = this.uuidVisitor;
+          }
+          
+          // 添加 uuid_page
+          if (this.currentUuidPage) {
+            requestData.uuid_page = this.currentUuidPage;
+          }
+          
+          // 添加 uuid_tile 或 url_tile
+          if (this.currentTileUuid) {
+            requestData.uuid_tile = this.currentTileUuid;
+          } else if (this.currentUrlTile) {
+            requestData.url_tile = this.currentUrlTile;
+          }
+          
           // 调用后端 API 触发卡片点击，由它处理 tapSet 动作
           const response = await fetch('http://localhost:7887/api/trigger-card-key', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ cardKey, tapSet })
+            body: JSON.stringify(requestData)
           });
           
           if (!response.ok) {
@@ -1341,13 +1401,33 @@ export default {
       }
 
       try {
+        // 构建请求数据，携带所有必要的信息
+        const requestData = { command: this.cliCommand };
+        
+        // 添加 uuid_visitor
+        if (this.uuidVisitor) {
+          requestData.uuid_visitor = this.uuidVisitor;
+        }
+        
+        // 添加 uuid_page
+        if (this.currentUuidPage) {
+          requestData.uuid_page = this.currentUuidPage;
+        }
+        
+        // 添加 uuid_tile 或 url_tile
+        if (this.currentTileUuid) {
+          requestData.uuid_tile = this.currentTileUuid;
+        } else if (this.currentUrlTile) {
+          requestData.url_tile = this.currentUrlTile;
+        }
+        
         // 发送CLI命令到后端
         const response = await fetch('http://localhost:7887/api/execute-cli', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ command: this.cliCommand })
+          body: JSON.stringify(requestData)
         });
 
         if (!response.ok) {

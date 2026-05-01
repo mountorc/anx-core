@@ -126,14 +126,20 @@ function handleTapSetRequestSetAsync(cardKey, parentCardKey, requestSet) {
  * 供后端 /api/trigger-card-key 和 CLI tap 命令共用
  */
 async function processTriggerCardKey(params) {
-  const { cardKey, tapSet, triggerSet, data, uuidVisitor, uuidPage, uuidTile, urlTile } = params;
+  const { cardKey, tapSet, triggerSet, data, uuidVisitor, uuidPage, uuidTile, urlTile, uuid_visitor, uuid_page, uuid_tile, url_tile } = params;
+  
+  // 兼容两种参数格式：下划线和驼峰
+  const uuidVisitorVal = uuidVisitor || uuid_visitor;
+  const uuidPageVal = uuidPage || uuid_page;
+  const uuidTileVal = uuidTile || uuid_tile;
+  const urlTileVal = urlTile || url_tile;
   
   // 记录接收到的命令
   logReceivedCommand(
-    { cardKey, tapSet, triggerSet, data },
-    uuidVisitor || null,
-    uuidPage || null,
-    uuidTile || urlTile || null
+    { action: 'trigger-card-key', cardKey, tapSet, triggerSet, data },
+    uuidVisitorVal || null,
+    uuidPageVal || null,
+    uuidTileVal || urlTileVal || null
   );
   
   logToSystem('trigger_card_key', {

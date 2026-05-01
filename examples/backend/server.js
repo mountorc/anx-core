@@ -1222,14 +1222,20 @@ function findNode(cardKey) {
 
 app.post('/api/execute-cli', (req, res) => {
   try {
-    const { command, uuidVisitor, uuidPage, uuidTile, urlTile } = req.body;
+    const { command, uuidVisitor, uuidPage, uuidTile, urlTile, uuid_visitor, uuid_page, uuid_tile, url_tile } = req.body;
+    
+    // 兼容两种参数格式：下划线和驼峰
+    const uuidVisitorVal = uuidVisitor || uuid_visitor;
+    const uuidPageVal = uuidPage || uuid_page;
+    const uuidTileVal = uuidTile || uuid_tile;
+    const urlTileVal = urlTile || url_tile;
     
     // 记录接收到的命令
     logReceivedCommand(
       { action: 'execute-cli', command },
-      uuidVisitor || null,
-      uuidPage || null,
-      uuidTile || urlTile || null
+      uuidVisitorVal || null,
+      uuidPageVal || null,
+      uuidTileVal || urlTileVal || null
     );
     
     // Parse CLI command
@@ -1840,7 +1846,22 @@ app.post('/api/visualize-node', (req, res) => {
 // API endpoint for triggering card key
 app.post('/api/trigger-card-key', async (req, res) => {
   try {
-    const { cardKey, tapSet, triggerSet, data } = req.body;
+    const { cardKey, tapSet, triggerSet, data, uuidVisitor, uuidPage, uuidTile, urlTile, uuid_visitor, uuid_page, uuid_tile, url_tile } = req.body;
+    
+    // 兼容两种参数格式：下划线和驼峰
+    const uuidVisitorVal = uuidVisitor || uuid_visitor;
+    const uuidPageVal = uuidPage || uuid_page;
+    const uuidTileVal = uuidTile || uuid_tile;
+    const urlTileVal = urlTile || url_tile;
+    
+    // 记录接收到的命令
+    logReceivedCommand(
+      { action: 'trigger-card-key', cardKey, tapSet, triggerSet, data },
+      uuidVisitorVal || null,
+      uuidPageVal || null,
+      uuidTileVal || urlTileVal || null
+    );
+    
     if (!cardKey) {
       return res.status(400).json({ error: 'cardKey is required' });
     }
@@ -1994,14 +2015,20 @@ app.post('/api/get-node-data', (req, res) => {
 
 app.post('/api/update-node-data', (req, res) => {
   try {
-    const { cardKey, field, value, uuidVisitor, uuidPage, uuidTile, urlTile } = req.body;
+    const { cardKey, field, value, uuidVisitor, uuidPage, uuidTile, urlTile, uuid_visitor, uuid_page, uuid_tile, url_tile } = req.body;
+    
+    // 兼容两种参数格式：下划线和驼峰
+    const uuidVisitorVal = uuidVisitor || uuid_visitor;
+    const uuidPageVal = uuidPage || uuid_page;
+    const uuidTileVal = uuidTile || uuid_tile;
+    const urlTileVal = urlTile || url_tile;
     
     // 记录接收到的命令
     logReceivedCommand(
       { action: 'update-node-data', cardKey, field, value },
-      uuidVisitor || null,
-      uuidPage || null,
-      uuidTile || urlTile || null
+      uuidVisitorVal || null,
+      uuidPageVal || null,
+      uuidTileVal || urlTileVal || null
     );
     
     console.log('[API] update-node-data called:', {
@@ -2557,14 +2584,20 @@ app.get('/api/tiles/:uuid', async (req, res) => {
 // 文件上传API
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   try {
-    const { uuidVisitor, uuidPage, uuidTile, urlTile } = req.body;
+    const { uuidVisitor, uuidPage, uuidTile, urlTile, uuid_visitor, uuid_page, uuid_tile, url_tile } = req.body;
+    
+    // 兼容两种参数格式：下划线和驼峰
+    const uuidVisitorVal = uuidVisitor || uuid_visitor;
+    const uuidPageVal = uuidPage || uuid_page;
+    const uuidTileVal = uuidTile || uuid_tile;
+    const urlTileVal = urlTile || url_tile;
     
     // 记录接收到的命令
     logReceivedCommand(
       { action: 'file-upload', fileName: req.file?.originalname, fileSize: req.file?.size },
-      uuidVisitor || null,
-      uuidPage || null,
-      uuidTile || urlTile || null
+      uuidVisitorVal || null,
+      uuidPageVal || null,
+      uuidTileVal || urlTileVal || null
     );
     
     if (!req.file) {
@@ -2602,14 +2635,20 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 // 接收求职表单提交结果的API
 app.post('/api/job-form/submit', (req, res) => {
   try {
-    const { formData, uuidVisitor, uuidPage, uuidTile, urlTile } = req.body;
+    const { formData, uuidVisitor, uuidPage, uuidTile, urlTile, uuid_visitor, uuid_page, uuid_tile, url_tile } = req.body;
+    
+    // 兼容两种参数格式：下划线和驼峰
+    const uuidVisitorVal = uuidVisitor || uuid_visitor;
+    const uuidPageVal = uuidPage || uuid_page;
+    const uuidTileVal = uuidTile || uuid_tile;
+    const urlTileVal = urlTile || url_tile;
     
     // 记录接收到的命令
     logReceivedCommand(
       { action: 'job-form-submit', formData },
-      uuidVisitor || null,
-      uuidPage || null,
-      uuidTile || urlTile || null
+      uuidVisitorVal || null,
+      uuidPageVal || null,
+      uuidTileVal || urlTileVal || null
     );
     
     console.log('Received job form submission:', formData);
