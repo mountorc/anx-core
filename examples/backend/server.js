@@ -32,7 +32,7 @@ const { generateAnxHash, getNodesByHash, setNodesByHash, anxHashToNodeMap } = re
 const hubAnxMap = new Map();
 
 // 导入日志模块
-const { logToSystem, logError, readLogs } = require('../../core/utils/log.js');
+const { logToSystem, logError, readLogs, logReceivedCommand } = require('../../core/utils/log.js');
 
 
 
@@ -1222,7 +1222,15 @@ function findNode(cardKey) {
 
 app.post('/api/execute-cli', (req, res) => {
   try {
-    const { command } = req.body;
+    const { command, uuidVisitor, uuidPage, uuidTile, urlTile } = req.body;
+    
+    // 记录接收到的命令
+    logReceivedCommand(
+      { action: 'execute-cli', command },
+      uuidVisitor || null,
+      uuidPage || null,
+      uuidTile || urlTile || null
+    );
     
     // Parse CLI command
     const parts = command.trim().split(/\s+/);
@@ -1986,7 +1994,15 @@ app.post('/api/get-node-data', (req, res) => {
 
 app.post('/api/update-node-data', (req, res) => {
   try {
-    const { cardKey, field, value } = req.body;
+    const { cardKey, field, value, uuidVisitor, uuidPage, uuidTile, urlTile } = req.body;
+    
+    // 记录接收到的命令
+    logReceivedCommand(
+      { action: 'update-node-data', cardKey, field, value },
+      uuidVisitor || null,
+      uuidPage || null,
+      uuidTile || urlTile || null
+    );
     
     console.log('[API] update-node-data called:', {
       cardKey: cardKey,
@@ -2541,6 +2557,16 @@ app.get('/api/tiles/:uuid', async (req, res) => {
 // 文件上传API
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   try {
+    const { uuidVisitor, uuidPage, uuidTile, urlTile } = req.body;
+    
+    // 记录接收到的命令
+    logReceivedCommand(
+      { action: 'file-upload', fileName: req.file?.originalname, fileSize: req.file?.size },
+      uuidVisitor || null,
+      uuidPage || null,
+      uuidTile || urlTile || null
+    );
+    
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
@@ -2576,7 +2602,16 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 // 接收求职表单提交结果的API
 app.post('/api/job-form/submit', (req, res) => {
   try {
-    const formData = req.body;
+    const { formData, uuidVisitor, uuidPage, uuidTile, urlTile } = req.body;
+    
+    // 记录接收到的命令
+    logReceivedCommand(
+      { action: 'job-form-submit', formData },
+      uuidVisitor || null,
+      uuidPage || null,
+      uuidTile || urlTile || null
+    );
+    
     console.log('Received job form submission:', formData);
     
     // 这里可以添加处理逻辑，比如存储到数据库

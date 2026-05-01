@@ -1,5 +1,5 @@
 const { executeRequest } = require('./request.js');
-const { logToSystem, logError } = require('./log.js');
+const { logToSystem, logError, logReceivedCommand } = require('./log.js');
 const { getDataValue } = require('./param.js');
 const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('../app/node.js');
 const { getCardData,getParentCardKey} = require('./card.js');
@@ -126,7 +126,15 @@ function handleTapSetRequestSetAsync(cardKey, parentCardKey, requestSet) {
  * 供后端 /api/trigger-card-key 和 CLI tap 命令共用
  */
 async function processTriggerCardKey(params) {
-  const { cardKey, tapSet, triggerSet, data } = params;
+  const { cardKey, tapSet, triggerSet, data, uuidVisitor, uuidPage, uuidTile, urlTile } = params;
+  
+  // 记录接收到的命令
+  logReceivedCommand(
+    { cardKey, tapSet, triggerSet, data },
+    uuidVisitor || null,
+    uuidPage || null,
+    uuidTile || urlTile || null
+  );
   
   logToSystem('trigger_card_key', {
     cardKey: cardKey,

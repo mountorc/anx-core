@@ -15,3 +15,6 @@ docs-*/
 
 # 忽略 jobForm-skill 文件夹
 jobForm-skill/
+
+# 忽略 log 文件夹
+log/
