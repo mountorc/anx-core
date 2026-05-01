@@ -3,7 +3,7 @@
  */
 
 const { getCardData } = require('./card.js');
-const { logToSystem, logError } = require('./log.js');
+const { logToSystem, logError } = require('../log/log.js');
 // 类型标记常量
 const TYPE_NUMBER = 1;
 const TYPE_STRING = 2;

@@ -130,8 +130,9 @@ export default {
       // 调用 triggerDeal 函数
       if (event.detail && event.detail.node && event.detail.node.config) {
         const cardKey = event.detail.node.config.key || event.detail.node.config.id;
+        const uuid_visitor = this.getUuidVisitorFromURL();
         if (cardKey) {
-          triggerDeal(cardKey);
+          triggerDeal(cardKey, null, null, uuid_visitor);
         }
       }
     },
@@ -165,6 +166,10 @@ export default {
           container.innerHTML = '<div class="error">Error rendering visualization</div>';
         }
       }
+    },
+    getUuidVisitorFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('uuid_visitor');
     }
   },
   beforeUnmount() {

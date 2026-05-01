@@ -32,7 +32,7 @@ const { generateAnxHash, getNodesByHash, setNodesByHash, anxHashToNodeMap } = re
 const hubAnxMap = new Map();
 
 // 导入日志模块
-const { logToSystem, logError, readLogs, logReceivedCommand } = require('../../core/utils/log.js');
+const { logToSystem, logError, readLogs, logReceivedCommand, queryCommandLogs } = require('../../core/log/log.js');
 
 
 
@@ -1235,7 +1235,8 @@ app.post('/api/execute-cli', (req, res) => {
       { action: 'execute-cli', command },
       uuidVisitorVal || null,
       uuidPageVal || null,
-      uuidTileVal || urlTileVal || null
+      uuidTileVal || null,
+      urlTileVal || null
     );
     
     // Parse CLI command
@@ -1859,7 +1860,8 @@ app.post('/api/trigger-card-key', async (req, res) => {
       { action: 'trigger-card-key', cardKey, tapSet, triggerSet, data },
       uuidVisitorVal || null,
       uuidPageVal || null,
-      uuidTileVal || urlTileVal || null
+      uuidTileVal || null,
+      urlTileVal || null
     );
     
     if (!cardKey) {
@@ -1928,6 +1930,45 @@ app.get('/api/cli/logs', (req, res) => {
   } catch (error) {
     console.error('Error getting CLI logs:', error);
     res.status(500).json({ error: 'Failed to get CLI logs' });
+  }
+});
+
+// API endpoint for querying command logs
+app.get('/api/command-logs', (req, res) => {
+  try {
+    const { uuid_page, uuid_visitor, uuid_tile, url_tile, action, limit } = req.query;
+    
+    console.log('[API] Querying command logs:', {
+      uuid_page,
+      uuid_visitor,
+      uuid_tile,
+      url_tile,
+      action,
+      limit
+    });
+    
+    // 构建过滤器对象
+    const filters = {};
+    if (uuid_page) filters.uuid_page = uuid_page;
+    if (uuid_visitor) filters.uuid_visitor = uuid_visitor;
+    if (uuid_tile) filters.uuid_tile = uuid_tile;
+    if (url_tile) filters.url_tile = url_tile;
+    if (action) filters.action = action;
+    
+    // 查询命令日志
+    const commands = queryCommandLogs(filters, parseInt(limit) || 100);
+    
+    res.json({
+      success: true,
+      list: commands,
+      count: commands.length
+    });
+  } catch (error) {
+    console.error('Error querying command logs:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to query command logs' 
+    });
   }
 });
 
@@ -2028,7 +2069,8 @@ app.post('/api/update-node-data', (req, res) => {
       { action: 'update-node-data', cardKey, field, value },
       uuidVisitorVal || null,
       uuidPageVal || null,
-      uuidTileVal || urlTileVal || null
+      uuidTileVal || null,
+      urlTileVal || null
     );
     
     console.log('[API] update-node-data called:', {
@@ -2597,7 +2639,8 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
       { action: 'file-upload', fileName: req.file?.originalname, fileSize: req.file?.size },
       uuidVisitorVal || null,
       uuidPageVal || null,
-      uuidTileVal || urlTileVal || null
+      uuidTileVal || null,
+      urlTileVal || null
     );
     
     if (!req.file) {
@@ -2648,7 +2691,8 @@ app.post('/api/job-form/submit', (req, res) => {
       { action: 'job-form-submit', formData },
       uuidVisitorVal || null,
       uuidPageVal || null,
-      uuidTileVal || urlTileVal || null
+      uuidTileVal || null,
+      urlTileVal || null
     );
     
     console.log('Received job form submission:', formData);

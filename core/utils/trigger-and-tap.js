@@ -1,5 +1,5 @@
 const { executeRequest } = require('./request.js');
-const { logToSystem, logError, logReceivedCommand } = require('./log.js');
+const { logToSystem, logError, logReceivedCommand } = require('../log/log.js');
 const { getDataValue } = require('./param.js');
 const { setNode, getNode, updateNodeData, getNodeData, deleteNode, clearNodes, getAllNodes, getNodeCount, hasNode } = require('../app/node.js');
 const { getCardData,getParentCardKey} = require('./card.js');
@@ -139,7 +139,8 @@ async function processTriggerCardKey(params) {
     { action: 'trigger-card-key', cardKey, tapSet, triggerSet, data },
     uuidVisitorVal || null,
     uuidPageVal || null,
-    uuidTileVal || urlTileVal || null
+    uuidTileVal || null,
+    urlTileVal || null
   );
   
   logToSystem('trigger_card_key', {

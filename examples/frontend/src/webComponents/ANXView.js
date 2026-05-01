@@ -391,8 +391,9 @@ class ANXView extends HTMLElement {
     // 可以在这里处理触发事件
     if (event.detail && event.detail.node && event.detail.node.config) {
       const cardKey = event.detail.node.config.key || event.detail.node.config.id;
+      const uuid_visitor = getUuidVisitorFromURL();
       if (cardKey) {
-        this.triggerDeal(cardKey);
+        this.triggerDeal(cardKey, null, null, uuid_visitor);
       }
     }
   }

@@ -3,7 +3,7 @@
  * Handles HTTP requests and logs them to system log
  */
 
-const { logToSystem, logError } = require('./log.js');
+const { logToSystem, logError } = require('../log/log.js');
 const { buildParams } = require('./param.js');
 
 // Use native fetch (available in Node.js 18+ and browsers)

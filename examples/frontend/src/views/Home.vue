@@ -5,6 +5,7 @@
         <div class="tile-header">
           <h3>Tile Cases</h3>
           <div class="tile-info">
+            <button @click="showCommandLogsModal = true" class="command-logs-btn">命令日志</button>
             <div class="visitor-input-wrapper">
               <label>uuid_visitor:</label>
               <input 
@@ -149,6 +150,12 @@
             :visualization-html="visualizationHTML"
           ></anx-view>
         </div>
+        
+        <!-- Command Logs Modal -->
+        <CommandLogsModal 
+          :is-visible="showCommandLogsModal" 
+          @close="showCommandLogsModal = false"
+        />
       </div>
     </div>
     
@@ -224,8 +231,13 @@
 </template>
 
 <script>
+import CommandLogsModal from '../components/CommandLogsModal.vue';
+
 export default {
   name: 'Home',
+  components: {
+    CommandLogsModal
+  },
   data() {
     return {
       anxInput: `{
@@ -324,6 +336,7 @@ export default {
       cliHistory: [],
       showCommandsModal: false,
       showLogsModal: false,
+      showCommandLogsModal: false,
       cliCommands: [],
       cliLogs: [],
       allLogs: [],
@@ -1996,6 +2009,22 @@ export default {
   gap: 4px;
   font-size: 12px;
   color: #666;
+}
+
+.command-logs-btn {
+  background-color: #FF9800;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.command-logs-btn:hover {
+  background-color: #F57C00;
 }
 
 .tile-uuid,
