@@ -5,7 +5,6 @@
         <div class="tile-header">
           <h3>Tile Cases</h3>
           <div class="tile-info">
-            <button @click="showCommandLogsModal = true" class="command-logs-btn">命令日志</button>
             <div class="visitor-input-wrapper">
               <label>uuid_visitor:</label>
               <input 
@@ -359,6 +358,8 @@ export default {
     
     // 监听全局日志打开事件
     this.$eventBus.on('openLogs', this.handleOpenLogs);
+    // 监听命令日志打开事件
+    this.$eventBus.on('openCommandLogs', this.handleOpenCommandLogs);
     
     // 加载ANXView web component
     import('../webComponents/ANXView.js');
@@ -368,6 +369,8 @@ export default {
     window.removeEventListener('message', this.handleVisualizationMessage);
     // 移除日志事件监听
     window.removeEventListener('openLogs', this.handleOpenLogs);
+    // 移除命令日志事件监听
+    window.removeEventListener('openCommandLogs', this.handleOpenCommandLogs);
   },
   methods: {
     // 检查URL参数中是否包含uuid_tile、url_tile或uuid_visitor
@@ -1529,6 +1532,9 @@ export default {
     handleOpenLogs() {
       this.showCliLogs();
     },
+    handleOpenCommandLogs() {
+      this.showCommandLogsModal = true;
+    },
     async refreshLogs() {
       try {
         // 获取CLI日志
@@ -1603,8 +1609,8 @@ export default {
 /* Page列表侧边栏样式 */
 .page-list-sidebar {
   width: 280px;
-  background-color: #f8f9fa;
-  border-right: 1px solid #e0e0e0;
+  background-color: #f0f0f0;
+  border-right: 1px solid #ccc;
   display: flex;
   flex-direction: column;
   height: calc(80vh - 60px);
@@ -1624,7 +1630,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-  background-color: #4CAF50;
+  background-color: #333;
   color: white;
 }
 
@@ -1641,7 +1647,7 @@ export default {
 
 .page-count {
   font-size: 12px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.15);
   padding: 2px 8px;
   border-radius: 10px;
 }
@@ -1651,7 +1657,7 @@ export default {
   height: 28px;
   border: none;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.15);
   color: white;
   font-size: 18px;
   cursor: pointer;
@@ -1661,7 +1667,7 @@ export default {
 }
 
 .add-page-btn:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 .collapse-btn {
@@ -1669,7 +1675,7 @@ export default {
   height: 28px;
   border: none;
   border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.15);
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -1679,7 +1685,7 @@ export default {
 }
 
 .collapse-btn:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 .expand-btn {
@@ -1687,7 +1693,7 @@ export default {
   height: 60px;
   border: none;
   border-radius: 0 4px 4px 0;
-  background-color: #4CAF50;
+  background-color: #444;
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -1700,7 +1706,7 @@ export default {
 }
 
 .expand-btn:hover {
-  background-color: #45a049;
+  background-color: #555;
 }
 
 .page-list {
@@ -1711,7 +1717,7 @@ export default {
 
 .page-item {
   background-color: white;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #ddd;
   border-radius: 6px;
   padding: 12px;
   margin-bottom: 8px;
@@ -1720,13 +1726,13 @@ export default {
 }
 
 .page-item:hover {
-  border-color: #4CAF50;
-  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.1);
+  border-color: #666;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .page-item.active {
-  border-color: #4CAF50;
-  background-color: rgba(76, 175, 80, 0.05);
+  border-color: #555;
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
 .page-header {
@@ -1749,17 +1755,17 @@ export default {
 }
 
 .page-status.running {
-  background-color: #ffc107;
-  color: #333;
+  background-color: #ddd;
+  color: #555;
 }
 
 .page-status.submitted {
-  background-color: #4CAF50;
+  background-color: #555;
   color: white;
 }
 
 .page-status.pending {
-  background-color: #ff5722;
+  background-color: #888;
   color: white;
 }
 
@@ -1886,20 +1892,20 @@ export default {
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: white;
-  color: #666;
+  color: #555;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .toggle-btn:hover {
-  background-color: #f0f0f0;
+  background-color: #f5f5f5;
 }
 
 .toggle-btn.active {
-  background-color: #4CAF50;
+  background-color: #444;
   color: white;
-  border-color: #4CAF50;
+  border-color: #444;
 }
 
 .markup-container {
@@ -2097,14 +2103,14 @@ export default {
   width: 60px;
   height: 60px;
   border-radius: 12px;
-  background-color: #4CAF50;
+  background-color: #555;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
   font-weight: bold;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .tile-name {
@@ -2147,13 +2153,13 @@ export default {
 
 .visitor-input:focus {
   outline: none;
-  border-color: #4CAF50;
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+  border-color: #555;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 .visitor-input-wrapper .refresh-btn {
   padding: 6px 12px;
-  background-color: #4CAF50;
+  background-color: #555;
   color: white;
   border: none;
   border-radius: 4px;
@@ -2162,7 +2168,7 @@ export default {
 }
 
 .visitor-input-wrapper .refresh-btn:hover {
-  background-color: #45a049;
+  background-color: #666;
 }
 
 .output-section .cli-section {
@@ -2263,8 +2269,8 @@ export default {
 .history-cardKey {
   font-size: 11px;
   font-weight: 500;
-  color: #4CAF50;
-  background-color: rgba(76, 175, 80, 0.1);
+  color: #555;
+  background-color: rgba(0, 0, 0, 0.08);
   padding: 2px 6px;
   border-radius: 3px;
   white-space: nowrap;
@@ -2272,7 +2278,7 @@ export default {
 
 .history-action {
   font-size: 11px;
-  color: #2196F3;
+  color: #666;
   white-space: nowrap;
 }
 
@@ -2317,7 +2323,7 @@ export default {
 
 .cli-input-container button {
   padding: 8px 16px;
-  background-color: #4CAF50;
+  background-color: #555;
   color: white;
   border: none;
   border-radius: 4px;
@@ -2326,7 +2332,7 @@ export default {
 }
 
 .cli-input-container button:hover {
-  background-color: #45a049;
+  background-color: #666;
 }
 
 .cli-output {
@@ -2438,7 +2444,7 @@ export default {
 
 .refresh-btn {
   padding: 6px 12px;
-  background-color: #2196F3;
+  background-color: #666;
   color: white;
   border: none;
   border-radius: 4px;
@@ -2447,7 +2453,7 @@ export default {
 }
 
 .refresh-btn:hover {
-  background-color: #0b7dda;
+  background-color: #777;
 }
 
 .close-btn {
@@ -2551,12 +2557,12 @@ export default {
 }
 
 .log-item.success {
-  border-left: 4px solid #4CAF50;
+  border-left: 4px solid #555;
 }
 
 .log-item.error {
-  border-left: 4px solid #f44336;
-  background-color: #fff8f8;
+  border-left: 4px solid #888;
+  background-color: #f8f8f8;
 }
 
 .log-item.cli {
@@ -2579,12 +2585,12 @@ export default {
 }
 
 .log-item.cli .log-type {
-  background-color: #ffc107;
-  color: #333;
+  background-color: #ddd;
+  color: #555;
 }
 
 .log-item.view .log-type {
-  background-color: #2196F3;
+  background-color: #666;
   color: white;
 }
 
@@ -2651,13 +2657,13 @@ export default {
 }
 
 .log-item.success .log-status {
-  background-color: #e8f5e8;
-  color: #4CAF50;
+  background-color: #e8e8e8;
+  color: #555;
 }
 
 .log-item.error .log-status {
-  background-color: #ffebee;
-  color: #f44336;
+  background-color: #f0f0f0;
+  color: #777;
 }
 
 .log-command {
@@ -2706,7 +2712,7 @@ export default {
 
 .modal-footer button {
   padding: 8px 16px;
-  background-color: #4CAF50;
+  background-color: #555;
   color: white;
   border: none;
   border-radius: 4px;
@@ -2716,15 +2722,15 @@ export default {
 }
 
 .modal-footer button:hover {
-  background-color: #45a049;
+  background-color: #666;
 }
 
 .modal-footer button:first-child {
   margin-left: 0;
-  background-color: #2196F3;
+  background-color: #666;
 }
 
 .modal-footer button:first-child:hover {
-  background-color: #0b7dda;
+  background-color: #777;
 }
 </style>

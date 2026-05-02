@@ -4,7 +4,8 @@
       <h1>ANX DEMO</h1>
       <nav class="nav">
         <button @click="goToCorePage" class="nav-btn">Core Page</button>
-        <button @click="openLogs" class="nav-btn logs-btn">Logs</button>
+        <button @click="openLogs" class="nav-btn logs-btn">System Logs</button>
+        <button @click="openCommandLogs" class="nav-btn command-logs-btn">命令日志</button>
       </nav>
     </header>
     <main :class="{ 'main-full': isNodeVisualizationPage, 'main': !isNodeVisualizationPage }">
@@ -31,8 +32,12 @@ export default {
       window.open('http://localhost:17888/', '_blank')
     },
     openLogs() {
-      // 通过事件总线触发日志弹窗
+      // 通过事件总线触发系统日志弹窗
       this.$eventBus.emit('openLogs')
+    },
+    openCommandLogs() {
+      // 通过事件总线触发命令日志弹窗
+      this.$eventBus.emit('openCommandLogs')
     }
   }
 }
@@ -49,6 +54,7 @@ body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
   color: #333;
+  background-color: #f5f5f5;
 }
 
 .app {
@@ -58,8 +64,8 @@ body {
 }
 
 .header {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #1a1a1a;
+  color: #ffffff;
   padding: 0.5rem 1rem;
   display: flex;
   justify-content: space-between;
@@ -69,6 +75,7 @@ body {
 .header h1 {
   font-size: 18px;
   margin: 0;
+  font-weight: 600;
 }
 
 .nav {
@@ -76,18 +83,32 @@ body {
 }
 
 .nav-btn {
-  background-color: white;
-  color: #4CAF50;
-  border: none;
+  background-color: #333333;
+  color: #ffffff;
+  border: 1px solid #444444;
   padding: 8px 20px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 
 .nav-btn:hover {
-  background-color: #f0f0f0;
+  background-color: #444444;
+  border-color: #555555;
+}
+
+.command-logs-btn {
+  background-color: #555555;
+  color: #ffffff;
+  border-color: #666666;
+  margin-left: 8px;
+}
+
+.command-logs-btn:hover {
+  background-color: #666666;
+  border-color: #777777;
 }
 
 .main {
@@ -103,19 +124,20 @@ body {
 }
 
 .footer {
-  background-color: #f1f1f1;
+  background-color: #2a2a2a;
+  color: #999999;
   padding: 1rem;
   text-align: center;
   margin-top: auto;
 }
 
 .required-mark {
-  color: #dc3545;
+  color: #999999;
   margin-left: 2px;
   font-weight: bold;
 }
 
-/* Running 状态动画 - 精美设计 */
+/* Running 状态动画 - 黑白设计 */
 
 /* 旋转动画 */
 @keyframes spin {
@@ -126,7 +148,7 @@ body {
 
 /* 按钮加载状态 */
 button.loading {
-  opacity: 0.9;
+  opacity: 0.7;
 }
 
 /* 运行中容器 */
@@ -151,8 +173,8 @@ button.loading {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 3px solid #e0e0e0;
-  border-top-color: #667eea;
+  border: 3px solid #d0d0d0;
+  border-top-color: #333333;
   animation: spin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
@@ -164,8 +186,8 @@ button.loading {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* 加载内容 */
@@ -185,7 +207,7 @@ button.loading {
 
 .loading-subtitle {
   font-size: 13px;
-  color: #888;
+  color: #666;
 }
 
 /* 闪烁的点 */
@@ -194,7 +216,7 @@ button.loading {
   justify-content: center;
   gap: 4px;
   font-size: 20px;
-  color: #667eea;
+  color: #666;
 }
 
 .dot {
@@ -225,7 +247,7 @@ button.loading {
 
 .progress-bar-track {
   height: 6px;
-  background: #e8e8e8;
+  background: #e0e0e0;
   border-radius: 3px;
   overflow: hidden;
   position: relative;
@@ -233,10 +255,10 @@ button.loading {
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(90deg, #444 0%, #666 100%);
   border-radius: 3px;
   animation: progress-fill 2s ease-in-out infinite;
-  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes progress-fill {
@@ -253,7 +275,7 @@ button.loading {
 
 .progress-text {
   font-size: 12px;
-  color: #999;
+  color: #666;
   margin-top: 8px;
 }
 
@@ -275,8 +297,8 @@ button.loading {
 
 /* 卡片运行状态 */
 .card-running {
-  border-color: #667eea !important;
-  background: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
-  box-shadow: 0 0 20px rgba(102, 126, 234, 0.15);
+  border-color: #555 !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 </style>

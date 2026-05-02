@@ -480,12 +480,12 @@ export default {
 }
 
 .query-btn {
-  background: #4CAF50;
+  background: #555;
   color: white;
 }
 
 .query-btn:hover {
-  background: #45a049;
+  background: #666;
 }
 
 .clear-btn {
@@ -565,13 +565,13 @@ export default {
 }
 
 .log-item:hover {
-  border-color: #2196F3;
-  background: #f8f9fa;
+  border-color: #666;
+  background: #f8f8f8;
 }
 
 .log-item.active {
-  border-color: #2196F3;
-  background: #e3f2fd;
+  border-color: #555;
+  background: #f0f0f0;
 }
 
 .log-summary {
@@ -606,27 +606,27 @@ export default {
 }
 
 .action-update {
-  background: #fff3e0;
-  color: #e65100;
+  background: #e8e8e8;
+  color: #555;
 }
 
 .action-trigger {
-  background: #e3f2fd;
-  color: #1976D2;
+  background: #e0e0e0;
+  color: #444;
 }
 
 .action-get {
-  background: #e8f5e9;
-  color: #2E7D32;
+  background: #d8d8d8;
+  color: #555;
 }
 
 .action-api {
-  background: #f3e5f5;
-  color: #7B1FA2;
+  background: #e5e5e5;
+  color: #444;
 }
 
 .action-default {
-  background: #f5f5f5;
+  background: #f0f0f0;
   color: #666;
 }
 
@@ -640,37 +640,37 @@ export default {
 }
 
 .tag-node {
-  background: #fff3e0;
-  color: #e65100;
+  background: #e8e8e8;
+  color: #555;
 }
 
 .tag-field {
-  background: #e3f2fd;
-  color: #1976D2;
+  background: #e0e0e0;
+  color: #444;
 }
 
 .tag-value-item {
-  background: #e8f5e9;
-  color: #2E7D32;
+  background: #d8d8d8;
+  color: #555;
 }
 
 .tag-card {
-  background: #f3e5f5;
-  color: #7B1FA2;
+  background: #e5e5e5;
+  color: #444;
 }
 
 .tag-api {
-  background: #e0f2f1;
-  color: #00897b;
+  background: #d8d8d8;
+  color: #555;
 }
 
 .tag-method {
-  background: #fff9c4;
-  color: #f57f17;
+  background: #e8e8e8;
+  color: #555;
 }
 
 .tag-default {
-  background: #f5f5f5;
+  background: #f0f0f0;
   color: #666;
 }
 
