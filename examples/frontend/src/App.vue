@@ -1,13 +1,46 @@
 <template>
   <div class="app">
     <header v-if="!isNodeVisualizationPage" class="header">
-      <h1>ANX DEMO</h1>
+      <div class="header-left">
+        <h1>ANX DEMO <button @click="toggleAppList" class="app-list-toggle-btn">{{ isAppListOpen ? '▼' : '▶' }}</button></h1>
+        <div class="uuid-info">
+          <span v-if="currentTileUuid" class="uuid-item">uuid_tile: {{ currentTileUuid }}</span>
+          <span v-if="currentUrlTile" class="uuid-item">url_tile: {{ currentUrlTile }}</span>
+          <div class="visitor-input-header">
+            <label>uuid_visitor:</label>
+            <input
+              v-model="uuidVisitor"
+              placeholder="输入访客uuid"
+              class="visitor-input"
+              @keyup.enter="handleUpdateUuidVisitor(uuidVisitor)"
+            />
+            <button @click="handleUpdateUuidVisitor(uuidVisitor)" class="refresh-btn">刷新</button>
+          </div>
+        </div>
+      </div>
       <nav class="nav">
         <button @click="goToCorePage" class="nav-btn">Core Page</button>
         <button @click="openLogs" class="nav-btn logs-btn">System Logs</button>
         <button @click="openCommandLogs" class="nav-btn command-logs-btn">命令日志</button>
       </nav>
     </header>
+    
+    <!-- 应用列表浮动弹窗 -->
+    <div v-if="!isNodeVisualizationPage && isAppListOpen" class="app-list-overlay" @click.self="toggleAppList">
+      <div class="app-list-popup">
+        <div class="popup-header">
+          <h3>Tile Cases</h3>
+          <button @click="toggleAppList" class="popup-close-btn">×</button>
+        </div>
+        <div class="popup-body">
+          <AppList
+            :hub-list="hubList"
+            @select-tile="handleSelectTile"
+          />
+        </div>
+      </div>
+    </div>
+    
     <main :class="{ 'main-full': isNodeVisualizationPage, 'main': !isNodeVisualizationPage }">
       <router-view />
     </main>
@@ -18,8 +51,22 @@
 </template>
 
 <script>
+import AppList from './components/AppList.vue';
+
 export default {
   name: 'App',
+  components: {
+    AppList
+  },
+  data() {
+    return {
+      isAppListOpen: false,
+      hubList: [],
+      uuidVisitor: '',
+      currentTileUuid: '',
+      currentUrlTile: ''
+    };
+  },
   computed: {
     isNodeVisualizationPage() {
       return this.$route.path.startsWith('/anx/view') || 
@@ -27,16 +74,41 @@ export default {
              this.$route.path.startsWith('/anx/visitor-pages')
     }
   },
+  mounted() {
+    this.$eventBus.on('updateHubList', (list) => {
+      this.hubList = list;
+    });
+    this.$eventBus.on('updateUuidVisitor', (uuid) => {
+      this.uuidVisitor = uuid;
+    });
+    this.$eventBus.on('updateTileInfo', (info) => {
+      this.currentTileUuid = info.tileUuid;
+      this.currentUrlTile = info.urlTile;
+    });
+  },
+  beforeUnmount() {
+    this.$eventBus.off('updateHubList');
+    this.$eventBus.off('updateUuidVisitor');
+    this.$eventBus.off('updateTileInfo');
+  },
   methods: {
+    toggleAppList() {
+      this.isAppListOpen = !this.isAppListOpen;
+    },
+    handleSelectTile(uuid) {
+      this.isAppListOpen = false;
+      this.$eventBus.emit('loadHubTestCase', uuid);
+    },
+    handleUpdateUuidVisitor() {
+      this.$eventBus.emit('refreshWithUuidVisitor', this.uuidVisitor);
+    },
     goToCorePage() {
       window.open('http://localhost:17888/', '_blank')
     },
     openLogs() {
-      // 通过事件总线触发系统日志弹窗
       this.$eventBus.emit('openLogs')
     },
     openCommandLogs() {
-      // 通过事件总线触发命令日志弹窗
       this.$eventBus.emit('openCommandLogs')
     }
   }
@@ -69,13 +141,76 @@ body {
   padding: 0.5rem 1rem;
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+}
+
+.header-left {
+  display: flex;
   align-items: center;
+  gap: 16px;
 }
 
 .header h1 {
   font-size: 18px;
   margin: 0;
   font-weight: 600;
+}
+
+.uuid-info {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  flex-wrap: wrap;
+}
+
+.uuid-item {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-family: monospace;
+  color: #ccc;
+}
+
+.visitor-input-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.visitor-input-header label {
+  font-size: 12px;
+  color: #ccc;
+  white-space: nowrap;
+}
+
+.visitor-input-header .visitor-input {
+  padding: 4px 8px;
+  border: 1px solid #444;
+  border-radius: 3px;
+  font-size: 12px;
+  width: 200px;
+  font-family: monospace;
+  background-color: #2a2a2a;
+  color: #fff;
+}
+
+.visitor-input-header .visitor-input:focus {
+  outline: none;
+  border-color: #666;
+}
+
+.visitor-input-header .refresh-btn {
+  padding: 4px 10px;
+  background-color: #555;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.visitor-input-header .refresh-btn:hover {
+  background-color: #666;
 }
 
 .nav {
@@ -300,5 +435,98 @@ button.loading {
   border-color: #555 !important;
   background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* 应用列表展开按钮 */
+.app-list-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: #555;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 10px;
+  transition: background-color 0.2s;
+}
+
+.app-list-toggle-btn:hover {
+  background-color: #666;
+}
+
+/* 应用列表浮动弹窗 */
+.app-list-overlay {
+  position: fixed;
+  top: 54px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.app-list-popup {
+  background-color: #ffffff;
+  border-radius: 0;
+  box-shadow: none;
+  width: 100%;
+  max-width: 100%;
+  max-height: 60vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.popup-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.popup-close-btn {
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
+  color: #666;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.popup-close-btn:hover {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.popup-body {
+  flex: 1;
+  overflow: auto;
+}
+
+.app-list-popup :deep(.app-list-section) {
+  border: none;
+  padding: 20px;
 }
 </style>

@@ -1,39 +1,5 @@
 <template>
   <div class="converter-container">
-    <div class="tile-cases-wrapper">
-      <div class="tile-cases">
-        <div class="tile-header">
-          <h3>Tile Cases</h3>
-          <div class="tile-info">
-            <div class="visitor-input-wrapper">
-              <label>uuid_visitor:</label>
-              <input 
-                v-model="uuidVisitor" 
-                placeholder="输入访客uuid" 
-                class="visitor-input"
-                @keyup.enter="refreshWithUuidVisitor"
-              />
-              <button @click="refreshWithUuidVisitor" class="refresh-btn">刷新</button>
-            </div>
-            <div v-if="currentTileUuid || currentUrlTile">
-              <span v-if="currentTileUuid" class="tile-uuid">uuid_tile: {{ currentTileUuid }}</span>
-              <span v-if="currentUrlTile" class="tile-url">url_tile: {{ currentUrlTile }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="tile-grid-wrapper">
-          <div class="tile-grid">
-            <div v-for="item in hubList" :key="item.uuid" class="tile-item" @click="loadHubTestCase(item.uuid)">
-              <div class="tile-icon">
-                <div class="icon-background">{{ item.name.charAt(0) }}</div>
-              </div>
-              <div class="tile-name">{{ item.name }}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
     <div class="main-layout">
       <div :class="['page-list-sidebar', { hidden: isSidebarHidden }]">
         <div class="sidebar-header">
@@ -341,7 +307,6 @@ export default {
       allLogs: [],
       visualizationHTML: '',
       visualizationCSS: '',
-      hubList: [], // 存储从hub获取的tile case列表
       debounceTimer: null
     }
   },
@@ -360,6 +325,13 @@ export default {
     this.$eventBus.on('openLogs', this.handleOpenLogs);
     // 监听命令日志打开事件
     this.$eventBus.on('openCommandLogs', this.handleOpenCommandLogs);
+    // 监听加载测试用例事件（来自App组件）
+    this.$eventBus.on('loadHubTestCase', this.loadHubTestCase);
+    // 监听刷新uuid_visitor事件（来自App组件）
+    this.$eventBus.on('refreshWithUuidVisitor', (uuid) => {
+      this.uuidVisitor = uuid;
+      this.refreshWithUuidVisitor();
+    });
     
     // 加载ANXView web component
     import('../webComponents/ANXView.js');
@@ -383,6 +355,8 @@ export default {
       if (uuidVisitor) {
         console.log(`[URL] Found uuid_visitor parameter: ${uuidVisitor}`);
         this.uuidVisitor = uuidVisitor;
+        // 通过事件总线通知App组件更新uuidVisitor
+        this.$eventBus.emit('updateUuidVisitor', uuidVisitor);
       }
       
       if (uuidTile) {
@@ -408,6 +382,9 @@ export default {
       
       console.log(`[UUID] Refreshing with uuid_visitor: ${this.uuidVisitor}`);
       
+      // 通过事件总线通知App组件更新uuidVisitor
+      this.$eventBus.emit('updateUuidVisitor', this.uuidVisitor);
+      
       // 重新转换以应用新的 uuid_visitor
       this.convertAnxToMarkup();
     },
@@ -425,6 +402,8 @@ export default {
         const data = await response.json();
         if (data.success) {
           this.hubList = data.data;
+          // 通过事件总线通知App组件更新hubList
+          this.$eventBus.emit('updateHubList', data.data);
         }
       } catch (error) {
         console.error('Error loading tiles list:', error);
@@ -441,6 +420,11 @@ export default {
           // 从hubList中查找对应的url_tile
           const tile = this.hubList.find(item => item.uuid === uuid);
           this.currentUrlTile = tile ? tile.url : '';
+          // 通过事件总线通知App组件更新tile信息
+          this.$eventBus.emit('updateTileInfo', {
+            tileUuid: this.currentTileUuid,
+            urlTile: this.currentUrlTile
+          });
           // 生成或获取当前页面uuid
           this.currentUuidPage = await this.generateUuidPage();
           // 加载页面列表
@@ -1960,216 +1944,7 @@ export default {
   gap: 10px;
 }
 
-/* Tile Cases 收起/展开效果 */
-.tile-cases-wrapper {
-  position: relative;
-  height: 40px;
-  margin: 0;
-  padding: 0;
-  overflow: visible;
-}
 
-.tile-cases {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  background-color: white;
-  border-radius: 0 0 8px 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 10px 15px;
-  margin: 0;
-  max-height: 40px;
-  overflow: hidden;
-  transition: max-height 0.3s ease, box-shadow 0.3s ease;
-  z-index: 100;
-  border: none;
-  border-top: none;
-}
-
-.tile-cases-wrapper:hover .tile-cases {
-  max-height: 250px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-.tile-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.tile-cases h3 {
-  margin: 0;
-  font-size: 18px;
-  color: #333;
-  cursor: pointer;
-  padding: 5px 0;
-}
-
-.tile-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  font-size: 12px;
-  color: #666;
-}
-
-.command-logs-btn {
-  background-color: #FF9800;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-.command-logs-btn:hover {
-  background-color: #F57C00;
-}
-
-.tile-uuid,
-.tile-url {
-  background-color: #f0f0f0;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-family: monospace;
-  max-width: 300px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.tile-grid-wrapper {
-  max-height: 180px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.tile-grid {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-  padding: 5px 0;
-}
-
-/* 滚动条样式 */
-.tile-grid-wrapper::-webkit-scrollbar {
-  width: 6px;
-}
-
-.tile-grid-wrapper::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
-
-.tile-grid-wrapper::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
-}
-
-.tile-grid-wrapper::-webkit-scrollbar-thumb:hover {
-  background: #999;
-}
-
-.tile-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  width: 100px;
-}
-
-.tile-item:hover {
-  transform: translateY(-5px);
-}
-
-.tile-icon {
-  width: 60px;
-  height: 60px;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-background {
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  background-color: #555;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  font-weight: bold;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.tile-name {
-  text-align: center;
-  font-size: 14px;
-  color: #333;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-.tile-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-end;
-}
-
-.visitor-input-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.visitor-input-wrapper label {
-  font-size: 12px;
-  color: #666;
-  white-space: nowrap;
-}
-
-.visitor-input {
-  padding: 6px 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 12px;
-  width: 200px;
-  font-family: monospace;
-}
-
-.visitor-input:focus {
-  outline: none;
-  border-color: #555;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
-}
-
-.visitor-input-wrapper .refresh-btn {
-  padding: 6px 12px;
-  background-color: #555;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.visitor-input-wrapper .refresh-btn:hover {
-  background-color: #666;
-}
 
 .output-section .cli-section {
   border-top: 2px solid #e0e0e0;
