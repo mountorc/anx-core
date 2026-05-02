@@ -359,13 +359,29 @@ export default {
         this.$eventBus.emit('updateUuidVisitor', uuidVisitor);
       }
       
-      if (uuidTile) {
-        console.log(`[URL] Found uuid_tile parameter: ${uuidTile}`);
-        this.loadHubTestCase(uuidTile);
-      } else if (urlTile) {
+      // url_tile 优先
+      if (urlTile) {
         console.log(`[URL] Found url_tile parameter: ${urlTile}`);
         this.loadUrlTile(urlTile);
+      } else if (uuidTile) {
+        console.log(`[URL] Found uuid_tile parameter: ${uuidTile}`);
+        this.loadHubTestCase(uuidTile);
       }
+    },
+    // 更新URL中的tile信息参数（url_tile优先）
+    updateUrlWithTileInfo() {
+      const urlParams = new URLSearchParams(window.location.search);
+
+      if (this.currentUrlTile) {
+        urlParams.set('url_tile', this.currentUrlTile);
+        urlParams.delete('uuid_tile');
+      } else if (this.currentTileUuid) {
+        urlParams.set('uuid_tile', this.currentTileUuid);
+        urlParams.delete('url_tile');
+      }
+
+      const newUrl = `${window.location.pathname}?${urlParams.toString()}${window.location.hash}`;
+      window.history.replaceState({}, '', newUrl);
     },
     // 使用新的 uuid_visitor 刷新页面
     refreshWithUuidVisitor() {
@@ -429,6 +445,8 @@ export default {
           // 从hubList中查找对应的url_tile
           const tile = this.hubList.find(item => item.uuid === uuid);
           this.currentUrlTile = tile ? tile.url : '';
+          // 更新URL参数
+          this.updateUrlWithTileInfo();
           // 通过事件总线通知App组件更新tile信息
           this.$eventBus.emit('updateTileInfo', {
             tileUuid: this.currentTileUuid,
@@ -436,8 +454,12 @@ export default {
           });
           // 生成或获取当前页面uuid
           this.currentUuidPage = await this.generateUuidPage();
-          // 加载页面列表
-          await this.fetchPageList(uuid);
+          // 加载页面列表（url_tile优先）
+          if (this.currentUrlTile) {
+            await this.fetchPageListByUrl(this.currentUrlTile);
+          } else {
+            await this.fetchPageList(uuid);
+          }
           // 使用uuid_page进行转换
           this.convertAnxToMarkup();
         }
@@ -455,7 +477,7 @@ export default {
           },
           body: JSON.stringify({ url_tile: url })
         });
-        
+
         if (response.ok) {
           const result = await response.json();
           if (result.nodes) {
@@ -467,6 +489,8 @@ export default {
             }
             this.currentUrlTile = url;
             this.currentTileUuid = '';
+            // 更新URL参数
+            this.updateUrlWithTileInfo();
             // 生成或获取当前页面uuid
             this.currentUuidPage = await this.generateUuidPage();
             // 加载页面列表（通过url_tile）
@@ -479,25 +503,41 @@ export default {
         console.error('Error loading url tile:', error);
       }
     },
-    // 生成或获取uuid_page
+    // 生成或获取uuid_page（url_tile优先）
     async generateUuidPage() {
-      if (!this.currentTileUuid) {
-        return 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-      }
-      
-      try {
-        const response = await fetch(`http://localhost:7887/api/pages/by-tile/${this.currentTileUuid}`);
-        if (response.ok) {
-          const result = await response.json();
-          const pages = result.data || [];
-          if (pages.length > 0) {
-            return pages[0].uuid_page;
+      if (this.currentUrlTile) {
+        try {
+          const url = new URL('http://localhost:7887/api/pages/by-url-tile');
+          url.searchParams.set('url_tile', this.currentUrlTile);
+          if (this.uuidVisitor) {
+            url.searchParams.set('uuid_visitor', this.uuidVisitor);
           }
+          const response = await fetch(url.toString());
+          if (response.ok) {
+            const result = await response.json();
+            const pages = result.data || [];
+            if (pages.length > 0) {
+              return pages[0].uuid_page;
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching page list by url_tile:', error);
         }
-      } catch (error) {
-        console.error('Error fetching page list:', error);
+      } else if (this.currentTileUuid) {
+        try {
+          const response = await fetch(`http://localhost:7887/api/pages/by-tile/${this.currentTileUuid}`);
+          if (response.ok) {
+            const result = await response.json();
+            const pages = result.data || [];
+            if (pages.length > 0) {
+              return pages[0].uuid_page;
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching page list:', error);
+        }
       }
-      
+
       return 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     },
     // 获取页面列表
@@ -506,12 +546,31 @@ export default {
         const response = await fetch(`http://localhost:7887/api/pages/by-tile/${uuid_tile}`);
         if (response.ok) {
           const result = await response.json();
-          this.pageList = (result.data || []).sort((a, b) => 
+          this.pageList = (result.data || []).sort((a, b) =>
             new Date(b.createdAt) - new Date(a.createdAt)
           );
         }
       } catch (error) {
         console.error('Error fetching page list:', error);
+      }
+    },
+    // 通过url_tile获取页面列表
+    async fetchPageListByUrl(url_tile) {
+      try {
+        const url = new URL('http://localhost:7887/api/pages/by-url-tile');
+        url.searchParams.set('url_tile', url_tile);
+        if (this.uuidVisitor) {
+          url.searchParams.set('uuid_visitor', this.uuidVisitor);
+        }
+        const response = await fetch(url.toString());
+        if (response.ok) {
+          const result = await response.json();
+          this.pageList = (result.data || []).sort((a, b) =>
+            new Date(b.createdAt) - new Date(a.createdAt)
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching page list by url_tile:', error);
       }
     },
     // 切换页面
@@ -524,8 +583,10 @@ export default {
     async createNewPage() {
       const newUuid = 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       this.currentUuidPage = newUuid;
-      // 更新页面列表
-      if (this.currentTileUuid) {
+      // 更新页面列表（url_tile优先）
+      if (this.currentUrlTile) {
+        await this.fetchPageListByUrl(this.currentUrlTile);
+      } else if (this.currentTileUuid) {
         await this.fetchPageList(this.currentTileUuid);
       }
       // 重新转换ANX
@@ -741,11 +802,11 @@ export default {
             requestData.uuid_page = this.currentUuidPage;
           }
           
-          // 添加 uuid_tile 或 url_tile
-          if (this.currentTileUuid) {
-            requestData.uuid_tile = this.currentTileUuid;
-          } else if (this.currentUrlTile) {
+          // 添加 uuid_tile 或 url_tile（url_tile优先）
+          if (this.currentUrlTile) {
             requestData.url_tile = this.currentUrlTile;
+          } else if (this.currentTileUuid) {
+            requestData.uuid_tile = this.currentTileUuid;
           }
           
           // 调用后端 API 更新节点数据
@@ -803,11 +864,11 @@ export default {
             requestData.uuid_page = this.currentUuidPage;
           }
           
-          // 添加 uuid_tile 或 url_tile
-          if (this.currentTileUuid) {
-            requestData.uuid_tile = this.currentTileUuid;
-          } else if (this.currentUrlTile) {
+          // 添加 uuid_tile 或 url_tile（url_tile优先）
+          if (this.currentUrlTile) {
             requestData.url_tile = this.currentUrlTile;
+          } else if (this.currentTileUuid) {
+            requestData.uuid_tile = this.currentTileUuid;
           }
           
           // 调用后端 API 触发 cardKey 节点点击
@@ -871,11 +932,11 @@ export default {
             requestData.uuid_page = this.currentUuidPage;
           }
           
-          // 添加 uuid_tile 或 url_tile
-          if (this.currentTileUuid) {
-            requestData.uuid_tile = this.currentTileUuid;
-          } else if (this.currentUrlTile) {
+          // 添加 uuid_tile 或 url_tile（url_tile优先）
+          if (this.currentUrlTile) {
             requestData.url_tile = this.currentUrlTile;
+          } else if (this.currentTileUuid) {
+            requestData.uuid_tile = this.currentTileUuid;
           }
           
           // 调用后端 API 触发卡片点击，由它处理 tapSet 动作
@@ -1423,11 +1484,11 @@ export default {
           requestData.uuid_page = this.currentUuidPage;
         }
         
-        // 添加 uuid_tile 或 url_tile
-        if (this.currentTileUuid) {
-          requestData.uuid_tile = this.currentTileUuid;
-        } else if (this.currentUrlTile) {
+        // 添加 uuid_tile 或 url_tile（url_tile优先）
+        if (this.currentUrlTile) {
           requestData.url_tile = this.currentUrlTile;
+        } else if (this.currentTileUuid) {
+          requestData.uuid_tile = this.currentTileUuid;
         }
         
         // 发送CLI命令到后端

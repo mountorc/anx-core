@@ -118,34 +118,38 @@ const testRender = async () => {
 }
 
 .test-section {
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   padding: 20px;
-  background: white;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
 }
 
 .test-section h3 {
-  color: #333;
-  margin-bottom: 15px;
-  border-bottom: 2px solid #f0f0f0;
+  color: #1e293b;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #e2e8f0;
   padding-bottom: 8px;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .success {
-  color: #28a745;
-  font-weight: bold;
-  padding: 10px;
-  background: #d4edda;
-  border-radius: 4px;
+  color: #16a34a;
+  font-weight: 600;
+  padding: 10px 14px;
+  background: #dcfce7;
+  border-radius: 8px;
+  font-size: 13px;
 }
 
 .error {
-  color: #dc3545;
-  font-weight: bold;
-  padding: 10px;
-  background: #f8d7da;
-  border-radius: 4px;
+  color: #dc2626;
+  font-weight: 600;
+  padding: 10px 14px;
+  background: #fee2e2;
+  border-radius: 8px;
+  font-size: 13px;
 }
 
 .component-list {
@@ -155,35 +159,42 @@ const testRender = async () => {
 
 .component-list li {
   padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  font-size: 13px;
 }
 
 .test-button {
-  background: #007bff;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .test-button:hover {
-  background: #0069d9;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  transform: translateY(-1px);
 }
 
 .render-result {
-  margin-top: 20px;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 4px;
-  border-left: 4px solid #007bff;
+  margin-top: 16px;
+  padding: 14px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border-left: 3px solid #6366f1;
 }
 
 .render-result pre {
   white-space: pre-wrap;
-  font-family: monospace;
+  font-family: 'SF Mono', 'Fira Code', monospace;
   font-size: 12px;
-  line-height: 1.4;
+  line-height: 1.5;
+  color: #475569;
 }
 </style>

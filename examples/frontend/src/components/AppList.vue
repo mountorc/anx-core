@@ -78,7 +78,7 @@ export default {
 .category-tabs {
   display: flex;
   gap: 6px;
-  padding: 12px 16px;
+  padding: 8px 16px;
   border-bottom: 1px solid #e2e8f0;
   background: linear-gradient(135deg, #f8fafc, #f1f5f9);
 }
@@ -86,13 +86,13 @@ export default {
 .tab-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 16px;
+  gap: 5px;
+  padding: 5px 14px;
   border: 1px solid transparent;
   border-radius: 8px;
   background-color: transparent;
   color: #64748b;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -124,16 +124,16 @@ export default {
 
 .tile-grid-wrapper {
   flex: 1;
-  max-height: 450px;
+  max-height: 200px;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
 .tile-grid {
   display: flex;
-  gap: 16px;
+  gap: 10px;
   flex-wrap: wrap;
-  padding: 16px;
+  padding: 10px 16px;
 }
 
 .tile-grid-wrapper::-webkit-scrollbar {
@@ -159,57 +159,57 @@ export default {
   align-items: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  width: 110px;
-  padding: 8px;
-  border-radius: 10px;
+  width: 80px;
+  padding: 6px;
+  border-radius: 8px;
 }
 
 .tile-item:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   background: #f8fafc;
 }
 
 .tile-icon {
-  width: 64px;
-  height: 64px;
-  margin-bottom: 8px;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .icon-background {
-  width: 64px;
-  height: 64px;
-  border-radius: 14px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 700;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 3px 8px rgba(99, 102, 241, 0.25);
   transition: all 0.2s ease;
 }
 
 .tile-item:hover .icon-background {
-  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
   transform: scale(1.05);
 }
 
 .icon-background.turan {
   background: linear-gradient(135deg, #f59e0b, #f97316);
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+  box-shadow: 0 3px 8px rgba(245, 158, 11, 0.25);
 }
 
 .tile-item:hover .icon-background.turan {
-  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
 }
 
 .tile-name {
   text-align: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: #334155;
   white-space: nowrap;

@@ -174,9 +174,9 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #1e1e1e;
-  color: #d4d4d4;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  background: #0f172a;
+  color: #94a3b8;
+  font-family: 'SF Mono', 'Fira Code', 'Monaco', 'Menlo', monospace;
   font-size: 14px;
   margin: 0;
   padding: 0;
@@ -188,15 +188,15 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #1e1e1e;
-  color: #d4d4d4;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
-  font-size: 14px;
-  line-height: 1.6;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: 'SF Mono', 'Fira Code', 'Monaco', 'Menlo', monospace;
+  font-size: 13px;
+  line-height: 1.7;
   white-space: pre-wrap;
   word-break: break-all;
   margin: 0;
-  padding: 20px;
+  padding: 24px;
   overflow: auto;
   box-sizing: border-box;
 }

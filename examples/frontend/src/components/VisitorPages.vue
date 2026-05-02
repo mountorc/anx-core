@@ -351,7 +351,7 @@ export default {
   flex-direction: column;
   height: 100vh;
   width: 100vw;
-  background: #f5f5f5;
+  background: #f1f5f9;
   border-radius: 0;
   box-shadow: none;
   overflow: hidden;
@@ -362,46 +362,48 @@ export default {
 .visitor-pages-header {
   display: flex;
   align-items: center;
-  padding: 8px 12px;
-  background: #fff;
-  border-bottom: 1px solid #eee;
+  padding: 10px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
   position: relative;
 }
 
 .visitor-pages-header h2 {
   margin: 0;
   font-size: 14px;
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  color: #1e293b;
 }
 
 .instance-count {
   margin-left: 8px;
   padding: 2px 8px;
-  background: #f0f0f0;
+  background: #f1f5f9;
   border-radius: 10px;
   font-size: 11px;
-  color: #666;
+  color: #64748b;
+  font-weight: 500;
 }
 
 .visitor-info-bar {
   display: flex;
   align-items: center;
-  padding: 6px 12px;
-  background: #fafafa;
-  border-bottom: 1px solid #eee;
+  padding: 6px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .visitor-label {
   font-size: 11px;
-  color: #999;
+  color: #94a3b8;
   margin-right: 6px;
+  font-weight: 500;
 }
 
 .visitor-value {
   font-size: 11px;
-  color: #1976d2;
-  font-family: monospace;
+  color: #3b82f6;
+  font-family: 'SF Mono', 'Fira Code', monospace;
   word-break: break-all;
 }
 
@@ -411,30 +413,41 @@ export default {
   padding: 8px;
 }
 
+.pages-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.pages-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
 .page-item {
   display: flex;
   align-items: center;
   padding: 10px 12px;
   margin-bottom: 4px;
-  background: #fff;
-  border-radius: 4px;
+  background: #ffffff;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.15s ease;
-  border: none;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
 .page-item:hover {
-  background: #f5f7fa;
+  background: #f8fafc;
+  border-color: #e2e8f0;
 }
 
 .page-item.active {
-  background: #ebf5ff;
+  background: #eff6ff;
+  border-color: #bfdbfe;
 }
 
 .page-indicator {
   width: 3px;
   height: 24px;
-  background: #2196f3;
+  background: linear-gradient(180deg, #3b82f6, #6366f1);
   border-radius: 2px;
   margin-right: 10px;
   flex-shrink: 0;
@@ -448,7 +461,7 @@ export default {
 
 .page-title {
   font-weight: 500;
-  color: #333;
+  color: #1e293b;
   font-size: 13px;
   margin-bottom: 3px;
   white-space: nowrap;
@@ -457,9 +470,9 @@ export default {
 }
 
 .page-id {
-  font-family: monospace;
-  font-size: 11px;
-  color: #999;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 10px;
+  color: #94a3b8;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -471,26 +484,26 @@ export default {
 
 .status-badge {
   padding: 2px 8px;
-  border-radius: 8px;
-  font-size: 11px;
-  font-weight: 500;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
   margin-left: 10px;
   flex-shrink: 0;
 }
 
 .status-normal {
-  background: #e8f5e9;
-  color: #4caf50;
+  background: #dcfce7;
+  color: #16a34a;
 }
 
 .status-pending {
-  background: #fff3e0;
-  color: #ff9800;
+  background: #fef3c7;
+  color: #d97706;
 }
 
 .status-processing {
-  background: #e3f2fd;
-  color: #2196f3;
+  background: #dbeafe;
+  color: #2563eb;
 }
 
 .empty-state {
@@ -499,13 +512,14 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: #94a3b8;
   padding: 40px;
 }
 
 .empty-icon {
   font-size: 48px;
   margin-bottom: 16px;
+  opacity: 0.6;
 }
 
 .empty-state p {
@@ -514,7 +528,7 @@ export default {
 
 .empty-hint {
   font-size: 12px;
-  color: #bbb;
+  color: #cbd5e1;
 }
 
 .modal-overlay {
@@ -523,7 +537,8 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -538,22 +553,23 @@ export default {
 
 .modal-container {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 14px;
   width: 90%;
   max-width: 900px;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
   animation: slideUp 0.3s ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes slideUp {
-  from { 
-    opacity: 0; 
+  from {
+    opacity: 0;
     transform: translateY(20px);
   }
-  to { 
-    opacity: 1; 
+  to {
+    opacity: 1;
     transform: translateY(0);
   }
 }
@@ -562,41 +578,44 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid #eee;
-  background: #fafafa;
-  border-radius: 12px 12px 0 0;
+  padding: 14px 20px;
+  border-bottom: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: 14px 14px 0 0;
 }
 
 .modal-header h3 {
   margin: 0;
-  font-size: 16px;
-  color: #333;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
 }
 
 .close-btn {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border: none;
-  background: #e0e0e0;
+  background: #e2e8f0;
   border-radius: 50%;
-  font-size: 20px;
+  font-size: 18px;
   cursor: pointer;
-  color: #666;
+  color: #64748b;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
 }
 
 .close-btn:hover {
-  background: #d0d0d0;
+  background: #fee2e2;
+  color: #ef4444;
 }
 
 .modal-body {
   flex: 1;
   overflow: auto;
   padding: 16px;
-  background: #f5f5f5;
+  background: #f1f5f9;
 }
 
 .loading-content {
@@ -610,8 +629,8 @@ export default {
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #2196f3;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #6366f1;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -623,7 +642,8 @@ export default {
 
 .loading-content p {
   margin-top: 16px;
-  color: #666;
+  color: #64748b;
+  font-size: 13px;
 }
 
 .error-content {
@@ -631,13 +651,15 @@ export default {
   align-items: center;
   justify-content: center;
   height: 200px;
-  color: #dc3545;
+  color: #ef4444;
+  font-size: 13px;
 }
 
 .anx-view-container {
   background: #fff;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
   min-height: 400px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 </style>

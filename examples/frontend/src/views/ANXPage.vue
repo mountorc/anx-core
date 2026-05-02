@@ -507,8 +507,8 @@ export default {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #f5f5f5;
-  font-family: Arial, sans-serif;
+  background-color: #f1f5f9;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .anx-page-layout {
@@ -519,12 +519,13 @@ export default {
 
 .page-list-sidebar {
   width: 260px;
-  background-color: #fff;
-  border-right: 1px solid #e0e0e0;
+  background-color: #ffffff;
+  border-right: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   transition: all 0.3s ease;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
 }
 
 .page-list-sidebar.hidden {
@@ -535,8 +536,8 @@ export default {
 }
 
 .sidebar-header {
-  padding: 16px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #1e293b, #334155);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -553,72 +554,76 @@ export default {
   height: 24px;
   border: none;
   border-radius: 50%;
-  background-color: #1890ff;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
   color: white;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .add-page-btn:hover {
-  background-color: #40a9ff;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  transform: scale(1.05);
 }
 
 .collapse-btn {
   width: 24px;
   height: 24px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  background-color: #fff;
+  border: none;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.12);
   cursor: pointer;
   font-size: 14px;
-  color: #999;
+  color: #94a3b8;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .collapse-btn:hover {
-  background-color: #f5f5f5;
-  color: #666;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #e2e8f0;
 }
 
 .expand-btn {
   width: 24px;
   height: 48px;
   border: none;
-  background-color: transparent;
+  background-color: rgba(30, 41, 59, 0.08);
   cursor: pointer;
-  font-size: 16px;
-  color: #999;
+  font-size: 14px;
+  color: #64748b;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  border-radius: 0 6px 6px 0;
 }
 
 .expand-btn:hover {
-  background-color: #f5f5f5;
-  color: #666;
+  background-color: rgba(30, 41, 59, 0.15);
+  color: #334155;
 }
 
 .sidebar-header h3 {
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: #ffffff;
 }
 
 .page-count {
-  font-size: 12px;
-  color: #999;
-  background-color: #f5f5f5;
+  font-size: 11px;
+  color: #94a3b8;
+  background-color: rgba(255, 255, 255, 0.1);
   padding: 2px 8px;
   border-radius: 10px;
+  font-weight: 500;
 }
 
 .page-list {
@@ -627,24 +632,36 @@ export default {
   padding: 8px;
 }
 
+.page-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.page-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
 .page-item {
   padding: 10px 12px;
   margin-bottom: 4px;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  border: 1px solid transparent;
 }
 
 .page-item:hover {
-  background-color: #f5f5f5;
+  background-color: #f8fafc;
+  border-color: #e2e8f0;
 }
 
 .page-item.active {
-  background-color: #e6f7ff;
-  border-left: 3px solid #1890ff;
+  background-color: #eff6ff;
+  border-left: 3px solid #3b82f6;
+  border-color: #bfdbfe;
 }
 
 .page-header {
@@ -655,7 +672,7 @@ export default {
 
 .page-name {
   font-size: 13px;
-  color: #333;
+  color: #1e293b;
   font-weight: 500;
   flex: 1;
   overflow: hidden;
@@ -665,74 +682,77 @@ export default {
 
 .page-status {
   font-size: 10px;
-  padding: 1px 6px;
-  border-radius: 4px;
+  padding: 2px 8px;
+  border-radius: 10px;
   margin-left: 8px;
+  font-weight: 500;
 }
 
 .page-status.normal {
-  background-color: #f6ffed;
-  color: #52c41a;
+  background-color: #f1f5f9;
+  color: #64748b;
 }
 
 .page-status.pending {
-  background-color: #fff7e6;
-  color: #fa8c16;
+  background-color: #fef3c7;
+  color: #d97706;
 }
 
 .page-status.running {
-  background-color: #e6f7ff;
-  color: #1890ff;
+  background-color: #dbeafe;
+  color: #2563eb;
 }
 
 .page-status.submitted {
-  background-color: #f6ffed;
-  color: #52c41a;
+  background-color: #dcfce7;
+  color: #16a34a;
 }
 
 .page-uuid {
   font-size: 10px;
-  color: #ccc;
+  color: #94a3b8;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 100%;
+  font-family: 'SF Mono', 'Fira Code', monospace;
 }
 
 .visitor-info {
   padding: 8px 16px;
-  background-color: #f5f5f5;
+  background-color: #f8fafc;
   font-size: 11px;
   display: flex;
   gap: 8px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .visitor-label {
-  color: #999;
+  color: #94a3b8;
+  font-weight: 500;
 }
 
 .visitor-value {
-  color: #1890ff;
-  font-family: monospace;
+  color: #3b82f6;
+  font-family: 'SF Mono', 'Fira Code', monospace;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .visitor-value.unregistered {
-  color: #999;
+  color: #94a3b8;
 }
 
 .page-date {
   font-size: 11px;
-  color: #999;
+  color: #94a3b8;
 }
 
 .empty-list {
   padding: 40px 20px;
   text-align: center;
-  color: #999;
+  color: #94a3b8;
 }
 
 .empty-list p {
@@ -749,10 +769,11 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(241, 245, 249, 0.9);
   z-index: 1000;
-  color: #666;
-  font-size: 18px;
+  color: #64748b;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .loading {
@@ -761,8 +782,8 @@ export default {
   align-items: center;
   width: 100%;
   height: 100%;
-  color: #666;
-  font-size: 18px;
+  color: #64748b;
+  font-size: 16px;
 }
 
 .error-container {
@@ -774,14 +795,14 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
   z-index: 1000;
 }
 
 .error-card {
   background: white;
   border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
   padding: 48px 40px;
   text-align: center;
   max-width: 480px;
@@ -801,28 +822,27 @@ export default {
 }
 
 .error-icon {
-  font-size: 64px;
-  margin-bottom: 24px;
-  opacity: 0.8;
+  font-size: 56px;
+  margin-bottom: 20px;
+  opacity: 0.9;
 }
 
 .error-title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e293b;
   margin: 0 0 12px 0;
 }
 
 .error-message {
   font-size: 14px;
-  color: #888;
+  color: #64748b;
   margin: 0 0 16px 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .error-hint {
   font-size: 13px;
-  color: #aaa;
+  color: #94a3b8;
   margin: 0 0 32px 0;
   line-height: 1.6;
 }
@@ -833,12 +853,12 @@ export default {
   justify-content: center;
   gap: 8px;
   padding: 12px 28px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   color: white;
   border: none;
-  border-radius: 24px;
+  border-radius: 12px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 140px;
@@ -846,7 +866,7 @@ export default {
 
 .retry-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
 }
 
 .retry-btn:active:not(:disabled) {
@@ -876,7 +896,7 @@ export default {
   align-items: center;
   width: 100%;
   height: 100%;
-  color: #999;
-  font-size: 18px;
+  color: #94a3b8;
+  font-size: 16px;
 }
 </style>

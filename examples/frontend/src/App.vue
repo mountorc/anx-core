@@ -531,7 +531,7 @@ button.loading {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 10px 20px;
   background: linear-gradient(135deg, #f8fafc, #f1f5f9);
   border-bottom: 1px solid #e2e8f0;
 }
@@ -572,6 +572,6 @@ button.loading {
 
 .app-list-popup :deep(.app-list-section) {
   border: none;
-  padding: 20px;
+  padding: 0;
 }
 </style>
