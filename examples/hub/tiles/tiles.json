@@ -40,8 +40,14 @@
     "category": "normal"
   },
   {
-    "uuid": "submit-set-test-001",
-    "name": "Submit Set Test",
-    "category": "normal"
-  }
-]
+      "uuid": "submit-set-test-001",
+      "name": "Submit Set Test",
+      "category": "normal"
+    },
+    {
+      "uuid": "default-demo-box",
+      "name": "默认示例",
+      "category": "normal",
+      "isDefault": true
+    }
+  ]

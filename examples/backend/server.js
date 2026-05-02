@@ -2345,6 +2345,7 @@ app.get('/api/tiles/list', (req, res) => {
               name: item.name,
               url: item.url,
               category: item.category || 'normal',
+              isDefault: item.isDefault || false,
               loaded: hubAnxMap.has(item.uuid)
             });
             loadedUuids.add(item.uuid);

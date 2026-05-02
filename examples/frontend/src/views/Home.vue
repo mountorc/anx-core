@@ -404,6 +404,15 @@ export default {
           this.hubList = data.data;
           // 通过事件总线通知App组件更新hubList
           this.$eventBus.emit('updateHubList', data.data);
+          
+          // 如果当前没有加载任何tile，自动加载默认示例
+          if (!this.currentTileUuid && !this.anxInput.trim()) {
+            const defaultTile = this.hubList.find(item => item.isDefault);
+            if (defaultTile) {
+              console.log(`[Default] Loading default tile: ${defaultTile.name}`);
+              this.loadHubTestCase(defaultTile.uuid);
+            }
+          }
         }
       } catch (error) {
         console.error('Error loading tiles list:', error);
