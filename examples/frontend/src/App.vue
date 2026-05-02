@@ -116,6 +116,8 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -123,10 +125,12 @@ export default {
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
-  color: #333;
-  background-color: #f5f5f5;
+  color: #1e293b;
+  background-color: #f1f5f9;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .app {
@@ -136,39 +140,50 @@ body {
 }
 
 .header {
-  background-color: #1a1a1a;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
   color: #ffffff;
-  padding: 0.5rem 1rem;
+  padding: 0.65rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 10;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
 }
 
 .header h1 {
   font-size: 18px;
   margin: 0;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .uuid-info {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   font-size: 11px;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .uuid-item {
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 2px 8px;
-  border-radius: 3px;
-  font-family: monospace;
-  color: #ccc;
+  background-color: rgba(255, 255, 255, 0.08);
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 11px;
 }
 
 .visitor-input-header {
@@ -179,76 +194,89 @@ body {
 
 .visitor-input-header label {
   font-size: 12px;
-  color: #ccc;
+  color: #94a3b8;
   white-space: nowrap;
+  font-weight: 500;
 }
 
 .visitor-input-header .visitor-input {
-  padding: 4px 8px;
-  border: 1px solid #444;
-  border-radius: 3px;
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
   font-size: 12px;
   width: 200px;
-  font-family: monospace;
-  background-color: #2a2a2a;
-  color: #fff;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
+  transition: all 0.2s ease;
 }
 
 .visitor-input-header .visitor-input:focus {
   outline: none;
-  border-color: #666;
+  border-color: #60a5fa;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
 }
 
 .visitor-input-header .refresh-btn {
-  padding: 4px 10px;
-  background-color: #555;
+  padding: 5px 14px;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
   color: white;
   border: none;
-  border-radius: 3px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .visitor-input-header .refresh-btn:hover {
-  background-color: #666;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
 }
 
 .nav {
   margin-top: 0;
+  display: flex;
+  gap: 8px;
 }
 
 .nav-btn {
-  background-color: #333333;
-  color: #ffffff;
-  border: 1px solid #444444;
-  padding: 8px 20px;
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 7px 18px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
 }
 
 .nav-btn:hover {
-  background-color: #444444;
-  border-color: #555555;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .command-logs-btn {
-  background-color: #555555;
-  color: #ffffff;
-  border-color: #666666;
-  margin-left: 8px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
+  color: #c7d2fe;
+  border-color: rgba(139, 92, 246, 0.3);
+  margin-left: 0;
 }
 
 .command-logs-btn:hover {
-  background-color: #666666;
-  border-color: #777777;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.45), rgba(139, 92, 246, 0.45));
+  border-color: rgba(139, 92, 246, 0.5);
 }
 
 .main {
   flex: 1;
-  padding: 1rem;
+  padding: 1.25rem;
 }
 
 .main-full {
@@ -259,15 +287,16 @@ body {
 }
 
 .footer {
-  background-color: #2a2a2a;
-  color: #999999;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #64748b;
   padding: 1rem;
   text-align: center;
   margin-top: auto;
+  font-size: 13px;
 }
 
 .required-mark {
-  color: #999999;
+  color: #94a3b8;
   margin-left: 2px;
   font-weight: bold;
 }
@@ -308,8 +337,8 @@ button.loading {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 3px solid #d0d0d0;
-  border-top-color: #333333;
+  border: 3px solid #e2e8f0;
+  border-top-color: #6366f1;
   animation: spin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
@@ -321,8 +350,8 @@ button.loading {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* 加载内容 */
@@ -336,13 +365,13 @@ button.loading {
 .loading-title {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: #1e293b;
   letter-spacing: 0.5px;
 }
 
 .loading-subtitle {
   font-size: 13px;
-  color: #666;
+  color: #64748b;
 }
 
 /* 闪烁的点 */
@@ -351,7 +380,7 @@ button.loading {
   justify-content: center;
   gap: 4px;
   font-size: 20px;
-  color: #666;
+  color: #6366f1;
 }
 
 .dot {
@@ -382,7 +411,7 @@ button.loading {
 
 .progress-bar-track {
   height: 6px;
-  background: #e0e0e0;
+  background: #e2e8f0;
   border-radius: 3px;
   overflow: hidden;
   position: relative;
@@ -390,10 +419,10 @@ button.loading {
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #444 0%, #666 100%);
+  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
   border-radius: 3px;
   animation: progress-fill 2s ease-in-out infinite;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
 }
 
 @keyframes progress-fill {
@@ -410,7 +439,7 @@ button.loading {
 
 .progress-text {
   font-size: 12px;
-  color: #666;
+  color: #64748b;
   margin-top: 8px;
 }
 
@@ -432,9 +461,9 @@ button.loading {
 
 /* 卡片运行状态 */
 .card-running {
-  border-color: #555 !important;
-  background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  border-color: #6366f1 !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.12);
 }
 
 /* 应用列表展开按钮 */
@@ -444,80 +473,96 @@ button.loading {
   justify-content: center;
   width: 24px;
   height: 24px;
-  background-color: #555;
+  background: rgba(255, 255, 255, 0.15);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 12px;
   margin-left: 10px;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .app-list-toggle-btn:hover {
-  background-color: #666;
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
 }
 
 /* 应用列表浮动弹窗 */
 .app-list-overlay {
   position: fixed;
-  top: 54px;
+  top: 50px;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
   z-index: 1000;
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .app-list-popup {
   background-color: #ffffff;
-  border-radius: 0;
-  box-shadow: none;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 100%;
-  max-height: 60vh;
+  max-height: 280px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  animation: slideDown 0.25s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .popup-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .popup-header h3 {
   margin: 0;
-  font-size: 18px;
-  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
 }
 
 .popup-close-btn {
   width: 32px;
   height: 32px;
   background-color: transparent;
-  color: #666;
+  color: #94a3b8;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
 .popup-close-btn:hover {
-  background-color: #e0e0e0;
-  color: #333;
+  background-color: #fee2e2;
+  color: #ef4444;
 }
 
 .popup-body {
