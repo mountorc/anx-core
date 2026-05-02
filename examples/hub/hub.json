@@ -3,132 +3,158 @@
     {
       "uuid": "ee09a4cf-7259-4b64-86fd-21ca4a5a0b6e",
       "name": "自由模特图",
-      "url": "http://localhost:3002/api/anxhub/config/ee09a4cf-7259-4b64-86fd-21ca4a5a0b6e"
+      "url": "http://localhost:3002/api/anxhub/config/ee09a4cf-7259-4b64-86fd-21ca4a5a0b6e",
+      "category": "turan"
     },
     {
       "uuid": "505619db-c096-46b8-8a1d-0c7754fc9219",
       "name": "一键白底图",
-      "url": "http://localhost:3002/api/anxhub/config/505619db-c096-46b8-8a1d-0c7754fc9219"
+      "url": "http://localhost:3002/api/anxhub/config/505619db-c096-46b8-8a1d-0c7754fc9219",
+      "category": "turan"
     },
     {
       "uuid": "39b84435-1943-4ea3-bcb7-481671565eb3",
       "name": "模特换脸",
-      "url": "http://localhost:3002/api/anxhub/config/39b84435-1943-4ea3-bcb7-481671565eb3"
+      "url": "http://localhost:3002/api/anxhub/config/39b84435-1943-4ea3-bcb7-481671565eb3",
+      "category": "turan"
     },
     {
       "uuid": "7984353a-9a5e-4e58-b681-2ee057e7fbd7",
       "name": "模特换装",
-      "url": "http://localhost:3002/api/anxhub/config/7984353a-9a5e-4e58-b681-2ee057e7fbd7"
+      "url": "http://localhost:3002/api/anxhub/config/7984353a-9a5e-4e58-b681-2ee057e7fbd7",
+      "category": "turan"
     },
     {
       "uuid": "884c0485-5ab5-4fc1-b903-a289f4e615ff",
       "name": "海报迁移",
-      "url": "http://localhost:3002/api/anxhub/config/884c0485-5ab5-4fc1-b903-a289f4e615ff"
+      "url": "http://localhost:3002/api/anxhub/config/884c0485-5ab5-4fc1-b903-a289f4e615ff",
+      "category": "turan"
     },
     {
       "uuid": "64c465d8-38bb-4c9c-b213-8a5851b7311a",
       "name": "运动场景迁移",
-      "url": "http://localhost:3002/api/anxhub/config/64c465d8-38bb-4c9c-b213-8a5851b7311a"
+      "url": "http://localhost:3002/api/anxhub/config/64c465d8-38bb-4c9c-b213-8a5851b7311a",
+      "category": "turan"
     },
     {
       "uuid": "304977e3-bc17-4805-8eaa-9a09948af0b8",
       "name": "智能数字人",
-      "url": "http://localhost:3002/api/anxhub/config/304977e3-bc17-4805-8eaa-9a09948af0b8"
+      "url": "http://localhost:3002/api/anxhub/config/304977e3-bc17-4805-8eaa-9a09948af0b8",
+      "category": "turan"
     },
     {
       "uuid": "2c2cd634-34f6-44b6-abe5-34b8ab36c798",
       "name": "换姿势",
-      "url": "http://localhost:3002/api/anxhub/config/2c2cd634-34f6-44b6-abe5-34b8ab36c798"
+      "url": "http://localhost:3002/api/anxhub/config/2c2cd634-34f6-44b6-abe5-34b8ab36c798",
+      "category": "turan"
     },
     {
       "uuid": "3ea6e68c-6c13-4b4d-8dac-ac3a369aafd6",
       "name": "平铺立体图",
-      "url": "http://localhost:3002/api/anxhub/config/3ea6e68c-6c13-4b4d-8dac-ac3a369aafd6"
+      "url": "http://localhost:3002/api/anxhub/config/3ea6e68c-6c13-4b4d-8dac-ac3a369aafd6",
+      "category": "turan"
     },
     {
       "uuid": "3e4f814a-e87d-4670-9cad-3e8e41ee975c",
       "name": "局部AI",
-      "url": "http://localhost:3002/api/anxhub/config/3e4f814a-e87d-4670-9cad-3e8e41ee975c"
+      "url": "http://localhost:3002/api/anxhub/config/3e4f814a-e87d-4670-9cad-3e8e41ee975c",
+      "category": "turan"
     },
     {
       "uuid": "320e53ca-699a-4c2a-89d0-3d135269bcde",
       "name": "展示风格复刻",
-      "url": "http://localhost:3002/api/anxhub/config/320e53ca-699a-4c2a-89d0-3d135269bcde"
+      "url": "http://localhost:3002/api/anxhub/config/320e53ca-699a-4c2a-89d0-3d135269bcde",
+      "category": "turan"
     },
     {
       "uuid": "dead1833-5d97-418a-a6b4-5bdac9b2c680",
       "name": "品宣主图",
-      "url": "http://localhost:3002/api/anxhub/config/dead1833-5d97-418a-a6b4-5bdac9b2c680"
+      "url": "http://localhost:3002/api/anxhub/config/dead1833-5d97-418a-a6b4-5bdac9b2c680",
+      "category": "turan"
     },
     {
       "uuid": "77b01142-5f97-4b40-be03-19f87a4934b5",
       "name": "产品卖点展示",
-      "url": "http://localhost:3002/api/anxhub/config/77b01142-5f97-4b40-be03-19f87a4934b5"
+      "url": "http://localhost:3002/api/anxhub/config/77b01142-5f97-4b40-be03-19f87a4934b5",
+      "category": "turan"
     },
     {
       "uuid": "82d50620-bd6c-490d-bf06-6e53c809918a",
       "name": "产品卖点展示2",
-      "url": "http://localhost:3002/api/anxhub/config/82d50620-bd6c-490d-bf06-6e53c809918a"
+      "url": "http://localhost:3002/api/anxhub/config/82d50620-bd6c-490d-bf06-6e53c809918a",
+      "category": "turan"
     },
     {
       "uuid": "6e83be96-c08c-47b4-9a26-9c3e45d34c80",
       "name": "一键买家秀",
-      "url": "http://localhost:3002/api/anxhub/config/6e83be96-c08c-47b4-9a26-9c3e45d34c80"
+      "url": "http://localhost:3002/api/anxhub/config/6e83be96-c08c-47b4-9a26-9c3e45d34c80",
+      "category": "turan"
     },
     {
       "uuid": "29c0e491-d7c2-412c-ae36-3ffd1d5da7cb",
       "name": "模特图裂变买家秀",
-      "url": "http://localhost:3002/api/anxhub/config/29c0e491-d7c2-412c-ae36-3ffd1d5da7cb"
+      "url": "http://localhost:3002/api/anxhub/config/29c0e491-d7c2-412c-ae36-3ffd1d5da7cb",
+      "category": "turan"
     },
     {
       "uuid": "2391fc97-3ed2-4125-9340-833164425e52",
       "name": "系列图裂变",
-      "url": "http://localhost:3002/api/anxhub/config/2391fc97-3ed2-4125-9340-833164425e52"
+      "url": "http://localhost:3002/api/anxhub/config/2391fc97-3ed2-4125-9340-833164425e52",
+      "category": "turan"
     },
     {
       "uuid": "90ad1c40-e91c-4d0a-9c40-f92f0f400846",
       "name": "四方连续图案提取",
-      "url": "http://localhost:3002/api/anxhub/config/90ad1c40-e91c-4d0a-9c40-f92f0f400846"
+      "url": "http://localhost:3002/api/anxhub/config/90ad1c40-e91c-4d0a-9c40-f92f0f400846",
+      "category": "turan"
     },
     {
       "uuid": "653e11e7-d527-4231-a123-5be0648d62a0",
       "name": "独立图案提取",
-      "url": "http://localhost:3002/api/anxhub/config/653e11e7-d527-4231-a123-5be0648d62a0"
+      "url": "http://localhost:3002/api/anxhub/config/653e11e7-d527-4231-a123-5be0648d62a0",
+      "category": "turan"
     },
     {
       "uuid": "1ff9969e-0775-418a-ad87-530e723a971a",
       "name": "实物转线稿图",
-      "url": "http://localhost:3002/api/anxhub/config/1ff9969e-0775-418a-ad87-530e723a971a"
+      "url": "http://localhost:3002/api/anxhub/config/1ff9969e-0775-418a-ad87-530e723a971a",
+      "category": "turan"
     },
     {
       "uuid": "6298a32b-db25-418d-9163-9a3bbdf7ba6b",
       "name": "线稿图转平铺图",
-      "url": "http://localhost:3002/api/anxhub/config/6298a32b-db25-418d-9163-9a3bbdf7ba6b"
+      "url": "http://localhost:3002/api/anxhub/config/6298a32b-db25-418d-9163-9a3bbdf7ba6b",
+      "category": "turan"
     },
     {
       "uuid": "c2962557-733f-4280-a0bd-e6e27a02a469",
       "name": "线稿图转模特图",
-      "url": "http://localhost:3002/api/anxhub/config/c2962557-733f-4280-a0bd-e6e27a02a469"
+      "url": "http://localhost:3002/api/anxhub/config/c2962557-733f-4280-a0bd-e6e27a02a469",
+      "category": "turan"
     },
     {
       "uuid": "c898c01a-dae8-4876-b88f-f2617c17e938",
       "name": "爆款修改",
-      "url": "http://localhost:3002/api/anxhub/config/c898c01a-dae8-4876-b88f-f2617c17e938"
+      "url": "http://localhost:3002/api/anxhub/config/c898c01a-dae8-4876-b88f-f2617c17e938",
+      "category": "turan"
     },
     {
       "uuid": "f4efb037-41df-4808-8187-1415b310e5a1",
       "name": "颜色修改",
-      "url": "http://localhost:3002/api/anxhub/config/f4efb037-41df-4808-8187-1415b310e5a1"
+      "url": "http://localhost:3002/api/anxhub/config/f4efb037-41df-4808-8187-1415b310e5a1",
+      "category": "turan"
     },
     {
       "uuid": "3fc67ed9-7f66-4811-81c2-d748538035b6",
       "name": "产品卖点分析",
-      "url": "http://localhost:3002/api/anxhub/config/3fc67ed9-7f66-4811-81c2-d748538035b6"
+      "url": "http://localhost:3002/api/anxhub/config/3fc67ed9-7f66-4811-81c2-d748538035b6",
+      "category": "turan"
     },
     {
       "uuid": "11739793-0958-4b23-a79d-f30983bff6b8",
       "name": "一键白底图(新)",
-      "url": "http://localhost:3002/api/anxhub/config/11739793-0958-4b23-a79d-f30983bff6b8"
+      "url": "http://localhost:3002/api/anxhub/config/11739793-0958-4b23-a79d-f30983bff6b8",
+      "category": "turan"
     }
   ]
 }

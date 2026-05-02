@@ -2323,6 +2323,7 @@ app.get('/api/tiles/list', (req, res) => {
               uuid: item.uuid,
               name: item.name,
               url: item.url,
+              category: item.category || 'normal',
               loaded: hubAnxMap.has(item.uuid)
             });
             loadedUuids.add(item.uuid);
@@ -2343,6 +2344,7 @@ app.get('/api/tiles/list', (req, res) => {
               uuid: item.uuid,
               name: item.name,
               url: item.url,
+              category: item.category || 'normal',
               loaded: hubAnxMap.has(item.uuid)
             });
             loadedUuids.add(item.uuid);

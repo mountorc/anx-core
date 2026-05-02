@@ -1,10 +1,22 @@
 <template>
   <div class="app-list-section">
+    <div class="category-tabs">
+      <button 
+        v-for="tab in tabs" 
+        :key="tab.key"
+        :class="['tab-btn', { active: activeTab === tab.key }]"
+        @click="activeTab = tab.key"
+      >
+        {{ tab.label }}
+        <span class="tab-count">{{ getCategoryCount(tab.key) }}</span>
+      </button>
+    </div>
+    
     <div class="tile-grid-wrapper">
       <div class="tile-grid">
-        <div v-for="item in hubList" :key="item.uuid" class="tile-item" @click="handleSelectTile(item.uuid)">
+        <div v-for="item in filteredItems" :key="item.uuid" class="tile-item" @click="handleSelectTile(item.uuid)">
           <div class="tile-icon">
-            <div class="icon-background">{{ item.name.charAt(0) }}</div>
+            <div :class="['icon-background', { turan: activeTab === 'turan' }]">{{ item.name.charAt(0) }}</div>
           </div>
           <div class="tile-name">{{ item.name }}</div>
         </div>
@@ -23,7 +35,30 @@ export default {
     }
   },
   emits: ['select-tile'],
+  data() {
+    return {
+      activeTab: 'normal',
+      tabs: [
+        { key: 'normal', label: '普通组件' },
+        { key: 'turan', label: 'Turan图片处理' }
+      ]
+    };
+  },
+  computed: {
+    filteredItems() {
+      if (this.activeTab === 'turan') {
+        return this.hubList.filter(item => item.category === 'turan');
+      }
+      return this.hubList.filter(item => item.category !== 'turan');
+    }
+  },
   methods: {
+    getCategoryCount(category) {
+      if (category === 'turan') {
+        return this.hubList.filter(item => item.category === 'turan').length;
+      }
+      return this.hubList.filter(item => item.category !== 'turan').length;
+    },
     handleSelectTile(uuid) {
       this.$emit('select-tile', uuid);
     }
@@ -35,10 +70,56 @@ export default {
 .app-list-section {
   background-color: #ffffff;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.category-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #fafafa;
+}
+
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+  background-color: #e8e8e8;
+}
+
+.tab-btn.active {
+  background-color: #555;
+  color: white;
+}
+
+.tab-count {
+  font-size: 12px;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.tab-btn.active .tab-count {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .tile-grid-wrapper {
-  max-height: 500px;
+  flex: 1;
+  max-height: 450px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -47,7 +128,7 @@ export default {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
-  padding: 5px 0;
+  padding: 16px;
 }
 
 .tile-grid-wrapper::-webkit-scrollbar {
@@ -74,7 +155,7 @@ export default {
   align-items: center;
   cursor: pointer;
   transition: transform 0.2s ease;
-  width: 120px;
+  width: 110px;
 }
 
 .tile-item:hover {
@@ -82,8 +163,8 @@ export default {
 }
 
 .tile-icon {
-  width: 72px;
-  height: 72px;
+  width: 68px;
+  height: 68px;
   margin-bottom: 10px;
   display: flex;
   align-items: center;
@@ -91,22 +172,27 @@ export default {
 }
 
 .icon-background {
-  width: 72px;
-  height: 72px;
-  border-radius: 14px;
+  width: 68px;
+  height: 68px;
+  border-radius: 12px;
   background-color: #555;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: bold;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
 }
 
+.icon-background.turan {
+  background-color: #6c757d;
+  border: 2px solid #555;
+}
+
 .tile-name {
   text-align: center;
-  font-size: 15px;
+  font-size: 14px;
   color: #333;
   white-space: nowrap;
   overflow: hidden;
