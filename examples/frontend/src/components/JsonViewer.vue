@@ -1,5 +1,5 @@
 <template>
-  <div class="json-viewer">
+  <div :class="['json-viewer', { 'dark': theme === 'dark', 'light': theme === 'light' }]">
     <div class="json-node" :style="{ paddingLeft: depth * 16 + 'px' }">
       <template v-if="isExpandable">
         <span class="toggle-btn" @click="toggle">
@@ -41,6 +41,7 @@
         :key-name="String(key)"
         :depth="depth + 1"
         :default-expand="defaultExpand"
+        :theme="theme"
       />
       <div class="json-node" :style="{ paddingLeft: depth * 16 + 'px' }">
         <span class="toggle-placeholder"></span>
@@ -56,6 +57,7 @@
         :key-name="String(index)"
         :depth="depth + 1"
         :default-expand="defaultExpand"
+        :theme="theme"
       />
       <div class="json-node" :style="{ paddingLeft: depth * 16 + 'px' }">
         <span class="toggle-placeholder"></span>
@@ -83,6 +85,11 @@ export default {
     defaultExpand: {
       type: Boolean,
       default: false
+    },
+    theme: {
+      type: String,
+      default: 'dark',
+      validator: (value) => ['dark', 'light'].includes(value)
     }
   },
   data() {
@@ -137,7 +144,15 @@ export default {
   font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
   font-size: 13px;
   line-height: 1.6;
+  min-height: 100%;
+}
+
+.json-viewer.dark {
   color: #d4d4d4;
+}
+
+.json-viewer.light {
+  color: #333;
 }
 
 .json-node {
@@ -155,13 +170,20 @@ export default {
   align-items: center;
   justify-content: center;
   font-size: 10px;
-  color: #888;
   flex-shrink: 0;
   margin-top: 3px;
 }
 
+.json-viewer.dark .toggle-btn {
+  color: #888;
+}
+
+.json-viewer.light .toggle-btn {
+  color: #999;
+}
+
 .toggle-btn:hover {
-  color: #ccc;
+  color: inherit;
 }
 
 .toggle-placeholder {
@@ -170,37 +192,75 @@ export default {
   display: inline-block;
 }
 
-.json-key {
+/* Dark theme colors */
+.json-viewer.dark .json-key {
   color: #9cdcfe;
 }
 
-.json-string {
+.json-viewer.dark .json-string {
   color: #ce9178;
 }
 
-.json-number {
+.json-viewer.dark .json-number {
   color: #b5cea8;
 }
 
-.json-boolean {
+.json-viewer.dark .json-boolean {
   color: #569cd6;
 }
 
-.json-null {
+.json-viewer.dark .json-null {
   color: #569cd6;
 }
 
-.json-value {
+.json-viewer.dark .json-value {
   color: #d4d4d4;
 }
 
-.json-brace,
-.json-bracket {
+.json-viewer.dark .json-brace,
+.json-viewer.dark .json-bracket {
   color: #d4d4d4;
+}
+
+.json-viewer.dark .json-preview {
+  color: #6a9955;
+}
+
+/* Light theme colors */
+.json-viewer.light .json-key {
+  color: #007acc;
+}
+
+.json-viewer.light .json-string {
+  color: #c41a16;
+}
+
+.json-viewer.light .json-number {
+  color: #09885a;
+}
+
+.json-viewer.light .json-boolean {
+  color: #007acc;
+}
+
+.json-viewer.light .json-null {
+  color: #007acc;
+}
+
+.json-viewer.light .json-value {
+  color: #333;
+}
+
+.json-viewer.light .json-brace,
+.json-viewer.light .json-bracket {
+  color: #333;
+}
+
+.json-viewer.light .json-preview {
+  color: #09885a;
 }
 
 .json-preview {
-  color: #6a9955;
   font-style: italic;
   font-size: 12px;
 }
