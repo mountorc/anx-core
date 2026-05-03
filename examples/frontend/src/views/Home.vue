@@ -44,7 +44,7 @@
         <div class="json-section">
           <h2>Core Nodes</h2>
           <div class="json-viewer-container">
-            <JsonViewer :data="nodesStructure" :default-expand="false" />
+            <JsonViewer :data="nodesStructure" :default-expand="false" theme="light" />
           </div>
         </div>
         
@@ -1956,9 +1956,9 @@ export default {
   flex: 1;
   padding: 14px;
   overflow-y: auto;
-  background-color: #1e1e1e;
+  background-color: #f8fafc;
   border-radius: 4px;
-  max-height: 500px;
+  height: calc(100% - 40px);
 }
 
 .input-section textarea {
