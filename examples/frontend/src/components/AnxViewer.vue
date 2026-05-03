@@ -380,11 +380,44 @@ export default {
             this.nodesStructure = markupResult.nodes;
             this.jsonStructure = JSON.stringify(markupResult.nodes, null, 2);
           }
-          this.generateNodeVisualization(this.nodesStructure);
         } else {
           console.error('Error getting markup:', markupResult.error);
           this.rawMarkupOutput = 'Error converting ANX to Markup. Please check your input.';
           this.markupOutput = '<p>Error converting ANX to Markup. Please check your input.</p>';
+        }
+
+        const viewParams = {
+          uuid_page: requestParams.uuid_page,
+          url_tile: requestParams.url_tile,
+          uuid_tile: this.uuidTile,
+          uuid_visitor: requestParams.uuid_visitor
+        };
+
+        const viewResponse = await fetch('http://localhost:7887/api/getView', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(viewParams)
+        });
+
+        const viewResult = await viewResponse.json();
+        if (viewResult.success) {
+          console.log('[AnxViewer] getView API response received, html length:', viewResult.html?.length || 0);
+          this.visualizationHTML = viewResult.html;
+          this.visualizationCSS = viewResult.css;
+          if (viewResult.nodes) {
+            this.nodesStructure = viewResult.nodes;
+            this.jsonStructure = JSON.stringify(viewResult.nodes, null, 2);
+          }
+          this.$nextTick(() => {
+            this.injectVisualizationCSS(viewResult.css);
+            this.injectVisualizationJS();
+            this.executeVisualizationScripts();
+          });
+        } else {
+          console.error('Error getting view:', viewResult.error);
+          this.visualizationHTML = '<div class="anx-error">Error generating view</div>';
         }
       } catch (error) {
         console.error('Error converting ANX:', error);

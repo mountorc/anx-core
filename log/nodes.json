@@ -317077,7 +317077,11 @@
       "title": "一键白底图",
       "type": "object"
     },
-    "data": {},
+    "data": {
+      "value": {
+        "user_prompt": "000"
+      }
+    },
     "logs": [],
     "nodes": [
       {
@@ -317584,7 +317588,7 @@
       "value": ""
     },
     "data": {
-      "value": ""
+      "value": "000"
     },
     "logs": [],
     "nodes": [],
@@ -342597,5 +342601,515 @@
     "logs": [],
     "nodes": [],
     "parentCardKey": "card_1777827321994_7dmoum2f6"
+  },
+  "card_1777828574473_cyylz2911": {
+    "cardKey": "card_1777828574473_cyylz2911",
+    "config": {
+      "kind": "list",
+      "nick": "skills",
+      "title": "技能列表",
+      "itemList": [
+        {
+          "nick": "skillName",
+          "title": "技能名称",
+          "kind": "input",
+          "type": "string",
+          "lineEdit": "2",
+          "defaultValue": ""
+        },
+        {
+          "nick": "level",
+          "title": "熟练度",
+          "kind": "options",
+          "type": "string",
+          "lineEdit": "2",
+          "optionsItem": [
+            {
+              "value": "beginner",
+              "title": "初级"
+            },
+            {
+              "value": "intermediate",
+              "title": "中级"
+            },
+            {
+              "value": "advanced",
+              "title": "高级"
+            },
+            {
+              "value": "expert",
+              "title": "专家"
+            }
+          ]
+        },
+        {
+          "nick": "years",
+          "title": "使用年限",
+          "kind": "input",
+          "type": "number",
+          "lineEdit": "2",
+          "defaultValue": 0
+        }
+      ],
+      "data": [
+        {
+          "skillName": "JavaScript",
+          "level": "advanced",
+          "years": 5
+        },
+        {
+          "skillName": "Vue.js",
+          "level": "intermediate",
+          "years": 3
+        }
+      ],
+      "addButton": {
+        "iitemPre": -1
+      },
+      "moveButton": true
+    },
+    "data": {
+      "data": [
+        {
+          "skillName": "JavaScript",
+          "level": "advanced",
+          "years": 5
+        },
+        {
+          "skillName": "Vue.js",
+          "level": "intermediate",
+          "years": 3
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "uuid_page": "page_1777828574468_hfngm3xkk",
+    "parentCardKey": null
+  },
+  "card_1777828574538_g3f6rocxv": {
+    "cardKey": "card_1777828574538_g3f6rocxv",
+    "config": {
+      "kind": "list",
+      "nick": "skills",
+      "title": "技能列表",
+      "itemList": [
+        {
+          "nick": "skillName",
+          "title": "技能名称",
+          "kind": "input",
+          "type": "string",
+          "lineEdit": "2",
+          "defaultValue": ""
+        },
+        {
+          "nick": "level",
+          "title": "熟练度",
+          "kind": "options",
+          "type": "string",
+          "lineEdit": "2",
+          "optionsItem": [
+            {
+              "value": "beginner",
+              "title": "初级"
+            },
+            {
+              "value": "intermediate",
+              "title": "中级"
+            },
+            {
+              "value": "advanced",
+              "title": "高级"
+            },
+            {
+              "value": "expert",
+              "title": "专家"
+            }
+          ]
+        },
+        {
+          "nick": "years",
+          "title": "使用年限",
+          "kind": "input",
+          "type": "number",
+          "lineEdit": "2",
+          "defaultValue": 0
+        }
+      ],
+      "data": [
+        {
+          "skillName": "JavaScript",
+          "level": "advanced",
+          "years": 5
+        },
+        {
+          "skillName": "Vue.js",
+          "level": "intermediate",
+          "years": 3
+        }
+      ],
+      "addButton": {
+        "iitemPre": -1
+      },
+      "moveButton": true
+    },
+    "data": {
+      "data": [
+        {
+          "skillName": "JavaScript",
+          "level": "advanced",
+          "years": 5
+        },
+        {
+          "skillName": "Vue.js",
+          "level": "intermediate",
+          "years": 3
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "uuid_page": "page_1777828574469_h3qe1pt8j",
+    "parentCardKey": null
+  },
+  "card_1777828764971_9t76p7hzz": {
+    "cardKey": "card_1777828764971_9t76p7hzz",
+    "config": {
+      "kind": "list",
+      "nick": "skills",
+      "title": "技能列表",
+      "itemList": [
+        {
+          "nick": "skillName",
+          "title": "技能名称",
+          "kind": "input",
+          "type": "string",
+          "lineEdit": "2",
+          "defaultValue": ""
+        },
+        {
+          "nick": "level",
+          "title": "熟练度",
+          "kind": "options",
+          "type": "string",
+          "lineEdit": "2",
+          "optionsItem": [
+            {
+              "value": "beginner",
+              "title": "初级"
+            },
+            {
+              "value": "intermediate",
+              "title": "中级"
+            },
+            {
+              "value": "advanced",
+              "title": "高级"
+            },
+            {
+              "value": "expert",
+              "title": "专家"
+            }
+          ]
+        },
+        {
+          "nick": "years",
+          "title": "使用年限",
+          "kind": "input",
+          "type": "number",
+          "lineEdit": "2",
+          "defaultValue": 0
+        }
+      ],
+      "data": [
+        {
+          "skillName": "JavaScript",
+          "level": "advanced",
+          "years": 5
+        },
+        {
+          "skillName": "Vue.js",
+          "level": "intermediate",
+          "years": 3
+        }
+      ],
+      "addButton": {
+        "iitemPre": -1
+      },
+      "moveButton": true
+    },
+    "data": {
+      "data": [
+        {
+          "skillName": "JavaScript",
+          "level": "advanced",
+          "years": 5
+        },
+        {
+          "skillName": "Vue.js",
+          "level": "intermediate",
+          "years": 3
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "uuid_page": "page_1777828764966_w96tupfew",
+    "parentCardKey": null
+  },
+  "card_1777828893311_3myb1xxc8": {
+    "cardKey": "card_1777828893311_3myb1xxc8",
+    "config": {
+      "kind": "list",
+      "nick": "skills",
+      "title": "技能列表",
+      "itemList": [
+        {
+          "nick": "skillName",
+          "title": "技能名称",
+          "kind": "input",
+          "type": "string",
+          "lineEdit": "2",
+          "defaultValue": ""
+        },
+        {
+          "nick": "level",
+          "title": "熟练度",
+          "kind": "options",
+          "type": "string",
+          "lineEdit": "2",
+          "optionsItem": [
+            {
+              "value": "beginner",
+              "title": "初级"
+            },
+            {
+              "value": "intermediate",
+              "title": "中级"
+            },
+            {
+              "value": "advanced",
+              "title": "高级"
+            },
+            {
+              "value": "expert",
+              "title": "专家"
+            }
+          ]
+        },
+        {
+          "nick": "years",
+          "title": "使用年限",
+          "kind": "input",
+          "type": "number",
+          "lineEdit": "2",
+          "defaultValue": 0
+        }
+      ],
+      "data": [
+        {
+          "skillName": "JavaScript",
+          "level": "advanced",
+          "years": 5
+        },
+        {
+          "skillName": "Vue.js",
+          "level": "intermediate",
+          "years": 3
+        }
+      ],
+      "addButton": {
+        "iitemPre": -1
+      },
+      "moveButton": true
+    },
+    "data": {
+      "data": [
+        {
+          "skillName": "JavaScript",
+          "level": "advanced",
+          "years": 5
+        },
+        {
+          "skillName": "Vue.js",
+          "level": "intermediate",
+          "years": 3
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "uuid_page": "page_1777828893307_6w1lcpigk",
+    "parentCardKey": null
+  },
+  "card_1777828893362_58sjnpsdx": {
+    "cardKey": "card_1777828893362_58sjnpsdx",
+    "config": {
+      "kind": "list",
+      "nick": "skills",
+      "title": "技能列表",
+      "itemList": [
+        {
+          "nick": "skillName",
+          "title": "技能名称",
+          "kind": "input",
+          "type": "string",
+          "lineEdit": "2",
+          "defaultValue": ""
+        },
+        {
+          "nick": "level",
+          "title": "熟练度",
+          "kind": "options",
+          "type": "string",
+          "lineEdit": "2",
+          "optionsItem": [
+            {
+              "value": "beginner",
+              "title": "初级"
+            },
+            {
+              "value": "intermediate",
+              "title": "中级"
+            },
+            {
+              "value": "advanced",
+              "title": "高级"
+            },
+            {
+              "value": "expert",
+              "title": "专家"
+            }
+          ]
+        },
+        {
+          "nick": "years",
+          "title": "使用年限",
+          "kind": "input",
+          "type": "number",
+          "lineEdit": "2",
+          "defaultValue": 0
+        }
+      ],
+      "data": [
+        {
+          "skillName": "JavaScript",
+          "level": "advanced",
+          "years": 5
+        },
+        {
+          "skillName": "Vue.js",
+          "level": "intermediate",
+          "years": 3
+        }
+      ],
+      "addButton": {
+        "iitemPre": -1
+      },
+      "moveButton": true
+    },
+    "data": {
+      "data": [
+        {
+          "skillName": "JavaScript",
+          "level": "advanced",
+          "years": 5
+        },
+        {
+          "skillName": "Vue.js",
+          "level": "intermediate",
+          "years": 3
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "uuid_page": "page_1777828893308_03wqguq0v",
+    "parentCardKey": null
+  },
+  "card_1777829089441_ets6t6tsl": {
+    "cardKey": "card_1777829089441_ets6t6tsl",
+    "config": {
+      "kind": "list",
+      "nick": "skills",
+      "title": "技能列表",
+      "itemList": [
+        {
+          "nick": "skillName",
+          "title": "技能名称",
+          "kind": "input",
+          "type": "string",
+          "lineEdit": "2",
+          "defaultValue": ""
+        },
+        {
+          "nick": "level",
+          "title": "熟练度",
+          "kind": "options",
+          "type": "string",
+          "lineEdit": "2",
+          "optionsItem": [
+            {
+              "value": "beginner",
+              "title": "初级"
+            },
+            {
+              "value": "intermediate",
+              "title": "中级"
+            },
+            {
+              "value": "advanced",
+              "title": "高级"
+            },
+            {
+              "value": "expert",
+              "title": "专家"
+            }
+          ]
+        },
+        {
+          "nick": "years",
+          "title": "使用年限",
+          "kind": "input",
+          "type": "number",
+          "lineEdit": "2",
+          "defaultValue": 0
+        }
+      ],
+      "data": [
+        {
+          "skillName": "JavaScript",
+          "level": "advanced",
+          "years": 5
+        },
+        {
+          "skillName": "Vue.js",
+          "level": "intermediate",
+          "years": 3
+        }
+      ],
+      "addButton": {
+        "iitemPre": -1
+      },
+      "moveButton": true
+    },
+    "data": {
+      "data": [
+        {
+          "skillName": "JavaScript",
+          "level": "advanced",
+          "years": 5
+        },
+        {
+          "skillName": "Vue.js",
+          "level": "intermediate",
+          "years": 3
+        }
+      ]
+    },
+    "logs": [],
+    "nodes": [],
+    "uuid_page": "page_1777829089427_mbrf9n7rx",
+    "parentCardKey": null
   }
 }

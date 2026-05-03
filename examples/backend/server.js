@@ -37,6 +37,9 @@ const { logToSystem, logError, readLogs, logReceivedCommand, queryCommandLogs } 
 // 导入 markup service
 const { getPageMarkup } = require('../../core/app/markupService.js');
 
+// 导入 view service
+const { getPageView } = require('../../core/app/viewService.js');
+
 
 
 
@@ -1043,6 +1046,124 @@ app.post('/api/getMarkup', async (req, res) => {
 
   } catch (error) {
     console.error('Error getting markup:', error);
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+app.post('/api/getView', async (req, res) => {
+  try {
+    let { uuid_page, url_tile, uuid_tile, uuid_visitor } = req.body;
+
+    if (!uuid_visitor || !uuid_visitor.trim()) {
+      return res.status(400).json({ success: false, error: 'uuid_visitor parameter is required' });
+    }
+
+    if (!uuid_page && !url_tile && !uuid_tile) {
+      return res.status(400).json({ success: false, error: 'At least one of uuid_page, url_tile, or uuid_tile must be provided' });
+    }
+
+    let resolvedUuidPage = uuid_page;
+
+    if (!resolvedUuidPage) {
+      const visitorPages = getPagesByVisitor(uuid_visitor);
+      
+      if (visitorPages.length > 0) {
+        let filteredPages = visitorPages;
+        
+        if (uuid_tile) {
+          filteredPages = visitorPages.filter(p => p.uuid_tile === uuid_tile);
+        } else if (url_tile) {
+          filteredPages = visitorPages.filter(p => p.url_tile === url_tile);
+        }
+        
+        if (filteredPages.length > 0) {
+          filteredPages.sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+          resolvedUuidPage = filteredPages[0].uuid_page;
+          console.log(`[getView] Found existing page for visitor: ${resolvedUuidPage}`);
+        }
+      }
+
+      if (!resolvedUuidPage) {
+        console.log(`[getView] No existing page found, creating new page...`);
+        
+        let config = null;
+        
+        if (url_tile) {
+          try {
+            const response = await fetch(url_tile);
+            if (response.ok) {
+              const result = await response.json();
+              if (result.config) {
+                config = result.config;
+              }
+            }
+          } catch (error) {
+            console.error(`[getView] Error loading config from url_tile:`, error);
+          }
+        } else if (uuid_tile) {
+          const hubEntry = hubAnxMap.get(uuid_tile);
+          if (hubEntry && hubEntry.anxContent) {
+            config = hubEntry.anxContent;
+          }
+        }
+        
+        if (!config) {
+          return res.status(400).json({ success: false, error: 'Failed to get config from url_tile or uuid_tile' });
+        }
+
+        const anxResult = processAnxContent(config, uuid_tile);
+        if (!anxResult.success) {
+          return res.status(400).json({ success: false, error: anxResult.error });
+        }
+        const anxContent = anxResult.anxContent;
+
+        const cardKey = generateCardKey();
+        resolvedUuidPage = generateUuidPage();
+        const anxHash = generateAnxHash(anxContent);
+
+        let nodesStructure = getNodesByHash(anxHash);
+        if (!nodesStructure) {
+          nodesStructure = anxToNodes(anxContent);
+          setNodesByHash(anxHash, nodesStructure);
+        } else {
+          nodesStructure = JSON.parse(JSON.stringify(nodesStructure));
+        }
+
+        nodesStructure.cardKey = cardKey;
+
+        if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+          updateNodeCardKeys(nodesStructure.nodes, cardKey, resolvedUuidPage);
+        }
+
+        addPage({
+          uuid_page: resolvedUuidPage,
+          uuid_tile: uuid_tile,
+          url_tile: url_tile,
+          uuid_visitor: uuid_visitor,
+          title: nodesStructure.config?.title || '',
+          cardKey: cardKey,
+          nodes: nodesStructure,
+          data: { uuid_visitor }
+        });
+
+        if (nodesStructure.cardKey && nodesStructure.config) {
+          cardStorage.set(nodesStructure.cardKey, nodesStructure.config);
+          setNode(nodesStructure.cardKey, nodesStructure);
+        }
+
+        if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+          storeCardNodes(nodesStructure.nodes, nodesStructure.cardKey);
+        }
+
+        console.log(`[getView] Created new page: ${resolvedUuidPage}`);
+      }
+    }
+
+    const result = await getPageView(resolvedUuidPage);
+    res.json({ success: true, ...result });
+
+  } catch (error) {
+    console.error('Error getting view:', error);
     res.status(400).json({ success: false, error: error.message });
   }
 });

@@ -1,6 +1,17 @@
 [
   {
     "type": "system",
+    "action": "update_node_data",
+    "timestamp": "2026-05-04 01:25:14",
+    "details": {
+      "cardKey": "card_1777800005481_3ewy39nvx",
+      "field": "value",
+      "value": "000"
+    },
+    "message": "[System] update_node_data: {\"cardKey\":\"card_1777800005481_3ewy39nvx\",\"field\":\"value\",\"value\":\"000\"}"
+  },
+  {
+    "type": "system",
     "action": "cli_command_success",
     "timestamp": "2026-05-02 13:39:34",
     "details": {
