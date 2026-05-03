@@ -2146,14 +2146,10 @@ app.get('/api/getCliRecord', (req, res) => {
       logs = JSON.parse(fs.readFileSync(logsPath, 'utf8'));
     }
     
-    // 过滤出CLI相关记录且匹配uuid_page
+    // 过滤匹配该uuid_page的所有记录
     let cliLogs = logs.filter(log => {
-      const isCliCommand = log.commandContent && 
-        log.commandContent.action === 'execute-cli';
-      
       const matchesUuidPage = log.uuid_page === uuid_page;
-      
-      return isCliCommand && matchesUuidPage;
+      return matchesUuidPage;
     });
     
     // 按时间倒序排列
@@ -2168,11 +2164,10 @@ app.get('/api/getCliRecord', (req, res) => {
         uuid_tile: log.uuid_tile,
         url_tile: log.url_tile,
         timestamp: log.timestamp,
+        action: log.commandContent?.action,
         command: log.commandContent?.command,
-        cardKey: log.commandContent?.command ? 
-          log.commandContent.command.split(' ')[1] : null,
-        action: log.commandContent?.command ? 
-          log.commandContent.command.split(' ')[2] : null
+        cardKey: log.commandContent?.cardKey,
+        commandContent: log.commandContent
       }))
     });
   } catch (error) {

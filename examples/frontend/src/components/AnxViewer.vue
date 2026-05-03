@@ -782,7 +782,8 @@ export default {
               cardKey: log.cardKey,
               action: log.action,
               command: log.command,
-              timestamp: log.timestamp
+              timestamp: log.timestamp,
+              commandContent: log.commandContent
             }));
           }
         }
