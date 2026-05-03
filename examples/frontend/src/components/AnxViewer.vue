@@ -244,6 +244,8 @@ export default {
         const uuidPage = await this.getUuidPage();
         await this.loadTileContent(uuidPage);
         await this.convertAnxToMarkup(uuidPage);
+        // 确保在设置了uuid_page后加载历史
+        await this.loadCliHistory(uuidPage);
       } catch (error) {
         console.error('Error initializing tile:', error);
       }
@@ -767,12 +769,13 @@ export default {
       }
     },
 
-    async loadCliHistory() {
-      if (!this.currentUuidPage) return;
+    async loadCliHistory(uuidPage = null) {
+      const pageUuid = uuidPage || this.currentUuidPage;
+      if (!pageUuid) return;
       
       try {
         const response = await fetch(
-          `http://localhost:7887/api/getCliRecord?uuid_page=${this.currentUuidPage}`
+          `http://localhost:7887/api/getCliRecord?uuid_page=${pageUuid}`
         );
         
         if (response.ok) {
