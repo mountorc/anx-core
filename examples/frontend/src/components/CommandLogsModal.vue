@@ -150,6 +150,12 @@
 <script>
 export default {
   name: 'CommandLogsModal',
+  props: {
+    initialUuidPage: {
+      type: String,
+      default: ''
+    }
+  },
   emits: ['close'],
   data() {
     return {
@@ -180,6 +186,9 @@ export default {
     }
   },
   mounted() {
+    if (this.initialUuidPage) {
+      this.filters.uuid_page = this.initialUuidPage;
+    }
     this.queryLogs();
   },
   methods: {

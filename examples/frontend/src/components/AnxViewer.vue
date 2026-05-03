@@ -42,7 +42,10 @@
           <div class="cli-history">
             <div class="history-header">
               <span>历史记录 ({{ cliHistory.length }})</span>
-              <button class="clear-history-btn" @click="cliHistory = []" v-if="cliHistory.length > 0">清除</button>
+              <div class="history-header-actions">
+                <button class="view-command-logs-btn" @click="viewCommandLogs" v-if="currentUuidPage">查看命令日志</button>
+                <button class="clear-history-btn" @click="cliHistory = []" v-if="cliHistory.length > 0">清除</button>
+              </div>
             </div>
             <div class="history-list" v-if="cliHistory.length > 0">
               <div 
@@ -760,6 +763,12 @@ export default {
       }
     },
 
+    viewCommandLogs() {
+      if (this.currentUuidPage) {
+        this.$eventBus.emit('openCommandLogsWithUuidPage', this.currentUuidPage);
+      }
+    },
+
     async showCommandsList() {
       try {
         const response = await fetch('http://localhost:7887/api/cli/commands');
@@ -1041,15 +1050,33 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 0;
   margin-bottom: 8px;
+  padding-bottom: 4px;
   border-bottom: 1px solid #e2e8f0;
-}
-
-.history-header span {
   font-size: 11px;
   color: #94a3b8;
   font-weight: 500;
+}
+
+.history-header-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.view-command-logs-btn {
+  padding: 2px 8px;
+  border: 1px solid #dbeafe;
+  border-radius: 4px;
+  background: #eff6ff;
+  color: #3b82f6;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-command-logs-btn:hover {
+  background: #dbeafe;
+  border-color: #3b82f6;
 }
 
 .clear-history-btn {

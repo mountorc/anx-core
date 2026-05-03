@@ -45,6 +45,7 @@
     <!-- 命令日志弹窗 -->
     <CommandLogsModal
       v-if="showCommandLogsModal"
+      :initialUuidPage="commandLogsInitialUuidPage"
       @close="showCommandLogsModal = false"
     />
     
@@ -79,7 +80,8 @@ export default {
       pageList: [],
       isSidebarHidden: false,
       showCommandLogsModal: false,
-      showSystemLogsModal: false
+      showSystemLogsModal: false,
+      commandLogsInitialUuidPage: ''
     };
   },
   async mounted() {
@@ -124,6 +126,7 @@ export default {
     this.$eventBus.on('loadUrlTile', this.loadUrlTile);
     this.$eventBus.on('refreshWithUuidVisitor', this.refreshWithUuidVisitor);
     this.$eventBus.on('openCommandLogs', this.openCommandLogsModal);
+    this.$eventBus.on('openCommandLogsWithUuidPage', this.openCommandLogsModalWithUuidPage);
     this.$eventBus.on('openLogs', this.openSystemLogsModal);
 
     // 初始化文件上传
@@ -134,6 +137,7 @@ export default {
     this.$eventBus.off('loadUrlTile');
     this.$eventBus.off('refreshWithUuidVisitor');
     this.$eventBus.off('openCommandLogs');
+    this.$eventBus.off('openCommandLogsWithUuidPage');
     this.$eventBus.off('openLogs');
   },
   methods: {
@@ -353,9 +357,15 @@ export default {
     },
     
     openCommandLogsModal() {
+      this.commandLogsInitialUuidPage = '';
       this.showCommandLogsModal = true;
     },
-    
+
+    openCommandLogsModalWithUuidPage(uuidPage) {
+      this.commandLogsInitialUuidPage = uuidPage;
+      this.showCommandLogsModal = true;
+    },
+
     openSystemLogsModal() {
       this.showSystemLogsModal = true;
     },
