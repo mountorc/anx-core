@@ -43,7 +43,9 @@
         
         <div class="json-section">
           <h2>Core Nodes</h2>
-          <pre class="json-output">{{ jsonStructure }}</pre>
+          <div class="json-viewer-container">
+            <JsonViewer :data="nodesStructure" :default-expand="false" />
+          </div>
         </div>
         
         <div class="output-section">
@@ -197,33 +199,17 @@
 
 <script>
 import CommandLogsModal from '../components/CommandLogsModal.vue';
+import JsonViewer from '../components/JsonViewer.vue';
 
 export default {
   name: 'Home',
   components: {
-    CommandLogsModal
+    CommandLogsModal,
+    JsonViewer
   },
   data() {
     return {
-      anxInput: `{
-  "kind": "box",
-  "title": "测试Box组件",
-  "data": [
-    { "name": "张三", "age": 25 },
-    { "name": "李四", "age": 30 }
-  ],
-  "template": "姓名: {{name}}, 年龄: {{age}}",
-  "tapSet": {
-    "title":"detail",
-    "navigateTo": {
-      "path": "/test",
-      "paramMap": {
-        "name": "name",
-        "age": "age"
-      }
-    }
-  }
-}`,
+      anxInput: '',
       hubList: [], // 存储从hub获取的tile case列表
       currentTileUuid: '', // 当前选中的tile uuid
       currentUrlTile: '', // 当前选中的url_tile
@@ -232,6 +218,7 @@ export default {
       outputMode: 'markup', // 输出模式：markup 或 markdown
       pageList: [], // 页面列表
       isSidebarHidden: false, // 侧边栏是否隐藏
+      hasUrlOrUuidTile: false, // 标记URL中是否有tile参数
       boxDatasetTest: `{
   "kind": "box",
   "title": "测试Box组件 dataset",
@@ -310,13 +297,22 @@ export default {
       debounceTimer: null
     }
   },
-  mounted() {
-    this.convertAnxToMarkup();
-    this.loadHubList();
-    this.initFileUploads();
+  async mounted() {
+    // 先检查URL参数并加载对应的tile
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasUrlTile = !!urlParams.get('url_tile');
+    const hasUuidTile = !!urlParams.get('uuid_tile');
+    
+    // 设置标记，告诉loadHubList不要加载默认示例
+    if (hasUrlTile || hasUuidTile) {
+      this.hasUrlOrUuidTile = true;
+    }
     
     // 从URL参数中获取uuid_tile、uuid_visitor等并自动加载对应的tile
-    this.checkUrlForUuidTile();
+    await this.checkUrlForUuidTile();
+    
+    this.loadHubList();
+    this.initFileUploads();
     
     // 监听 message 事件（来自可视化 iframe）
     window.addEventListener('message', this.handleVisualizationMessage);
@@ -346,7 +342,7 @@ export default {
   },
   methods: {
     // 检查URL参数中是否包含uuid_tile、url_tile或uuid_visitor
-    checkUrlForUuidTile() {
+    async checkUrlForUuidTile() {
       const urlParams = new URLSearchParams(window.location.search);
       const uuidTile = urlParams.get('uuid_tile');
       const urlTile = urlParams.get('url_tile');
@@ -362,10 +358,10 @@ export default {
       // url_tile 优先
       if (urlTile) {
         console.log(`[URL] Found url_tile parameter: ${urlTile}`);
-        this.loadUrlTile(urlTile);
+        await this.loadUrlTile(urlTile);
       } else if (uuidTile) {
         console.log(`[URL] Found uuid_tile parameter: ${uuidTile}`);
-        this.loadHubTestCase(uuidTile);
+        await this.loadHubTestCase(uuidTile);
       }
     },
     // 更新URL中的tile信息参数（url_tile优先）
@@ -420,6 +416,12 @@ export default {
           this.hubList = data.data;
           // 通过事件总线通知App组件更新hubList
           this.$eventBus.emit('updateHubList', data.data);
+          
+          // 如果URL中有tile参数，不要加载默认示例
+          if (this.hasUrlOrUuidTile) {
+            console.log(`[URL] Has url_tile or uuid_tile parameter, skipping default tile load`);
+            return;
+          }
           
           // 如果当前没有加载任何tile，自动加载默认示例
           if (!this.currentTileUuid && !this.anxInput.trim()) {
@@ -1948,6 +1950,15 @@ export default {
   background-color: #f8fafc;
   color: #475569;
   line-height: 1.6;
+}
+
+.json-viewer-container {
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+  background-color: #1e1e1e;
+  border-radius: 4px;
+  max-height: 500px;
 }
 
 .input-section textarea {
