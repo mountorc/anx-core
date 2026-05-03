@@ -211,7 +211,7 @@ export default {
       return null;
     },
     async fetchFromUrl(url, uuid_page) {
-      const nodesResponse = await fetch('http://localhost:7887/api/convert-to-nodes', {
+      const nodesResponse = await fetch('http://localhost:7887/api/getNodes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -253,7 +253,7 @@ export default {
       this.visualizationHTML = vizResult.html || '';
     },
     async fetchFromTile(uuid_tile, uuid_page) {
-      const nodesResponse = await fetch('http://localhost:7887/api/convert-to-nodes', {
+      const nodesResponse = await fetch('http://localhost:7887/api/getNodes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

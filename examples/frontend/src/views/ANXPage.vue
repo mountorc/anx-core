@@ -371,7 +371,7 @@ export default {
 
       try {
         // 获取节点结构（通过URL）
-        const nodesResponse = await fetch('http://localhost:7887/api/convert-to-nodes', {
+        const nodesResponse = await fetch('http://localhost:7887/api/getNodes', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -408,7 +408,7 @@ export default {
 
       try {
         // 获取节点结构
-        const nodesResponse = await fetch('http://localhost:7887/api/convert-to-nodes', {
+        const nodesResponse = await fetch('http://localhost:7887/api/getNodes', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

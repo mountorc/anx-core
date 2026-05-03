@@ -88,7 +88,7 @@ export default {
     },
     theme: {
       type: String,
-      default: 'dark',
+      default: 'light',
       validator: (value) => ['dark', 'light'].includes(value)
     }
   },

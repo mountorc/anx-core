@@ -14,7 +14,7 @@
     
     <div class="tile-grid-wrapper">
       <div class="tile-grid">
-        <div v-for="item in filteredItems" :key="item.uuid" class="tile-item" @click="handleSelectTile(item.uuid)">
+        <div v-for="item in filteredItems" :key="item.uuid" class="tile-item" @click="handleSelectTile(item)">
           <div class="tile-icon">
             <div :class="['icon-background', { turan: activeTab === 'turan' }]">{{ item.name.charAt(0) }}</div>
           </div>
@@ -59,8 +59,8 @@ export default {
       }
       return this.hubList.filter(item => item.category !== 'turan').length;
     },
-    handleSelectTile(uuid) {
-      this.$emit('select-tile', uuid);
+    handleSelectTile(item) {
+      this.$emit('select-tile', item);
     }
   }
 }

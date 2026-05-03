@@ -95,9 +95,13 @@ export default {
     toggleAppList() {
       this.isAppListOpen = !this.isAppListOpen;
     },
-    handleSelectTile(uuid) {
+    handleSelectTile(item) {
       this.isAppListOpen = false;
-      this.$eventBus.emit('loadHubTestCase', uuid);
+      if (item.url) {
+        this.$eventBus.emit('loadUrlTile', item.url);
+      } else {
+        this.$eventBus.emit('loadHubTestCase', item.uuid);
+      }
     },
     handleUpdateUuidVisitor() {
       this.$eventBus.emit('refreshWithUuidVisitor', this.uuidVisitor);
