@@ -797,14 +797,24 @@ export default {
     },
     
     openCommandLogItem(uuidRecord) {
+      console.log('🖱️ AnxViewer.vue: openCommandLogItem called with uuidRecord:', uuidRecord);
+      console.log('🖱️ AnxViewer.vue: currentUuidPage:', this.currentUuidPage);
       if (this.currentUuidPage && uuidRecord) {
-        this.$eventBus.emit('openCommandLogsWithUuidPageAndRecord', this.currentUuidPage, uuidRecord);
+        console.log('🖱️ AnxViewer.vue: emitting open-command-logs-with-uuid-page-and-record');
+        this.$emit('open-command-logs-with-uuid-page-and-record', this.currentUuidPage, uuidRecord);
+      } else {
+        console.warn('⚠️ AnxViewer.vue: Missing required data - currentUuidPage or uuidRecord');
       }
     },
     
     viewCommandLogs() {
+      console.log('🖱️ AnxViewer.vue: viewCommandLogs called');
+      console.log('🖱️ AnxViewer.vue: currentUuidPage:', this.currentUuidPage);
       if (this.currentUuidPage) {
-        this.$eventBus.emit('openCommandLogsWithUuidPage', this.currentUuidPage);
+        console.log('🖱️ AnxViewer.vue: emitting open-command-logs-with-uuid-page');
+        this.$emit('open-command-logs-with-uuid-page', this.currentUuidPage);
+      } else {
+        console.warn('⚠️ AnxViewer.vue: currentUuidPage is not set');
       }
     },
 

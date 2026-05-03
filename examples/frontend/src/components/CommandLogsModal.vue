@@ -190,6 +190,10 @@ export default {
     }
   },
   mounted() {
+    console.log('📋 CommandLogsModal.vue: mounted');
+    console.log('📋 CommandLogsModal.vue: initialUuidPage:', this.initialUuidPage);
+    console.log('📋 CommandLogsModal.vue: initialUuidRecord:', this.initialUuidRecord);
+    
     if (this.initialUuidPage) {
       this.filters.uuid_page = this.initialUuidPage;
     }

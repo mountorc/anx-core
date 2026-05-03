@@ -40,6 +40,8 @@
       :page-list="pageList"
       :current-uuid-page.sync="currentUuidPage"
       @update:page-list="pageList = $event"
+      @open-command-logs-with-uuid-page="openCommandLogsModalWithUuidPage"
+      @open-command-logs-with-uuid-page-and-record="openCommandLogsModalWithUuidPageAndRecord"
     />
     
     <!-- 命令日志弹窗 -->
@@ -363,19 +365,31 @@ export default {
     openCommandLogsModal() {
       this.commandLogsInitialUuidPage = '';
       this.commandLogsInitialUuidRecord = '';
-      this.showCommandLogsModal = true;
+      this.$nextTick(() => {
+        this.showCommandLogsModal = true;
+      });
     },
 
     openCommandLogsModalWithUuidPage(uuidPage) {
+      console.log('🔓 Home.vue: openCommandLogsModalWithUuidPage called with uuidPage:', uuidPage);
       this.commandLogsInitialUuidPage = uuidPage;
       this.commandLogsInitialUuidRecord = '';
-      this.showCommandLogsModal = true;
+      this.$nextTick(() => {
+        this.showCommandLogsModal = true;
+        console.log('✅ Home.vue: showCommandLogsModal set to:', this.showCommandLogsModal);
+      });
     },
 
     openCommandLogsModalWithUuidPageAndRecord(uuidPage, uuidRecord) {
+      console.log('🔓 Home.vue: openCommandLogsModalWithUuidPageAndRecord called:', { uuidPage, uuidRecord });
       this.commandLogsInitialUuidPage = uuidPage;
       this.commandLogsInitialUuidRecord = uuidRecord;
-      this.showCommandLogsModal = true;
+      
+      // 使用nextTick确保DOM更新
+      this.$nextTick(() => {
+        this.showCommandLogsModal = true;
+        console.log('✅ Home.vue: showCommandLogsModal set to:', this.showCommandLogsModal);
+      });
     },
 
     openSystemLogsModal() {
