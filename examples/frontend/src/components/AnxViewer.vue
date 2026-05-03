@@ -396,6 +396,14 @@ export default {
 
     async generateNodeVisualization(node) {
       try {
+        console.log('[AnxViewer] generateNodeVisualization called with node:', node ? `kind=${node.config?.kind}` : 'null');
+        
+        if (!node || !node.config || !node.config.kind) {
+          console.error('[AnxViewer] Invalid node structure for visualization');
+          this.visualizationHTML = '<div class="anx-error">Invalid node structure</div>';
+          return;
+        }
+
         const response = await fetch('http://localhost:7887/api/visualize-node', {
           method: 'POST',
           headers: {
@@ -410,6 +418,8 @@ export default {
         }
 
         const result = await response.json();
+        console.log('[AnxViewer] visualize-node API response received, html length:', result.html?.length || 0);
+        
         this.visualizationHTML = result.html;
         this.visualizationCSS = result.css;
 
