@@ -46,6 +46,7 @@
     <CommandLogsModal
       v-if="showCommandLogsModal"
       :initialUuidPage="commandLogsInitialUuidPage"
+      :initialUuidRecord="commandLogsInitialUuidRecord"
       @close="showCommandLogsModal = false"
     />
     
@@ -81,7 +82,8 @@ export default {
       isSidebarHidden: false,
       showCommandLogsModal: false,
       showSystemLogsModal: false,
-      commandLogsInitialUuidPage: ''
+      commandLogsInitialUuidPage: '',
+      commandLogsInitialUuidRecord: ''
     };
   },
   async mounted() {
@@ -127,6 +129,7 @@ export default {
     this.$eventBus.on('refreshWithUuidVisitor', this.refreshWithUuidVisitor);
     this.$eventBus.on('openCommandLogs', this.openCommandLogsModal);
     this.$eventBus.on('openCommandLogsWithUuidPage', this.openCommandLogsModalWithUuidPage);
+    this.$eventBus.on('openCommandLogsWithUuidPageAndRecord', this.openCommandLogsModalWithUuidPageAndRecord);
     this.$eventBus.on('openLogs', this.openSystemLogsModal);
 
     // 初始化文件上传
@@ -138,6 +141,7 @@ export default {
     this.$eventBus.off('refreshWithUuidVisitor');
     this.$eventBus.off('openCommandLogs');
     this.$eventBus.off('openCommandLogsWithUuidPage');
+    this.$eventBus.off('openCommandLogsWithUuidPageAndRecord');
     this.$eventBus.off('openLogs');
   },
   methods: {
@@ -358,11 +362,19 @@ export default {
     
     openCommandLogsModal() {
       this.commandLogsInitialUuidPage = '';
+      this.commandLogsInitialUuidRecord = '';
       this.showCommandLogsModal = true;
     },
 
     openCommandLogsModalWithUuidPage(uuidPage) {
       this.commandLogsInitialUuidPage = uuidPage;
+      this.commandLogsInitialUuidRecord = '';
+      this.showCommandLogsModal = true;
+    },
+
+    openCommandLogsModalWithUuidPageAndRecord(uuidPage, uuidRecord) {
+      this.commandLogsInitialUuidPage = uuidPage;
+      this.commandLogsInitialUuidRecord = uuidRecord;
       this.showCommandLogsModal = true;
     },
 

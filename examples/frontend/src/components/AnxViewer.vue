@@ -52,7 +52,7 @@
                 v-for="(item, index) in cliHistory" 
                 :key="index" 
                 class="history-item"
-                @click="cliCommand = item.command"
+                @click="openCommandLogItem(item.uuid)"
               >
                 <span class="history-cardKey">{{ item.cardKey }}</span>
                 <span class="history-action">{{ item.action }}</span>
@@ -782,6 +782,7 @@ export default {
           const data = await response.json();
           if (data.success) {
             this.cliHistory = data.logs.map(log => ({
+              uuid: log.uuid,
               cardKey: log.cardKey,
               action: log.action,
               command: log.command,
@@ -792,6 +793,12 @@ export default {
         }
       } catch (error) {
         console.error('Error loading CLI history:', error);
+      }
+    },
+    
+    openCommandLogItem(uuidRecord) {
+      if (this.currentUuidPage && uuidRecord) {
+        this.$eventBus.emit('openCommandLogsWithUuidPageAndRecord', this.currentUuidPage, uuidRecord);
       }
     },
     

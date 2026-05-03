@@ -154,6 +154,10 @@ export default {
     initialUuidPage: {
       type: String,
       default: ''
+    },
+    initialUuidRecord: {
+      type: String,
+      default: ''
     }
   },
   emits: ['close'],
@@ -210,6 +214,21 @@ export default {
         
         if (data.success) {
           this.logs = data.list || [];
+          
+          // 如果有 initialUuidRecord，自动选中该记录
+          if (this.initialUuidRecord && this.logs.length > 0) {
+            const recordIndex = this.logs.findIndex(log => log.uuid === this.initialUuidRecord);
+            if (recordIndex !== -1) {
+              this.selectLog(recordIndex);
+              // 等待DOM更新后滚动到选中的元素
+              this.$nextTick(() => {
+                const logItems = this.$el.querySelectorAll('.log-item');
+                if (logItems[recordIndex]) {
+                  logItems[recordIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+              });
+            }
+          }
         } else {
           this.error = data.error || '查询失败';
         }
