@@ -2127,6 +2127,63 @@ app.get('/api/command-logs', (req, res) => {
   }
 });
 
+// API endpoint for getting CLI records specifically
+app.get('/api/getCliRecord', (req, res) => {
+  try {
+    const { uuid_page } = req.query;
+    
+    if (!uuid_page) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'uuid_page is required' 
+      });
+    }
+    
+    let logs = [];
+    const logsPath = path.join(__dirname, '../../log/commands-logs.json');
+    
+    if (fs.existsSync(logsPath)) {
+      logs = JSON.parse(fs.readFileSync(logsPath, 'utf8'));
+    }
+    
+    // 过滤出CLI相关记录且匹配uuid_page
+    let cliLogs = logs.filter(log => {
+      const isCliCommand = log.commandContent && 
+        log.commandContent.action === 'execute-cli';
+      
+      const matchesUuidPage = log.uuid_page === uuid_page;
+      
+      return isCliCommand && matchesUuidPage;
+    });
+    
+    // 按时间倒序排列
+    cliLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    res.json({
+      success: true,
+      logs: cliLogs.map(log => ({
+        uuid: log.uuid,
+        uuid_page: log.uuid_page,
+        uuid_visitor: log.uuid_visitor,
+        uuid_tile: log.uuid_tile,
+        url_tile: log.url_tile,
+        timestamp: log.timestamp,
+        command: log.commandContent?.command,
+        cardKey: log.commandContent?.command ? 
+          log.commandContent.command.split(' ')[1] : null,
+        action: log.commandContent?.command ? 
+          log.commandContent.command.split(' ')[2] : null
+      }))
+    });
+  } catch (error) {
+    console.error('Error reading CLI records:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to read CLI records' 
+    });
+  }
+});
+
 // API endpoint for getting dataset root (handles url_dataset requests)
 app.get('/dataset', (req, res) => {
   try {

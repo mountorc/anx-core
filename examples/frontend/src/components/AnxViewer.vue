@@ -225,9 +225,13 @@ export default {
       immediate: true
     },
     currentUuidPage: {
-      handler() {
+      handler(newUuidPage) {
         this.convertAnxToMarkup();
-      }
+        if (newUuidPage) {
+          this.loadCliHistory();
+        }
+      },
+      immediate: true
     }
   },
   methods: {
@@ -763,6 +767,30 @@ export default {
       }
     },
 
+    async loadCliHistory() {
+      if (!this.currentUuidPage) return;
+      
+      try {
+        const response = await fetch(
+          `http://localhost:7887/api/getCliRecord?uuid_page=${this.currentUuidPage}`
+        );
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            this.cliHistory = data.logs.map(log => ({
+              cardKey: log.cardKey,
+              action: log.action,
+              command: log.command,
+              timestamp: log.timestamp
+            }));
+          }
+        }
+      } catch (error) {
+        console.error('Error loading CLI history:', error);
+      }
+    },
+    
     viewCommandLogs() {
       if (this.currentUuidPage) {
         this.$eventBus.emit('openCommandLogsWithUuidPage', this.currentUuidPage);
