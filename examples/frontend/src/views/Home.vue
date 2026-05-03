@@ -41,17 +41,31 @@
       :current-uuid-page.sync="currentUuidPage"
       @update:page-list="pageList = $event"
     />
+    
+    <!-- 命令日志弹窗 -->
+    <CommandLogsModal
+      v-if="showCommandLogsModal"
+      @close="showCommandLogsModal = false"
+    />
+    
+    <!-- 系统日志弹窗 -->
+    <SystemLogsModal
+      v-if="showSystemLogsModal"
+      @close="showSystemLogsModal = false"
+    />
   </div>
 </template>
 
 <script>
 import CommandLogsModal from '../components/CommandLogsModal.vue';
+import SystemLogsModal from '../components/SystemLogsModal.vue';
 import AnxViewer from '../components/AnxViewer.vue';
 
 export default {
   name: 'Home',
   components: {
     CommandLogsModal,
+    SystemLogsModal,
     AnxViewer
   },
   data() {
@@ -64,7 +78,8 @@ export default {
       currentUuidPage: '',
       pageList: [],
       isSidebarHidden: false,
-      showCommandLogsModal: false
+      showCommandLogsModal: false,
+      showSystemLogsModal: false
     };
   },
   async mounted() {
@@ -109,6 +124,7 @@ export default {
     this.$eventBus.on('loadUrlTile', this.loadUrlTile);
     this.$eventBus.on('refreshWithUuidVisitor', this.refreshWithUuidVisitor);
     this.$eventBus.on('openCommandLogs', this.openCommandLogsModal);
+    this.$eventBus.on('openLogs', this.openSystemLogsModal);
 
     // 初始化文件上传
     this.initFileUploads();
@@ -118,6 +134,7 @@ export default {
     this.$eventBus.off('loadUrlTile');
     this.$eventBus.off('refreshWithUuidVisitor');
     this.$eventBus.off('openCommandLogs');
+    this.$eventBus.off('openLogs');
   },
   methods: {
     async loadHubList() {
@@ -337,6 +354,10 @@ export default {
     
     openCommandLogsModal() {
       this.showCommandLogsModal = true;
+    },
+    
+    openSystemLogsModal() {
+      this.showSystemLogsModal = true;
     },
     
     initFileUploads() {

@@ -41,8 +41,7 @@ async function getPageMarkup(uuid_page) {
   const markup = await nodesToMarkup(nodesStructure);
   return {
     markup,
-    uuid_page: uuid_page,
-    nodes: nodesStructure
+    uuid_page: uuid_page
   };
 }
 

@@ -700,187 +700,52 @@ app.post('/api/getNodes', async (req, res) => {
     
     // 必须提供 uuid_page
     if (!uuid_page || !uuid_page.trim()) {
-      return res.status(400).json({ error: 'uuid_page parameter is required' });
+      return res.status(400).json({ success: false, error: 'uuid_page parameter is required' });
     }
     
     // 必须提供 uuid_visitor
     if (!uuid_visitor || !uuid_visitor.trim()) {
-      return res.status(400).json({ error: 'uuid_visitor parameter is required' });
+      return res.status(400).json({ success: false, error: 'uuid_visitor parameter is required' });
     }
     
-    // 如果提供了 uuid_page，先检查是否有已保存的页面实例
-    if (uuid_page) {
-      const existingPage = getPageWithNodes(uuid_page);
-      if (existingPage && existingPage.nodes) {
-        console.log(`[Page Manager] Loading existing page instance: ${uuid_page}`);
-        
-        // 深拷贝节点结构，避免直接修改
-        const nodesStructure = JSON.parse(JSON.stringify(existingPage.nodes));
-        
-        // 如果是表单节点，从根节点的 data.value 中为子字段节点填充正确的值
-        if (nodesStructure.config && nodesStructure.config.kind === 'form' && 
-            nodesStructure.data && nodesStructure.data.value && 
-            nodesStructure.nodes && nodesStructure.nodes.length > 0) {
-          const formData = nodesStructure.data.value;
-          nodesStructure.nodes.forEach(fieldNode => {
-            const fieldNick = fieldNode.config && fieldNode.config.nick;
-            if (fieldNick && formData[fieldNick] !== undefined) {
-              fieldNode.data = fieldNode.data || {};
-              fieldNode.data.value = formData[fieldNick];
-            }
-          });
-        }
-        
-        // 递归从 nodeStorage 加载所有节点的动态数据（优先使用存储中的最新数据）
-        function loadNodeData(node) {
-          const storedNode = getNode(node.cardKey);
-          if (storedNode && storedNode.data) {
-            // 优先使用 nodeStorage 中的最新数据
-            node.data = { ...storedNode.data };
+    const existingPage = getPageWithNodes(uuid_page);
+    if (existingPage && existingPage.nodes) {
+      console.log(`[Page Manager] Loading existing page instance: ${uuid_page}`);
+      
+      const nodesStructure = JSON.parse(JSON.stringify(existingPage.nodes));
+      
+      if (nodesStructure.config && nodesStructure.config.kind === 'form' && 
+          nodesStructure.data && nodesStructure.data.value && 
+          nodesStructure.nodes && nodesStructure.nodes.length > 0) {
+        const formData = nodesStructure.data.value;
+        nodesStructure.nodes.forEach(fieldNode => {
+          const fieldNick = fieldNode.config && fieldNode.config.nick;
+          if (fieldNick && formData[fieldNick] !== undefined) {
+            fieldNode.data = fieldNode.data || {};
+            fieldNode.data.value = formData[fieldNick];
           }
-          if (node.nodes && node.nodes.length > 0) {
-            node.nodes.forEach(childNode => loadNodeData(childNode));
-          }
-        }
-        loadNodeData(nodesStructure);
-        
-        // 返回已保存的节点结构（包含动态数据）
-        res.json({ nodes: nodesStructure, isExisting: true });
-        return;
-      }
-    }
-    
-    // 如果提供了 url_tile，从指定URL获取配置
-    if (url_tile) {
-      try {
-        const response = await fetch(url_tile);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const result = await response.json();
-        
-        // 检查是否有有效的配置
-        if (!result || (!result.config && !result.kind && !result.anxContent)) {
-          console.error(`Error loading tile config from URL ${url_tile}: No valid config found`);
-          return res.status(400).json({ 
-            success: false, 
-            error: '无法获取有效的 tile 配置，请检查 URL 是否正确或稍后重试' 
-          });
-        }
-        
-        const config = result.config || result;
-        // 支持两种格式：
-        // 1. {uuid: "...", anxContent: {...}}
-        // 2. {kind: "...", kinds: [...]} - 直接是 anxContent
-        if (config.anxContent) {
-          anxContent = config.anxContent;
-          uuid_tile = config.uuid || url_tile;
-        } else if (config.kind) {
-          // 直接是 anxContent 格式
-          anxContent = config;
-          uuid_tile = null; // 不设置 uuid_tile，让 processAnxContent 使用 anxContent
-        } else {
-          throw new Error('Invalid tile config format');
-        }
-      } catch (error) {
-        console.error(`Error loading tile config from URL ${url_tile}:`, error);
-        return res.status(400).json({ 
-          success: false, 
-          error: '无法获取有效的 tile 配置，请检查 URL 是否正确或稍后重试' 
         });
       }
-    } else if (uuid_tile && !hubAnxMap.has(uuid_tile)) {
-      // 如果提供了 uuid_tile 但本地没有找到，尝试从 URL 动态加载
-      await loadTileFromUrl(uuid_tile);
-    }
-    
-    // 使用 tile.js 模块处理 anxContent
-    const anxResult = processAnxContent(anxContent, uuid_tile);
-    if (!anxResult.success) {
-      return res.status(404).json({ error: anxResult.error });
-    }
-    anxContent = anxResult.anxContent;
-    
-    // 生成唯一的 cardKey
-    const cardKey = generateCardKey();
-    
-    // 生成ANX内容的哈希值
-    const anxHash = generateAnxHash(anxContent);
-    
-    // 检查是否已经为相同的ANX内容生成过节点结构（模板）
-    let nodesStructure = getNodesByHash(anxHash);
-    
-    if (!nodesStructure) {
-      // 首次生成节点结构（模板）
-      nodesStructure = anxToNodes(anxContent);
-      // 存储到哈希映射中（模板）
-      setNodesByHash(anxHash, nodesStructure);
-    } else {
-      // 深拷贝模板，创建新实例
-      nodesStructure = JSON.parse(JSON.stringify(nodesStructure));
-    }
-    
-    // 设置新的 cardKey
-    nodesStructure.cardKey = cardKey;
-    nodesStructure.uuid_page = uuid_page;
-    
-    // 更新所有子节点的 cardKey 和 parentCardKey
-    if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
-      updateNodeCardKeys(nodesStructure.nodes, cardKey, uuid_page);
-    }
-    
-    // 检查根节点是否有存储的数据（从持久化存储）
-    const storedRootNode = getNode(cardKey);
-    if (storedRootNode) {
-      if (storedRootNode.data) {
-        nodesStructure.data = { ...nodesStructure.data, ...storedRootNode.data };
+      
+      function loadNodeData(node) {
+        const storedNode = getNode(node.cardKey);
+        if (storedNode && storedNode.data) {
+          node.data = { ...storedNode.data };
+        }
+        if (node.nodes && node.nodes.length > 0) {
+          node.nodes.forEach(childNode => loadNodeData(childNode));
+        }
       }
-      if (storedRootNode.config) {
-        nodesStructure.config = { ...nodesStructure.config, ...storedRootNode.config };
-      }
+      loadNodeData(nodesStructure);
+      
+      res.json({ success: true, nodes: nodesStructure, uuid_page: uuid_page, isExisting: true });
+      return;
     }
     
-    // 更新子节点，使用存储中的数据
-    if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
-      updateNodesWithStoredData(nodesStructure.nodes);
-    }
-    
-    // 处理根节点和子节点的 dataset
-    await processNodeDataset(nodesStructure);
-    
-    // 设置页面状态
-    const pageData = {};
-    if (nodesStructure.config?.kind === 'form') {
-      pageData.submitStatus = 'pending';
-    }
-    
-    // 保存页面信息到 pages.json（包含完整节点结构）
-    addPage({
-      uuid_page: uuid_page,
-      uuid_tile: uuid_tile,
-      url_tile: url_tile,
-      uuid_visitor: uuid_visitor,
-      title: nodesStructure.config?.title || '',
-      cardKey: cardKey,
-      nodes: nodesStructure,
-      data: { ...pageData, uuid_visitor: uuid_visitor }
-    });
-    
-    // 存储根节点到 node.js（持久化）
-    if (nodesStructure.cardKey && nodesStructure.config) {
-      cardStorage.set(nodesStructure.cardKey, nodesStructure.config);
-      setNode(nodesStructure.cardKey, nodesStructure);
-    }
-    
-    // 存储子节点，传递根节点的 cardKey 作为父节点
-    if (nodesStructure.nodes && nodesStructure.nodes.length > 0) {
-      storeCardNodes(nodesStructure.nodes, nodesStructure.cardKey);
-    }
-    
-    res.json({ nodes: nodesStructure, uuid_page: uuid_page, isExisting: false });
+    return res.status(404).json({ success: false, error: 'Page not found or has no nodes' });
   } catch (error) {
     console.error('Error converting ANX to nodes structure:', error);
-    res.status(400).json({ error: 'Invalid ANX content. Please check your input.' });
+    res.status(400).json({ success: false, error: 'Invalid ANX content. Please check your input.' });
   }
 });
 

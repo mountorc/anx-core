@@ -44,8 +44,7 @@ async function getPageView(uuid_page) {
   return {
     html,
     css,
-    uuid_page: uuid_page,
-    nodes: nodesStructure
+    uuid_page: uuid_page
   };
 }
 

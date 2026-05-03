@@ -1,5 +1,5 @@
 <template>
-  <div class="command-logs-modal" v-if="isVisible">
+  <div class="command-logs-modal">
     <div class="modal-overlay" @click="close"></div>
     <div class="modal-container">
       <div class="modal-header">
@@ -150,12 +150,6 @@
 <script>
 export default {
   name: 'CommandLogsModal',
-  props: {
-    isVisible: {
-      type: Boolean,
-      default: false
-    }
-  },
   emits: ['close'],
   data() {
     return {
@@ -181,14 +175,12 @@ export default {
     }
   },
   watch: {
-    isVisible(newVal) {
-      if (newVal) {
-        this.queryLogs();
-      }
-    },
     logs() {
       this.selectedIndex = null;
     }
+  },
+  mounted() {
+    this.queryLogs();
   },
   methods: {
     async queryLogs() {

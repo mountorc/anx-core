@@ -376,10 +376,6 @@ export default {
         if (markupResult.success) {
           this.rawMarkupOutput = markupResult.markup;
           this.markupOutput = this.convertMarkupToHtml(markupResult.markup);
-          if (markupResult.nodes) {
-            this.nodesStructure = markupResult.nodes;
-            this.jsonStructure = JSON.stringify(markupResult.nodes, null, 2);
-          }
         } else {
           console.error('Error getting markup:', markupResult.error);
           this.rawMarkupOutput = 'Error converting ANX to Markup. Please check your input.';
@@ -406,10 +402,6 @@ export default {
           console.log('[AnxViewer] getView API response received, html length:', viewResult.html?.length || 0);
           this.visualizationHTML = viewResult.html;
           this.visualizationCSS = viewResult.css;
-          if (viewResult.nodes) {
-            this.nodesStructure = viewResult.nodes;
-            this.jsonStructure = JSON.stringify(viewResult.nodes, null, 2);
-          }
           this.$nextTick(() => {
             this.injectVisualizationCSS(viewResult.css);
             this.injectVisualizationJS();
