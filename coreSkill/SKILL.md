@@ -1,16 +1,17 @@
 ---
 name: "coreSkill"
-description: "Guide for filling forms via ANX Core. Step 1: Get markup by uuid_tile and remember uuid_page. Step 2: Use uuid_page to maintain stable page instance. Step 3: Generate and execute CLI commands to fill form fields. Invoke when user needs to fill a form using ANX Core."
+description: "Guide for interacting with ANX Core via APIs. Step 1: Get markup by uuid_tile and remember uuid_page. Step 2: Use uuid_page to maintain stable page instance. Step 3: Execute CLI commands or use node APIs to interact with form fields. Also supports command logs querying for debugging."
 ---
 
-# ANX Core Form Filling Guide
+# ANX Core API Guide
 
 ## Task Overview
 
-This is a **three-step form filling task**:
-1. **Step 1**: Get form markup via `uuid_tile` or `url_tile`
+This is a **multi-step form interaction task**:
+1. **Step 1**: Get form markup via `uuid_tile` or `url_tile` and remember `uuid_page`
 2. **Step 2**: **Extract and store `uuid_page`** - CRITICAL for maintaining stable page instance
-3. **Step 3**: Use `uuid_page` when accessing the same page and execute CLI commands to fill form fields
+3. **Step 3**: Use node APIs or execute CLI commands to interact with form fields
+4. **Step 4** (Optional): Query command logs for debugging
 
 ---
 
@@ -28,239 +29,444 @@ This is a **three-step form filling task**:
 
 ---
 
-## Step 1: Get Markup
+## Core API Endpoints
+
+### 1. Get Markup - `/api/getMarkup`
 
 Get structured form markup via `uuid_tile` or `url_tile`:
 
+**Request:**
 ```javascript
-async function getTileMarkup(uuid_tile, uuid_visitor = null, uuid_page = null) {
-  const params = new URLSearchParams({ uuid_tile });
-  if (uuid_visitor) {
-    params.set('uuid_visitor', uuid_visitor);
-  }
-  // Pass uuid_page to access the same page instance
-  if (uuid_page) {
-    params.set('uuid_page', uuid_page);
-  }
-  const response = await fetch(`http://host.docker.internal:7887/api/markup?${params}`);
-  const markup = await response.text();
-  
-  // Extract uuid_page from response (CRUCIAL!)
-  const uuidPageMatch = markup.match(/^uuid_page:\s*(\S+)/);
-  const extractedUuidPage = uuidPageMatch ? uuidPageMatch[1] : null;
-  
-  return { markup, uuid_page: extractedUuidPage };
+POST http://localhost:7887/api/getMarkup
+Content-Type: application/json
+
+{
+  "uuid_tile": "uuid-of-tile",        // Required (or url_tile)
+  "url_tile": "http://...",           // Required (or uuid_tile)
+  "uuid_visitor": "visitor-uuid",     // Optional
+  "uuid_page": "page-uuid"            // Optional (for same instance)
 }
-
-// Example: Get clothing image processing form (first time)
-const uuid = '505619db-c096-46b8-8a1d-0c7754fc9219';
-const uuid_visitor = '8393667a-7a2a-48f3-bc2c-c7a54b41292d';
-const { markup, uuid_page } = await getTileMarkup(uuid, uuid_visitor);
-
-// Store uuid_page for subsequent requests!
-console.log('Page ID to remember:', uuid_page);
-console.log(markup);
 ```
 
-### Using url_tile
-
-```javascript
-async function getTileMarkupByUrl(url_tile, uuid_visitor = null, uuid_page = null) {
-  const params = new URLSearchParams({ url_tile });
-  if (uuid_visitor) {
-    params.set('uuid_visitor', uuid_visitor);
-  }
-  if (uuid_page) {
-    params.set('uuid_page', uuid_page);
-  }
-  const response = await fetch(`http://host.docker.internal:7887/api/markup?${params}`);
-  const markup = await response.text();
-  
-  // Extract uuid_page
-  const uuidPageMatch = markup.match(/^uuid_page:\s*(\S+)/);
-  const extractedUuidPage = uuidPageMatch ? uuidPageMatch[1] : null;
-  
-  return { markup, uuid_page: extractedUuidPage };
+**Response:**
+```json
+{
+  "success": true,
+  "markup": "form markup content...",
+  "uuid_page": "page_xxx"
 }
-
-// Example: Get form via URL
-const url = 'http://localhost:2427/ability/anx/config/turan.face_swap@1.0.0';
-const { markup: urlMarkup, uuid_page: urlUuidPage } = await getTileMarkupByUrl(url);
-```
-
-### Markup Structure Example
-
-```markdown
-uuid_page: page_1776611783355_6f99p6d68
-uuid_visitor: 8393667a-7a2a-48f3-bc2c-c7a54b41292d
-
-<x form card_1776755731076_8546>
-## Clothing Image Processing
-
-<x textarea card_1776755731076_7529>
-**system_prompt:**
-```
-Process the clothing image with refinement...
-```
-</x>
-
-<x input card_1776755731076_4163>
-**display_style:** Fashion style
-</x>
-
-<x options card_1776755731076_5924>
-**aspect_ratio:**
-<x 0 randomize>随机</x>
-<x 1 1:1 selected>1:1</x>
-</x>
-
-<x button card_1776755731076_9965>
-[Submit](#)
-</x>
-</x>
-```
-
-### Field Identification
-
-Identify fields to fill from markup:
-- `uuid_page`: **page_1776611783355_6f99p6d68** (REQUIRED for subsequent requests)
-- `system_prompt` - textarea type
-- `display_style` - input type
-- `aspect_ratio` - options type (selected: 1:1)
-- `seed` - input type
-
----
-
-## Step 2: Maintain Page Instance with uuid_page
-
-**Always reuse the same `uuid_page`** when interacting with the same form:
-
-```javascript
-// First visit - get and store uuid_page
-const { markup: firstMarkup, uuid_page: myPageId } = await getTileMarkup(uuid, uuid_visitor);
-
-// Later - access the SAME page instance
-const { markup: samePageMarkup } = await getTileMarkup(uuid, uuid_visitor, myPageId);
-// This returns the exact same page with the same cardKeys and persisted data
 ```
 
 ---
 
-## Step 3: Execute CLI to Fill Form
+### 2. Get Nodes - `/api/getNodes`
 
-### Generate CLI Command
+Get structured nodes from ANX content:
 
-Generate `set_form` command based on fields:
-
-```bash
-anx <cardKey> set_form '{"field1":"value1","field2":"value2",...}'
-```
-
-### Execute CLI
-
+**Request:**
 ```javascript
-async function executeCli(command) {
-  const response = await fetch('http://host.docker.internal:7887/api/execute-cli', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ command })
-  });
-  return await response.json();
-}
+POST http://localhost:7887/api/getNodes
+Content-Type: application/json
 
-// Fill form fields
-await executeCli('anx card_1776755731076_8546 set_form \'{"seed":99999,"system_prompt":"Custom prompt"}\'');
+{
+  "uuid_tile": "uuid-of-tile",        // Required (or url_tile)
+  "url_tile": "http://...",           // Required (or uuid_tile)
+  "anxContent": {},                   // Optional ANX content object
+  "uuid_page": "page-uuid",           // Optional
+  "uuid_visitor": "visitor-uuid"      // Optional
+}
 ```
 
-### CLI Format Reference
+**Response:**
+```json
+{
+  "success": true,
+  "nodes": {
+    "cardKey": {
+      "config": {},
+      "data": {},
+      "children": []
+    }
+  }
+}
+```
 
-| Format | Description | Example |
-|--------|-------------|---------|
+---
+
+### 3. Execute CLI - `/api/execute-cli`
+
+Execute CLI commands to interact with forms:
+
+**Request:**
+```javascript
+POST http://localhost:7887/api/execute-cli
+Content-Type: application/json
+
+{
+  "command": "anx card_xxx set_form '{\"field\":\"value\"}'",
+  "uuid_page": "page-uuid",           // Required for page-specific commands
+  "uuid_visitor": "visitor-uuid",     // Optional
+  "uuid_tile": "uuid-of-tile",        // Optional
+  "url_tile": "http://..."            // Optional
+}
+```
+
+**CLI Commands:**
+
+| Command | Description | Example |
+|---------|-------------|---------|
 | `anx <cardKey> set_form '{"field":"value"}'` | Batch update fields | `anx card_xxx set_form '{"seed":123}'` |
 | `anx <cardKey> set_form --replace '{...}'` | Replace all fields | `anx card_xxx set_form --replace '{"seed":123}'` |
 | `anx <cardKey> get_node` | Get current node data | `anx card_xxx get_node` |
 | `anx <cardKey> fill "value"` | Fill a single field | `anx card_xxx fill "hello"` |
-| `anx <cardKey> tap` | Click button / trigger action (cross-platform) | `anx card_xxx tap` |
+| `anx <cardKey> tap` | Click button / trigger action | `anx card_xxx tap` |
+
+**Response:**
+```json
+{
+  "success": true,
+  "cardKey": "card_xxx",
+  "action": "set_form",
+  "result": "success",
+  "data": {"field1": "value1"}
+}
+```
 
 ---
 
-## Complete Form Filling Example
+### 4. Get Node Data - `/api/get-node-data`
 
+Get data from a specific node:
+
+**Request:**
 ```javascript
-// ========== Step 1: Get Markup and uuid_page ==========
-const uuid = '505619db-c096-46b8-8a1d-0c7754fc9219';
-const uuid_visitor = '8393667a-7a2a-48f3-bc2c-c7a54b41292d';
-const { markup, uuid_page } = await getTileMarkup(uuid, uuid_visitor);
+POST http://localhost:7887/api/get-node-data
+Content-Type: application/json
 
-// Parse markup to extract:
-// - uuid_page: page_1776611783355_6f99p6d68 (STORE THIS!)
-// - Form cardKey: card_1776755731076_8546
-// - Fields: system_prompt, display_style, aspect_ratio, seed
-
-// ========== Step 2: Later - Access Same Page ==========
-// Use the stored uuid_page to access the same instance
-const { markup: updatedMarkup } = await getTileMarkup(uuid, uuid_visitor, uuid_page);
-
-// ========== Step 3: Generate and Execute CLI ==========
-// Fill form fields
-const formData = {
-  "seed": 99999,
-  "system_prompt": "Custom processing instruction",
-  "display_style": "Fashion style",
-  "aspect_ratio": "1:1"
-};
-
-const cliCommand = `anx card_1776755731076_8546 set_form '${JSON.stringify(formData)}'`;
-await executeCli(cliCommand);
-
-// Form filling complete!
-console.log('Form filled successfully');
+{
+  "cardKey": "card_xxx",              // Required
+  "uuid_page": "page-uuid",           // Required
+  "uuid_visitor": "visitor-uuid",     // Optional
+  "uuid_tile": "uuid-of-tile",        // Optional
+  "url_tile": "http://..."            // Optional
+}
 ```
 
-### Why uuid_page Matters
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "field1": "value1",
+    "field2": "value2"
+  }
+}
+```
+
+---
+
+### 5. Update Node Data - `/api/update-node-data`
+
+Update data for a specific node:
+
+**Request:**
+```javascript
+POST http://localhost:7887/api/update-node-data
+Content-Type: application/json
+
+{
+  "cardKey": "card_xxx",              // Required
+  "field": "fieldName",              // Required
+  "value": "new value",              // Required
+  "uuid_page": "page-uuid",           // Required
+  "uuid_visitor": "visitor-uuid",     // Optional
+  "uuid_tile": "uuid-of-tile",        // Optional
+  "url_tile": "http://..."            // Optional
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "nodes": {}
+}
+```
+
+---
+
+### 6. Trigger Card Key - `/api/trigger-card-key`
+
+Trigger a card key action:
+
+**Request:**
+```javascript
+POST http://localhost:7887/api/trigger-card-key
+Content-Type: application/json
+
+{
+  "cardKey": "card_xxx",              // Required
+  "uuid_page": "page-uuid",           // Required
+  "uuid_visitor": "visitor-uuid",     // Optional
+  "uuid_tile": "uuid-of-tile",        // Optional
+  "url_tile": "http://...",           // Optional
+  "params": {},                       // Optional additional params
+  "context": {}                       // Optional context data
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "nodes": {}
+}
+```
+
+---
+
+## Command Logs APIs
+
+### 7. Query Command Logs - `/api/command-logs`
+
+Query command execution logs with filters:
+
+**Request:**
+```javascript
+GET http://localhost:7887/api/command-logs?uuid_page=xxx&uuid_visitor=xxx&action=xxx&limit=100
+```
+
+**Query Parameters:**
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `uuid_page` | No | Filter by page UUID |
+| `uuid_visitor` | No | Filter by visitor UUID |
+| `uuid_tile` | No | Filter by tile UUID |
+| `url_tile` | No | Filter by tile URL |
+| `action` | No | Filter by action type (update-node-data, trigger-card-key, get-node-data, call-api) |
+| `limit` | No | Limit results (default: 100) |
+
+**Response:**
+```json
+{
+  "success": true,
+  "list": [
+    {
+      "uuid": "log-uuid",
+      "uuid_page": "page-uuid",
+      "uuid_visitor": "visitor-uuid",
+      "uuid_tile": "tile-uuid",
+      "timestamp": "2024-01-01T00:00:00.000Z",
+      "commandContent": {
+        "action": "update-node-data",
+        "data": {
+          "cardKey": "card_xxx",
+          "fieldName": "field1",
+          "fieldValue": "value1"
+        }
+      }
+    }
+  ]
+}
+```
+
+---
+
+### 8. Get CLI Records - `/api/getCliRecord`
+
+Get CLI records for a specific page:
+
+**Request:**
+```javascript
+GET http://localhost:7887/api/getCliRecord?uuid_page=page_xxx
+```
+
+**Query Parameters:**
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `uuid_page` | **Yes** | Page UUID to get records for |
+
+**Response:**
+```json
+{
+  "success": true,
+  "logs": [
+    {
+      "uuid": "record-uuid",
+      "cardKey": "card_xxx",
+      "action": "set_form",
+      "command": "anx card_xxx set_form...",
+      "commandContent": {},
+      "timestamp": "2024-01-01T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+## Page Management APIs
+
+### 9. Get Pages by Tile - `/api/pages/by-tile/:uuid_tile`
+
+Get all pages for a tile:
+
+**Request:**
+```javascript
+GET http://localhost:7887/api/pages/by-tile/:uuid_tile
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "uuid_page": "page_xxx",
+      "uuid_tile": "tile_xxx",
+      "title": "Page Title",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "data": {}
+    }
+  ]
+}
+```
+
+---
+
+### 10. Get Pages by URL Tile - `/api/pages/by-url-tile`
+
+Get all pages for a URL tile:
+
+**Request:**
+```javascript
+GET http://localhost:7887/api/pages/by-url-tile?url_tile=http://...&uuid_visitor=xxx
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "uuid_page": "page_xxx",
+      "url_tile": "http://...",
+      "uuid_visitor": "visitor-uuid",
+      "title": "Page Title",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "data": {}
+    }
+  ]
+}
+```
+
+---
+
+## Complete Workflow Example
+
+### Step 1: Get Markup and Extract uuid_page
+
+```javascript
+const response = await fetch('http://localhost:7887/api/getMarkup', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    uuid_tile: '505619db-c096-46b8-8a1d-0c7754fc9219',
+    uuid_visitor: '8393667a-7a2a-48f3-bc2c-c7a54b41292d'
+  })
+});
+
+const result = await response.json();
+const { markup, uuid_page } = result;
+
+// Store uuid_page for subsequent requests!
+console.log('Page ID to remember:', uuid_page);
+```
+
+### Step 2: Use uuid_page for Same Instance
+
+```javascript
+// Access the SAME page instance
+const samePageResponse = await fetch('http://localhost:7887/api/getMarkup', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    uuid_tile: '505619db-c096-46b8-8a1d-0c7754fc9219',
+    uuid_visitor: '8393667a-7a2a-48f3-bc2c-c7a54b41292d',
+    uuid_page: 'page_xxx'  // Use the stored uuid_page
+  })
+});
+```
+
+### Step 3: Execute CLI Commands
+
+```javascript
+// Fill form fields using CLI
+await fetch('http://localhost:7887/api/execute-cli', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    command: 'anx card_1776755731076_8546 set_form \'{"seed":99999,"system_prompt":"Custom prompt"}\'',
+    uuid_page: 'page_xxx'
+  })
+});
+
+// Or use Node APIs
+await fetch('http://localhost:7887/api/update-node-data', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    cardKey: 'card_xxx',
+    field: 'seed',
+    value: 99999,
+    uuid_page: 'page_xxx'
+  })
+});
+```
+
+### Step 4: Query Command Logs
+
+```javascript
+// Get all logs for a page
+const logsResponse = await fetch('http://localhost:7887/api/command-logs?uuid_page=page_xxx');
+const logsData = await logsResponse.json();
+console.log('Command logs:', logsData.list);
+
+// Get CLI records specifically
+const cliResponse = await fetch('http://localhost:7887/api/getCliRecord?uuid_page=page_xxx');
+const cliData = await cliResponse.json();
+console.log('CLI records:', cliData.logs);
+```
+
+---
+
+## Why uuid_page Matters
 
 ```javascript
 // WITHOUT uuid_page - each call creates a NEW page instance
-const { uuid_page: page1 } = await getTileMarkup(uuid);  // page_xxx_1
-const { uuid_page: page2 } = await getTileMarkup(uuid);  // page_xxx_2 (DIFFERENT!)
+const response1 = await getMarkup(uuid);  // page_xxx_1
+const response2 = await getMarkup(uuid);  // page_xxx_2 (DIFFERENT!)
 
 // WITH uuid_page - same instance every time
-const { uuid_page: myPage } = await getTileMarkup(uuid);
-const { uuid_page: samePage } = await getTileMarkup(uuid, null, myPage);  // SAME page!
+const { uuid_page } = await getMarkup(uuid);  // page_xxx
+const samePage = await getMarkup(uuid, null, uuid_page);  // SAME page!
 ```
 
 ---
 
 ## Markup Tag Reference
 
-| Tag | Component Type | Filling Method |
-|-----|----------------|----------------|
-| `<x input>` | Text input | `set_form '{"field":"value"}'` |
-| `<x textarea>` | Multi-line text | `set_form '{"field":"value"}'` |
-| `<x options>` | Dropdown | `set_form '{"field":"option_value"}'` |
-| `<x checkbox>` | Multi-select | `set_form '{"field":["value1","value2"]}'` |
+| Tag | Component Type | Interaction Method |
+|-----|----------------|-------------------|
+| `<x input>` | Text input | `set_form` or `update-node-data` |
+| `<x textarea>` | Multi-line text | `set_form` or `update-node-data` |
+| `<x options>` | Dropdown | `set_form` or `update-node-data` |
+| `<x checkbox>` | Multi-select | `set_form` |
 | `<x file>` | File upload | Via file upload API |
-| `<x button>` | Button | `tap` command to trigger action |
+| `<x button>` | Button | `tap` or `trigger-card-key` |
 | `<x form>` | Form container | Parent container, use its cardKey |
-
----
-
-## API Endpoints
-
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `http://host.docker.internal:7887/api/markup?uuid_tile=:uuid` | GET | **Step 1**: Get form markup by tile UUID |
-| `http://host.docker.internal:7887/api/markup?url_tile=:url` | GET | **Step 1**: Get form markup by tile URL |
-| `http://host.docker.internal:7887/api/execute-cli` | POST | **Step 2**: Execute CLI to fill form |
-
-### GET /api/markup Parameters
-
-| Parameter | Required | Description |
-|-----------|----------|-------------|
-| `uuid_tile` | Yes (or url_tile) | Tile UUID to get markup for |
-| `url_tile` | Yes (or uuid_tile) | Tile URL to get markup from |
-| `uuid_visitor` | No | Visitor identifier for session tracking |
-| `uuid_page` | No | Explicit page UUID (if not provided, auto-generated) |
 
 ---
 
@@ -290,29 +496,18 @@ const { uuid_page: samePage } = await getTileMarkup(uuid, null, myPage);  // SAM
 
 ## Response Structure
 
-### Markup Response Format
-
-The `/api/markup` endpoint returns plain text with:
-1. `uuid_page` - Page identifier (first line)
-2. `uuid_visitor` - Visitor identifier (second line, if provided)
-3. Form markup content (from third line onwards)
-
-```
-uuid_page: page_1776611783355_6f99p6d68
-uuid_visitor: 8393667a-7a2a-48f3-bc2c-c7a54b41292d
-
-<x form card_xxx>
-...form content...
-</x>
-```
-
-### CLI Execute Response Format
-
+### Success Response
 ```json
 {
-  "cardKey": "card_xxx",
-  "action": "set_form",
-  "result": "success",
-  "data": {"field1": "value1", "field2": "value2"}
+  "success": true,
+  "data": {}
+}
+```
+
+### Error Response
+```json
+{
+  "success": false,
+  "error": "Error message"
 }
 ```
