@@ -1,0 +1,1 @@
+export const txt = 'Test module loaded successfully!';

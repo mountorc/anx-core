@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Component Test - ANX View</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+      }
+      
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+      
+      .header {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+      
+      .header h1 {
+        color: #1e293b;
+        margin-bottom: 8px;
+        font-weight: 700;
+        font-size: 28px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      
+      .header p {
+        color: #64748b;
+        font-size: 15px;
+      }
+      
+      .test-section {
+        background: #ffffff;
+        padding: 28px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+        margin-bottom: 24px;
+      }
+      
+      .test-section h2 {
+        color: #1e293b;
+        margin-bottom: 20px;
+        font-size: 18px;
+        font-weight: 600;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 12px;
+      }
+      
+      .uuid-input-group {
+        margin-bottom: 20px;
+      }
+      
+      .uuid-input-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #334155;
+        font-weight: 500;
+        font-size: 14px;
+      }
+      
+      .uuid-input-group input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: monospace;
+        background: #f8fafc;
+        transition: all 0.2s ease;
+      }
+      
+      .uuid-input-group input:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        background: #ffffff;
+      }
+      
+      .load-button {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        margin-bottom: 20px;
+      }
+      
+      .load-button:hover {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        transform: translateY(-1px);
+      }
+      
+      .load-button:disabled {
+        background: #94a3b8;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+      
+      .component-container {
+        min-height: 400px;
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+      }
+      
+      .component-container.has-content {
+        border-style: solid;
+        border-color: #6366f1;
+      }
+      
+      .anx-view-wrapper {
+        height: 100%;
+        min-height: 400px;
+      }
+      
+      .status-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding: 12px 16px;
+        background: #f8fafc;
+        border-radius: 8px;
+      }
+      
+      .status-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #6366f1;
+        animation: pulse 2s infinite;
+      }
+      
+      .status-indicator.loading {
+        background: #f59e0b;
+      }
+      
+      .status-indicator.success {
+        background: #10b981;
+      }
+      
+      .status-indicator.error {
+        background: #ef4444;
+      }
+      
+      .status-text {
+        font-size: 13px;
+        color: #64748b;
+      }
+      
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      
+      .instructions {
+        background: #fffbeb;
+        border: 1px solid #fef3c7;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 20px;
+      }
+      
+      .instructions h4 {
+        color: #92400e;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+      
+      .instructions ul {
+        margin: 0;
+        padding-left: 20px;
+        color: #b45309;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #6366f1;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 24px;
+        transition: color 0.2s ease;
+      }
+      
+      .back-link:hover {
+        color: #4f46e5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="../index.html" class="back-link">
+        ← 返回主页面
+      </a>
+      
+      <div class="header">
+        <h1>Web Component Test</h1>
+        <p>测试 &lt;anx-view&gt; Web Component</p>
+      </div>
+      
+      <div class="instructions">
+        <h4>使用说明：</h4>
+        <ul>
+          <li>在下方输入框中输入一个有效的 uuid_page</li>
+          <li>点击 "加载页面" 按钮</li>
+          <li>组件会自动从后端获取页面内容并渲染</li>
+        </ul>
+      </div>
+      
+      <div class="test-section">
+        <h2>ANX View Component Test</h2>
+        
+        <div class="uuid-input-group">
+          <label for="uuidPageInput">UUID Page:</label>
+          <input 
+            type="text" 
+            id="uuidPageInput" 
+            placeholder="请输入 uuid_page 值"
+            value=""
+          />
+        </div>
+        
+        <button class="load-button" id="loadButton">
+          加载页面
+        </button>
+        
+        <div class="status-bar" id="statusBar">
+          <div class="status-indicator" id="statusIndicator"></div>
+          <span class="status-text" id="statusText">准备就绪</span>
+        </div>
+        
+        <div class="component-container" id="componentContainer">
+          <div class="anx-view-wrapper">
+            <anx-view id="anxViewComponent"></anx-view>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <script type="module" src="../../web-component/anx-view.js"></script>
+    <script>
+      const uuidInput = document.getElementById('uuidPageInput');
+      const loadButton = document.getElementById('loadButton');
+      const statusIndicator = document.getElementById('statusIndicator');
+      const statusText = document.getElementById('statusText');
+      const componentContainer = document.getElementById('componentContainer');
+      const anxViewComponent = document.getElementById('anxViewComponent');
+      
+      loadButton.addEventListener('click', () => {
+        const uuidPage = uuidInput.value.trim();
+        
+        if (!uuidPage) {
+          alert('请输入 uuid_page 值');
+          return;
+        }
+        
+        loadButton.disabled = true;
+        statusIndicator.className = 'status-indicator loading';
+        statusText.textContent = '正在加载页面...';
+        componentContainer.className = 'component-container';
+        
+        anxViewComponent.setAttribute('uuid-page', uuidPage);
+      });
+      
+      anxViewComponent.addEventListener('load', () => {
+        loadButton.disabled = false;
+        statusIndicator.className = 'status-indicator success';
+        statusText.textContent = '页面加载成功';
+        componentContainer.className = 'component-container has-content';
+      });
+      
+      window.addEventListener('reloadAnxView', (event) => {
+        console.log('View reload event received:', event.detail);
+        statusText.textContent = '数据已更新';
+      });
+    </script>
+  </body>
+</html>
